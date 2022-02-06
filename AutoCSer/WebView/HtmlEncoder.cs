@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -12,27 +13,28 @@ namespace AutoCSer.WebView
         /// <summary>
         /// HTML转义字符集合
         /// </summary>
-        private readonly uint* htmls;
+        private AutoCSer.Memory.Pointer htmls;
         /// <summary>
         /// 最大值
         /// </summary>
-        private readonly int size;
+        private int size { get { return htmls.CurrentIndex; } }
         /// <summary>
         /// HTML编码器
         /// </summary>
         /// <param name="htmls">HTML转义字符集合</param>
         internal HtmlEncoder(string htmls)
         {
-            size = 0;
+            int size = 0;
             foreach (char htmlChar in htmls)
             {
                 if (htmlChar > size) size = htmlChar;
             }
-            this.htmls = (uint*)Unmanaged.GetStatic64(((++size + 1) & (int.MaxValue - 1)) * sizeof(uint), true);
+            this.htmls = Unmanaged.GetStaticPointer(((++size + 1) & (int.MaxValue - 1)) * sizeof(uint), true);
+            this.htmls.CurrentIndex = size;
             foreach (char value in htmls)
             {
-                int div = (value * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
-                this.htmls[value] = (uint)(((value - div * 10) << 16) | div | 0x300030);
+                int div = (value * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
+                this.htmls.UInt[value] = (uint)(((value - div * 10) << 16) | div | 0x300030);
             }
         }
         /// <summary>
@@ -78,8 +80,8 @@ namespace AutoCSer.WebView
             }
             UnmanagedStream stream = response.EncodeStream;
             length += count << 2;
-            stream.PrepLength(length << 1);
-            toHtml(start, end, (char*)stream.CurrentData);
+            stream.PrepSize(length << 1);
+            toHtml(start, end, (char*)stream.Data.Current);
             response.Encoding.WriteBytes(stream.Data.Char, length, response.Stream);
         }
         /// <summary>
@@ -93,7 +95,7 @@ namespace AutoCSer.WebView
             int count = 0;
             while (start != end)
             {
-                if (*start < size && htmls[*start] != 0) ++count;
+                if (*start < size && htmls.UInt[*start] != 0) ++count;
                 ++start;
             }
             return count;
@@ -111,7 +113,7 @@ namespace AutoCSer.WebView
                 char code = *start++;
                 if (code < size)
                 {
-                    uint html = htmls[code];
+                    uint html = htmls.UInt[code];
                     if (html == 0) *write++ = code;
                     else
                     {

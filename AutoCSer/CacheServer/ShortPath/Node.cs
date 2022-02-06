@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer.ShortPath
@@ -25,7 +25,7 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <summary>
         /// 重建访问锁
         /// </summary>
-        private readonly object createLock;
+        private AutoCSer.Threading.SleepFlagSpinLock createLock;
         /// <summary>
         /// 客户端套接字编号
         /// </summary>
@@ -47,7 +47,6 @@ namespace AutoCSer.CacheServer.ShortPath
                 Parameter = new DataStructure.Parameter.Value(node.Parent);
                 Parameter.Parameter = node.Parameter;
                 Parameter.Parameter.OperationType = OperationParameter.OperationType.CreateShortPath;
-                createLock = new object();
             }
         }
         /// <summary>
@@ -115,13 +114,13 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <returns></returns>
         private ReturnType check(MasterServer.TcpInternalClient client)
         {
-            Monitor.Enter(createLock);
+            createLock.Enter();
             switch (Identity.Type)
             {
-                case ReturnType.NotFoundShortPathNode: Monitor.Exit(createLock); return ReturnType.NotFoundShortPathNode;
+                case ReturnType.NotFoundShortPathNode: createLock.Exit(); return ReturnType.NotFoundShortPathNode;
                 case ReturnType.NotFoundShortPath: reCreate(client); return Identity.Type;
             }
-            if (socketIdentity == Client.SocketIdentity) Monitor.Exit(createLock);
+            if (socketIdentity == Client.SocketIdentity) createLock.Exit();
             else reCreate(client);
             return Identity.Type;
         }
@@ -132,6 +131,7 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <returns></returns>
         private bool reCreate(MasterServer.TcpInternalClient client)
         {
+            createLock.SleepFlag = 1;
             try
             {
                 do
@@ -146,7 +146,7 @@ namespace AutoCSer.CacheServer.ShortPath
             {
                 client._TcpClient_.AddLog(error);
             }
-            finally { Monitor.Exit(createLock); }
+            finally { createLock.ExitSleepFlag(); }
             return false;
         }
         /// <summary>
@@ -161,13 +161,13 @@ namespace AutoCSer.CacheServer.ShortPath
             {
                 case ReturnType.NotFoundShortPathNode: Identity.Type = ReturnType.NotFoundShortPathNode; return false;
                 case ReturnType.NotFoundShortPath:
-                    Monitor.Enter(createLock);
+                    createLock.Enter();
                     if (Identity.Type != ReturnType.NotFoundShortPathNode)
                     {
                         Identity.Type = ReturnType.NotFoundShortPath;
                         if (reCreate(client)) return true;
                     }
-                    else Monitor.Exit(createLock);
+                    else createLock.Exit();
                     break;
             }
             returnType = Identity.Type;
@@ -197,13 +197,13 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <returns></returns>
         private ReturnType check(SlaveServer.TcpInternalClient client)
         {
-            Monitor.Enter(createLock);
+            createLock.Enter();
             switch (Identity.Type)
             {
-                case ReturnType.NotFoundShortPathNode: Monitor.Exit(createLock); return ReturnType.NotFoundShortPathNode;
+                case ReturnType.NotFoundShortPathNode: createLock.Exit(); return ReturnType.NotFoundShortPathNode;
                 case ReturnType.NotFoundShortPath: reCreate(client); return Identity.Type;
             }
-            if (socketIdentity == Client.SocketIdentity) Monitor.Exit(createLock);
+            if (socketIdentity == Client.SocketIdentity) createLock.Exit();
             else reCreate(client);
             return Identity.Type;
         }
@@ -214,6 +214,7 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <returns></returns>
         private bool reCreate(SlaveServer.TcpInternalClient client)
         {
+            createLock.SleepFlag = 1;
             try
             {
                 do
@@ -228,7 +229,7 @@ namespace AutoCSer.CacheServer.ShortPath
             {
                 client._TcpClient_.AddLog(error);
             }
-            finally { Monitor.Exit(createLock); }
+            finally { createLock.ExitSleepFlag(); }
             return false;
         }
         /// <summary>
@@ -243,13 +244,13 @@ namespace AutoCSer.CacheServer.ShortPath
             {
                 case ReturnType.NotFoundShortPathNode: Identity.Type = ReturnType.NotFoundShortPathNode; return false;
                 case ReturnType.NotFoundShortPath:
-                    Monitor.Enter(createLock);
+                    createLock.Enter();
                     if (Identity.Type != ReturnType.NotFoundShortPathNode)
                     {
                         Identity.Type = ReturnType.NotFoundShortPath;
                         if (reCreate(client)) return true;
                     }
-                    else Monitor.Exit(createLock);
+                    else createLock.Exit();
                     break;
             }
             returnType = Identity.Type;

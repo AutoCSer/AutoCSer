@@ -12,7 +12,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 缓冲区大小
         /// </summary>
-        internal const SubBuffer.Size BufferSize = SubBuffer.Size.Kilobyte128;
+        internal const AutoCSer.Memory.BufferSize BufferSize = AutoCSer.Memory.BufferSize.Kilobyte128;
         /// <summary>
         /// 缓冲区池
         /// </summary>
@@ -96,7 +96,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 当前分配缓冲区访问锁
         /// </summary>
-        private static int bufferCountLock;
+        private static AutoCSer.Threading.SpinLock bufferCountLock;
         /// <summary>
         /// 当前分配缓冲区创建访问锁
         /// </summary>
@@ -110,12 +110,12 @@ namespace AutoCSer.CacheServer
         {
             if (size > (int)BufferSize) return new Buffer(size);
             Buffer buffer;
-            while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.CacheServerGetBuffer);
+            bufferCountLock.EnterYield();
             try
             {
                 buffer = bufferCount.get(size);
             }
-            finally { System.Threading.Interlocked.Exchange(ref bufferCountLock, 0); }
+            finally { bufferCountLock.Exit(); }
 
             if (buffer == null)
             {
@@ -125,10 +125,10 @@ namespace AutoCSer.CacheServer
                 oldBufferCount = bufferCount;
                 try
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.CacheServerGetBuffer);
+                    bufferCountLock.EnterYield();
                     step = 0;
                     buffer = oldBufferCount.get(size);
-                    System.Threading.Interlocked.Exchange(ref bufferCountLock, 0);
+                    bufferCountLock.Exit();
                     step = 0xff;
 
                     if (buffer == null)
@@ -148,7 +148,7 @@ namespace AutoCSer.CacheServer
                 {
                     switch (step)
                     {
-                        case 0: System.Threading.Interlocked.Exchange(ref bufferCountLock, 0); break;
+                        case 0: bufferCountLock.Exit(); break;
                         case 1: newBufferCount.Free(); break;
                     }
                     Monitor.Exit(newBufferCountLock);

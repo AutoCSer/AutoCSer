@@ -28,6 +28,18 @@ namespace AutoCSer.Metadata
             /// </summary>
             internal Type Type3;
             /// <summary>
+            /// 类型关键字
+            /// </summary>
+            /// <param name="type1"></param>
+            /// <param name="type2"></param>
+            /// <param name="type3"></param>
+            internal TypeKey(Type type1, Type type2, Type type3)
+            {
+                Type1 = type1;
+                Type2 = type2;
+                Type3 = type3;
+            }
+            /// <summary>
             /// 
             /// </summary>
             /// <param name="other"></param>
@@ -55,9 +67,23 @@ namespace AutoCSer.Metadata
             }
         }
         /// <summary>
+        /// 获取当前类型
+        /// </summary>
+        internal abstract TypeKey CurrentType { get; }
+
+        /// <summary>
+        /// 获取当前类型
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static TypeKey getCurrentType(DictionaryGenericType3 value)
+        {
+            return value.CurrentType;
+        }
+        /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<TypeKey, DictionaryGenericType3> cache = new LockEquatableLastDictionary<TypeKey, DictionaryGenericType3>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<TypeKey, DictionaryGenericType3> cache = new LockLastDictionary<TypeKey, DictionaryGenericType3>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -84,11 +110,15 @@ namespace AutoCSer.Metadata
         public static DictionaryGenericType3 Get(Type type1, Type type2, Type type3)
         {
             DictionaryGenericType3 value;
-            TypeKey typeKey = new TypeKey { Type1 = type1, Type2 = type2, Type3 = type3 };
-            if (!cache.TryGetValue(ref typeKey, out value))
+            TypeKey typeKey = new TypeKey(type1, type2, type3);
+            if (!cache.TryGetValue(typeKey, out value))
             {
-                value = new UnionType { Value = createMethod.MakeGenericMethod(type1, type2, type3).Invoke(null, null) }.DictionaryGenericType3;
-                cache.Set(ref typeKey, value);
+                try
+                {
+                    value = new UnionType.DictionaryGenericType3 { Object = createMethod.MakeGenericMethod(type1, type2, type3).Invoke(null, null) }.Value;
+                    cache.Set(typeKey, value);
+                }
+                finally { cache.Exit(); }
             }
             return value;
         }
@@ -113,9 +143,8 @@ namespace AutoCSer.Metadata
        where Type1 : IDictionary<Type2, Type3>
     {
         /// <summary>
-        /// 反序列化委托
+        /// 获取当前类型
         /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerialize(ref Type1 value);
+        internal override TypeKey CurrentType { get { return new TypeKey(typeof(Type1), typeof(Type2), typeof(Type3)); } }
     }
 }

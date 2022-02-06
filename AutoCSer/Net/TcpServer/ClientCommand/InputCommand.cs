@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
 {
@@ -23,15 +24,15 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         internal unsafe override CommandBase Build(ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
-            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.ByteSize) >= CommandInfo.MaxDataSize)
+            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= CommandInfo.MaxDataSize)
             {
-                int streamLength = stream.ByteSize;
-                stream.PrepLength(sizeof(uint) + sizeof(int) * 3);
+                int streamLength = stream.Data.CurrentIndex;
+                stream.PrepSize(sizeof(uint) + sizeof(int) * 3);
                 CommandBase nextBuild = LinkNext;
-                stream.ByteSize += sizeof(uint) + sizeof(int) * 2;
+                stream.Data.CurrentIndex += sizeof(uint) + sizeof(int) * 2;
                 if ((CommandInfo.CommandFlags & CommandFlags.JsonSerialize) == 0) Socket.Serialize(CommandInfo, ref InputParameter);
                 else Socket.JsonSerialize(ref InputParameter);
-                int dataLength = stream.ByteSize - streamLength - (sizeof(int) * 2 + sizeof(uint));
+                int dataLength = stream.Data.CurrentIndex - streamLength - (sizeof(int) * 2 + sizeof(uint));
                 if (dataLength <= Socket.MaxInputSize)
                 {
                     int commandIndex = Socket.CommandPool.Push(this);
@@ -48,7 +49,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                         return nextBuild;
                     }
                 }
-                stream.ByteSize = streamLength;
+                stream.Data.CurrentIndex = streamLength;
                 LinkNext = null;
                 ReturnType = ReturnType.ClientBuildError;
                 setTask();
@@ -92,9 +93,9 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             {
                 switch (CommandInfo.TaskType)
                 {
-                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                    case ClientTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                    case ClientTaskType.TcpTask: ClientCallTask.Task.Add(this); return;
+                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                    case ClientTaskType.Timeout: AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                    case ClientTaskType.TcpTask: ClientCallThreadArray.Default.CurrentThread.Add(this); return;
                     case ClientTaskType.TcpQueue: ClientCallQueue.Default.Add(this); return;
                 }
             }
@@ -111,7 +112,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             Callback = null;
             Socket = null;
             AutoCSer.Threading.RingPool<InputCommand<inputParameterType>>.Default.PushNotNull(this);
-            callback(new ReturnValue { Type = ReturnType });
+            callback(new ReturnValue { Type = ReturnType });//callback 发生 null 引用异常，ReturnType 为 Timeout？回调会被多次触发？
         }
         /// <summary>
         /// 回调处理
@@ -133,7 +134,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             }
             catch (Exception error)
             {
-                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
     }

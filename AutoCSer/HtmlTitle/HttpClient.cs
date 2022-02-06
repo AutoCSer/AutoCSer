@@ -3,7 +3,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Net;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
@@ -14,18 +14,18 @@ namespace AutoCSer.Net.HtmlTitle
     /// <summary>
     /// HTML 标题获取客户端
     /// </summary>
-    internal sealed class HttpClient : SocketTimeoutLink
+    internal sealed class HttpClient : SocketTimeoutNode
     {
         /// <summary>
         /// 请求域名缓冲区池
         /// </summary>
-        private static readonly AutoCSer.SubBuffer.Pool hostBufferPool = AutoCSer.SubBuffer.Pool.GetPool(SubBuffer.Size.Byte256);
+        private static readonly AutoCSer.SubBuffer.Pool hostBufferPool = AutoCSer.SubBuffer.Pool.GetPool(AutoCSer.Memory.BufferSize.Byte256);
         /// <summary>
         /// HTTP服务版本号
         /// </summary>
         private static readonly byte[] httpVersion = (@" HTTP/1.1
 Connection: Close
-User-Agent: Mozilla/5.0 (" + AutoCSer.Pub.HttpSpiderUserAgent + @")
+User-Agent: Mozilla/5.0 (" + AutoCSer.Config.HttpSpiderUserAgent + @")
 Host: ").getBytes();
         /// <summary>
         /// HASH重定向名称
@@ -82,7 +82,7 @@ Host: ").getBytes();
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        private int asyncLock;
+        private AutoCSer.Threading.SleepFlagSpinLock asyncLock;
 #endif
 #endif
         /// <summary>
@@ -236,7 +236,7 @@ Host: ").getBytes();
             }
             catch (Exception error)
             {
-                task.Log.Add(Log.LogType.Error, error);
+                task.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -265,9 +265,9 @@ Host: ").getBytes();
             try
             {
                 fixed (char* uriFixed = uriString)
-                fixed (byte* dataFixed = buffer.Buffer)
+                fixed (byte* dataFixed = buffer.GetFixedBuffer())
                 {
-                    AutoCSer.Extension.StringExtension.WriteBytesNotNull(uriFixed, uriString.Length, dataFixed + buffer.StartIndex);
+                    AutoCSer.Extensions.StringExtension.WriteBytes(uriFixed, uriString.Length, dataFixed + buffer.StartIndex);
                 }
                 SubArray<byte> uriArray = new SubArray<byte>(buffer.StartIndex, uriString.Length, buffer.Buffer);
                 return get(ref uriArray, 0, false);
@@ -283,7 +283,7 @@ Host: ").getBytes();
         /// <returns></returns>
         private unsafe bool get(ref SubArray<byte> uri, int defaultPort, bool isLocation)
         {
-            fixed (byte* uriFixed = uri.Array)
+            fixed (byte* uriFixed = uri.GetFixedBuffer())
             {
                 byte* start = uriFixed + uri.StartIndex;
                 int hostIndex = 0;
@@ -323,7 +323,7 @@ Host: ").getBytes();
                             else port = defaultPort == 0 ? (hostIndex == 8 ? 443 : 80) : defaultPort;
                             if (port != 0)
                             {
-                                SubArray<byte> path = default(SubArray<byte>), hash = default(SubArray<byte>);
+                                SubArray<byte> path = new SubArray<byte>(), hash = new SubArray<byte>();
                                 for (nameStart = start; start != end && *start != '?' && *start != '#'; ++start) ;
                                 if (start == end) path.Set(uri.Array, (int)(nameStart - uriFixed), (int)(start - nameStart));
                                 else
@@ -351,7 +351,7 @@ Host: ").getBytes();
                                 }
                                 if (index < buffer.Length)
                                 {
-                                    fixed (byte* bufferFixed = buffer.Buffer)
+                                    fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                                     {
                                         byte* bufferStart = bufferFixed + buffer.StartIndex;
                                         *(int*)bufferStart = 'G' + ('E' << 8) + ('T' << 16) + (' ' << 24);
@@ -387,8 +387,8 @@ Host: ").getBytes();
                                                         if ((uint)(*start - '0') >= 10 && (uint)((*start | 0x20) - 'a') >= 26)
                                                         {
                                                             *nameStart++ = (byte)'%';
-                                                            *nameStart++ = (byte)Number.ToHex((uint)*start >> 4);
-                                                            *nameStart++ = (byte)Number.ToHex((uint)*start & 0xf);
+                                                            *nameStart++ = (byte)NumberExtension.ToHex((uint)*start >> 4);
+                                                            *nameStart++ = (byte)NumberExtension.ToHex((uint)*start & 0xf);
                                                         }
                                                         else *nameStart++ = *start;
                                                     }
@@ -462,7 +462,7 @@ Host: ").getBytes();
         {
 #if DOTNET2
             if (!async.CompletedSynchronously) task.CancelTimeout(this);
-            Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
+            Socket socket = (Socket)async.AsyncState;
             if (socket == Socket)
             {
 #else
@@ -479,7 +479,7 @@ Host: ").getBytes();
                             if (isHttps)
                             {
                                 string host;
-                                fixed (byte* hostFixed = hostBuffer.Buffer) host = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(hostFixed + hostBuffer.StartIndex, hostSize);
+                                fixed (byte* hostFixed = hostBuffer.GetFixedBuffer()) host = AutoCSer.Extensions.MemoryExtensionWebClient.BytesToStringNotEmpty(hostFixed + hostBuffer.StartIndex, hostSize);
                                 if (validateCertificate == null)
                                 {
                                     validateCertificate = onValidateCertificate;
@@ -505,19 +505,22 @@ Host: ").getBytes();
                             {
                                 socketAsyncType = SocketAsyncType.Send;
 #if !DotNetStandard
-                                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                                asyncLock.EnterSleepFlag();
 #endif
                                 socketAsync.SetBuffer(buffer.StartIndex, bufferIndex - buffer.StartIndex);
                                 if (socket.SendAsync(socketAsync))
                                 {
+#if !DotNetStandard
+                                    asyncLock.SleepFlag = 0;
+#endif
                                     task.PushTimeout(this, socket);
 #if !DotNetStandard
-                                    Interlocked.Exchange(ref asyncLock, 0);
+                                    asyncLock.Exit();
 #endif
                                     return;
                                 }
 #if !DotNetStandard
-                                Interlocked.Exchange(ref asyncLock, 0);
+                                asyncLock.ExitSleepFlag();
 #endif
                                 if (socketAsync.SocketError != SocketError.Success) break;
                             }
@@ -544,21 +547,24 @@ Host: ").getBytes();
                                 socketAsyncType = SocketAsyncType.Recieve;
                                 bufferIndex = currentIndex = buffer.StartIndex;
 #if !DotNetStandard
-                                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                                asyncLock.EnterSleepFlag();
 #endif
                                 socketAsync.SetBuffer(bufferIndex, bufferSize);
                                 if (socket.ReceiveAsync(socketAsync))
                                 {
+#if !DotNetStandard
+                                    asyncLock.SleepFlag = 0;
+#endif
                                     task.PushTimeout(this, socket);
 #if !DotNetStandard
-                                    Interlocked.Exchange(ref asyncLock, 0);
+                                    asyncLock.Exit();
 #endif
                                     return;
                                 }
                                 if (socketAsync.SocketError == SocketError.Success)
                                 {
 #if !DotNetStandard
-                                    Interlocked.Exchange(ref asyncLock, 0);
+                                    asyncLock.ExitSleepFlag();
 #endif
                                     goto ONRECEIVE;
                                 }
@@ -578,7 +584,7 @@ Host: ").getBytes();
                 }
                 catch (Exception error)
                 {
-                    task.Log.Add(Log.LogType.Error, error);
+                    task.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             callback(null);
@@ -603,7 +609,7 @@ Host: ").getBytes();
         private void onSslSocket(IAsyncResult async)
         {
             if (!async.CompletedSynchronously) task.CancelTimeout(this);
-            Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
+            Socket socket = new AutoCSer.Net.UnionType.Socket { Object = async.AsyncState }.Value;
             if (socket == Socket)
             {
                 try
@@ -638,7 +644,7 @@ Host: ").getBytes();
                 }
                 catch (Exception error)
                 {
-                    task.Log.Add(Log.LogType.Error, error);
+                    task.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             callback(null);
@@ -658,7 +664,7 @@ Host: ").getBytes();
                 bufferIndex += count;
                 if (isHeader)
                 {
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                     {
                         if (isChunked)
                         {
@@ -701,7 +707,7 @@ Host: ").getBytes();
                     int searchEndIndex = bufferIndex - sizeof(int);
                     if (currentIndex <= searchEndIndex)
                     {
-                        fixed (byte* bufferFixed = buffer.Buffer)
+                        fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                         {
                             byte* start = bufferFixed + currentIndex, searchEnd = bufferFixed + searchEndIndex, end = bufferFixed + bufferIndex;
                             *end = 13;
@@ -775,21 +781,24 @@ Host: ").getBytes();
                     }
 #else
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    asyncLock.EnterSleepFlag();
 #endif
                     socketAsync.SetBuffer(bufferIndex, count);
                     if (socket.ReceiveAsync(socketAsync))
                     {
+#if !DotNetStandard
+                        asyncLock.SleepFlag = 0;
+#endif
                         task.PushTimeout(this, socket);
 #if !DotNetStandard
-                        Interlocked.Exchange(ref asyncLock, 0);
+                        asyncLock.Exit();
 #endif
                         return true;
                     }
                     if (socketAsync.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref asyncLock, 0);
+                        asyncLock.ExitSleepFlag();
 #endif
                         count = socketAsync.BytesTransferred;
                         goto START;
@@ -860,7 +869,7 @@ Host: ").getBytes();
                                     pool.Get(ref uri);
                                     try
                                     {
-                                        fixed (byte* uriFixed = uri.Buffer)
+                                        fixed (byte* uriFixed = uri.GetFixedBuffer())
                                         {
                                             byte* uriStart = uriFixed + uri.StartIndex;
                                             * (int*)uriStart = 'h' + ('t' << 8) + ('t' << 16) + ('p' << 24);
@@ -944,16 +953,8 @@ Host: ").getBytes();
                                 isEncoding = 1;
                                 byte* start = current;
                                 while (*current != 13 && *current != ';') ++current;
-                                string encodingString = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(start, (int)(current - start));
-                                try
-                                {
-                                    responseEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
-                                }
-                                catch
-                                {
-                                    task.Log.Add(Log.LogType.Info, "编码解析错误 " + encodingString, (StackFrame)null, true);
-                                    htmlEncoding = Encoding.UTF8;
-                                }
+                                string encodingString = AutoCSer.Extensions.MemoryExtensionWebClient.BytesToStringNotEmpty(start, (int)(current - start));
+                                responseEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
                                 if (isHtml != 0) return true;
                             }
                         }
@@ -1098,7 +1099,7 @@ Host: ").getBytes();
         /// <returns>是否成功</returns>
         private unsafe bool parseTitle(ref SubBuffer.PoolBufferFull buffer)
         {
-            fixed (byte* bufferFixed = buffer.Buffer)
+            fixed (byte* bufferFixed = buffer.GetFixedBuffer())
             {
                 byte* bufferStart = bufferFixed + buffer.StartIndex, current = bufferFixed + currentIndex, end = bufferFixed + bufferIndex;
                 do
@@ -1151,16 +1152,8 @@ Host: ").getBytes();
                                 while (*start == '"' || *start == '\'') ++start;
                                 byte* encoding = start;
                                 while ((uint)((*start | 0x20) - 'a') < 26 || (uint)(*start - '0') < 10 || *start == '-') ++start;
-                                string encodingString = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(encoding, (int)(start - encoding));
-                                try
-                                {
-                                    htmlEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
-                                }
-                                catch
-                                {
-                                    task.Log.Add(Log.LogType.Info, "编码解析错误 " + encodingString, (StackFrame)null, true);
-                                    htmlEncoding = Encoding.UTF8;
-                                }
+                                string encodingString = AutoCSer.Extensions.MemoryExtensionWebClient.BytesToStringNotEmpty(encoding, (int)(start - encoding));
+                                htmlEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
                                 if (htmlEncoding != null && title.StartIndex != 0)
                                 {
                                     callback(ref buffer, htmlEncoding);
@@ -1226,7 +1219,7 @@ Host: ").getBytes();
         /// <param name="value">提交内容数据长度索引位置</param>
         private unsafe static void parseContentLength(HttpClient client, BufferIndex value)
         {
-            fixed (byte* dataFixed = client.buffer.Buffer)
+            fixed (byte* dataFixed = client.buffer.GetFixedBuffer())
             {
                 for (byte* start = dataFixed + client.buffer.StartIndex + value.StartIndex, end = start + value.Length; start != end; ++start)
                 {
@@ -1253,7 +1246,7 @@ Host: ").getBytes();
         {
             if (value.Length == 4)
             {
-                fixed (byte* bufferFixed = client.buffer.Buffer)
+                fixed (byte* bufferFixed = client.buffer.GetFixedBuffer())
                 {
                     if ((*(int*)(bufferFixed + client.buffer.StartIndex + value.StartIndex) | 0x20202020) == ('g' + ('z' << 8) + ('i' << 16) + ('p' << 24)))
                     {
@@ -1273,7 +1266,7 @@ Host: ").getBytes();
         {
             if (value.Length == 7)
             {
-                fixed (byte* bufferFixed = client.buffer.Buffer)
+                fixed (byte* bufferFixed = client.buffer.GetFixedBuffer())
                 {
                     byte* start = bufferFixed + client.buffer.StartIndex + value.StartIndex;
                     if ((((*(int*)start | 0x20202020) ^ ('c' + ('h' << 8) + ('u' << 16) + ('n' << 24)))
@@ -1293,7 +1286,7 @@ Host: ").getBytes();
         {
             if (value.Length == 5)
             {
-                fixed (byte* bufferFixed = client.buffer.Buffer)
+                fixed (byte* bufferFixed = client.buffer.GetFixedBuffer())
                 {
                     byte* start = bufferFixed + client.buffer.StartIndex + value.StartIndex;
                     if ((((*(int*)start | 0x20202020) ^ ('c' + ('l' << 8) + ('o' << 16) + ('s' << 24)))

@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpStaticServer
         /// <returns></returns>
         internal override bool SocketVerifyMethod(TcpServer.ClientSocketSenderBase socket)
         {
-            return verifyMethod == null || verifyMethod(new TcpInternalServer.UnionType { Value = socket }.ClientSocketSender);
+            return verifyMethod == null || verifyMethod(new TcpInternalServer.UnionType.ClientSocketSender { Object = socket }.Value);
         }
     }
 }

@@ -17,7 +17,12 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 客户端等待连接
         /// </summary>
-        public TcpServer.ClientWaitConnected _WaitConnected_ { get; protected set; }
+        protected TcpServer.ClientWaitConnected _WaitConnected_;
+        /// <summary>
+        /// 客户端等待连接
+        /// </summary>
+        /// <returns></returns>
+        public TcpServer.ClientWaitConnected _GetWaitConnected_() { return _WaitConnected_; }
         /// <summary>
         /// 是否已经释放资源
         /// </summary>

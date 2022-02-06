@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net.Sockets;
 
@@ -91,15 +91,13 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
 
                     if ((isVerifyMethod = CallVerifyMethod()) && Attribute.GetCheckSeconds > 0 && CheckTimer == null)
                     {
-                        CheckTimer = TcpSimpleServer.ClientCheckTimer.Get(Attribute.GetCheckSeconds);
-                        if (IsDisposed == 0) CheckTimer.Push(this);
-                        else
+                        TcpSimpleServer.ClientCheckTimer checkTimer = new TcpSimpleServer.ClientCheckTimer(this, Math.Max(Attribute.GetCheckSeconds,1));
+                        if (Interlocked.CompareExchange(ref CheckTimer, checkTimer, null) == null)
                         {
-                            isVerifyMethod = false;
-                            TcpSimpleServer.ClientCheckTimer.Free(ref CheckTimer);
+                            if (IsDisposed == 0) checkTimer.AppendTaskArray();
+                            else isVerifyMethod = false;
                         }
                     }
-
                 }
                 finally
                 {
@@ -120,7 +118,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <summary>
         /// TCP 内部服务客户端代理对象
         /// </summary>
-        private readonly clientType client;
+        public readonly clientType MethodClient;
         /// <summary>
         /// 验证委托
         /// </summary>
@@ -135,7 +133,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         public Client(clientType client, ServerAttribute attribute, ILog log, Func<clientType, bool> verifyMethod = null)
             : base(attribute, log)
         {
-            this.client = client;
+            this.MethodClient = client;
             this.verifyMethod = verifyMethod;
         }
         /// <summary>
@@ -144,7 +142,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <returns></returns>
         internal override bool CallVerifyMethod()
         {
-            return verifyMethod == null || verifyMethod(client);
+            return verifyMethod == null || verifyMethod(MethodClient);
         }
     }
 }

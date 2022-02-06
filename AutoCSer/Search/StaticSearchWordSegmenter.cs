@@ -1,7 +1,8 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Search
 {
@@ -26,11 +27,11 @@ namespace AutoCSer.Search
             /// <summary>
             /// 匹配位置位图
             /// </summary>
-            protected Pointer.Size matchMapData;
+            protected AutoCSer.Memory.Pointer matchMapData;
             /// <summary>
             /// 分词索引位置
             /// </summary>
-            protected LeftArray<KeyValue<int, int>> matchs;
+            protected LeftArray<KeyValue<int, int>> matchs = new LeftArray<KeyValue<int, int>>(0);
             /// <summary>
             /// 格式化文本
             /// </summary>
@@ -76,7 +77,7 @@ namespace AutoCSer.Search
                 if (matchMapData.ByteSize < matchMapDataSize)
                 {
                     Unmanaged.Free(ref matchMapData);
-                    matchMapData = Unmanaged.GetSizeUnsafe64(matchMapDataSize, false);
+                    matchMapData = Unmanaged.GetPointer(matchMapDataSize, false);
                 }
                 matchMap.Set(matchMapData.ULong, (matchMapSize + 7) >> 3);
             }
@@ -93,11 +94,11 @@ namespace AutoCSer.Search
             /// <summary>
             /// 匹配位置结果缓冲区
             /// </summary>
-            protected LeftArray<int[]> indexArrays;
+            protected LeftArray<int[]> indexArrays = new LeftArray<int[]>(0);
             /// <summary>
             /// 分词结果
             /// </summary>
-            private LeftArray<KeyValue<SubString, WordType>> words;
+            internal LeftArray<KeyValue<SubString, WordType>> Words = new LeftArray<KeyValue<SubString, WordType>>(0);
             /// <summary>
             /// 数据分词处理
             /// </summary>
@@ -107,15 +108,16 @@ namespace AutoCSer.Search
             /// 获取文本分词结果
             /// </summary>
             /// <param name="text"></param>
-            protected void getResult(string text)
+            /// <param name="isWordOnly"></param>
+            internal void GetResult(string text, bool isWordOnly = false)
             {
                 result.Empty();
                 formatLength = text.Length;
-                formatText = AutoCSer.Extension.StringExtension.FastAllocateString(formatLength + 1);
+                formatText = AutoCSer.Extensions.StringExtension.FastAllocateString(formatLength + 1);
                 fixed (char* textFixed = formatText)
                 {
                     Simplified.FormatNotEmpty(text, textFixed, formatLength);
-                    words.Length = matchs.Length = 0;
+                    Words.Length = matchs.Length = 0;
                     char* start = textFixed, end = textFixed + formatLength;
                     byte type, nextType, wordType;
                     bool isMatchMap = false;
@@ -152,7 +154,10 @@ namespace AutoCSer.Search
                             }
                             if ((int)(start - segment) == 1)
                             {
-                                if ((type & (byte)WordType.Chinese) != 0) addWord((int)(segment - textFixed), 1, (type & (byte)WordType.TrieGraph) != 0 ? WordType.TrieGraph : WordType.Chinese);
+                                if (((type = charTypeData[*segment]) & (byte)WordType.Chinese) != 0)
+                                {
+                                    addWord((int)(segment - textFixed), 1, (type & (byte)WordType.TrieGraph) != 0 ? WordType.TrieGraph : WordType.Chinese);
+                                }
                             }
                             else
                             {
@@ -184,7 +189,7 @@ namespace AutoCSer.Search
                                     }
                                     while (++startIndex != index);
                                 }
-                                CHINESE:
+                            CHINESE:
                                 while (segmentEnd != start)
                                 {
                                     if ((charTypeData[*segmentEnd] & (byte)WordType.Chinese) != 0) addWord((int)(segmentEnd - textFixed), 1, WordType.Chinese);
@@ -217,6 +222,7 @@ namespace AutoCSer.Search
                         *end = ' ';
                         if ((type & (byte)WordType.Chinese) != 0)
                         {
+                            type = charTypeData[*start];
                             do
                             {
                                 if ((type & (byte)WordType.TrieGraph) == 0) addWord((int)(start - textFixed), 1, WordType.Chinese);
@@ -252,21 +258,21 @@ namespace AutoCSer.Search
                     }
                     while (start != end);
                     END:
-                    if (words.Length != 0)
+                    if (Words.Length != 0 && !isWordOnly)
                     {
-                        int count = words.Length, textLength = text.Length;
+                        int count = Words.Length, textLength = text.Length;
                         if ((searcher.flags & SearchFlags.ResultIndexs) == 0)
                         {
-                            foreach (KeyValue<SubString, WordType> word in words.Array)
+                            foreach (KeyValue<SubString, WordType> word in Words.Array)
                             {
-                                result.Set(word.Key, new ResultIndexLeftArray { WordType = word.Value, TextLength = textLength });
+                                result.Set(word.Key, new ResultIndexLeftArray { WordType = word.Value, TextLength = textLength, Indexs = new LeftArray<int>(0) });
                                 if (--count == 0) break;
                             }
                         }
                         else
                         {
                             ResultIndexLeftArray indexs;
-                            foreach (KeyValue<SubString, WordType> word in words.Array)
+                            foreach (KeyValue<SubString, WordType> word in Words.Array)
                             {
                                 HashString wordKey = word.Key;
                                 if (result.TryGetValue(ref wordKey, out indexs))
@@ -297,8 +303,8 @@ namespace AutoCSer.Search
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             private void addWord(int start, int length, WordType wordType)
             {
-                words.PrepLength(1);
-                words.Array[words.Length++].Set(new SubString(start, length, formatText), wordType);
+                Words.PrepLength(1);
+                Words.Array[Words.Length++].Set(new SubString(start, length, formatText), wordType);
             }
         }
     }

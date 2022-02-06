@@ -17,7 +17,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 缓存从服务默认配置
         /// </summary>
-        private static readonly SlaveServerConfig defaultConfig = ConfigLoader.GetUnion(typeof(SlaveServerConfig)).SlaveServerConfig ?? new SlaveServerConfig();
+        private static readonly SlaveServerConfig defaultConfig = (SlaveServerConfig)AutoCSer.Configuration.Common.Get(typeof(SlaveServerConfig)) ?? new SlaveServerConfig();
         /// <summary>
         /// 缓存从服务配置
         /// </summary>
@@ -124,7 +124,7 @@ namespace AutoCSer.CacheServer
         /// <param name="index">节点编号</param>
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="log">日志接口</param>
-        public TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+        public TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.ILog log = null)
         {
             return CreateStaticRoute(index, attribute, this, log);
         }
@@ -135,9 +135,9 @@ namespace AutoCSer.CacheServer
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="value">TCP 服务目标对象</param>
         /// <param name="log">日志接口</param>
-        public static TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, SlaveServer value = null, AutoCSer.Log.ILog log = null)
+        public static TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, SlaveServer value = null, AutoCSer.ILog log = null)
         {
-            return new TcpInternalServer(CreateStaticRouteAttribute(index, attribute ?? AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(ServerName, typeof(SlaveServer))), null, value, null, log);
+            return new TcpInternalServer(CreateStaticRouteAttribute(index, attribute ?? AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(ServerName, typeof(SlaveServer))), null, value, 0, null, log);
         }
     }
 }

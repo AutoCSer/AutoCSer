@@ -73,7 +73,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 当前分配缓冲区访问锁
         /// </summary>
-        private static int bufferCountLock;
+        private static AutoCSer.Threading.SpinLock bufferCountLock;
         /// <summary>
         /// 当前分配缓冲区创建访问锁
         /// </summary>
@@ -91,9 +91,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 return null;
             }
             AutoCSer.CacheServer.BufferCount buffer;
-            while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.MessageQueueGetBuffer);
+            bufferCountLock.EnterYield();
             buffer = bufferCount.Get(ref data);
-            System.Threading.Interlocked.Exchange(ref bufferCountLock, 0);
+            bufferCountLock.Exit();
 
             if (buffer == null)
             {
@@ -101,9 +101,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 AutoCSer.CacheServer.BufferCount oldBufferCount = bufferCount;
                 try
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.MessageQueueGetBuffer);
+                    bufferCountLock.EnterYield();
                     buffer = oldBufferCount.Get(ref data);
-                    System.Threading.Interlocked.Exchange(ref bufferCountLock, 0);
+                    bufferCountLock.Exit();
                     if (buffer == null)
                     {
                         AutoCSer.CacheServer.BufferCount newBufferCount = new AutoCSer.CacheServer.BufferCount();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
@@ -49,7 +49,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 {
                     keyType key = getKey(value);
                     targetType target = getValue(key);
-                    if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+                    if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                     else
                     {
                         ListArray<valueType> list = getMember(target);
@@ -68,7 +68,8 @@ namespace AutoCSer.Sql.Cache.Whole
                 foreach (keyType key in keys)
                 {
                     ListArray<valueType> list = getMember(getValue(key));
-                    list.Array = sorter(list.ToLeftArray()).Array.notNull();
+                    list.Array = sorter(list.Array);
+                    //list.Array.Array = list.Array.Array.notNull();
                 }
                 cache.OnInserted += onInserted;
                 cache.OnUpdated += onUpdated;
@@ -92,7 +93,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onInserted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 ListArray<valueType> list = getMember(target);
@@ -103,7 +104,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 }
                 else
                 {
-                    LeftArray<valueType> array = list.ToLeftArray();
+                    LeftArray<valueType> array = list.Array;
                     array.Add(value);
                     setMember(target, new ListArray<valueType>(sorter(array)));
                 }
@@ -122,12 +123,12 @@ namespace AutoCSer.Sql.Cache.Whole
             if (key.Equals(oldKey))
             {
                 targetType target = getValue(key);
-                if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+                if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                 else
                 {
                     ListArray<valueType> list = getMember(target);
-                    if (list == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
-                    else setMember(target, new ListArray<valueType>(sorter(list.ToLeftArray())));
+                    if (list == null) cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
+                    else setMember(target, new ListArray<valueType>(sorter(list.Array)));
                 }
             }
             else
@@ -144,23 +145,23 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 ListArray<valueType> list = getMember(target);
-                if (list == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                if (list == null) cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                 else
                 {
-                    valueType[] array = list.Array;
-                    int index = System.Array.IndexOf(array, value, 0, list.Length);
-                    if (index == -1) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
-                    else if (list.Length == 1) setMember(target, null);
+                    valueType[] array = list.Array.Array;
+                    int index = System.Array.IndexOf(array, value, 0, list.Array.Length);
+                    if (index == -1) cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
+                    else if (list.Array.Length == 1) setMember(target, null);
                     else
                     {
-                        valueType[] newArray = new valueType[list.Length - 1];
+                        valueType[] newArray = new valueType[list.Array.Length - 1];
                         Array.Copy(array, 0, newArray, 0, index);
                         Array.Copy(array, index + 1, newArray, index, newArray.Length - index);
-                        setMember(target, new ListArray<valueType>(newArray, true));
+                        setMember(target, new ListArray<valueType>(new LeftArray<valueType>(newArray)));
                     }
                 }
             }
@@ -183,8 +184,8 @@ namespace AutoCSer.Sql.Cache.Whole
         public LeftArray<valueType> GetCache(keyType key)
         {
             targetType target = getValue(key);
-            if (target != null) return new LeftArray<valueType>(getMember(target));
-            return default(LeftArray<valueType>);
+            if (target != null) return getMember(target).Array;
+            return new LeftArray<valueType>(0);
         }
     }
 }

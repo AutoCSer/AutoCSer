@@ -46,7 +46,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
     <Compile Include="Program.X86.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

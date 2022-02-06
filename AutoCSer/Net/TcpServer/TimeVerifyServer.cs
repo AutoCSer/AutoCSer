@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Runtime.CompilerServices;
@@ -42,12 +42,12 @@ namespace AutoCSer.Net.TcpServer
             try
             {
                 fixed (char* valueFixed = value)
-                fixed (byte* dataFixed = buffer.Buffer)
+                fixed (byte* dataFixed = buffer.GetFixedBuffer())
                 {
                     byte* start = dataFixed + buffer.StartIndex;
                     *(ulong*)start = randomPrefix;
                     *(long*)(start + sizeof(ulong)) = ticks;
-                    AutoCSer.Extension.StringExtension.SimpleCopyNotNull64(valueFixed, (char*)(start + (sizeof(ulong) + sizeof(long))), value.Length);
+                    AutoCSer.Extensions.StringExtension.SimpleCopyNotNull64(valueFixed, (char*)(start + (sizeof(ulong) + sizeof(long))), value.Length);
                 }
                 return md5.ComputeHash(buffer.Buffer, buffer.StartIndex, (value.Length << 1) + (sizeof(ulong) + sizeof(long)));
             }
@@ -105,7 +105,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 验证时间戳
         /// </summary>
-        private TimeVerifyTick timeVerifyTick = new TimeVerifyTick(Date.NowTime.UtcNow.Ticks - 1);
+        private TimeVerifyTick timeVerifyTick = new TimeVerifyTick(AutoCSer.Threading.SecondTimer.UtcNow.Ticks - 1);
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -141,7 +141,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
-        protected bool verify(serverSocketSenderType sender, ulong randomPrefix, string verifyString, byte[] md5Data, ref long ticks)
+        protected virtual bool verify(serverSocketSenderType sender, ulong randomPrefix, string verifyString, byte[] md5Data, ref long ticks)
         {
             if (md5Data != null && md5Data.Length == 16)
             {

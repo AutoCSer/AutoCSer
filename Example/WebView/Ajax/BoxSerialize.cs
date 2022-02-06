@@ -29,8 +29,8 @@ namespace AutoCSer.Example.WebView.Ajax
             using (WebClient webClient = new WebClient())
             {
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
-                string json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=BoxSerialize.Inc", "POST", AutoCSer.Json.Serializer.Serialize<int>(4));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 5)
+                string json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=BoxSerialize.Inc", "POST", AutoCSer.JsonSerializer.Serialize<int>(4));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 5)
                 {
                     return false;
                 }

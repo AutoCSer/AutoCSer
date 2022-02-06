@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Threading;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Net;
 
@@ -46,7 +46,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="log">日志接口</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
         internal Server(TcpServer.ServerBaseAttribute attribute, ILog log, Func<System.Net.Sockets.Socket, bool> verify, bool isSynchronousVerifyMethod)
-            : base(attribute, verify, log, 0, false, isSynchronousVerifyMethod)
+            : base(attribute, verify, 0, log, 0, false, isSynchronousVerifyMethod)
         {
         }
         /// <summary>

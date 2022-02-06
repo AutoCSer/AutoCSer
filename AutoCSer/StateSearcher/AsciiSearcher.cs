@@ -25,7 +25,12 @@ namespace AutoCSer.StateSearcher
         /// ASCII字节搜索器
         /// </summary>
         /// <param name="data">数据起始位置</param>
-        internal AsciiSearcher(Pointer data)
+        internal AsciiSearcher(AutoCSer.Memory.Pointer data) : this(ref data) { }
+        /// <summary>
+        /// ASCII字节搜索器
+        /// </summary>
+        /// <param name="data">数据起始位置</param>
+        internal AsciiSearcher(ref AutoCSer.Memory.Pointer data)
         {
             if (data.Data == null)
             {

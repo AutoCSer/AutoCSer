@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 using System.Data.Common;
@@ -78,7 +78,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             AutoCSer.SearchTree.Dictionary<sortType, valueType> tree = treeArray[index];
             if (tree == null) treeArray[index] = tree = new AutoCSer.SearchTree.Dictionary<sortType, valueType>();
-            if (!tree.Set(getSort(value), value)) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            if (!tree.Set(getSort(value), value)) cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 更新数据
@@ -101,7 +101,7 @@ namespace AutoCSer.Sql.Cache.Whole
                         bool isRemove = tree.Remove(oldSortKey), isAdd = tree.TryAdd(sortKey, cacheValue);
                         if (isRemove && isAdd) return;
                     }
-                    cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                    cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                 }
             }
             else
@@ -119,7 +119,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             AutoCSer.SearchTree.Dictionary<sortType, valueType> tree = treeArray[index];
             if (tree != null && tree.Remove(getSort(value))) return;
-            cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 删除数据
@@ -161,7 +161,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 return task.Wait(out count);
             }
             count = 0;
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
         /// <summary>
         /// 获取数据集合

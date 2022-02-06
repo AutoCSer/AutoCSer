@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using AutoCSer.Net.TcpInternalServer;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 
 namespace AutoCSer.Web.Config
@@ -34,7 +34,7 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 服务器监听 IP 地址
         /// </summary>
-        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "172.19.51.248";
+        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "172.17.0.16";
         /// <summary>
         /// AutoCSer 根目录
         /// </summary>
@@ -135,7 +135,7 @@ namespace AutoCSer.Web.Config
                 switch (command)
                 {
                     case "quit": if (exitEvent != null) exitEvent.Set(); return;
-                    case "clear cache": AutoCSer.Pub.ClearCache(); break;
+                    case "clear cache": AutoCSer.Memory.Common.ClearCache(); break;
                     //case "threads": AutoCSer.Deploy.Server.CheckThreadLog(); break;
                     default: if (onUnknownCommand != null) onUnknownCommand(command); break;
                 }
@@ -144,7 +144,7 @@ namespace AutoCSer.Web.Config
         }
         static Pub()
         {
-            DirectoryInfo directory = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath), lastDirectory = null;
+            DirectoryInfo directory = new DirectoryInfo(AutoCSer.Config.ApplicationPath), lastDirectory = null;
             while (string.Compare(directory.Name, "AutoCSer", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 lastDirectory = directory;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Deploy
@@ -8,7 +8,7 @@ namespace AutoCSer.Deploy
     /// <summary>
     /// 目录信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct Directory
     {
@@ -189,7 +189,7 @@ namespace AutoCSer.Deploy
             }
             else
             {
-                LeftArray<FileTime> fileTimes = new LeftArray<FileTime>();
+                LeftArray<FileTime> fileTimes = new LeftArray<FileTime>(0);
                 foreach (string searchPattern in searchPatterns)
                 {
                     foreach (FileInfo file in directoryInfo.GetFiles(searchPattern))
@@ -211,9 +211,9 @@ namespace AutoCSer.Deploy
         internal static Directory CreateWeb(DirectoryInfo directory, DateTime lastWriteTime)
         {
             Directory cssDirectory = page(directory, true, "css", null, lastWriteTime), jsDirectory = js(directory, true, lastWriteTime), loadJsDirectory = loadJs(directory, lastWriteTime), htmlDirectory = page(directory, true, "html", "page.html", lastWriteTime), imageDirectory = image(directory, lastWriteTime);
-            cssDirectory.Files = AutoCSer.Extension.ArrayExtension.concat(cssDirectory.Files, jsDirectory.Files, htmlDirectory.Files, imageDirectory.Files);
+            cssDirectory.Files = AutoCSer.Extensions.ArrayExtension.concat(cssDirectory.Files, jsDirectory.Files, htmlDirectory.Files, imageDirectory.Files);
             if (cssDirectory.Files.Length == 0) cssDirectory.Files = null;
-            cssDirectory.Directorys = AutoCSer.Extension.ArrayExtension.concat(cssDirectory.Directorys, jsDirectory.Directorys, loadJsDirectory.Directorys, htmlDirectory.Directorys, imageDirectory.Directorys);
+            cssDirectory.Directorys = AutoCSer.Extensions.ArrayExtension.concat(cssDirectory.Directorys, jsDirectory.Directorys, loadJsDirectory.Directorys, htmlDirectory.Directorys, imageDirectory.Directorys);
             if (cssDirectory.Directorys.Length == 0) cssDirectory.Directorys = null;
             cssDirectory.Name = string.Empty;
             return cssDirectory;
@@ -318,7 +318,7 @@ namespace AutoCSer.Deploy
                             case "ace": nextDirectory = js(nextDirectoryInfo, lastWriteTime, new string[] { "ace.js" }); break;
                             case "mathJax": nextDirectory = js(nextDirectoryInfo, lastWriteTime, new string[] { "MathJax.js" }); break;
                             case "highcharts": nextDirectory = js(nextDirectoryInfo, false, lastWriteTime); break;
-                            default: AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "未知的js文件夹 " + nextDirectoryInfo.fullName()); nextDirectory = new Directory(); break;
+                            default: AutoCSer.LogHelper.Error("未知的js文件夹 " + nextDirectoryInfo.fullName(), LogLevel.Error | LogLevel.AutoCSer); nextDirectory = new Directory(); break;
                         }
                         if (nextDirectory.Name != null) directorys.Add(nextDirectory);
                     }

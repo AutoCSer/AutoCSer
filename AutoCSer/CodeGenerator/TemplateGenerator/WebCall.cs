@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CodeGenerator.Metadata;
 using System.Collections.Generic;
 
@@ -23,7 +23,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// WEB 调用函数集合
             /// </summary>
-            public static CallMethod[] CallMethods = NullValue<CallMethod>.Array;
+            public static CallMethod[] CallMethods = EmptyArray<CallMethod>.Array;
             /// <summary>
             /// 方法索引信息
             /// </summary>
@@ -214,7 +214,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// WEB调用函数
             /// </summary>
-            private LeftArray<CallMethod> methods;
+            private LeftArray<CallMethod> methods = new LeftArray<CallMethod>(0);
             /// <summary>
             /// WEB 调用函数集合
             /// </summary>
@@ -246,7 +246,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     isAsynchronous = typeof(AutoCSer.WebView.CallAsynchronous).IsAssignableFrom(Type);
                     if (!isAsynchronous && !typeof(AutoCSer.WebView.Call).IsAssignableFrom(Type))
                     {
-                        Messages.Add(Type.FullName + " 必须继承自 AutoCSer.WebView.Call / AutoCSer.WebView.Call<" + Type.FullName + "> /  AutoCSer.WebView.CallAsynchronous / AutoCSer.WebView.CallAsynchronous<" + Type.FullName + ">");
+                        Messages.Error(Type.FullName + " 必须继承自 AutoCSer.WebView.Call / AutoCSer.WebView.Call<" + Type.FullName + "> /  AutoCSer.WebView.CallAsynchronous / AutoCSer.WebView.CallAsynchronous<" + Type.FullName + ">");
                         return;
                     }
                 }

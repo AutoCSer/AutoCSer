@@ -1,13 +1,13 @@
 ﻿using System;
-/*Type:ulong,ULongRangeSorter,ULongSortIndex,ULongRangeIndexSorter;long,LongRangeSorter,LongSortIndex,LongRangeIndexSorter;uint,UIntRangeSorter,UIntSortIndex,UIntRangeIndexSorter;int,IntRangeSorter,IntSortIndex,IntRangeIndexSorter;double,DoubleRangeSorter,DoubleSortIndex,DoubleRangeIndexSorter;float,FloatRangeSorter,FloatSortIndex,FloatRangeIndexSorter;DateTime,DateTimeRangeSorter,DateTimeSortIndex,DateTimeRangeIndexSorter*/
-/*Compare:,>,<;Desc,<,>*/
+/*ulong;long;uint;int;double;float;DateTime
+Desc;*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数组子串扩展
     /// </summary>
-    public unsafe static partial class SubArray
+    public unsafe static partial class SubArrayExtension
     {
         /// <summary>
         /// 分页排序
@@ -20,10 +20,10 @@ namespace AutoCSer.Extension
         /// <param name="count">数据总量</param>
         /// <returns>分页排序数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] GetPageSort/*Compare[0]*//*Compare[0]*/<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int pageSize, int currentPage, out int count)
+        public static valueType[] GetPageSortDesc<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, int pageSize, int currentPage, out int count)
         {
             PageCount page = new PageCount(count = array.Length, pageSize, currentPage);
-            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, count, getKey, page.SkipCount, page.CurrentPageSize);
+            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeGetRangeSortDesc(array.Array, array.Start, count, getKey, page.SkipCount, page.CurrentPageSize);
         }
         /// <summary>
         /// 分页排序
@@ -38,10 +38,10 @@ namespace AutoCSer.Extension
         /// <param name="count">数据总量</param>
         /// <returns>分页排序数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static returnType[] GetPageSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int pageSize, int currentPage, Func<valueType, returnType> getValue, out int count)
+        public static returnType[] GetPageSortDesc<valueType, returnType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, int pageSize, int currentPage, Func<valueType, returnType> getValue, out int count)
         {
             PageCount page = new PageCount(count = array.Length, pageSize, currentPage);
-            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, count, getKey, page.SkipCount, page.CurrentPageSize, getValue);
+            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeGetRangeSortDesc(array.Array, array.Start, count, getKey, page.SkipCount, page.CurrentPageSize, getValue);
         }
         /// <summary>
         /// 范围排序
@@ -51,9 +51,9 @@ namespace AutoCSer.Extension
         /// <param name="getCount">获取记录数,小于0表示所有</param>
         /// <returns>排序范围数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> RangeSort/*Compare[0]*//*Compare[0]*/(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, int skipCount, int getCount)
+        public static SubArray<ulong> RangeSortDesc(this SubArray<ulong> array, int skipCount, int getCount)
         {
-            return array.Length == 0 ? default(SubArray</*Type[0]*/ulong/*Type[0]*/>) : AutoCSer.Algorithm.FixedArrayQuickRangeSort.RangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, array.Length, skipCount, getCount);
+            return array.Length == 0 ? new SubArray<ulong>() : AutoCSer.Algorithm.FixedArrayQuickRangeSort.RangeSortDesc(array.Array, array.Start, array.Length, skipCount, getCount);
         }
         /// <summary>
         /// 范围排序
@@ -63,9 +63,9 @@ namespace AutoCSer.Extension
         /// <param name="getCount">获取记录数,小于0表示所有</param>
         /// <returns>排序范围数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> GetRangeSort/*Compare[0]*//*Compare[0]*/(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, int skipCount, int getCount)
+        public static SubArray<ulong> GetRangeSortDesc(this SubArray<ulong> array, int skipCount, int getCount)
         {
-            return array.Length == 0 ? default(SubArray</*Type[0]*/ulong/*Type[0]*/>) : AutoCSer.Algorithm.FixedArrayQuickRangeSort.GetRangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, array.Length, skipCount, getCount);
+            return array.Length == 0 ? new SubArray<ulong>() : AutoCSer.Algorithm.FixedArrayQuickRangeSort.GetRangeSortDesc(array.Array, array.Start, array.Length, skipCount, getCount);
         }
         /// <summary>
         /// 范围排序
@@ -77,9 +77,9 @@ namespace AutoCSer.Extension
         /// <param name="getCount">获取记录数,小于0表示所有</param>
         /// <returns>排序范围数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount)
+        public static valueType[] GetRangeSortDesc<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, int skipCount, int getCount)
         {
-            return array.Length == 0 ? NullValue<valueType>.Array : AutoCSer.Algorithm.FixedArrayQuickRangeSort.GetRangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, array.Length, getKey, skipCount, getCount);
+            return array.Length == 0 ? EmptyArray<valueType>.Array : AutoCSer.Algorithm.FixedArrayQuickRangeSort.GetRangeSortDesc(array.Array, array.Start, array.Length, getKey, skipCount, getCount);
         }
         /// <summary>
         /// 范围排序
@@ -93,9 +93,9 @@ namespace AutoCSer.Extension
         /// <param name="getValue">获取返回数据</param>
         /// <returns>排序范围数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static returnType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
+        public static returnType[] GetRangeSortDesc<valueType, returnType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
         {
-            return array.Length == 0 ? NullValue<returnType>.Array : AutoCSer.Algorithm.FixedArrayQuickRangeSort.GetRangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, array.Length, getKey, skipCount, getCount, getValue);
+            return array.Length == 0 ? EmptyArray<returnType>.Array : AutoCSer.Algorithm.FixedArrayQuickRangeSort.GetRangeSortDesc(array.Array, array.Start, array.Length, getKey, skipCount, getCount, getValue);
         }
         /// <summary>
         /// 分页排序
@@ -105,10 +105,10 @@ namespace AutoCSer.Extension
         /// <param name="currentPage">页号</param>
         /// <returns>分页排序数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> PageSort/*Compare[0]*//*Compare[0]*/(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, int pageSize, int currentPage)
+        public static SubArray<ulong> PageSortDesc(this SubArray<ulong> array, int pageSize, int currentPage)
         {
             PageCount page = new PageCount(array.Length, pageSize, currentPage);
-            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeRangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, array.Length, page.SkipCount, page.CurrentPageSize);
+            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeRangeSortDesc(array.Array, array.Start, array.Length, page.SkipCount, page.CurrentPageSize);
         }
         /// <summary>
         /// 分页排序
@@ -118,10 +118,10 @@ namespace AutoCSer.Extension
         /// <param name="currentPage">页号</param>
         /// <returns>分页排序数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> GetPageSort/*Compare[0]*//*Compare[0]*/(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, int pageSize, int currentPage)
+        public static SubArray<ulong> GetPageSortDesc(this SubArray<ulong> array, int pageSize, int currentPage)
         {
             PageCount page = new PageCount(array.Length, pageSize, currentPage);
-            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array.Array, array.Start, array.Length, page.SkipCount, page.CurrentPageSize);
+            return AutoCSer.Algorithm.FixedArrayQuickRangeSort.UnsafeGetRangeSortDesc(array.Array, array.Start, array.Length, page.SkipCount, page.CurrentPageSize);
         }
     }
 }

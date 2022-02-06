@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CacheServer.DataStructure
 {

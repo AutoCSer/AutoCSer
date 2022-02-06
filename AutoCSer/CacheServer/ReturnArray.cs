@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -17,7 +18,7 @@ namespace AutoCSer.CacheServer
         /// <param name="value">数据,不能为null</param>
         internal static void Serialize(UnmanagedStream stream, char[] value)
         {
-            fixed (char* valueFixed = value) AutoCSer.BinarySerialize.Serializer.Serialize(valueFixed, stream, value.Length);
+            fixed (char* valueFixed = value) AutoCSer.BinarySerializer.Serialize(valueFixed, stream, value.Length);
         }
         /// <summary>
         /// 字符串序列化
@@ -26,9 +27,9 @@ namespace AutoCSer.CacheServer
         /// <param name="array">数据,不能为null</param>
         internal static void Serialize(UnmanagedStream stream, string[] array)
         {
-            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length, 0);
+            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length);
             foreach (string value in array) arrayMap.Next(value != null);
-            arrayMap.End(stream);
+            arrayMap.End();
             foreach (string value in array)
             {
                 if (value != null)
@@ -36,7 +37,7 @@ namespace AutoCSer.CacheServer
                     if (value.Length == 0) stream.Write(0);
                     else
                     {
-                        fixed (char* valueFixed = value) AutoCSer.BinarySerialize.Serializer.Serialize(valueFixed, stream, value.Length);
+                        fixed (char* valueFixed = value) AutoCSer.BinarySerializer.Serialize(valueFixed, stream, value.Length);
                     }
                 }
             }
@@ -48,12 +49,12 @@ namespace AutoCSer.CacheServer
         /// <param name="array">数据,不能为null</param>
         internal static void Serialize(UnmanagedStream stream, byte[][] array)
         {
-            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length, 0);
+            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length);
             foreach (byte[] value in array) arrayMap.Next(value != null);
-            arrayMap.End(stream);
+            arrayMap.End();
             foreach (byte[] value in array)
             {
-                if (value != null) AutoCSer.BinarySerialize.Serializer.Serialize(stream, value);
+                if (value != null) AutoCSer.BinarySerializer.Serialize(stream, value);
             }
         }
         /// <summary>
@@ -63,12 +64,12 @@ namespace AutoCSer.CacheServer
         /// <param name="array">数据,不能为null</param>
         internal static void Serialize(UnmanagedStream stream, Cache.Value.Binary[] array)
         {
-            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length, 0);
+            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length);
             foreach (Cache.Value.Binary value in array) arrayMap.Next(value.Data != null);
-            arrayMap.End(stream);
+            arrayMap.End();
             foreach (Cache.Value.Binary value in array)
             {
-                if (value.Data != null) AutoCSer.BinarySerialize.Serializer.Serialize(stream, value.Data);
+                if (value.Data != null) AutoCSer.BinarySerializer.Serialize(stream, value.Data);
             }
         }
         /// <summary>
@@ -78,12 +79,12 @@ namespace AutoCSer.CacheServer
         /// <param name="array">数据,不能为null</param>
         internal static void Serialize(UnmanagedStream stream, Cache.Value.Json[] array)
         {
-            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length, 0);
+            AutoCSer.BinarySerialize.SerializeArrayMap arrayMap = new AutoCSer.BinarySerialize.SerializeArrayMap(stream, array.Length);
             foreach (Cache.Value.Json value in array) arrayMap.Next(value.Data != null);
-            arrayMap.End(stream);
+            arrayMap.End();
             foreach (Cache.Value.Json value in array)
             {
-                if (value.Data != null) AutoCSer.BinarySerialize.Serializer.Serialize(stream, value.Data);
+                if (value.Data != null) AutoCSer.BinarySerializer.Serialize(stream, value.Data);
             }
         }
     }
@@ -91,7 +92,7 @@ namespace AutoCSer.CacheServer
     /// 返回数组
     /// </summary>
     /// <typeparam name="valueType"></typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     internal struct ReturnArray<valueType>
     {
@@ -112,22 +113,22 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="serializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             UnmanagedStream stream = serializer.Stream;
             if (array != null) Serialize(stream, array);
-            else stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
+            else stream.Write(AutoCSer.BinarySerializer.NullValue);
         }
         /// <summary>
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             throw new InvalidOperationException();
         }
@@ -145,7 +146,7 @@ namespace AutoCSer.CacheServer
                 {
                     if (DeSerialize != null) return DeSerialize(value.Value.Parameter.SubByteArray);
                     valueType[] returnValue = null;
-                    if (AutoCSer.BinarySerialize.DeSerializer.DeSerialize(value.Value.Parameter.SubByteArray, ref returnValue).State == AutoCSer.BinarySerialize.DeSerializeState.Success) return returnValue;
+                    if (AutoCSer.BinaryDeSerializer.DeSerialize(value.Value.Parameter.SubByteArray, ref returnValue).State == AutoCSer.BinarySerialize.DeSerializeState.Success) return returnValue;
                 }
                 return new ReturnValue<valueType[]> { Type = ReturnType.DeSerializeError };
             }
@@ -159,7 +160,7 @@ namespace AutoCSer.CacheServer
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe static ReturnValue<DataStructure.Value.Json<valueType>[]> deSerializeJson(SubArray<byte> data)
         {
-            byte[] dataArray = data.Array;
+            byte[] dataArray = data.GetFixedBuffer();
             fixed (byte* dataFixed = dataArray)
             {
                 byte* start = dataFixed + data.Start, end = start + (data.Count - sizeof(int));
@@ -201,7 +202,7 @@ namespace AutoCSer.CacheServer
                             if (start == end) return array;
                         }
                     }
-                    else if ((end - start) == sizeof(int)) return NullValue<DataStructure.Value.Json<valueType>>.Array;
+                    else if ((end - start) == sizeof(int)) return EmptyArray<DataStructure.Value.Json<valueType>>.Array;
                 }
             }
             return new ReturnValue<DataStructure.Value.Json<valueType>[]> { Type = ReturnType.DeSerializeError };
@@ -214,7 +215,7 @@ namespace AutoCSer.CacheServer
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe static ReturnValue<DataStructure.Value.Binary<valueType>[]> deSerializeBinary(SubArray<byte> data)
         {
-            byte[] dataArray = data.Array;
+            byte[] dataArray = data.GetFixedBuffer();
             fixed (byte* dataFixed = dataArray)
             {
                 byte* start = dataFixed + data.Start, end = start + (data.Count - sizeof(int));
@@ -256,7 +257,7 @@ namespace AutoCSer.CacheServer
                             if (start == end) return array;
                         }
                     }
-                    else if ((end - start) == sizeof(int)) return NullValue<DataStructure.Value.Binary<valueType>>.Array;
+                    else if ((end - start) == sizeof(int)) return EmptyArray<DataStructure.Value.Binary<valueType>>.Array;
                 }
             }
             return new ReturnValue<DataStructure.Value.Binary<valueType>[]> { Type = ReturnType.DeSerializeError };
@@ -275,12 +276,10 @@ namespace AutoCSer.CacheServer
             switch (ValueData.Data<valueType>.DataType)
             {
                 case ValueData.DataType.Json:
-                    //if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)Delegate.CreateDelegate(typeof(Func<SubArray<byte>, ReturnValue<valueType[]>>), typeof(ReturnArray<>).MakeGenericType(typeof(valueType).GetGenericArguments()).GetMethod("deSerializeJson", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(SubArray<byte>) }, null));
                     if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)AutoCSer.CacheServer.Metadata.GenericType.Get(typeof(valueType).GetGenericArguments()[0]).ValueDataGetJsonDelegate;
                     else Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, Cache.Value.Json[]>)ReturnArray.Serialize;
                     break;
                 case ValueData.DataType.BinarySerialize:
-                    //if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)Delegate.CreateDelegate(typeof(Func<SubArray<byte>, ReturnValue<valueType[]>>), typeof(ReturnArray<>).MakeGenericType(typeof(valueType).GetGenericArguments()).GetMethod("deSerializeBinary", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(SubArray<byte>) }, null));
                     if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)AutoCSer.CacheServer.Metadata.GenericType.Get(typeof(valueType).GetGenericArguments()[0]).ValueDataGetBinaryDelegate;
                     else Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, Cache.Value.Binary[]>)ReturnArray.Serialize;
                     break;
@@ -295,46 +294,46 @@ namespace AutoCSer.CacheServer
                     break;
 
                 case ValueData.DataType.Decimal:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, decimal[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, decimal[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.Guid:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, Guid[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, Guid[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.ULong:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, ulong[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, ulong[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.Long:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, long[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, long[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.UInt:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, uint[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, uint[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.Int:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, int[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, int[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.UShort:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, ushort[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, ushort[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.Short:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, short[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, short[]>)AutoCSer.BinarySerializer.Serialize;
                     break; 
                 case ValueData.DataType.Byte:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, byte[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, byte[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.SByte:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, sbyte[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, sbyte[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.Bool:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, bool[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, bool[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.Float:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, float[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, float[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.Double:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, double[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, double[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
                 case ValueData.DataType.DateTime:
-                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, DateTime[]>)AutoCSer.BinarySerialize.Serializer.Serialize;
+                    Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, DateTime[]>)AutoCSer.BinarySerializer.Serialize;
                     break;
             }
         }

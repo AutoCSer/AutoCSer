@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.Net.TcpServer.ServerOutput
 {
@@ -20,20 +21,19 @@ namespace AutoCSer.Net.TcpServer.ServerOutput
         {
             UnmanagedStream stream = sender.OutputSerializer.Stream;
             int dataSize = (Data.Length + (sizeof(int) + 3)) & (int.MaxValue), prepLength = dataSize + (sizeof(uint) + sizeof(int));
-            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.ByteSize) >= prepLength
-                || (stream.FreeSize >= prepLength && prepLength > buildInfo.SendBufferSize - TcpServer.ServerOutput.OutputLink.StreamStartIndex))
+            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= prepLength
+                || (stream.Data.FreeSize >= prepLength && prepLength > buildInfo.SendBufferSize - TcpServer.ServerOutput.OutputLink.StreamStartIndex))
             {
                 OutputLink nextBuild = LinkNext;
-                stream.PrepLength(prepLength);
-                byte* write = stream.CurrentData;
+                byte* write = stream.GetPrepSizeCurrent(prepLength);
                 *(uint*)write = ClientCommand.KeepCommand.CustomDataIndex;
                 *(int*)(write + sizeof(uint)) = dataSize;
                 *(int*)(write + (sizeof(uint) + sizeof(int))) = Data.Length;
                 if (Data.Length != 0)
                 {
-                    fixed (byte* dataFixed = Data.Array) Memory.CopyNotNull(dataFixed + Data.Start, write + (sizeof(uint) + sizeof(int) * 2), Data.Length);
+                    fixed (byte* dataFixed = Data.GetFixedBuffer()) AutoCSer.Memory.Common.CopyNotNull(dataFixed + Data.Start, write + (sizeof(uint) + sizeof(int) * 2), Data.Length);
                 }
-                stream.ByteSize += dataSize + (sizeof(uint) + sizeof(int));
+                stream.Data.CurrentIndex += dataSize + (sizeof(uint) + sizeof(int));
                 ++buildInfo.Count;
                 LinkNext = null;
                 Data.Array = null;

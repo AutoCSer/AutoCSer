@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Metadata
@@ -20,7 +20,7 @@ namespace AutoCSer.Metadata
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private MemberIndexInfo[] get(Func<MemberIndexInfo, bool> isValue)
         {
-            return AutoCSer.Extension.ArrayExtension.concat(PublicFields.getFindArray(isValue), NonPublicFields.getFindArray(isValue), PublicProperties.getFindArray(isValue), NonPublicProperties.getFindArray(isValue));
+            return AutoCSer.Extensions.ArrayExtension.concat(PublicFields.getFindArray(isValue), NonPublicFields.getFindArray(isValue), PublicProperties.getFindArray(isValue), NonPublicProperties.getFindArray(isValue));
         }
         /// <summary>
         /// 根据类型获取成员信息集合

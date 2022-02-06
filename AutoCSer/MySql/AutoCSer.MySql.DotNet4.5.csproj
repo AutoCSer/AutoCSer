@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;MySql</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -46,7 +46,8 @@
     <Compile Include="DbType.cs" />
     <Compile Include="IndexColumn.cs" />
     <Compile Include="TypeName.cs" />
-    <Compile Include="UnionType.cs" />
+    <Compile Include="UnionType\SqlCommand.cs" />
+    <Compile Include="UnionType\SqlConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.DotNet4.5.csproj">
@@ -62,7 +63,11 @@
       <Name>AutoCSer.Sql.DotNet4.5</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

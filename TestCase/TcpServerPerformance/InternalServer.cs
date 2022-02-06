@@ -7,7 +7,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
     /// <summary>
     /// TCP 内部服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Name = InternalServer.ServerName, Host = "127.0.0.1", Port = 12100, SendBufferSize = SubBuffer.Size.Kilobyte64, ReceiveBufferSize = SubBuffer.Size.Kilobyte64, IsRememberCommand = false, CheckSeconds = 0)]
+    [AutoCSer.Net.TcpInternalServer.Server(Name = InternalServer.ServerName, Host = "127.0.0.1", Port = 12100, SendBufferSize = AutoCSer.Memory.BufferSize.Kilobyte64, ReceiveBufferSize = AutoCSer.Memory.BufferSize.Kilobyte64, IsRememberCommand = false, CheckSeconds = 0)]
     public partial class InternalServer
     {
         /// <summary>

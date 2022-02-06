@@ -48,13 +48,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }
@@ -72,13 +68,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }
@@ -97,13 +89,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall.Call, ref inputParameter);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall.Call, ref inputParameter);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }
@@ -133,13 +121,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall.Call);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall.Call);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }

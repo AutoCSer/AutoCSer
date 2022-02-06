@@ -1,6 +1,6 @@
 ﻿using System;
-/*Type:ulong,ULongRangeSorter,ULongSortIndex,ULongRangeIndexSorter;long,LongRangeSorter,LongSortIndex,LongRangeIndexSorter;uint,UIntRangeSorter,UIntSortIndex,UIntRangeIndexSorter;int,IntRangeSorter,IntSortIndex,IntRangeIndexSorter;double,DoubleRangeSorter,DoubleSortIndex,DoubleRangeIndexSorter;float,FloatRangeSorter,FloatSortIndex,FloatRangeIndexSorter;DateTime,DateTimeRangeSorter,DateTimeSortIndex,DateTimeRangeIndexSorter*/
-/*Compare:,>,<;Desc,<,>*/
+/*ulong,ULong;long,Long;uint,UInt;int,Int;double,Double;float,Float;DateTime,DateTime
+Desc,CompareTo;,CompareFrom*/
 
 namespace AutoCSer.Algorithm
 {
@@ -13,47 +13,44 @@ namespace AutoCSer.Algorithm
         /// 范围排序器(一般用于获取分页)
         /// </summary>
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-        internal struct /*Type[1]*/ULongRangeSorter/*Type[1]*//*Compare[0]*//*Compare[0]*/
+        internal struct ULongRangeSorterDesc
         {
             /// <summary>
             /// 跳过数据指针
             /// </summary>
-            public /*Type[0]*/ulong/*Type[0]*/* SkipCount;
+            public ulong* SkipCount;
             /// <summary>
             /// 最后一条记录指针-1
             /// </summary>
-            public /*Type[0]*/ulong/*Type[0]*/* GetEndIndex;
+            public ulong* GetEndIndex;
             /// <summary>
             /// 范围排序
             /// </summary>
             /// <param name="startIndex">起始指针</param>
             /// <param name="endIndex">结束指针-1</param>
-            public void Sort(/*Type[0]*/ulong/*Type[0]*/* startIndex, /*Type[0]*/ulong/*Type[0]*/* endIndex)
+            public void Sort(ulong* startIndex, ulong* endIndex)
             {
                 do
                 {
-                    /*Type[0]*/
-                    ulong/*Type[0]*/ leftValue = *startIndex, rightValue = *endIndex;
+                    ulong leftValue = *startIndex, rightValue = *endIndex;
                     int average = (int)(endIndex - startIndex) >> 1;
                     if (average == 0)
                     {
-                        if (leftValue /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                        if (leftValue.CompareTo(rightValue) < 0)
                         {
                             *startIndex = rightValue;
                             *endIndex = leftValue;
                         }
                         break;
                     }
-                    /*Type[0]*/
-                    ulong/*Type[0]*/* averageIndex = startIndex + average, leftIndex = startIndex, rightIndex = endIndex;
-                    /*Type[0]*/
-                    ulong/*Type[0]*/ value = *averageIndex;
-                    if (leftValue /*Compare[1]*/>/*Compare[1]*/ value)
+                    ulong* averageIndex = startIndex + average, leftIndex = startIndex, rightIndex = endIndex;
+                    ulong value = *averageIndex;
+                    if (leftValue.CompareTo(value) < 0)
                     {
-                        if (leftValue /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                        if (leftValue.CompareTo(rightValue) < 0)
                         {
                             *rightIndex = leftValue;
-                            if (value /*Compare[1]*/>/*Compare[1]*/ rightValue) *leftIndex = rightValue;
+                            if (value.CompareTo(rightValue) < 0) *leftIndex = rightValue;
                             else
                             {
                                 *leftIndex = value;
@@ -68,10 +65,10 @@ namespace AutoCSer.Algorithm
                     }
                     else
                     {
-                        if (value /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                        if (value.CompareTo(rightValue) < 0)
                         {
                             *rightIndex = value;
-                            if (leftValue /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                            if (leftValue.CompareTo(rightValue) < 0)
                             {
                                 *leftIndex = rightValue;
                                 *averageIndex = value = leftValue;
@@ -83,8 +80,8 @@ namespace AutoCSer.Algorithm
                     --rightIndex;
                     do
                     {
-                        while (*leftIndex /*Compare[2]*/</*Compare[2]*/ value) ++leftIndex;
-                        while (value /*Compare[2]*/</*Compare[2]*/ *rightIndex) --rightIndex;
+                        while ((*leftIndex).CompareTo(value) > 0) ++leftIndex;
+                        while (value.CompareTo(*rightIndex) > 0) --rightIndex;
                         if (leftIndex < rightIndex)
                         {
                             leftValue = *leftIndex;
@@ -126,11 +123,11 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> RangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int skipCount, int getCount)
+        public static SubArray<ulong> RangeSortDesc(ulong[] array, int skipCount, int getCount)
         {
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
-            if (skipCount + getCount > array.Length) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] + getCount[" + AutoCSer.Extension.Number.toString(getCount) + "] > array.Length[" + AutoCSer.Extension.Number.toString(array.Length) + "]");
-            return UnsafeRangeSort/*Compare[0]*//*Compare[0]*/(array, skipCount, getCount);
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
+            if (skipCount + getCount > array.Length) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] + getCount[" + AutoCSer.Extensions.NumberExtension.toString(getCount) + "] > array.Length[" + AutoCSer.Extensions.NumberExtension.toString(array.Length) + "]");
+            return UnsafeRangeSortDesc(array, skipCount, getCount);
         }
         /// <summary>
         /// 范围排序
@@ -139,20 +136,19 @@ namespace AutoCSer.Algorithm
         /// <param name="skipCount">跳过数据数量</param>
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数据</returns>
-        internal static SubArray</*Type[0]*/ulong/*Type[0]*/> UnsafeRangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int skipCount, int getCount)
+        internal static SubArray<ulong> UnsafeRangeSortDesc(ulong[] array, int skipCount, int getCount)
         {
-            if (getCount == 0) return default(SubArray</*Type[0]*/ulong/*Type[0]*/>);
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array)
+            if (getCount == 0) return new SubArray<ulong>();
+            fixed (ulong* valueFixed = array)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = valueFixed + skipCount;
-                new /*Type[1]*/ULongRangeSorter/*Type[1]*//*Compare[0]*//*Compare[0]*/
+                ulong* start = valueFixed + skipCount;
+                new ULongRangeSorterDesc
                 {
                     SkipCount = start,
                     GetEndIndex = start + getCount - 1
                 }.Sort(valueFixed, valueFixed + array.Length - 1);
             }
-            return new SubArray</*Type[0]*/ulong/*Type[0]*/> { Array = array, Start = skipCount, Length = getCount };
+            return new SubArray<ulong> { Array = array, Start = skipCount, Length = getCount };
         }
         /// <summary>
         /// 范围排序
@@ -162,11 +158,11 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的新数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> GetRangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int skipCount, int getCount)
+        public static SubArray<ulong> GetRangeSortDesc(ulong[] array, int skipCount, int getCount)
         {
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (skipCount + getCount > array.Length) getCount = array.Length - skipCount;
-            return UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array, skipCount, getCount);
+            return UnsafeGetRangeSortDesc(array, skipCount, getCount);
         }
         /// <summary>
         /// 范围排序
@@ -175,23 +171,21 @@ namespace AutoCSer.Algorithm
         /// <param name="skipCount">跳过数据数量</param>
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的新数据</returns>
-        internal static SubArray</*Type[0]*/ulong/*Type[0]*/> UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int skipCount, int getCount)
+        internal static SubArray<ulong> UnsafeGetRangeSortDesc(ulong[] array, int skipCount, int getCount)
         {
-            if (getCount == 0) return default(SubArray</*Type[0]*/ulong/*Type[0]*/>);
-            /*Type[0]*/
-            ulong/*Type[0]*/[] newValues = new /*Type[0]*/ulong/*Type[0]*/[array.Length];
-            Buffer.BlockCopy(array, 0, newValues, 0, array.Length * sizeof(/*Type[0]*/ulong/*Type[0]*/));
-            fixed (/*Type[0]*/ulong/*Type[0]*/* newValueFixed = newValues)
+            if (getCount == 0) return new SubArray<ulong>();
+            ulong[] newValues = new ulong[array.Length];
+            Buffer.BlockCopy(array, 0, newValues, 0, array.Length * sizeof(ulong));
+            fixed (ulong* newValueFixed = newValues)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = newValueFixed + skipCount;
-                new /*Type[1]*/ULongRangeSorter/*Type[1]*//*Compare[0]*//*Compare[0]*/
+                ulong* start = newValueFixed + skipCount;
+                new ULongRangeSorterDesc
                 {
                     SkipCount = start,
                     GetEndIndex = start + skipCount - 1
                 }.Sort(newValueFixed, newValueFixed + array.Length - 1);
             }
-            return new SubArray</*Type[0]*/ulong/*Type[0]*/> { Array = newValues, Start = skipCount, Length = getCount };
+            return new SubArray<ulong> { Array = newValues, Start = skipCount, Length = getCount };
         }
         /// <summary>
         /// 范围排序
@@ -203,13 +197,13 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> RangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int startIndex, int count, int skipCount, int getCount)
+        public static SubArray<ulong> RangeSortDesc(ulong[] array, int startIndex, int count, int skipCount, int getCount)
         {
-            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extension.Number.toString(startIndex) + "] < 0");
-            if (startIndex + count > array.Length) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extension.Number.toString(startIndex) + "] + count[" + AutoCSer.Extension.Number.toString(count) + "] > array.Length[" + AutoCSer.Extension.Number.toString(array.Length) + "]");
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
-            if (skipCount + getCount > count) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] + getCount[" + AutoCSer.Extension.Number.toString(getCount) + "] > count[" + AutoCSer.Extension.Number.toString(count) + "]");
-            return UnsafeRangeSort/*Compare[0]*//*Compare[0]*/(array, startIndex, count, skipCount, getCount);
+            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extensions.NumberExtension.toString(startIndex) + "] < 0");
+            if (startIndex + count > array.Length) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extensions.NumberExtension.toString(startIndex) + "] + count[" + AutoCSer.Extensions.NumberExtension.toString(count) + "] > array.Length[" + AutoCSer.Extensions.NumberExtension.toString(array.Length) + "]");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
+            if (skipCount + getCount > count) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] + getCount[" + AutoCSer.Extensions.NumberExtension.toString(getCount) + "] > count[" + AutoCSer.Extensions.NumberExtension.toString(count) + "]");
+            return UnsafeRangeSortDesc(array, startIndex, count, skipCount, getCount);
         }
         /// <summary>
         /// 范围排序
@@ -220,20 +214,19 @@ namespace AutoCSer.Algorithm
         /// <param name="skipCount">跳过数据数量</param>
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数据</returns>
-        internal static SubArray</*Type[0]*/ulong/*Type[0]*/> UnsafeRangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int startIndex, int count, int skipCount, int getCount)
+        internal static SubArray<ulong> UnsafeRangeSortDesc(ulong[] array, int startIndex, int count, int skipCount, int getCount)
         {
-            if (getCount == 0) return default(SubArray</*Type[0]*/ulong/*Type[0]*/>);
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array)
+            if (getCount == 0) return new SubArray<ulong>();
+            fixed (ulong* valueFixed = array)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* skip = valueFixed + (skipCount += startIndex), start = valueFixed + startIndex;
-                new /*Type[1]*/ULongRangeSorter/*Type[1]*//*Compare[0]*//*Compare[0]*/
+                ulong* skip = valueFixed + (skipCount += startIndex), start = valueFixed + startIndex;
+                new ULongRangeSorterDesc
                 {
                     SkipCount = skip,
                     GetEndIndex = skip + getCount - 1
                 }.Sort(start, start + --count);
             }
-            return new SubArray</*Type[0]*/ulong/*Type[0]*/> { Array = array, Start = skipCount, Length = getCount };
+            return new SubArray<ulong> { Array = array, Start = skipCount, Length = getCount };
         }
         /// <summary>
         /// 范围排序
@@ -245,13 +238,13 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的新数据</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> GetRangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int startIndex, int count, int skipCount, int getCount)
+        public static SubArray<ulong> GetRangeSortDesc(ulong[] array, int startIndex, int count, int skipCount, int getCount)
         {
-            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extension.Number.toString(startIndex) + "] < 0");
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extensions.NumberExtension.toString(startIndex) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (startIndex + count > array.Length) count = array.Length - startIndex;
             if (skipCount + getCount > count) getCount = count - skipCount;
-            return UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array, startIndex, count, skipCount, getCount);
+            return UnsafeGetRangeSortDesc(array, startIndex, count, skipCount, getCount);
         }
         /// <summary>
         /// 范围排序
@@ -262,70 +255,65 @@ namespace AutoCSer.Algorithm
         /// <param name="skipCount">跳过数据数量</param>
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的新数据</returns>
-        internal static SubArray</*Type[0]*/ulong/*Type[0]*/> UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int startIndex, int count, int skipCount, int getCount)
+        internal static SubArray<ulong> UnsafeGetRangeSortDesc(ulong[] array, int startIndex, int count, int skipCount, int getCount)
         {
-            if (getCount == 0) return default(SubArray</*Type[0]*/ulong/*Type[0]*/>);
-            /*Type[0]*/
-            ulong/*Type[0]*/[] newValues = new /*Type[0]*/ulong/*Type[0]*/[count];
-            Buffer.BlockCopy(array, startIndex * sizeof(/*Type[0]*/ulong/*Type[0]*/), newValues, 0, count * sizeof(/*Type[0]*/ulong/*Type[0]*/));
-            fixed (/*Type[0]*/ulong/*Type[0]*/* newValueFixed = newValues)
+            if (getCount == 0) return new SubArray<ulong>();
+            ulong[] newValues = new ulong[count];
+            Buffer.BlockCopy(array, startIndex * sizeof(ulong), newValues, 0, count * sizeof(ulong));
+            fixed (ulong* newValueFixed = newValues)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = newValueFixed + skipCount;
-                new /*Type[1]*/ULongRangeSorter/*Type[1]*//*Compare[0]*//*Compare[0]*/
+                ulong* start = newValueFixed + skipCount;
+                new ULongRangeSorterDesc
                 {
                     SkipCount = start,
                     GetEndIndex = start + getCount - 1
                 }.Sort(newValueFixed, newValueFixed + count - 1);
             }
-            return new SubArray</*Type[0]*/ulong/*Type[0]*/> { Array = newValues, Start = skipCount, Length = getCount };
+            return new SubArray<ulong> { Array = newValues, Start = skipCount, Length = getCount };
         }
 
         /// <summary>
         /// 索引范围排序器
         /// </summary>
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-        internal struct /*Type[3]*/ULongRangeIndexSorter/*Type[3]*//*Compare[0]*//*Compare[0]*/
+        internal struct ULongRangeIndexSorterDesc
         {
             /// <summary>
             /// 跳过数据指针
             /// </summary>
-            public /*Type[2]*/ULongSortIndex/*Type[2]*/* SkipCount;
+            public ULongSortIndex* SkipCount;
             /// <summary>
             /// 最后一条记录指针-1
             /// </summary>
-            public /*Type[2]*/ULongSortIndex/*Type[2]*/* GetEndIndex;
+            public ULongSortIndex* GetEndIndex;
             /// <summary>
             /// 范围排序
             /// </summary>
             /// <param name="startIndex">起始指针</param>
             /// <param name="endIndex">结束指针-1</param>
-            public void Sort(/*Type[2]*/ULongSortIndex/*Type[2]*/* startIndex, /*Type[2]*/ULongSortIndex/*Type[2]*/* endIndex)
+            public void Sort(ULongSortIndex* startIndex, ULongSortIndex* endIndex)
             {
                 do
                 {
-                    /*Type[2]*/
-                    ULongSortIndex/*Type[2]*/ leftValue = *startIndex, rightValue = *endIndex;
+                    ULongSortIndex leftValue = *startIndex, rightValue = *endIndex;
                     int average = (int)(endIndex - startIndex) >> 1;
                     if (average == 0)
                     {
-                        if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                        if (leftValue.Value.CompareTo(rightValue.Value) < 0)
                         {
                             *startIndex = rightValue;
                             *endIndex = leftValue;
                         }
                         break;
                     }
-                    /*Type[2]*/
-                    ULongSortIndex/*Type[2]*/* averageIndex = startIndex + average, leftIndex = startIndex, rightIndex = endIndex;
-                    /*Type[2]*/
-                    ULongSortIndex/*Type[2]*/ indexValue = *averageIndex;
-                    if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ indexValue.Value)
+                    ULongSortIndex* averageIndex = startIndex + average, leftIndex = startIndex, rightIndex = endIndex;
+                    ULongSortIndex indexValue = *averageIndex;
+                    if (leftValue.Value.CompareTo(indexValue.Value) < 0)
                     {
-                        if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                        if (leftValue.Value.CompareTo(rightValue.Value) < 0)
                         {
                             *rightIndex = leftValue;
-                            if (indexValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value) *leftIndex = rightValue;
+                            if (indexValue.Value.CompareTo(rightValue.Value) < 0) *leftIndex = rightValue;
                             else
                             {
                                 *leftIndex = indexValue;
@@ -340,10 +328,10 @@ namespace AutoCSer.Algorithm
                     }
                     else
                     {
-                        if (indexValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                        if (indexValue.Value.CompareTo(rightValue.Value) < 0)
                         {
                             *rightIndex = indexValue;
-                            if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                            if (leftValue.Value.CompareTo(rightValue.Value) < 0)
                             {
                                 *leftIndex = rightValue;
                                 *averageIndex = indexValue = leftValue;
@@ -353,12 +341,11 @@ namespace AutoCSer.Algorithm
                     }
                     ++leftIndex;
                     --rightIndex;
-                    /*Type[0]*/
-                    ulong/*Type[0]*/ value = indexValue.Value;
+                    ulong value = indexValue.Value;
                     do
                     {
-                        while ((*leftIndex).Value /*Compare[2]*/</*Compare[2]*/ value) ++leftIndex;
-                        while (value /*Compare[2]*/</*Compare[2]*/ (*rightIndex).Value) --rightIndex;
+                        while ((*leftIndex).Value.CompareTo(value) > 0) ++leftIndex;
+                        while (value.CompareTo((*rightIndex).Value) > 0) --rightIndex;
                         if (leftIndex < rightIndex)
                         {
                             leftValue = *leftIndex;
@@ -402,11 +389,11 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount)
+        public static valueType[] GetRangeSortDesc<valueType>(valueType[] array, Func<valueType, ulong> getKey, int skipCount, int getCount)
         {
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (skipCount + getCount > array.Length) getCount = array.Length - skipCount;
-            return UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array, getKey, skipCount, getCount);
+            return UnsafeGetRangeSortDesc(array, getKey, skipCount, getCount);
         }
         /// <summary>
         /// 数组范围排序
@@ -417,17 +404,17 @@ namespace AutoCSer.Algorithm
         /// <param name="skipCount">跳过数据数量</param>
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数组</returns>
-        internal static valueType[] UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount)
+        internal static valueType[] UnsafeGetRangeSortDesc<valueType>(valueType[] array, Func<valueType, ulong> getKey, int skipCount, int getCount)
         {
-            if (getCount == 0) return NullValue<valueType>.Array;
-            int size = array.Length * sizeof(/*Type[2]*/ULongSortIndex/*Type[2]*/);
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(size);
-            Pointer.Size data = pool.GetSize(size);
+            if (getCount == 0) return EmptyArray<valueType>.Array;
+            int size = array.Length * sizeof(ULongSortIndex);
+            AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer data = pool.GetMinSize(size);
             try
             {
-                return getRangeSort/*Compare[0]*//*Compare[0]*/(array, getKey, skipCount, getCount, (/*Type[2]*/ULongSortIndex/*Type[2]*/*)data.Data);
+                return getRangeSortDesc(array, getKey, skipCount, getCount, (ULongSortIndex*)data.Data);
             }
-            finally { pool.PushOnly(ref data); }
+            finally { pool.Push(ref data); }
         }
         /// <summary>
         /// 数组范围排序
@@ -440,12 +427,11 @@ namespace AutoCSer.Algorithm
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static valueType[] getRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, /*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex)
+        private static valueType[] getRangeSortDesc<valueType>(valueType[] array, Func<valueType, ulong> getKey, int skipCount, int getCount, ULongSortIndex* fixedIndex)
         {
-            /*Type[2]*/
-            ULongSortIndex/*Type[2]*/* writeIndex = fixedIndex;
+            ULongSortIndex* writeIndex = fixedIndex;
             for (int index = 0; index != array.Length; (*writeIndex++).Set(getKey(array[index]), index++)) ;
-            return getRangeSort/*Compare[0]*//*Compare[0]*/(array, skipCount, getCount, fixedIndex);
+            return getRangeSortDesc(array, skipCount, getCount, fixedIndex);
         }
         /// <summary>
         /// 数组范围排序
@@ -456,16 +442,15 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
-        private static valueType[] getRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, int skipCount, int getCount, /*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex)
+        private static valueType[] getRangeSortDesc<valueType>(valueType[] array, int skipCount, int getCount, ULongSortIndex* fixedIndex)
         {
-            new /*Type[3]*/ULongRangeIndexSorter/*Type[3]*//*Compare[0]*//*Compare[0]*/
+            new ULongRangeIndexSorterDesc
             {
                 SkipCount = fixedIndex + skipCount,
                 GetEndIndex = fixedIndex + skipCount + getCount - 1
             }.Sort(fixedIndex, fixedIndex + array.Length - 1);
             valueType[] newValues = new valueType[getCount];
-            /*Type[2]*/
-            ULongSortIndex/*Type[2]*/* writeIndex = fixedIndex + skipCount;
+            ULongSortIndex* writeIndex = fixedIndex + skipCount;
             for (int index = 0; index != newValues.Length; ++index) newValues[index] = array[(*writeIndex++).Index];
             return newValues;
         }
@@ -478,13 +463,13 @@ namespace AutoCSer.Algorithm
         /// <param name="skipCount">跳过数据数量</param>
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数组</returns>
-        public static valueType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, /*Type[2]*/ULongSortIndex/*Type[2]*/[] indexs, int skipCount, int getCount)
+        public static valueType[] GetRangeSortDesc<valueType>(valueType[] array, ULongSortIndex[] indexs, int skipCount, int getCount)
         {
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (skipCount + getCount > array.Length) getCount = array.Length - skipCount;
-            if (getCount == 0) return NullValue<valueType>.Array;
-            if (array.Length != indexs.Length) throw new IndexOutOfRangeException("array.Length[" + AutoCSer.Extension.Number.toString(array.Length) + "] != indexs.Length[" + AutoCSer.Extension.Number.toString(indexs.Length) + "]");
-            fixed (/*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex = indexs) return getRangeSort/*Compare[0]*//*Compare[0]*/(array, skipCount, getCount, fixedIndex);
+            if (getCount == 0) return EmptyArray<valueType>.Array;
+            if (array.Length != indexs.Length) throw new IndexOutOfRangeException("array.Length[" + AutoCSer.Extensions.NumberExtension.toString(array.Length) + "] != indexs.Length[" + AutoCSer.Extensions.NumberExtension.toString(indexs.Length) + "]");
+            fixed (ULongSortIndex* fixedIndex = indexs) return getRangeSortDesc(array, skipCount, getCount, fixedIndex);
         }
         /// <summary>
         /// 数组范围排序
@@ -498,13 +483,13 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, int startIndex, int count, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount)
+        public static valueType[] GetRangeSortDesc<valueType>(valueType[] array, int startIndex, int count, Func<valueType, ulong> getKey, int skipCount, int getCount)
         {
-            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extension.Number.toString(startIndex) + "] < 0");
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extensions.NumberExtension.toString(startIndex) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (startIndex + count > array.Length) count = array.Length - startIndex;
             if (skipCount + getCount > count) getCount = count - skipCount;
-            return UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array, startIndex, count, getKey, skipCount, getCount);
+            return UnsafeGetRangeSortDesc(array, startIndex, count, getKey, skipCount, getCount);
         }
         /// <summary>
         /// 数组范围排序
@@ -517,17 +502,17 @@ namespace AutoCSer.Algorithm
         /// <param name="skipCount">跳过数据数量</param>
         /// <param name="getCount">排序数据数量</param>
         /// <returns>排序后的数组</returns>
-        internal static valueType[] UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, int startIndex, int count, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount)
+        internal static valueType[] UnsafeGetRangeSortDesc<valueType>(valueType[] array, int startIndex, int count, Func<valueType, ulong> getKey, int skipCount, int getCount)
         {
-            if (getCount == 0) return NullValue<valueType>.Array;
-            int size = count * sizeof(/*Type[2]*/ULongSortIndex/*Type[2]*/);
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(size);
-            Pointer.Size data = pool.GetSize(size);
+            if (getCount == 0) return EmptyArray<valueType>.Array;
+            int size = count * sizeof(ULongSortIndex);
+            AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer data = pool.GetMinSize(size);
             try
             {
-                return getRangeSort/*Compare[0]*//*Compare[0]*/(array, startIndex, count, getKey, skipCount, getCount, (/*Type[2]*/ULongSortIndex/*Type[2]*/*)data.Data);
+                return getRangeSortDesc(array, startIndex, count, getKey, skipCount, getCount, (ULongSortIndex*)data.Data);
             }
-            finally { pool.PushOnly(ref data); }
+            finally { pool.Push(ref data); }
         }
         /// <summary>
         /// 数组范围排序
@@ -541,12 +526,11 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
-        private static valueType[] getRangeSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, int startIndex, int count, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, /*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex)
+        private static valueType[] getRangeSortDesc<valueType>(valueType[] array, int startIndex, int count, Func<valueType, ulong> getKey, int skipCount, int getCount, ULongSortIndex* fixedIndex)
         {
-            /*Type[2]*/
-            ULongSortIndex/*Type[2]*/* writeIndex = fixedIndex;
+            ULongSortIndex* writeIndex = fixedIndex;
             for (int index = startIndex, endIndex = startIndex + count; index != endIndex; (*writeIndex++).Set(getKey(array[index]), index++)) ;
-            new /*Type[3]*/ULongRangeIndexSorter/*Type[3]*//*Compare[0]*//*Compare[0]*/
+            new ULongRangeIndexSorterDesc
             {
                 SkipCount = fixedIndex + skipCount,
                 GetEndIndex = fixedIndex + skipCount + getCount - 1
@@ -568,12 +552,12 @@ namespace AutoCSer.Algorithm
         /// <param name="getValue">获取返回数据</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static returnType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
+        public static returnType[] GetRangeSortDesc<valueType, returnType>(valueType[] array, Func<valueType, ulong> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
         {
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (getValue == null) throw new ArgumentNullException();
             if (skipCount + getCount > array.Length) getCount = array.Length - skipCount;
-            return UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array, getKey, skipCount, getCount, getValue);
+            return UnsafeGetRangeSortDesc(array, getKey, skipCount, getCount, getValue);
         }
         /// <summary>
         /// 数组范围排序
@@ -586,17 +570,17 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <param name="getValue">获取返回数据</param>
         /// <returns>排序后的数组</returns>
-        internal static returnType[] UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
+        internal static returnType[] UnsafeGetRangeSortDesc<valueType, returnType>(valueType[] array, Func<valueType, ulong> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
         {
-            if (getCount == 0) return NullValue<returnType>.Array;
-            int size = array.Length * sizeof(/*Type[2]*/ULongSortIndex/*Type[2]*/);
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(size);
-            Pointer.Size data = pool.GetSize(size);
+            if (getCount == 0) return EmptyArray<returnType>.Array;
+            int size = array.Length * sizeof(ULongSortIndex);
+            AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer data = pool.GetMinSize(size);
             try
             {
-                return getRangeSort/*Compare[0]*//*Compare[0]*/(array, getKey, skipCount, getCount, getValue, (/*Type[2]*/ULongSortIndex/*Type[2]*/*)data.Data);
+                return getRangeSortDesc(array, getKey, skipCount, getCount, getValue, (ULongSortIndex*)data.Data);
             }
-            finally { pool.PushOnly(ref data); }
+            finally { pool.Push(ref data); }
         }
         /// <summary>
         /// 数组范围排序
@@ -611,12 +595,11 @@ namespace AutoCSer.Algorithm
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static returnType[] getRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue, /*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex)
+        private static returnType[] getRangeSortDesc<valueType, returnType>(valueType[] array, Func<valueType, ulong> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue, ULongSortIndex* fixedIndex)
         {
-            /*Type[2]*/
-            ULongSortIndex/*Type[2]*/* writeIndex = fixedIndex;
+            ULongSortIndex* writeIndex = fixedIndex;
             for (int index = 0; index != array.Length; (*writeIndex++).Set(getKey(array[index]), index++)) ;
-            return getRangeSort/*Compare[0]*//*Compare[0]*/(array, skipCount, getCount, getValue, fixedIndex);
+            return getRangeSortDesc(array, skipCount, getCount, getValue, fixedIndex);
         }
         /// <summary>
         /// 数组范围排序
@@ -629,16 +612,15 @@ namespace AutoCSer.Algorithm
         /// <param name="getValue">获取返回数据</param>
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
-        private static returnType[] getRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, int skipCount, int getCount, Func<valueType, returnType> getValue, /*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex)
+        private static returnType[] getRangeSortDesc<valueType, returnType>(valueType[] array, int skipCount, int getCount, Func<valueType, returnType> getValue, ULongSortIndex* fixedIndex)
         {
-            new /*Type[3]*/ULongRangeIndexSorter/*Type[3]*//*Compare[0]*//*Compare[0]*/
+            new ULongRangeIndexSorterDesc
             {
                 SkipCount = fixedIndex + skipCount,
                 GetEndIndex = fixedIndex + skipCount + getCount - 1
             }.Sort(fixedIndex, fixedIndex + array.Length - 1);
             returnType[] newValues = new returnType[getCount];
-            /*Type[2]*/
-            ULongSortIndex/*Type[2]*/* writeIndex = fixedIndex + skipCount;
+            ULongSortIndex* writeIndex = fixedIndex + skipCount;
             for (int index = 0; index != newValues.Length; ++index) newValues[index] = getValue(array[(*writeIndex++).Index]);
             return newValues;
         }
@@ -653,13 +635,13 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <param name="getValue">获取返回数据</param>
         /// <returns>排序后的数组</returns>
-        public static returnType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, /*Type[2]*/ULongSortIndex/*Type[2]*/[] indexs, int skipCount, int getCount, Func<valueType, returnType> getValue)
+        public static returnType[] GetRangeSortDesc<valueType, returnType>(valueType[] array, ULongSortIndex[] indexs, int skipCount, int getCount, Func<valueType, returnType> getValue)
         {
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (skipCount + getCount > array.Length) getCount = array.Length - skipCount;
-            if (getCount == 0) return NullValue<returnType>.Array;
-            if (array.Length != indexs.Length) throw new IndexOutOfRangeException("array.Length[" + AutoCSer.Extension.Number.toString(array.Length) + "] != indexs.Length[" + AutoCSer.Extension.Number.toString(indexs.Length) + "]");
-            fixed (/*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex = indexs) return getRangeSort/*Compare[0]*//*Compare[0]*/(array, skipCount, getCount, getValue, fixedIndex);
+            if (getCount == 0) return EmptyArray<returnType>.Array;
+            if (array.Length != indexs.Length) throw new IndexOutOfRangeException("array.Length[" + AutoCSer.Extensions.NumberExtension.toString(array.Length) + "] != indexs.Length[" + AutoCSer.Extensions.NumberExtension.toString(indexs.Length) + "]");
+            fixed (ULongSortIndex* fixedIndex = indexs) return getRangeSortDesc(array, skipCount, getCount, getValue, fixedIndex);
         }
         /// <summary>
         /// 数组范围排序
@@ -675,14 +657,14 @@ namespace AutoCSer.Algorithm
         /// <param name="getValue">获取返回数据</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static returnType[] GetRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, int startIndex, int count, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
+        public static returnType[] GetRangeSortDesc<valueType, returnType>(valueType[] array, int startIndex, int count, Func<valueType, ulong> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
         {
-            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extension.Number.toString(startIndex) + "] < 0");
-            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extension.Number.toString(skipCount) + "] < 0");
+            if (startIndex < 0) throw new IndexOutOfRangeException("startIndex[" + AutoCSer.Extensions.NumberExtension.toString(startIndex) + "] < 0");
+            if (skipCount < 0) throw new IndexOutOfRangeException("skipCount[" + AutoCSer.Extensions.NumberExtension.toString(skipCount) + "] < 0");
             if (getValue == null) throw new ArgumentNullException();
             if (startIndex + count > array.Length) count = array.Length - startIndex;
             if (skipCount + getCount > count) getCount = count - skipCount;
-            return UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/(array, startIndex, count, getKey, skipCount, getCount, getValue);
+            return UnsafeGetRangeSortDesc(array, startIndex, count, getKey, skipCount, getCount, getValue);
         }
         /// <summary>
         /// 数组范围排序
@@ -697,17 +679,17 @@ namespace AutoCSer.Algorithm
         /// <param name="getCount">排序数据数量</param>
         /// <param name="getValue">获取返回数据</param>
         /// <returns>排序后的数组</returns>
-        internal static returnType[] UnsafeGetRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, int startIndex, int count, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
+        internal static returnType[] UnsafeGetRangeSortDesc<valueType, returnType>(valueType[] array, int startIndex, int count, Func<valueType, ulong> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue)
         {
-            if (getCount == 0) return NullValue<returnType>.Array;
-            int size = count * sizeof(/*Type[2]*/ULongSortIndex/*Type[2]*/);
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(size);
-            Pointer.Size data = pool.GetSize(size);
+            if (getCount == 0) return EmptyArray<returnType>.Array;
+            int size = count * sizeof(ULongSortIndex);
+            AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer data = pool.GetMinSize(size);
             try
             {
-                return getRangeSort/*Compare[0]*//*Compare[0]*/(array, startIndex, count, getKey, skipCount, getCount, getValue, (/*Type[2]*/ULongSortIndex/*Type[2]*/*)data.Data);
+                return getRangeSortDesc(array, startIndex, count, getKey, skipCount, getCount, getValue, (ULongSortIndex*)data.Data);
             }
-            finally { pool.PushOnly(ref data); }
+            finally { pool.Push(ref data); }
         }
         /// <summary>
         /// 数组范围排序
@@ -723,12 +705,11 @@ namespace AutoCSer.Algorithm
         /// <param name="getValue">获取返回数据</param>
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
-        private static returnType[] getRangeSort/*Compare[0]*//*Compare[0]*/<valueType, returnType>(valueType[] array, int startIndex, int count, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue, /*Type[2]*/ULongSortIndex/*Type[2]*/* fixedIndex)
+        private static returnType[] getRangeSortDesc<valueType, returnType>(valueType[] array, int startIndex, int count, Func<valueType, ulong> getKey, int skipCount, int getCount, Func<valueType, returnType> getValue, ULongSortIndex* fixedIndex)
         {
-            /*Type[2]*/
-            ULongSortIndex/*Type[2]*/* writeIndex = fixedIndex;
+            ULongSortIndex* writeIndex = fixedIndex;
             for (int index = startIndex, endIndex = startIndex + count; index != endIndex; (*writeIndex++).Set(getKey(array[index]), index++)) ;
-            new /*Type[3]*/ULongRangeIndexSorter/*Type[3]*//*Compare[0]*//*Compare[0]*/
+            new ULongRangeIndexSorterDesc
             {
                 SkipCount = fixedIndex + skipCount,
                 GetEndIndex = fixedIndex + skipCount + getCount - 1

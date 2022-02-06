@@ -58,7 +58,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OnSend()
         {
-            DistributionTime = Date.NowTime.Now;
+            DistributionTime = AutoCSer.Threading.SecondTimer.Now;
             State = DistributionMessageState.Sended;
         }
         /// <summary>

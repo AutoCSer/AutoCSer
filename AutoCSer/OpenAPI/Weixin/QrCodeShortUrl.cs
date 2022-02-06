@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -24,7 +24,7 @@ namespace AutoCSer.OpenAPI.Weixin
             if (IsReturn)
             {
                 if (appid == config.appid && mch_id == config.mch_id && Sign<QrCodeShortUrl>.Check(this, config.key, sign)) return true;
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                AutoCSer.LogHelper.Debug("签名验证错误 " + AutoCSer.JsonSerializer.Serialize(this), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }

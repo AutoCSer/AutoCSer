@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpSimpleServer.Emit
 {
@@ -182,7 +182,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                 methodGenerator.Emit(OpCodes.Ldarg_2);
                                 methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
                                 methodGenerator.int32(method.ParameterType.IsSimpleSerialize ? 1 : 0);
-                                methodGenerator.call(ServerMetadata.ServerSocketDeSerializeMethod.MakeGenericMethod(method.ParameterType.Type));
+                                methodGenerator.call(Metadata.GetParameterGenericType(method.ParameterType.Type).ServerSocketDeSerializeMethod);
                                 methodGenerator.Emit(OpCodes.Brfalse, serverDeSerializeErrorLabel = methodGenerator.DefineLabel());
                                 #endregion
                             }
@@ -303,7 +303,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                 methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                 methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
                                 //methodGenerator.call(Metadata.ServerSocketSendOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
-                                methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSendMethod);
+                                methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSendParameterMethod);
                                 methodGenerator.Emit(OpCodes.Stloc_S, isReturnLocalBuilder);
                                 #endregion
                                 methodGenerator.Emit(OpCodes.Leave_S, returnLable);

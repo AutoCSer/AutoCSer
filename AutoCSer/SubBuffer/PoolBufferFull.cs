@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.SubBuffer
 {
@@ -43,6 +44,10 @@ namespace AutoCSer.SubBuffer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Set(byte[] buffer, int startIndex)
         {
+#if DEBUG
+            if (startIndex < 0) throw new Exception(startIndex.toString() + " < 0");
+            if (startIndex > buffer.Length) throw new Exception(startIndex.toString() + " > " + buffer.Length.toString());
+#endif
             Buffer = buffer;
             StartIndex = startIndex;
         }
@@ -117,5 +122,19 @@ namespace AutoCSer.SubBuffer
         //    Buffer = null;
         //    PoolBuffer.FreeNotEquals(ref other.PoolBuffer);
         //}
+        /// <summary>
+        /// 获取 fixed 缓冲区，DEBUG 模式对数据范围进行检测
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal byte[] GetFixedBuffer()
+        {
+#if DEBUG
+            if (StartIndex < 0) throw new Exception(StartIndex.toString() + " < 0");
+            if (Length < 0) throw new Exception(Length.toString() + " < 0");
+            if (Length != 0 && StartIndex + Length > Buffer.Length) throw new Exception(StartIndex.toString() + " + " + Length.toString() + " > " + Buffer.Length.toString());
+#endif
+            return Buffer;
+        }
     }
 }

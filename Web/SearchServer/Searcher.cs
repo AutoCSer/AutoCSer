@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Threading;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Web.SearchServer
 {
@@ -26,7 +27,7 @@ namespace AutoCSer.Web.SearchServer
         /// <summary>
         /// 搜索处理队列
         /// </summary>
-        internal static readonly QueueTaskLinkThread<Queue.Node> SearchTaskQueue = new QueueTaskLinkThread<Queue.Node>();
+        internal static readonly TaskQueueThread SearchTaskQueue = new TaskQueueThread();
         unsafe static Searcher()
         {
             if (File.Exists(AutoCSer.Web.Config.Search.WordFileName))

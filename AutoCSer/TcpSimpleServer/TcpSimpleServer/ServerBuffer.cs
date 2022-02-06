@@ -55,7 +55,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             {
                 int compressionDataSize = Data.Length;
                 Data.MoveStart(-(sizeof(int) * 2));
-                fixed (byte* sendDataFixed = Data.Array)
+                fixed (byte* sendDataFixed = Data.GetFixedBuffer())
                 {
                     byte* dataStart = sendDataFixed + Data.Start;
                     *(int*)dataStart = -compressionDataSize;
@@ -74,7 +74,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal unsafe void MarkSendData(int dataLength, ulong sendMarkData)
         {
-            fixed (byte* sendDataFixed = Data.Array)
+            fixed (byte* sendDataFixed = Data.GetFixedBuffer())
             {
                 TcpServer.CommandBase.Mark32(sendDataFixed + (Data.Start + sizeof(int)), sendMarkData, (dataLength + 3) & (int.MaxValue - 3));
             }

@@ -7,8 +7,8 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 链表节点
     /// </summary>
-    public abstract partial class Link<valueType>
-        where valueType : Link<valueType>
+    public abstract partial class Link<T>
+        where T : Link<T>
     {
         /// <summary>
         /// 链表（用于冲突概率低的场景）
@@ -19,48 +19,48 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 链表头部
             /// </summary>
-            private valueType head;
+            internal T Head;
             /// <summary>
             /// 弹出节点访问锁
             /// </summary>
-            private int popLock;
+            private AutoCSer.Threading.SpinLock popLock;
             /// <summary>
             /// 是否空链表
             /// </summary>
             public bool IsEmpty
             {
-                get { return head == null; }
+                get { return Head == null; }
             }
             /// <summary>
             /// 获取链表头部并清除数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType GetClear()
+            internal T GetClear()
             {
-                return System.Threading.Interlocked.Exchange(ref this.head, null);
+                return System.Threading.Interlocked.Exchange(ref Head, null);
             }
             /// <summary>
             /// 添加节点
             /// </summary>
-            /// <param name="value"></param>
+            /// <param name="value">不可为 null</param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void PushNotNull(valueType value)
+            internal void Push(T value)
             {
-                valueType headValue;
+                T headValue;
                 do
                 {
-                    if ((headValue = head) == null)
+                    if ((headValue = Head) == null)
                     {
                         value.LinkNext = null;
-                        if (System.Threading.Interlocked.CompareExchange(ref head, value, null) == null) return;
+                        if (System.Threading.Interlocked.CompareExchange(ref Head, value, null) == null) return;
                     }
                     else
                     {
                         value.LinkNext = headValue;
-                        if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
+                        if (System.Threading.Interlocked.CompareExchange(ref Head, value, headValue) == headValue) return;
                     }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPush);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }
@@ -69,24 +69,24 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public valueType Pop()
+            public T Pop()
             {
-                valueType headValue;
-                while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                T headValue;
+                popLock.EnterYield();
                 do
                 {
-                    if ((headValue = head) == null)
+                    if ((headValue = Head) == null)
                     {
-                        System.Threading.Interlocked.Exchange(ref popLock, 0);
+                        popLock.Exit();
                         return null;
                     }
-                    if (System.Threading.Interlocked.CompareExchange(ref head, headValue.LinkNext, headValue) == headValue)
+                    if (System.Threading.Interlocked.CompareExchange(ref Head, headValue.LinkNext, headValue) == headValue)
                     {
-                        System.Threading.Interlocked.Exchange(ref popLock, 0);
+                        popLock.Exit();
                         headValue.LinkNext = null;
                         return headValue;
                     }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPop);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }
@@ -95,18 +95,18 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public valueType SinglePop()
+            public T SinglePop()
             {
-                valueType headValue;
+                T headValue;
                 do
                 {
-                    if ((headValue = head) == null) return null;
-                    if (System.Threading.Interlocked.CompareExchange(ref head, headValue.LinkNext, headValue) == headValue)
+                    if ((headValue = Head) == null) return null;
+                    if (System.Threading.Interlocked.CompareExchange(ref Head, headValue.LinkNext, headValue) == headValue)
                     {
                         headValue.LinkNext = null;
                         return headValue;
                     }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPop);
+                    ThreadYield.Yield();
                 }
                 while (true);
             }
@@ -116,10 +116,10 @@ namespace AutoCSer.Threading
             /// <param name="count">保留缓存数据数量</param>
             internal void ClearCache(int count)
             {
-                valueType headValue = System.Threading.Interlocked.Exchange(ref head, null);
+                T headValue = System.Threading.Interlocked.Exchange(ref Head, null);
                 if (headValue != null && count != 0)
                 {
-                    valueType end = headValue;
+                    T end = headValue;
                     while (--count != 0)
                     {
                         if (end.LinkNext == null)
@@ -139,22 +139,22 @@ namespace AutoCSer.Threading
             /// <param name="value">链表头部</param>
             /// <param name="end">链表尾部</param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void PushLink(valueType value, valueType end)
+            internal void PushLink(T value, T end)
             {
-                valueType headValue;
+                T headValue;
                 do
                 {
-                    if ((headValue = head) == null)
+                    if ((headValue = Head) == null)
                     {
                         end.LinkNext = null;
-                        if (System.Threading.Interlocked.CompareExchange(ref head, value, null) == null) return;
+                        if (System.Threading.Interlocked.CompareExchange(ref Head, value, null) == null) return;
                     }
                     else
                     {
                         end.LinkNext = headValue;
-                        if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
+                        if (System.Threading.Interlocked.CompareExchange(ref Head, value, headValue) == headValue) return;
                     }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPush);
+                    ThreadYield.Yield();
                 }
                 while (true);
             }
@@ -166,21 +166,13 @@ namespace AutoCSer.Threading
         internal struct Queue
         {
             /// <summary>
-            /// 节点队列链表
-            /// </summary>
-            /// <param name="head">节点队列头部</param>
-            internal Queue(valueType head)
-            {
-                this.head = end = head;
-            }
-            /// <summary>
             /// 节点队列头部
             /// </summary>
-            private valueType head;
+            private T head;
             /// <summary>
             /// 节点队列尾部
             /// </summary>
-            private valueType end;
+            private T end;
             /// <summary>
             /// 是否空队列
             /// </summary>
@@ -189,13 +181,21 @@ namespace AutoCSer.Threading
                 get { return head == end; }
             }
             /// <summary>
+            /// 节点队列链表
+            /// </summary>
+            /// <param name="head">节点队列头部</param>
+            internal Queue(T head)
+            {
+                this.head = end = head;
+            }
+            /// <summary>
             /// 获取链表头部并清除数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType GetClear()
+            internal T GetClear()
             {
-                valueType value = head.LinkNext;
+                T value = head.LinkNext;
                 end = head;
                 head.LinkNext = null;
                 return value;
@@ -206,10 +206,10 @@ namespace AutoCSer.Threading
             /// <param name="end"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType GetClear(out valueType end)
+            internal T GetClear(out T end)
             {
                 end = this.end;
-                valueType value = head.LinkNext;
+                T value = head.LinkNext;
                 this.end = head;
                 head.LinkNext = null;
                 return value;
@@ -227,7 +227,7 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="value"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public void Push(valueType value)
+            public void Push(T value)
             {
                 end.LinkNext = value;
                 end = value;
@@ -237,7 +237,7 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public valueType PopOnly()
+            public T PopOnly()
             {
                 return head == end ? null : UnsafePopOnly();
             }
@@ -246,9 +246,9 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public valueType UnsafePopOnly()
+            public T UnsafePopOnly()
             {
-                valueType value = head.LinkNext;
+                T value = head.LinkNext;
                 if (value == end) end = head;
                 else head.LinkNext = value.LinkNext;
                 return value;
@@ -274,23 +274,23 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 链表头部
             /// </summary>
-            internal valueType Head;
+            internal T Head;
             /// <summary>
             /// 链表
             /// </summary>
-            private valueType end;
+            private T end;
             /// <summary>
             /// 弹出节点访问锁
             /// </summary>
-            private int queueLock;
+            private AutoCSer.Threading.SpinLock queueLock;
             /// <summary>
             /// 节点队列链表
             /// </summary>
             /// <param name="head">节点队列头部</param>
-            internal YieldQueue(valueType head)
+            internal YieldQueue(T head)
             {
                 this.Head = end = head;
-                queueLock = 0;
+                queueLock = default(AutoCSer.Threading.SpinLock);
             }
             /// <summary>
             /// 是否空链表
@@ -304,13 +304,13 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType GetClear()
+            internal T GetClear()
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
-                valueType value = Head.LinkNext;
+                queueLock.EnterYield();
+                T value = Head.LinkNext;
                 end = Head;
                 Head.LinkNext = null;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
                 return value;
             }
             /// <summary>
@@ -319,14 +319,14 @@ namespace AutoCSer.Threading
             /// <param name="end"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType GetClear(out valueType end)
+            internal T GetClear(out T end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
+                queueLock.EnterYield();
                 end = this.end;
-                valueType value = Head.LinkNext;
+                T value = Head.LinkNext;
                 this.end = Head;
                 Head.LinkNext = null;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
                 return value;
             }
             /// <summary>
@@ -334,9 +334,9 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="end"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void GetToEndClear(ref valueType end)
+            internal void GetToEndClear(ref T end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePop);
+                queueLock.EnterYield();
                 if (Head != this.end)
                 {
                     end.LinkNext = Head.LinkNext;
@@ -344,33 +344,33 @@ namespace AutoCSer.Threading
                     Head.LinkNext = null;
                     this.end = Head;
                 }
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
             }
             /// <summary>
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push(valueType value)
+            internal void Push(T value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                queueLock.EnterYield();
                 end.LinkNext = value;
                 end = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
             }
             /// <summary>
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool IsPushHead(valueType value)
+            internal bool IsPushHead(T value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
-                valueType end = this.end;
+                queueLock.EnterYield();
+                T end = this.end;
                 this.end.LinkNext = value;
-                valueType head = Head;
+                T head = Head;
                 this.end = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
                 return head == end;
             }
             /// <summary>
@@ -378,17 +378,17 @@ namespace AutoCSer.Threading
             /// </summary>
             /// <param name="value"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool TryPushHead(valueType value)
+            internal bool TryPushHead(T value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                queueLock.EnterYield();
                 if (Head == end)
                 {
                     Head.LinkNext = value;
                     end = value;
-                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    queueLock.Exit();
                     return true;
                 }
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
                 return false;
             }
             /// <summary>
@@ -397,20 +397,20 @@ namespace AutoCSer.Threading
             /// <param name="head"></param>
             /// <param name="end"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void PushHead(ref valueType head, valueType end)
+            internal void PushHead(ref T head, T end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                queueLock.EnterYield();
                 if (this.Head == this.end)
                 {
                     this.end = end;
                     this.Head.LinkNext = head;
-                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    queueLock.Exit();
                 }
                 else
                 {
                     end.LinkNext = this.Head.LinkNext;
                     this.Head.LinkNext = head;
-                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    queueLock.Exit();
                 }
                 head = null;
             }
@@ -421,80 +421,80 @@ namespace AutoCSer.Threading
             /// <param name="end"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool IsPushHead(ref valueType head, valueType end)
+            internal bool IsPushHead(ref T head, T end)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                queueLock.EnterYield();
                 if (this.Head == this.end)
                 {
                     this.end = end;
                     this.Head.LinkNext = head;
-                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    queueLock.Exit();
                     head = null;
                     return true;
                 }
                 end.LinkNext = this.Head.LinkNext;
                 this.Head.LinkNext = head;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
                 head = null;
                 return false;
             }
         }
 
-        /// <summary>
-        /// 简单队列
-        /// </summary>
-        public struct SimpleQueue
-        {
-            /// <summary>
-            /// 首节点
-            /// </summary>
-            private valueType head;
-            /// <summary>
-            /// 尾节点
-            /// </summary>
-            private valueType end;
-            /// <summary>
-            /// 添加节点
-            /// </summary>
-            /// <param name="next">尾节点</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public void Append(valueType next)
-            {
-                if (head == null) head = end = next;
-                else
-                {
-                    end.LinkNext = next;
-                    end = next;
-                }
-            }
-            /// <summary>
-            /// 获取首节点并清除队列
-            /// </summary>
-            /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public valueType GetClear()
-            {
-                valueType value = head;
-                head = end = null;
-                return value;
-            }
+        ///// <summary>
+        ///// 简单队列
+        ///// </summary>
+        //public struct SimpleQueue
+        //{
+        //    /// <summary>
+        //    /// 首节点
+        //    /// </summary>
+        //    private T head;
+        //    /// <summary>
+        //    /// 尾节点
+        //    /// </summary>
+        //    private T end;
+        //    /// <summary>
+        //    /// 添加节点
+        //    /// </summary>
+        //    /// <param name="next">尾节点</param>
+        //    [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //    public void Append(T next)
+        //    {
+        //        if (head == null) head = end = next;
+        //        else
+        //        {
+        //            end.LinkNext = next;
+        //            end = next;
+        //        }
+        //    }
+        //    /// <summary>
+        //    /// 获取首节点并清除队列
+        //    /// </summary>
+        //    /// <returns></returns>
+        //    [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //    public T GetClear()
+        //    {
+        //        T value = head;
+        //        head = end = null;
+        //        return value;
+        //    }
 
-            /// <summary>
-            /// 获取队列节点集合
-            /// </summary>
-            /// <param name="head">队列首节点</param>
-            /// <returns></returns>
-            public static System.Collections.Generic.IEnumerable<valueType> GetQueue(valueType head)
-            {
-                do
-                {
-                    valueType next = head.LinkNext;
-                    head.LinkNext = null;
-                    yield return head;
-                    head = next;
-                }
-                while (head != null);
-            }
-        }
+        //    /// <summary>
+        //    /// 获取队列节点集合
+        //    /// </summary>
+        //    /// <param name="head">队列首节点</param>
+        //    /// <returns></returns>
+        //    public static System.Collections.Generic.IEnumerable<T> GetQueue(T head)
+        //    {
+        //        do
+        //        {
+        //            T next = head.LinkNext;
+        //            head.LinkNext = null;
+        //            yield return head;
+        //            head = next;
+        //        }
+        //        while (head != null);
+        //    }
+        //}
     }
 }

@@ -6,7 +6,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 未处理异常计数
     /// </summary>
-    internal unsafe static class CatchCount
+    //internal unsafe static class CatchCount
     {
         /// <summary>
         /// 未处理异常类型

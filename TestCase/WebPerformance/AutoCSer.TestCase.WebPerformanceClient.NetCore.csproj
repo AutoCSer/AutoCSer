@@ -42,7 +42,6 @@
     <Compile Include="SocketAsyncEventArgsPool.cs" />
     <Compile Include="StringExtension.cs" />
     <Compile Include="TestType.cs" />
-    <Compile Include="UnionType.cs" />
     <Compile Include="WebClient.cs" />
   </ItemGroup>
 

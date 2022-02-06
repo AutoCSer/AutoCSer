@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -19,7 +19,7 @@ namespace AutoCSer.WebView.Poll
         /// <summary>
         /// 长连接轮询验证访问锁
         /// </summary>
-        private readonly object sessionLock;
+        private AutoCSer.Threading.SleepFlagSpinLock sessionLock;
         /// <summary>
         /// 超时时钟周期
         /// </summary>
@@ -30,9 +30,9 @@ namespace AutoCSer.WebView.Poll
         /// <param name="timeoutTicks">超时时钟周期</param>
         internal Session(long timeoutTicks)
         {
-            sessions = NullValue<SessionTimeout>.Array;
-            sessionLock = new object();
+            sessions = EmptyArray<SessionTimeout>.Array;
             this.timeoutTicks = timeoutTicks;
+            sessionLock = default(AutoCSer.Threading.SleepFlagSpinLock);
         }
         /// <summary>
         /// 获取用户长连接轮询验证
@@ -44,9 +44,9 @@ namespace AutoCSer.WebView.Poll
             int index = userId >> 8;
             if ((uint)index < (uint)sessions.Length)
             {
-                Monitor.Enter(sessionLock);
+                sessionLock.Enter();
                 sessionId = sessions[index].Get(timeoutTicks);
-                Monitor.Exit(sessionLock);
+                sessionLock.Exit();
             }
             else sessionId = default(AutoCSer.Net.HttpDomainServer.SessionId);
         }
@@ -59,20 +59,21 @@ namespace AutoCSer.WebView.Poll
         {
             AutoCSer.Net.HttpDomainServer.SessionId sessionId;
             int index = userId >> 8;
-            Monitor.Enter(sessionLock);
+            sessionLock.Enter();
             if ((uint)index < (uint)sessions.Length)
             {
                 sessionId = sessions[index].Get(timeoutTicks);
-                Monitor.Exit(sessionLock);
+                sessionLock.Exit();
             }
             else
             {
+                sessionLock.SleepFlag = 1;
                 try
                 {
                     sessions = sessions.copyNew(Math.Max(sessions.Length << 1, index + 256));
                     sessionId = sessions[index].New(timeoutTicks);
                 }
-                finally { Monitor.Exit(sessionLock); }
+                finally { sessionLock.ExitSleepFlag(); }
             }
             return sessionId.ToHex();
         }
@@ -86,9 +87,9 @@ namespace AutoCSer.WebView.Poll
             int index = userId >> 8;
             if ((uint)index < (uint)sessions.Length)
             {
-                Monitor.Enter(sessionLock);
+                sessionLock.Enter();
                 sessions[index].Clear();
-                Monitor.Exit(sessionLock);
+                sessionLock.Exit();
             }
         }
         /// <summary>

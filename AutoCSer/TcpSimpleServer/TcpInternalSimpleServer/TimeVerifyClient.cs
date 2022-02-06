@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpInternalSimpleServer
 {
@@ -43,11 +43,10 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <returns></returns>
         public unsafe static bool Verify(Verifier verify, Client client, string userID, string verifyString)
         {
-            long ticks;
             ulong markData = 0;
             TcpServer.ServerBaseAttribute attribute = client.Attribute;
             if (attribute.IsMarkData) markData = attribute.VerifyHashCode;
-            ticks = Date.NowTime.SetUtc().Ticks;
+            long ticks = AutoCSer.Net.TcpInternalServer.TimeVerifyClient.GetTicks();
             do
             {
                 ulong randomPrefix = Random.Default.SecureNextULongNotZero();
@@ -63,10 +62,10 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 }
                 if (isVerify.Type != TcpServer.ReturnType.Success || ticks <= lastTicks)
                 {
-                    client.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
+                    client.Log.Error("TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString(), LogLevel.Error | LogLevel.AutoCSer);
                     return false;
                 }
-                client.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                client.Log.Error("TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString(), LogLevel.Error | LogLevel.AutoCSer);
             }
             while (true);
         }

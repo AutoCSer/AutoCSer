@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Threading;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpOpenSimpleServer
 {
@@ -14,7 +14,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 套接字等待事件
         /// </summary>
-        private AutoCSer.Threading.Thread.AutoWaitHandle socketHandle;
+        private AutoCSer.Threading.OnceAutoWaitHandle socketHandle;
         /// <summary>
         /// 套接字链表头部
         /// </summary>
@@ -37,15 +37,18 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         internal override void GetSocket()
         {
             //ThreadPriority priority = Thread.CurrentThread.Priority;
-            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
-            socketHandle.Set(0);
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(OnSocket);
-            //Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            if (verify == null) getSocket();
-            else getSocketVerify();
-            //Thread.CurrentThread.Priority = priority;
-            socketHandle.Set();
-            SocketTimeoutLink.TimerLink.Free(ref ReceiveVerifyCommandTimeout);
+            ReceiveVerifyCommandTimeout = new SocketTimeoutLink(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            try
+            {
+                socketHandle.Set(0);
+                AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(OnSocket);
+                //Thread.CurrentThread.Priority = ThreadPriority.Highest;
+                if (verify == null) getSocket();
+                else getSocketVerify();
+                //Thread.CurrentThread.Priority = priority;
+                socketHandle.Set();
+            }
+            finally { SocketTimeoutLink.Free(ref ReceiveVerifyCommandTimeout); }
         }
         /// <summary>
         /// 获取客户端请求
@@ -91,14 +94,14 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                                 goto NEXT;
                             }
                         }
-                        AutoCSer.Threading.ThreadYield.YieldOnly();
+                        AutoCSer.Threading.ThreadYield.Yield();
                     }
                     while (true);
                 }
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     Thread.Sleep(1);
                 }
             }
@@ -150,7 +153,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                                     goto NEXT;
                                 }
                             }
-                            AutoCSer.Threading.ThreadYield.YieldOnly();
+                            AutoCSer.Threading.ThreadYield.Yield();
                         }
                         while (true);
                     }
@@ -160,7 +163,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     Thread.Sleep(1);
                 }
             }
@@ -184,7 +187,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
                     catch (Exception error)
                     {
-                        Log.Add(AutoCSer.Log.LogType.Debug, error);
+                        Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                     if (serverSocket != null)
                     {

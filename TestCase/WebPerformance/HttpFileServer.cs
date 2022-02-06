@@ -32,7 +32,7 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                             else
                             {
 #if DotNetStandard
-                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.HttpFilePerformanceClient.dll"));
+                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, @"AutoCSer.TestCase.HttpFilePerformanceClient.dll"));
                                 if (clientFile.Exists)
                                 {
                                     ProcessStartInfo process = new ProcessStartInfo("dotnet", clientFile.FullName);
@@ -40,7 +40,7 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                                     Process.Start(process);
                                 }
 #else
-                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.HttpFilePerformanceClient.exe"));
+                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, @"AutoCSer.TestCase.HttpFilePerformanceClient.exe"));
                                 if (clientFile.Exists) Process.Start(clientFile.FullName);
 #endif
                                 else Console.WriteLine("未找到 HTTP 文件测试客户端程序");

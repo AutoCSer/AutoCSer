@@ -7,7 +7,7 @@ namespace AutoCSer.Extension
     /// <summary>
     /// 日志扩展
     /// </summary>
-    public static partial class Log
+    //public static partial class Log
     {
         /// <summary>
         /// 添加日志

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Net;
 
@@ -32,9 +32,9 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal readonly object OnSocketLock = new object();
         /// <summary>
-        /// 批量处理休眠毫秒数
+        /// 客户端批量处理等待类型
         /// </summary>
-        internal readonly int OutputSleep;
+        internal readonly OutputWaitType OutputWaitType;
         /// <summary>
         /// 第一次重建连接休眠毫秒数
         /// </summary>
@@ -87,7 +87,7 @@ namespace AutoCSer.Net.TcpServer
         internal ClientBase(ServerBaseAttribute attribute, ILog log, Action<SubArray<byte>> onCustomData) 
             : base(attribute, attribute.GetSendBufferSize, attribute.GetReceiveBufferSize, attribute.ClientSendBufferMaxSize, log)
         {
-            OutputSleep = attribute.GetClientOutputSleep;
+            OutputWaitType = attribute.GetClientOutputWaitType;
             FristTryCreateSleep = Math.Max(attribute.GetClientFirstTryCreateSleep, 10);
             TryCreateSleep = Math.Max(attribute.GetClientTryCreateSleep, 10);
             SocketWait.Set(0);
@@ -200,7 +200,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 finally { Monitor.Exit(OnSocketLock); }
             }
@@ -239,7 +239,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CustomData(ref SubArray<byte> data)
         {
-            if (onCustomData == null) Log.Add(AutoCSer.Log.LogType.Info, "客户端自定义数据包被丢弃");
+            if (onCustomData == null) Log.Info("客户端自定义数据包被丢弃", LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 try
@@ -248,7 +248,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
         }

@@ -31,7 +31,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 依赖当前缓存初始化的类型集合
         /// </summary>
-        private LeftArray<MemberCacheLinkWait> waits;
+        private LeftArray<MemberCacheLinkWait> waits = new LeftArray<MemberCacheLinkWait>(0);
         /// <summary>
         /// 成员扩展缓存初始化依赖类型加载
         /// </summary>
@@ -86,7 +86,7 @@ namespace AutoCSer.Sql
             if (this.cacheTypes == null)
             {
                 foreach (MemberCacheLinkWait wait in waits) wait.removeCacheType(tableType);
-                waits.SetNull();
+                waits.SetEmpty();
                 set(cacheTypes);
             }
         }
@@ -124,7 +124,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 待删除成员扩展缓存初始化依赖类型集合
         /// </summary>
-        private static LeftArray<Type> removeCacheTypes;
+        private static LeftArray<Type> removeCacheTypes = new LeftArray<Type>(0);
         /// <summary>
         /// 加载成员扩展缓存初始化依赖类型
         /// </summary>

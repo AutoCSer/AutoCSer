@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace AutoCSer.SearchTree
 {
     /// <summary>
-    /// 二叉树字典
+    /// 二叉搜索树字典
     /// </summary>
     /// <typeparam name="keyType">关键字类型</typeparam>
     /// <typeparam name="valueType">数据类型</typeparam>
@@ -478,7 +478,7 @@ namespace AutoCSer.SearchTree
         {
             get
             {
-                return Count != 0 ? Boot.KeyValues : NullValue<KeyValue<keyType, valueType>>.Array;
+                return Count != 0 ? Boot.KeyValues : EmptyArray<KeyValue<keyType, valueType>>.Array;
             }
         }
         /// <summary>
@@ -769,7 +769,7 @@ namespace AutoCSer.SearchTree
                     return array.Array;
                 }
             }
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
         /// <summary>
         /// 获取分页数据
@@ -790,7 +790,7 @@ namespace AutoCSer.SearchTree
                     return array.Array;
                 }
             }
-            return NullValue<arrayType>.Array;
+            return EmptyArray<arrayType>.Array;
         }
         /// <summary>
         /// 创建二叉树分页缓存
@@ -824,7 +824,7 @@ namespace AutoCSer.SearchTree
                     return array.Array;
                 }
             }
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
         /// <summary>
         /// 创建二叉树逆序分页缓存
@@ -853,7 +853,7 @@ namespace AutoCSer.SearchTree
                 Boot.GetArraySkip(ref array);
                 return array.Array;
             }
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
         /// <summary>
         /// 获取逆序范围数据集合
@@ -870,7 +870,7 @@ namespace AutoCSer.SearchTree
                 Boot.GetDescArraySkip(ref array);
                 return array.Array;
             }
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
         /// <summary>
         /// 查找数据
@@ -881,11 +881,11 @@ namespace AutoCSer.SearchTree
         {
             if (Boot != null)
             {
-                FindArray<valueType> array = new FindArray<valueType> { IsValue = isValue };
+                FindArray<valueType> array = new FindArray<valueType> { IsValue = isValue, Array = new LeftArray<valueType>(0) };
                 Boot.GetFind(ref array);
                 return array.Array;
             }
-            return default(LeftArray<valueType>);
+            return new LeftArray<valueType>(0);
         }
     }
 }

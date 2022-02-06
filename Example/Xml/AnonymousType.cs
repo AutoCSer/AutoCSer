@@ -14,9 +14,9 @@ namespace AutoCSer.Example.Xml
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            string xml = AutoCSer.Xml.Serializer.Serialize(new { Value = 1 });
+            string xml = AutoCSer.XmlSerializer.Serialize(new { Value = 1 });
             var newValue = new { Value = 0 };
-            AutoCSer.Xml.Parser.Parse(xml, ref newValue);
+            AutoCSer.XmlDeSerializer.DeSerialize(xml, ref newValue);
             return newValue.Value == 1;
         }
     }

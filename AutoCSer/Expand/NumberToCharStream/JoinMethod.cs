@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -20,7 +21,7 @@ namespace AutoCSer.NumberToCharStream
         {
             int length = 0;
             foreach (string nextString in array) length += (nextString ?? nullString).Length;
-            string value = AutoCSer.Extension.StringExtension.FastAllocateString(length + array.Length - 1);
+            string value = AutoCSer.Extensions.StringExtension.FastAllocateString(length + array.Length - 1);
             fixed (char* valueFixed = value)
             {
                 char* write = valueFixed;
@@ -29,12 +30,12 @@ namespace AutoCSer.NumberToCharStream
                     if (write != valueFixed) *write++ = join;
                     if (nextString == null)
                     {
-                        AutoCSer.Extension.StringExtension.CopyNotNull(nullString, write);
+                        AutoCSer.Extensions.StringExtension.CopyNotNull(nullString, write);
                         write += nullString.Length;
                     }
                     else
                     {
-                        AutoCSer.Extension.StringExtension.CopyNotNull(nextString, write);
+                        AutoCSer.Extensions.StringExtension.CopyNotNull(nextString, write);
                         write += nextString.Length;
                     }
                 }
@@ -60,10 +61,6 @@ namespace AutoCSer.NumberToCharStream
             foreach (valueType value in array) stringArray[index++] = value.ToString();
             return joinNullString(stringArray, join, nullString);
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo StructJoinCharMethod = typeof(JoinMethod).GetMethod("structJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -85,10 +82,6 @@ namespace AutoCSer.NumberToCharStream
             while (startIndex != endIndex);
             return joinNullString(stringArray, join, nullString);
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo StructSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("structSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -108,10 +101,6 @@ namespace AutoCSer.NumberToCharStream
             foreach (Nullable<valueType> value in array) stringArray[index++] = value.HasValue ? value.Value.ToString() : nullString;
             return joinNullString(stringArray, join, nullString);
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo NullableJoinCharMethod = typeof(JoinMethod).GetMethod("nullableJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -138,10 +127,6 @@ namespace AutoCSer.NumberToCharStream
             while (startIndex != endIndex);
             return joinNullString(stringArray, join, nullString);
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo NullableSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("nullableSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -161,10 +146,6 @@ namespace AutoCSer.NumberToCharStream
             foreach (valueType value in array) stringArray[index++] = value == null ? nullString : value.ToString();
             return joinNullString(stringArray, join, nullString);
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo ClassJoinCharMethod = typeof(JoinMethod).GetMethod("classJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -191,10 +172,6 @@ namespace AutoCSer.NumberToCharStream
             while (startIndex != endIndex);
             return joinNullString(stringArray, join, nullString);
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo ClassSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("classSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -210,10 +187,6 @@ namespace AutoCSer.NumberToCharStream
             }
             return joinNullString(array, join, nullString);
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo StringJoinCharMethod = typeof(JoinMethod).GetMethod("stringJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -238,7 +211,7 @@ namespace AutoCSer.NumberToCharStream
                     if (nextString != null) length += nextString.Length;
                 }
                 while (startIndex != endIndex);
-                string value = AutoCSer.Extension.StringExtension.FastAllocateString(length + subArray.Length - 1);
+                string value = AutoCSer.Extensions.StringExtension.FastAllocateString(length + subArray.Length - 1);
                 fixed (char* valueFixed = value)
                 {
                     char* write = valueFixed;
@@ -249,7 +222,7 @@ namespace AutoCSer.NumberToCharStream
                         if (write != valueFixed) *write++ = join;
                         if (nextString != null)
                         {
-                            AutoCSer.Extension.StringExtension.CopyNotNull(nextString, write);
+                            AutoCSer.Extensions.StringExtension.CopyNotNull(nextString, write);
                             write += nextString.Length;
                         }
                     }
@@ -264,7 +237,7 @@ namespace AutoCSer.NumberToCharStream
                     length += (array[startIndex++] ?? nullString).Length;
                 }
                 while (startIndex != endIndex);
-                string value = AutoCSer.Extension.StringExtension.FastAllocateString(length + subArray.Length - 1);
+                string value = AutoCSer.Extensions.StringExtension.FastAllocateString(length + subArray.Length - 1);
                 fixed (char* valueFixed = value)
                 {
                     char* write = valueFixed;
@@ -273,7 +246,7 @@ namespace AutoCSer.NumberToCharStream
                     {
                         string nextString = array[startIndex++] ?? nullString;
                         if (write != valueFixed) *write++ = join;
-                        AutoCSer.Extension.StringExtension.CopyNotNull(nextString, write);
+                        AutoCSer.Extensions.StringExtension.CopyNotNull(nextString, write);
                         write += nextString.Length;
                     }
                     while (startIndex != endIndex);
@@ -281,39 +254,32 @@ namespace AutoCSer.NumberToCharStream
                 return value;
             }
         }
-        ///// <summary>
-        ///// 连接字符串集合函数信息
-        ///// </summary>
-        //public static readonly MethodInfo StringSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("stringSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
         /// 数值转换调用函数信息集合
         /// </summary>
-        private static readonly Dictionary<Type, MethodInfo> toStringMethods;
+        private static readonly Dictionary<HashType, Delegate> toStringDelegates;
         /// <summary>
         /// 获取数值转换委托调用函数信息
         /// </summary>
         /// <param name="type">数值类型</param>
         /// <returns>数值转换委托调用函数信息</returns>
-        public static MethodInfo GetToStringMethod(Type type)
+        public static Delegate GetToStringMethod(Type type)
         {
-            MethodInfo method;
-            return toStringMethods.TryGetValue(type, out method) ? method : null;
+            Delegate method;
+            return toStringDelegates.TryGetValue(type, out method) ? method : null;
         }
         static JoinMethod()
         {
-            toStringMethods = DictionaryCreator.CreateOnly<Type, MethodInfo>();
-            foreach (MethodInfo method in typeof(AutoCSer.Extension.Number).GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
-            {
-                if (method.Name == "ToString")
-                {
-                    ParameterInfo[] parameters = method.GetParameters();
-                    if (parameters.Length == 2 && parameters[1].ParameterType == typeof(CharStream))
-                    {
-                        toStringMethods.Add(parameters[0].ParameterType, method);
-                    }
-                }
-            }
+            toStringDelegates = DictionaryCreator<HashType>.Create<Delegate>();
+            toStringDelegates.Add(typeof(int), (Action<int, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
+            toStringDelegates.Add(typeof(long), (Action<long, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
+            toStringDelegates.Add(typeof(byte), (Action<byte, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
+            toStringDelegates.Add(typeof(uint), (Action<uint, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
+            toStringDelegates.Add(typeof(ulong), (Action<ulong, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
+            toStringDelegates.Add(typeof(sbyte), (Action<sbyte, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
+            toStringDelegates.Add(typeof(short), (Action<short, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
+            toStringDelegates.Add(typeof(ushort), (Action<ushort, CharStream>)AutoCSer.Extensions.NumberExtension.ToString);
         }
     }
 }

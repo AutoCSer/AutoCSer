@@ -26,7 +26,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ParameterGenericType> cache = new LockLastDictionary<Type, ParameterGenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, ParameterGenericType> cache = new LockLastDictionary<HashType, ParameterGenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -54,7 +54,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(outputParameterType).Invoke(null, null) }.ParameterGenericType;
+                    value = new UnionType.ParameterGenericType { Object = createMethod.MakeGenericMethod(outputParameterType).Invoke(null, null) }.Value;
                     cache.Set(outputParameterType, value);
                 }
                 finally { cache.Exit(); }
@@ -69,6 +69,11 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
     internal sealed partial class ParameterGenericType<parameterType> : ParameterGenericType
         where parameterType : struct
     {
+        /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(parameterType); } }
+
         /// <summary>
         /// 获取异步回调
         /// </summary>
@@ -148,6 +153,13 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         internal override MethodInfo ServerSocketSenderPushCommandMethod
         {
             get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ServerSocketSenderPushCommand)ServerSocketSender.Push<parameterType>).Method; }
+        }
+        /// <summary>
+        /// TCP 服务器端同步调用套接字发送对象通过函数验证处理
+        /// </summary>
+        internal override MethodInfo ServerSocketSenderDeSerializeMethod
+        {
+            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ServerSocketSenderDeSerialize)ServerSocketSenderBase.DeSerialize<parameterType>).Method; }
         }
     }
 }

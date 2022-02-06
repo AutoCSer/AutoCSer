@@ -1,7 +1,8 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -63,7 +64,7 @@ namespace AutoCSer.Sql.DataModel
                 generator.Emit(OpCodes.Ldarg_2);
                 generator.Emit(OpCodes.Ldfld, field.FieldInfo);
                 generator.Emit(OpCodes.Ldarg_3);
-                generator.Emit(OpCodes.Call, ColumnGroup.Inserter.GetTypeInsert(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).InsertMethod);
             }
             else
             {
@@ -75,7 +76,7 @@ namespace AutoCSer.Sql.DataModel
                 if (field.NowTimeType != NowTimeType.None)
                 {
                     generator.int32(field.MemberMapIndex);
-                    generator.call(AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod);
+                    generator.call(AutoCSer.Extensions.EmitGeneratorSql.TableGetNowTimeMethod);
                 }
                 if (field.ToSqlCastMethod != null) generator.Emit(OpCodes.Call, field.ToSqlCastMethod);
                 if (attribute.IsNullStringEmpty && field.DataType == typeof(string)) generator.nullStringEmpty();
@@ -118,7 +119,7 @@ namespace AutoCSer.Sql.DataModel
                     {
                         if (isNext == 0) isNext = 1;
                         else sqlStream.Write(',');
-                        if (member.IsSqlColumn) sqlStream.SimpleWriteNotNull(ColumnGroup.Inserter.GetColumnNames(member.FieldInfo.FieldType)(member.FieldInfo.Name));
+                        if (member.IsSqlColumn) sqlStream.SimpleWrite(((Func<string, string>)AutoCSer.Sql.Metadata.GenericType.Get(member.FieldInfo.FieldType).InserterGetColumnNamesMethod)(member.FieldInfo.Name));
                         else constantConverter.ConvertNameToSqlStream(sqlStream, member.FieldInfo.Name);
                     }
                 }
@@ -193,14 +194,14 @@ namespace AutoCSer.Sql.DataModel
 #endif
             static Inserter()
             {
-                if (attribute != null)
+                if (Attribute != null)
                 {
 #if NOJIT
                     fields = new sqlModel.insertField[Fields.Length];
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.Inserter dynamicMethod = new DataModel.Inserter(typeof(modelType), attribute);
+                    DataModel.Inserter dynamicMethod = new DataModel.Inserter(typeof(modelType), Attribute);
                     foreach (Field member in Fields) dynamicMethod.Push(member);
                     inserter = (Action<CharStream, MemberMap, modelType, ConstantConverter, Table>)dynamicMethod.Create<Action<CharStream, MemberMap, modelType, ConstantConverter, Table>>();
 #endif

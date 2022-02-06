@@ -5,7 +5,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 日志信息
     /// </summary>
-    internal sealed partial class DebugInfo
+    //internal sealed partial class DebugInfo
     {
         /// <summary>
         /// 调用成员名称

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Log;
 using System.Collections.Generic;
 using System.Threading;
@@ -51,7 +51,7 @@ namespace AutoCSer.Sql.LogStream
                 }
                 catch (Exception error)
                 {
-                    client.log.Add(AutoCSer.Log.LogType.Error, error);
+                    client.log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 this.error();
             }
@@ -99,7 +99,7 @@ namespace AutoCSer.Sql.LogStream
                         }
                         catch (Exception error)
                         {
-                            client.log.Add(AutoCSer.Log.LogType.Error, error);
+                            client.log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                     }
                     this.error();

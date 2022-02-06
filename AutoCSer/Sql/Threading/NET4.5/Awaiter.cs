@@ -20,8 +20,8 @@ namespace AutoCSer.Sql.Threading
             /// </summary>
             internal NullValue()
             {
-                continuation = Pub.EmptyAction;
-                isCompleted = true;
+                continuation = Common.EmptyAction;
+                IsCompleted = true;
             }
             /// <summary>
             /// 
@@ -40,11 +40,7 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 完成状态
         /// </summary>
-        protected bool isCompleted;
-        /// <summary>
-        /// 完成状态
-        /// </summary>
-        public bool IsCompleted { get { return isCompleted; } }
+        public bool IsCompleted { get; protected set; }
         /// <summary>
         /// 返回值
         /// </summary>

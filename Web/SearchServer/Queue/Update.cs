@@ -6,7 +6,7 @@ namespace AutoCSer.Web.SearchServer.Queue
     /// <summary>
     /// 更新数据
     /// </summary>
-    internal sealed class Update : Node
+    internal sealed class Update : AutoCSer.Threading.TaskLinkNode
     {
         /// <summary>
         /// 关键字

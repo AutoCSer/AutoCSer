@@ -15,7 +15,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 输入参数
         /// </summary>
-        private RemoteType[] inputParameter;
+        private AutoCSer.Reflection.RemoteType[] inputParameter;
         /// <summary>
         /// 设置参数
         /// </summary>
@@ -23,16 +23,16 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="attribute"></param>
         /// <param name="inputParameter">输入参数</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Set(ServerSocketSender sender, ref TcpServer.ServerAttributeCache attribute, RemoteType[] inputParameter)
+        internal void Set(ServerSocketSender sender, ref TcpServer.ServerAttributeCache attribute, AutoCSer.Reflection.RemoteType[] inputParameter)
         {
             this.Sender = sender;
             CommandIndex = sender.ServerSocket.CommandIndex;
             this.inputParameter = inputParameter;
             switch (attribute.RemoteExpressionTask)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallThreadArray.Default.CurrentThread.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
                 case TcpServer.ServerTaskType.Queue:

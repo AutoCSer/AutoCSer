@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer
 {
@@ -27,7 +27,7 @@ namespace AutoCSer
             /// 日志处理
             /// </summary>
             [NonSerialized]
-            internal AutoCSer.Log.ILog Log;
+            internal AutoCSer.ILog Log;
             /// <summary>
             /// 程序集加载器
             /// </summary>
@@ -55,7 +55,7 @@ namespace AutoCSer
                     }
                     catch (Exception error)
                     {
-                        Log.Add(AutoCSer.Log.LogType.Error, error, "动态应用程序域加载程序集 " + assemblyFileName + " 失败");
+                        Log.Exception(error, "动态应用程序域加载程序集 " + assemblyFileName + " 失败", LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 return null;
@@ -88,7 +88,7 @@ namespace AutoCSer
                     }
                     catch (Exception error)
                     {
-                        Log.Add(AutoCSer.Log.LogType.Error, error);
+                        Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 return null;
@@ -107,7 +107,7 @@ namespace AutoCSer
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 return null;
             }
@@ -145,7 +145,7 @@ namespace AutoCSer
         /// 日志处理
         /// </summary>
         [NonSerialized]
-        private readonly AutoCSer.Log.ILog log;
+        private readonly AutoCSer.ILog log;
         /// <summary>
         /// 初始化动态应用程序域
         /// </summary>
@@ -154,14 +154,14 @@ namespace AutoCSer
         /// <param name="configFile">配置文件</param>
         /// <param name="cacheDirectory">应用程序域缓存目录,null表示非缓存</param>
         /// <param name="log">日志处理</param>
-        public DynamicDomain(string name, string privatePath, string configFile, string cacheDirectory, AutoCSer.Log.ILog log = null)
+        public DynamicDomain(string name, string privatePath, string configFile, string cacheDirectory, AutoCSer.ILog log = null)
         {
-            this.log = log ?? AutoCSer.Log.Pub.Log;
-            if (string.IsNullOrEmpty(privatePath)) privatePath = AutoCSer.PubPath.ApplicationPath;
+            this.log = log ?? AutoCSer.LogHelper.Default;
+            if (string.IsNullOrEmpty(privatePath)) privatePath = AutoCSer.Config.ApplicationPath;
             else
             {
-                privatePath = new DirectoryInfo(privatePath).fullName().fileNameToLower();
-                if (privatePath != AutoCSer.PubPath.ApplicationPath) this.privatePath = privatePath;
+                privatePath = new DirectoryInfo(privatePath).fullName();
+                if (privatePath != AutoCSer.Config.ApplicationPath) this.privatePath = privatePath;
             }
             setup = new AppDomainSetup();
             if (configFile != null && File.Exists(configFile)) setup.ConfigurationFile = configFile;
@@ -191,7 +191,7 @@ namespace AutoCSer
                 }
                 catch (Exception error)
                 {
-                    log.Add(Log.LogType.Error, error);
+                    log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 domain = null;
                 loader = null;

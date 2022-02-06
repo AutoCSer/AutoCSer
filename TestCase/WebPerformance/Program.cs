@@ -23,13 +23,13 @@ namespace AutoCSer.TestCase.WebPerformance
 ");
                     try
                     {
-                        using (AutoCSer.Net.HttpRegister.Server server = AutoCSer.Net.HttpRegister.Server.Create<WebServer>(new WebConfig().MainHostPort))
+                        using (AutoCSer.Net.HttpRegister.Server server = AutoCSer.Net.HttpRegister.Server.Create<WebServer>(new WebViewConfig().MainHostPort))
                         {
                             if (server == null) Console.WriteLine("HTTP服务启动失败");
                             else
                             {
 #if DotNetStandard
-                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.WebPerformanceClient.dll"));
+                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, @"AutoCSer.TestCase.WebPerformanceClient.dll"));
                                 if (clientFile.Exists)
                                 {
                                     ProcessStartInfo process = new ProcessStartInfo("dotnet", clientFile.FullName);
@@ -37,7 +37,7 @@ namespace AutoCSer.TestCase.WebPerformance
                                     Process.Start(process);
                                 }
 #else
-                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.WebPerformanceClient.exe"));
+                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, @"AutoCSer.TestCase.WebPerformanceClient.exe"));
                                 if (clientFile.Exists) Process.Start(clientFile.FullName);
 #endif
                                 else Console.WriteLine("未找到 WEB 测试客户端程序");

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer.Emit
 {
@@ -38,7 +38,7 @@ namespace AutoCSer.Net.TcpServer.Emit
             this.returnType = returnType;
             this.flag = flag;
             hashCode = (int)flag;
-            if (returnType != typeof(void)) returnType.GetHashCode();
+            if (returnType != typeof(void)) hashCode ^= returnType.GetHashCode();
             int index = 0;
             foreach (ParameterInfo parameter in parameters) hashCode ^= (parameter.elementType().GetHashCode() ^ parameter.Name.GetHashCode()) + index++;
         }

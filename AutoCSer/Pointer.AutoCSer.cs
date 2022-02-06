@@ -6,7 +6,7 @@ namespace AutoCSer
     /// <summary>
     /// 指针(因为指针无法静态初始化)
     /// </summary>
-    public unsafe partial struct Pointer
+    //public unsafe partial struct Pointer
     {
         /// <summary>
         /// 带长度的指针

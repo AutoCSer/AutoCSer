@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -9,16 +9,6 @@ using/**/System.Reflection.Emit;
 
 namespace AutoCSer.MemberCopy
 {
-    /// <summary>
-    /// 成员复制
-    /// </summary>
-    internal sealed class Copyer
-    {
-        /// <summary>
-        /// 浅复制函数信息
-        /// </summary>
-        internal static readonly MethodInfo MemberwiseCloneMethod = ((Func<object>)new Copyer().MemberwiseClone).Method;
-    }
     /// <summary>
     /// 成员复制
     /// </summary>
@@ -66,6 +56,10 @@ namespace AutoCSer.MemberCopy
         /// <param name="memberMap">成员位图</param>
         internal delegate void memberMapCopyer(ref valueType value, valueType copyValue, MemberMap memberMap);
         /// <summary>
+        /// 是否值类型
+        /// </summary>
+        private static readonly bool isValueType;
+        /// <summary>
         /// 是否采用值类型复制模式
         /// </summary>
         private static readonly bool isValueCopy;
@@ -89,7 +83,7 @@ namespace AutoCSer.MemberCopy
             {
                 if (readValue.Length == 0)
                 {
-                    if (value == null) value = NullValue<valueType>.Array;
+                    if (value == null) value = EmptyArray<valueType>.Array;
                     return;
                 }
                 if (value == null || value.Length < readValue.Length) System.Array.Resize(ref value, readValue.Length);
@@ -137,30 +131,22 @@ namespace AutoCSer.MemberCopy
         /// <summary>
         /// 对象浅复制
         /// </summary>
-        private static readonly Func<valueType, object> memberwiseClone;
-        /// <summary>
-        /// 对象浅复制
-        /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static valueType MemberwiseClone(valueType value)
         {
-            return memberwiseClone != null ? (valueType)memberwiseClone(value) : value;
+            return !isValueType && value != null ? (valueType)AutoCSer.MemberCopy.Common.CallMemberwiseClone(value) : value;
         }
 
         static Copyer()
         {
             Type type = typeof(valueType), refType = type.MakeByRefType();
-            //if (!type.IsValueType) memberwiseClone = (Func<valueType, object>)Delegate.CreateDelegate(typeof(Func<valueType, object>), typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
-            if (!type.IsValueType) memberwiseClone = (Func<valueType, object>)Delegate.CreateDelegate(typeof(Func<valueType, object>), Copyer.MemberwiseCloneMethod);
+            isValueType = type.IsValueType;
             if (type.IsArray)
             {
                 if (type.GetArrayRank() == 1)
                 {
-                    //Type copyerType = typeof(Copyer<>).MakeGenericType(type.GetElementType());
-                    //defaultCopyer = (copyer)Delegate.CreateDelegate(typeof(copyer), copyerType.GetMethod("copyArray", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { refType, type }, null));
-                    //defaultMemberCopyer = (memberMapCopyer)Delegate.CreateDelegate(typeof(memberMapCopyer), copyerType.GetMethod("copyArray", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { refType, type, typeof(MemberMap) }, null));
                     AutoCSer.Metadata.GenericType GenericType = AutoCSer.Metadata.GenericType.Get(type.GetElementType());
                     defaultCopyer = (copyer)GenericType.MemberCopyArrayDelegate;
                     defaultMemberCopyer = (memberMapCopyer)GenericType.MemberMapCopyArrayDelegate;
@@ -191,7 +177,7 @@ namespace AutoCSer.MemberCopy
                     }
                 }
             }
-            FieldIndex[] fields = MemberIndexGroup<valueType>.GetFields();
+            FieldIndex[] fields = MemberIndexGroup<valueType>.GetAnonymousFields();
             if (fields.Length == 0)
             {
                 defaultCopyer = noCopy;

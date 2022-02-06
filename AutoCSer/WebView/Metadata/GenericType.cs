@@ -7,13 +7,8 @@ namespace AutoCSer.WebView.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal abstract class GenericType
+    internal abstract class GenericType : AutoCSer.Metadata.GenericTypeBase
     {
-        /// <summary>
-        /// HTTP 查询解析器 实例
-        /// </summary>
-        internal static readonly AutoCSer.Net.Http.HeaderQueryParser HttpHeaderQueryParser = new AutoCSer.Net.Http.HeaderQueryParser();
-
 #if !NOJIT
         /// <summary>
         /// WEB视图成员清理
@@ -36,16 +31,16 @@ namespace AutoCSer.WebView.Metadata
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, GenericType> cache = new LockLastDictionary<Type, GenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, GenericType> cache = new LockLastDictionary<HashType, GenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
-        /// <typeparam name="Type"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static GenericType create<Type>()
+        private static GenericType create<T>()
         {
-            return new GenericType<Type>();
+            return new GenericType<T>();
         }
         /// <summary>
         /// 创建泛型类型元数据 函数信息
@@ -56,14 +51,14 @@ namespace AutoCSer.WebView.Metadata
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static GenericType Get(Type type)
+        public static GenericType Get(HashType type)
         {
             GenericType value;
             if (!cache.TryGetValue(type, out value))
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(type).Invoke(null, null) }.GenericType;
+                    value = new UnionType.GenericType { Object = createMethod.MakeGenericMethod(type).Invoke(null, null) }.Value;
                     cache.Set(type, value);
                 }
                 finally { cache.Exit(); }
@@ -74,16 +69,21 @@ namespace AutoCSer.WebView.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    /// <typeparam name="Type">泛型类型</typeparam>
-    internal sealed class GenericType<Type> : GenericType
+    /// <typeparam name="T">泛型类型</typeparam>
+    internal sealed class GenericType<T> : GenericType
     {
+        /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(T); } }
+
 #if !NOJIT
         /// <summary>
         /// WEB视图成员清理
         /// </summary>
         internal override MethodInfo WebViewClearMemberMethod
         {
-            get { return ((Action<Type>)AutoCSer.WebView.ClearMember.clear<Type>).Method; }
+            get { return ((Action<T>)AutoCSer.WebView.ClearMember.Clear<T>).Method; }
         }
 #endif
         /// <summary>
@@ -91,21 +91,27 @@ namespace AutoCSer.WebView.Metadata
         /// </summary>
         internal override void HeaderQueryTypeParserCompile()
         {
-            AutoCSer.Net.Http.HeaderQueryTypeParser<Type>.Compile();
+            AutoCSer.Net.Http.HeaderQueryTypeParser<T>.Compile();
         }
+        /// <summary>
+        /// 反序列化委托
+        /// </summary>
+        /// <param name="parser">目标数据</param>
+        /// <param name="value">目标数据</param>
+        private delegate void headerQueryParse(AutoCSer.Net.Http.HeaderQueryParser parser, ref T value);
         /// <summary>
         /// 枚举类型解析
         /// </summary>
         internal override MethodInfo HttpHeaderQueryParseEnumMethod
         {
-            get { return ((AutoCSer.Metadata.GenericType<Type>.deSerialize)GenericType.HttpHeaderQueryParser.parseEnum<Type>).Method; }
+            get { return ((headerQueryParse)AutoCSer.Net.Http.HeaderQueryParser.ParseEnum<T>).Method; }
         }
         /// <summary>
         /// 未知类型解析
         /// </summary>
         internal override MethodInfo HttpHeaderQueryParseUnknownMethod
         {
-            get { return ((AutoCSer.Metadata.GenericType<Type>.deSerialize)GenericType.HttpHeaderQueryParser.unknown<Type>).Method; }
+            get { return ((headerQueryParse)AutoCSer.Net.Http.HeaderQueryParser.Unknown<T>).Method; }
         }
     }
 }

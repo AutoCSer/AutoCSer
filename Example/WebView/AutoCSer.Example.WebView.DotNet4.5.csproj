@@ -121,7 +121,8 @@
     <PostBuildEvent>if exist "$(ProjectDir)..\..\AutoCser\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\AutoCser\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if exist "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" @(TypeScriptCompile ->'"%(fullpath)"', ' ')</PreBuildEvent>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q
+if exist "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" @(TypeScriptCompile ->'"%(fullpath)"', ' ')</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -20,7 +20,7 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 子节点集合
         /// </summary>
-        internal LeftArray<KeyValue<SubString, Node>> Nodes
+        public LeftArray<KeyValue<SubString, Node>> Nodes
         {
             get { return new LeftArray<KeyValue<SubString, Node>> { Array = nodes, Length = String.Length }; }
         }
@@ -28,6 +28,15 @@ namespace AutoCSer.Xml
         /// 字符串
         /// </summary>
         internal SubString String;
+        /// <summary>
+        /// 获取字符串
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public SubString GetString()
+        {
+            return String;
+        }
         /// <summary>
         /// 类型
         /// </summary>
@@ -37,7 +46,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        internal Node this[string name]
+        public Node this[string name]
         {
             get
             {
@@ -115,9 +124,9 @@ namespace AutoCSer.Xml
                 {
                     if (attribute.Key.Length == nameSize)
                     {
-                        fixed (char* xmlFixed = String.String)
+                        fixed (char* xmlFixed = String.GetFixedBuffer())
                         {
-                            if (AutoCSer.Memory.SimpleEqualNotNull((byte*)(xmlFixed + attribute.Key.StartIndex), (byte*)nameStart, nameSize << 1))
+                            if (AutoCSer.Memory.Common.SimpleEqualNotNull((byte*)(xmlFixed + attribute.Key.StartIndex), (byte*)nameStart, nameSize << 1))
                             {
                                 index = attribute.Value;
                                 return true;
@@ -127,6 +136,23 @@ namespace AutoCSer.Xml
                 }
             }
             return false;
+        }
+        /// <summary>
+        /// 获取属性
+        /// </summary>
+        /// <param name="name">属性名称</param>
+        /// <returns>属性值</returns>
+        public unsafe SubString GetAttribute(string name)
+        {
+            if (attributes != null)
+            {
+                Range index = default(Range);
+                fixed (char* nameFixed = name)
+                {
+                    if (GetAttribute(nameFixed, name.Length, ref index)) return new SubString(index.StartIndex, index.Length, String.String);
+                }
+            }
+            return default(SubString);
         }
     }
 }

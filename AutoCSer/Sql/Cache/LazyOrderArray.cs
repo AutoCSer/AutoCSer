@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql.Cache
 {
@@ -14,7 +14,7 @@ namespace AutoCSer.Sql.Cache
         /// <summary>
         /// 数据数组
         /// </summary>
-        internal LeftArray<valueType> Array;
+        internal LeftArray<valueType> Array = new LeftArray<valueType>(0);
         /// <summary>
         /// 数据是否已经排序
         /// </summary>

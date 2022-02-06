@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpInternalServer
     /// <summary>
     /// 配置加载
     /// </summary>
-    internal static partial class ConfigLoader
+    //internal static partial class ConfigLoader
     {
         /// <summary>
         /// 获取配置数据
@@ -17,7 +17,7 @@ namespace AutoCSer.Net.TcpInternalServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static UnionType GetUnion(Type type, string name = "")
         {
-            return new UnionType { Value = AutoCSer.Config.Loader.GetObject(type, name) };
+            return new UnionType { Object = AutoCSer.Config.Loader.GetObject(type, name) };
         }
     }
 }

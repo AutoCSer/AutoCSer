@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
@@ -108,7 +108,7 @@ namespace System.Collections.Generic
         /// <returns>数组</returns>
         public arrayType[] getArray<arrayType>(Func<valueType, arrayType> getValue)
         {
-            if (dictionary.Count == 0) return AutoCSer.NullValue<arrayType>.Array;
+            if (dictionary.Count == 0) return AutoCSer.EmptyArray<arrayType>.Array;
             arrayType[] newValues = new arrayType[dictionary.Count];
             int index = 0;
             foreach (valueType value in dictionary.Keys) newValues[index++] = getValue(value);

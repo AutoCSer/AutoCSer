@@ -70,14 +70,8 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 心跳检测
         /// </summary>
-        internal abstract void Check();
-        /// <summary>
-        /// 创建输出
-        /// </summary>
-        internal virtual void VirtualBuildOutput()
-        {
-            throw new InvalidOperationException();
-        }
+        /// <returns></returns>
+        internal abstract bool Check();
         /// <summary>
         /// 增加当前发送命令数量
         /// </summary>

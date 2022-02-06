@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -58,8 +59,8 @@ namespace AutoCSer.WebView
                     HttpResponse.AppendCookie(cookie = AutoCSer.Net.Http.Cookie.YieldPool.Default.Pop() ?? new AutoCSer.Net.Http.Cookie());
                     cookie.Name = name;
                 }
-                if (domain == null) cookie.Set(value ?? NullValue<byte>.Array, expires, Socket.HttpHeader.Host, path, isSecure, isHttpOnly);
-                else cookie.Set(value ?? NullValue<byte>.Array, expires, domain, path, isSecure, isHttpOnly);
+                if (domain == null) cookie.Set(value ?? EmptyArray<byte>.Array, expires, Socket.HttpHeader.Host, path, isSecure, isHttpOnly);
+                else cookie.Set(value ?? EmptyArray<byte>.Array, expires, domain, path, isSecure, isHttpOnly);
             }
         }
         /// <summary>
@@ -77,7 +78,7 @@ namespace AutoCSer.WebView
                     HttpResponse.AppendCookie(cookie = AutoCSer.Net.Http.Cookie.YieldPool.Default.Pop() ?? new AutoCSer.Net.Http.Cookie());
                     cookie.Name = name;
                 }
-                cookie.Set(value ?? NullValue<byte>.Array, DateTime.MinValue, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
+                cookie.Set(value ?? EmptyArray<byte>.Array, DateTime.MinValue, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
             }
         }
         /// <summary>
@@ -96,7 +97,7 @@ namespace AutoCSer.WebView
                     HttpResponse.AppendCookie(cookie = AutoCSer.Net.Http.Cookie.YieldPool.Default.Pop() ?? new AutoCSer.Net.Http.Cookie());
                     cookie.Name = nameData;
                 }
-                cookie.Set(string.IsNullOrEmpty(value) ? NullValue<byte>.Array : value.getBytes(), DateTime.MinValue, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
+                cookie.Set(string.IsNullOrEmpty(value) ? EmptyArray<byte>.Array : value.getBytes(), DateTime.MinValue, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
             }
         }
         /// <summary>
@@ -113,7 +114,7 @@ namespace AutoCSer.WebView
                     HttpResponse.AppendCookie(cookie = AutoCSer.Net.Http.Cookie.YieldPool.Default.Pop() ?? new AutoCSer.Net.Http.Cookie());
                     cookie.Name = name;
                 }
-                cookie.Set(NullValue<byte>.Array, Pub.MinTime, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
+                cookie.Set(EmptyArray<byte>.Array, AutoCSer.Date.BaseTime, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
             }
         }
         /// <summary>
@@ -131,7 +132,7 @@ namespace AutoCSer.WebView
                     HttpResponse.AppendCookie(cookie = AutoCSer.Net.Http.Cookie.YieldPool.Default.Pop() ?? new AutoCSer.Net.Http.Cookie());
                     cookie.Name = nameData;
                 }
-                cookie.Set(NullValue<byte>.Array, Pub.MinTime, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
+                cookie.Set(EmptyArray<byte>.Array, AutoCSer.Date.BaseTime, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, false);
             }
         }
         /// <summary>
@@ -199,7 +200,7 @@ namespace AutoCSer.WebView
         {
             if (sessionId.CookieValue == 0)
             {
-                SubArray<byte> cookie = default(SubArray<byte>);
+                SubArray<byte> cookie = new SubArray<byte>();
                 Socket.HttpHeader.GetCookie(sessionName, ref cookie);
                 sessionId.FromCookie(ref cookie);
             }
@@ -276,7 +277,7 @@ namespace AutoCSer.WebView
                 if (sessionId.Ticks != 0)
                 {
                     session.Remove(ref sessionId);
-                    getSessionCookie().Set(NullValue<byte>.Array, Pub.MinTime, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, true);
+                    getSessionCookie().Set(EmptyArray<byte>.Array, AutoCSer.Date.BaseTime, Socket.HttpHeader.Host, AutoCSer.Net.Http.Cookie.DefaultPath, false, true);
                 }
             }
         }
@@ -298,7 +299,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 内存流最大字节数
         /// </summary>
-        internal virtual SubBuffer.Size MaxMemoryStreamSize { get { return SubBuffer.Size.Kilobyte4; } }
+        internal virtual AutoCSer.Memory.BufferSize MaxMemoryStreamSize { get { return AutoCSer.Memory.BufferSize.Kilobyte4; } }
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -373,7 +374,7 @@ namespace AutoCSer.WebView
             if (Socket.HttpHeader.AjaxCallBackNameIndex.Length != 0)
             {
                 jsStream.JavascriptUnescape(Socket.HttpHeader.AjaxCallBackName);
-                jsStream.UnsafeWrite('(');
+                jsStream.Data.Write('(');
                 return true;
             }
             return false;
@@ -432,7 +433,7 @@ namespace AutoCSer.WebView
                     return !string.IsNullOrEmpty(json) && parseJson(ref parameter, json);
                 case AutoCSer.Net.Http.PostType.Xml:
                     Socket.ParseForm();
-                    return AutoCSer.Xml.Parser.Parse(Socket.Form.Text, ref parameter, xmlParserConfig);
+                    return AutoCSer.XmlDeSerializer.DeSerialize(Socket.Form.Text, ref parameter, xmlParserConfig);
                 case AutoCSer.Net.Http.PostType.Data:
                     Socket.ParseForm(dataToType);
                     return parseParameter(ref parameter);
@@ -459,7 +460,7 @@ namespace AutoCSer.WebView
                     string json = form.Text;
                     return !string.IsNullOrEmpty(json) && parseJson(ref parameter, json);
                 case AutoCSer.Net.Http.Header.QueryXmlNameChar:
-                    return AutoCSer.Xml.Parser.Parse(form.Text, ref parameter, xmlParserConfig);
+                    return AutoCSer.XmlDeSerializer.DeSerialize(form.Text, ref parameter, xmlParserConfig);
                 default: return parseParameterQuery(ref parameter);
             }
         }
@@ -475,10 +476,10 @@ namespace AutoCSer.WebView
             {
                 case AutoCSer.Net.Http.PostType.Json:
                     Socket.ParseForm();
-                    return AutoCSer.Json.Parser.Parse(Socket.Form.Text, ref parameter, jsonParserConfig);
+                    return AutoCSer.JsonDeSerializer.DeSerialize(Socket.Form.Text, ref parameter, jsonParserConfig);
                 case AutoCSer.Net.Http.PostType.Xml:
                     Socket.ParseForm();
-                    return AutoCSer.Xml.Parser.Parse(Socket.Form.Text, ref parameter, xmlParserConfig);
+                    return AutoCSer.XmlDeSerializer.DeSerialize(Socket.Form.Text, ref parameter, xmlParserConfig);
                 case AutoCSer.Net.Http.PostType.Data:
                     Socket.ParseForm(dataToType);
                     return parseParameterAny(ref parameter);
@@ -502,9 +503,9 @@ namespace AutoCSer.WebView
             switch (form.TextQueryChar)
             {
                 case AutoCSer.Net.Http.Header.QueryJsonNameChar:
-                    return AutoCSer.Json.Parser.Parse(form.Text, ref parameter, jsonParserConfig);
+                    return AutoCSer.JsonDeSerializer.DeSerialize(form.Text, ref parameter, jsonParserConfig);
                 case AutoCSer.Net.Http.Header.QueryXmlNameChar:
-                    return AutoCSer.Xml.Parser.Parse(form.Text, ref parameter, xmlParserConfig);
+                    return AutoCSer.XmlDeSerializer.DeSerialize(form.Text, ref parameter, xmlParserConfig);
                 default: return parseParameterQueryAny(ref parameter);
             }
         }

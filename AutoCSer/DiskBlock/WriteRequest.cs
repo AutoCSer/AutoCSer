@@ -43,11 +43,11 @@ namespace AutoCSer.DiskBlock
         internal WriteRequest(int index)
         {
             this.OnWrite = AutoCSer.Net.TcpServer.ServerCallback<ulong>.Null.Default;
-            SubBuffer.Pool.GetPool(SubBuffer.Size.Byte256).Get(ref Buffer);
-            fixed (byte* bufferFixed = Buffer.Buffer)
+            SubBuffer.Pool.GetPool(AutoCSer.Memory.BufferSize.Byte256).Get(ref Buffer);
+            fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
             {
                 byte* start = bufferFixed + Buffer.StartIndex;
-                *(int*)start = Pub.PuzzleValue;
+                *(int*)start = Common.PuzzleValue;
                 *(int*)(start + sizeof(int)) = (int)AutoCSer.IO.FileHead.DiskBlockFile;
                 *(int*)(start + sizeof(int) * 2) = index;
             }
@@ -63,7 +63,7 @@ namespace AutoCSer.DiskBlock
             this.OnWrite = onWrite;
             SubBuffer.Pool.GetBuffer(ref Buffer, (Size = buffer.Buffer.Length) + sizeof(int));
             System.Buffer.BlockCopy(buffer.Buffer.Array, buffer.Buffer.Start, Buffer.Buffer, Buffer.StartIndex + sizeof(int), Size);
-            fixed (byte* bufferFixed = Buffer.Buffer) *(int*)(bufferFixed + Buffer.StartIndex) = Size;
+            fixed (byte* bufferFixed = Buffer.GetFixedBuffer()) *(int*)(bufferFixed + Buffer.StartIndex) = Size;
         }
         /// <summary>
         /// 写入数据
@@ -126,7 +126,7 @@ namespace AutoCSer.DiskBlock
             if (data.Length == Size + sizeof(int))
             {
                 bool isCache;
-                fixed (byte* bufferFixed = Buffer.Buffer) isCache = AutoCSer.Memory.EqualNotNull(data, bufferFixed + Buffer.StartIndex, Size + sizeof(int));
+                fixed (byte* bufferFixed = Buffer.GetFixedBuffer()) isCache = AutoCSer.Memory.Common.EqualNotNull(data, bufferFixed + Buffer.StartIndex, Size + sizeof(int));
                 if (isCache)
                 {
                     Buffer.Free();

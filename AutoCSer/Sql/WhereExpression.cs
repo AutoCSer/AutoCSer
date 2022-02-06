@@ -1,4 +1,4 @@
-﻿using AutoCSer.Extension;
+﻿using AutoCSer.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -224,10 +224,11 @@ namespace AutoCSer.Sql
                 case ExpressionType.IsFalse: convertIsFalse(); return;
                 case ExpressionType.Convert:
                 case ExpressionType.ConvertChecked:
-                    convertConvert(new UnionType { Value = Expression }.UnaryExpression);
+                    convertConvert(new UnionType.UnaryExpression { Object = Expression }.Value);
                     return;
                 case ExpressionType.Conditional: convertConditional(); return;
                 case ExpressionType.Call: convertCall(); return;
+                case ExpressionType.Lambda: convertLambda(); return;
 
                 case ExpressionType.UnaryPlus:
                 case ExpressionType.Constant: Type = ConvertType.Expression; return;
@@ -252,7 +253,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertOrElse()
         {
-            BinaryExpression binaryExpression = new UnionType { Value = Expression }.BinaryExpression;
+            BinaryExpression binaryExpression = new UnionType.BinaryExpression { Object = Expression }.Value;
             Expression = binaryExpression.Left;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -298,7 +299,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertAndAlso()
         {
-            BinaryExpression binaryExpression = new UnionType { Value = Expression }.BinaryExpression;
+            BinaryExpression binaryExpression = new UnionType.BinaryExpression { Object = Expression }.Value;
             Expression = binaryExpression.Left;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -344,7 +345,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertNot()
         {
-            UnaryExpression unaryExpression = new UnionType { Value = Expression }.UnaryExpression;
+            UnaryExpression unaryExpression = new UnionType.UnaryExpression { Object = Expression }.Value;
             Expression = unaryExpression.Operand;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -383,7 +384,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertBinaryExpression()
         {
-            BinaryExpression binaryExpression = new UnionType { Value = Expression }.BinaryExpression;
+            BinaryExpression binaryExpression = new UnionType.BinaryExpression { Object = Expression }.Value;
             Expression = binaryExpression.Left;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -693,7 +694,7 @@ namespace AutoCSer.Sql
         /// <returns></returns>
         private bool convertLeftShift(ref WhereExpression left)
         {
-            object value = getConstantCalculator(left.Expression, ExpressionType.LeftShift);
+            object value = getConstantCalculatorShift(left.Expression, ExpressionType.LeftShift);
             if (value != null)
             {
                 Expression = Expression.Constant(value);
@@ -710,7 +711,7 @@ namespace AutoCSer.Sql
         /// <returns></returns>
         private bool convertRightShift(ref WhereExpression left)
         {
-            object value = getConstantCalculator(left.Expression, ExpressionType.RightShift);
+            object value = getConstantCalculatorShift(left.Expression, ExpressionType.RightShift);
             if (value != null)
             {
                 Expression = Expression.Constant(value);
@@ -725,7 +726,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertMemberAccess()
         {
-            MemberExpression memberExpression = new UnionType { Value = Expression }.MemberExpression;
+            MemberExpression memberExpression = new UnionType.MemberExpression { Object = Expression }.Value;
             //if (memberExpression.Expression != null && typeof(ParameterExpression).IsAssignableFrom(memberExpression.Expression.GetType()))
             if (memberExpression.Expression != null && memberExpression.Expression.NodeType == ExpressionType.Parameter)
             {
@@ -777,7 +778,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertArrayLength()
         {
-            UnaryExpression unaryExpression = new UnionType { Value = Expression }.UnaryExpression;
+            UnaryExpression unaryExpression = new UnionType.UnaryExpression { Object = Expression }.Value;
             Expression = unaryExpression.Operand;
             Array array = convertArray(ExpressionType.ArrayLength);
             if (array != null)
@@ -817,7 +818,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertArrayIndex()
         {
-            BinaryExpression binaryExpression = new UnionType { Value = Expression }.BinaryExpression;
+            BinaryExpression binaryExpression = new UnionType.BinaryExpression { Object = Expression }.Value;
             Expression = binaryExpression.Left;
             Array array = convertArray(ExpressionType.ArrayIndex);
             if (array != null)
@@ -852,7 +853,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertCoalesce()
         {
-            BinaryExpression binaryExpression = new UnionType { Value = Expression }.BinaryExpression;
+            BinaryExpression binaryExpression = new UnionType.BinaryExpression { Object = Expression }.Value;
             Expression = binaryExpression.Left;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -887,7 +888,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertUnbox()
         {
-            UnaryExpression unaryExpression = new UnionType { Value = Expression }.UnaryExpression;
+            UnaryExpression unaryExpression = new UnionType.UnaryExpression { Object = Expression }.Value;
             Expression = unaryExpression.Operand;
             Convert();
             if (Type == ConvertType.Expression) Expression = unaryExpression;
@@ -897,7 +898,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertUnaryCalculator()
         {
-            UnaryExpression unaryExpression = new UnionType { Value = Expression }.UnaryExpression;
+            UnaryExpression unaryExpression = new UnionType.UnaryExpression { Object = Expression }.Value;
             Expression = unaryExpression.Operand;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -938,7 +939,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertIsTrue()
         {
-            UnaryExpression unaryExpression = new UnionType { Value = Expression }.UnaryExpression;
+            UnaryExpression unaryExpression = new UnionType.UnaryExpression { Object = Expression }.Value;
             Expression = unaryExpression.Operand;
             Convert();
             if (Type != ConvertType.Unknown && getLogicType() == LogicType.Unknown)
@@ -956,7 +957,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertIsFalse()
         {
-            UnaryExpression unaryExpression = new UnionType { Value = Expression }.UnaryExpression;
+            UnaryExpression unaryExpression = new UnionType.UnaryExpression { Object = Expression }.Value;
             Expression = unaryExpression.Operand;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -994,6 +995,12 @@ namespace AutoCSer.Sql
                     {
                         System.Type valueType = value.GetType(), convertType = unaryExpression.Type;
                         if (valueType == convertType)
+                        {
+                            Type = ConvertType.ConvertExpression;
+                            return;
+                        }
+                        if (convertType.IsValueType && convertType.IsGenericType
+                            && convertType.GetGenericTypeDefinition() == typeof(Nullable<>) && valueType == convertType.GetGenericArguments()[0])
                         {
                             Type = ConvertType.ConvertExpression;
                             return;
@@ -1039,7 +1046,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertConditional()
         {
-            ConditionalExpression conditionalExpression = new UnionType { Value = Expression }.ConditionalExpression;
+            ConditionalExpression conditionalExpression = new UnionType.ConditionalExpression { Object = Expression }.Value;
             Expression = conditionalExpression.Test;
             Convert();
             if (Type != ConvertType.Unknown)
@@ -1085,7 +1092,7 @@ namespace AutoCSer.Sql
         /// </summary>
         private void convertCall()
         {
-            MethodCallExpression methodCallExpression = new UnionType { Value = Expression }.MethodCallExpression;
+            MethodCallExpression methodCallExpression = new UnionType.MethodCallExpression { Object = Expression }.Value;
             MethodInfo method = methodCallExpression.Method;
             if (method.ReflectedType == typeof(ExpressionCall))
             {
@@ -1135,7 +1142,7 @@ namespace AutoCSer.Sql
                     goto UNKNOWN;
                 }
             }
-            object[] arguments = NullValue<object>.Array;
+            object[] arguments = EmptyArray<object>.Array;
             if (methodCallExpression.Arguments != null && methodCallExpression.Arguments.Count != 0)
             {
                 arguments = new object[methodCallExpression.Arguments.Count];
@@ -1149,13 +1156,47 @@ namespace AutoCSer.Sql
                     arguments[argumentIndex++] = Expression.GetConstantValue();
                 }
             }
-            Expression = Expression.Constant(method.Invoke(target, arguments));
-            Type = ConvertType.ConvertExpression;
-            return;
+            try
+            {
+                Expression = Expression.Constant(method.Invoke(target, arguments));
+                Type = ConvertType.ConvertExpression;
+                return;
+            }
+            catch (Exception error)
+            {
+                if (error.Message != ExpressionCall.CustomExpressionExceptionMessage && error.GetType().Name != ExpressionCall.CustomExpressionExceptionName)
+                {
+                    Exception innerException = error.InnerException;
+                    if (innerException == null) throw error;
+                    if (innerException.Message != ExpressionCall.CustomExpressionExceptionMessage && innerException.GetType().Name != ExpressionCall.CustomExpressionExceptionName)
+                    {
+                        throw error;
+                    }
+                }
+            }
         UNKNOWN:
             Type = ConvertType.Unknown;
             UnknownType = ExpressionType.Call;
             Expression = methodCallExpression;
+        }
+        /// <summary>
+        /// Lambda 表达式
+        /// </summary>
+        private void convertLambda()
+        {
+            try
+            {
+                //需要缓存，否则会内存泄漏
+                MethodInfo compileMethod = Expression.GetType().GetMethod("Compile", BindingFlags.Instance | BindingFlags.Public, null, EmptyArray<Type>.Array, null);
+                object delegateObject = compileMethod.Invoke(Expression, null);
+                Expression = Expression.Constant(delegateObject);
+                Type = ConvertType.ConvertExpression;
+            }
+            catch
+            {
+                Type = ConvertType.Unknown;
+                UnknownType = ExpressionType.Lambda;
+            }
         }
 
         /// <summary>

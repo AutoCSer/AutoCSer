@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Threading;
 using System.Runtime.InteropServices;
@@ -13,20 +13,13 @@ namespace AutoCSer.Sql.Cache.Whole
     /// <summary>
     /// 计数成员（非精确计数）
     /// </summary>
-    public class CountMember : AutoCSer.Threading.DoubleLink<CountMember>
+    public class CountMember : AutoCSer.Threading.SecondTimerTaskNode
     {
-        /// <summary>
-        /// 超时秒数
-        /// </summary>
-        protected int timeout;
-        /// <summary>
-        /// 当前超时秒数
-        /// </summary>
-        protected int second;
         /// <summary>
         /// 计数成员
         /// </summary>
-        protected CountMember() { }
+        /// <param name="timeoutSeconds"></param>
+        protected CountMember(int timeoutSeconds) : base(AutoCSer.Threading.SecondTimer.TaskArray, timeoutSeconds, AutoCSer.Threading.SecondTimerThreadMode.TinyBackgroundThreadPool, AutoCSer.Threading.SecondTimerKeepMode.After, timeoutSeconds) { }
         /// <summary>
         /// 增加计数
         /// </summary>
@@ -45,24 +38,12 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <summary>
         /// 更新计数
         /// </summary>
-        protected virtual void update() { }
-        /// <summary>
-        /// 定时器触发日志写入
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnTimer()
-        {
-            if (Interlocked.Decrement(ref second) == 0) update();
-        }
+        protected internal override void OnTimer() { }
 
         /// <summary>
         /// 默认空计数成员
         /// </summary>
-        public static readonly CountMember Null = new CountMember();
-        /// <summary>
-        /// 计数成员链表
-        /// </summary>
-        internal static YieldLink CountMembers;
+        public static readonly new CountMember Null = new CountMember(0);
     }
     /// <summary>
     /// 计数成员（非精确计数）
@@ -123,7 +104,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 Query.Clear();
                 countMember = null;
                 value = null;
-                YieldPool.Default.PushNotNull(this);
+                YieldPool.Default.Push(this);
             }
         }
         /// <summary>
@@ -170,7 +151,7 @@ namespace AutoCSer.Sql.Cache.Whole
             {
                 countMember = null;
                 Query.Clear();
-                YieldPool.Default.PushNotNull(this);
+                YieldPool.Default.Push(this);
             }
         }
         /// <summary>
@@ -238,6 +219,10 @@ namespace AutoCSer.Sql.Cache.Whole
         /// </summary>
         private int updateIndex;
         /// <summary>
+        /// 更新计数任务数量
+        /// </summary>
+        private volatile int updateTaskCount;
+        /// <summary>
         /// 计数总量
         /// </summary>
         private long totalCount;
@@ -257,8 +242,9 @@ namespace AutoCSer.Sql.Cache.Whole
         /// </summary>
         /// <param name="cache">待计数缓存</param>
         /// <param name="member">计数成员</param>
-        /// <param name="timeout">超时秒数</param>
-        public CountMember(Event.IdentityCache<valueType, modelType, memberCacheType> cache, Expression<Func<modelType, int>> member, int timeout)
+        /// <param name="timeoutSeconds">超时秒数</param>
+        public CountMember(Event.IdentityCache<valueType, modelType, memberCacheType> cache, Expression<Func<modelType, int>> member, int timeoutSeconds)
+            : base(Math.Max(timeoutSeconds, 1))
         {
             MemberExpression<modelType, int> memberExpression = new MemberExpression<modelType, int>(member);
             if (memberExpression.Field == null) throw new InvalidCastException("member is not MemberExpression");
@@ -266,7 +252,6 @@ namespace AutoCSer.Sql.Cache.Whole
             if (filed == null) throw new FieldAccessException(typeof(memberCacheType).fullName() + " 没有找到计数字段 " + memberExpression.Field.Name);
             this.cache = cache;
             table = cache.SqlTable;
-            this.timeout = second = Math.Max(timeout, 1);
             int size = table.Attribute.CountMemberCacheSize;
             ids = new int[size <= 0 ? TableAttribute.DefaultCountMemberCacheSize : size];
             getCacheCount = memberExpression.GetMember;
@@ -274,12 +259,12 @@ namespace AutoCSer.Sql.Cache.Whole
             getCount = AutoCSer.Emit.Field.UnsafeGetField<memberCacheType, int>(filed);
             setCount = AutoCSer.Emit.Field.UnsafeSetField<memberCacheType, int>(filed);
             setIdentity = DataModel.Model<modelType>.SetIdentity;
-            updateValue = AutoCSer.Emit.Constructor<valueType>.New();
+            updateValue = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
             (memberMap = new MemberMap<modelType>()).SetMember(memberExpression.Field.Name);
             selectMemberMap = table.GetSelectMemberMap(memberMap);
             foreach (valueType value in cache.Values) totalCount += getCacheCount(value);
             counterLock = new object();
-            CountMembers.PushNotNull(this);
+            AppendTaskArray();
         }
         /// <summary>
         /// 释放资源
@@ -288,8 +273,8 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
             {
-                CountMembers.PopNotNull(this);
-                if (Interlocked.Exchange(ref second, 0) != 0) update();
+                KeepMode = AutoCSer.Threading.SecondTimerKeepMode.Canceled;
+                OnTimer();
             }
         }
         /// <summary>
@@ -332,14 +317,15 @@ namespace AutoCSer.Sql.Cache.Whole
                                 count = getCount(memberCache);
                                 setCount(memberCache, 0);
                                 Monitor.Exit(counterLock);
-                                valueType freeValue = Interlocked.Exchange(ref this.freeValue, null) ?? AutoCSer.Emit.Constructor<valueType>.New();
+                                valueType freeValue = Interlocked.Exchange(ref this.freeValue, null) ?? AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
                                 setIdentity(freeValue, freeId);
                                 setCacheCount(freeValue, getCacheCount(value) + count);
                                 FreeTask freeTask = (FreeTask.YieldPool.Default.Pop() as FreeTask) ?? new FreeTask();
                                 freeTask.Set(this, freeValue);
                                 try
                                 {
-                                    if (table.Client.Update(table, freeValue, memberMap, ref freeTask.Query))
+                                    ReturnType returnType = table.Client.Update(table, freeValue, memberMap, ref freeTask.Query);
+                                    if (returnType == ReturnType.Success)
                                     {
                                         table.AddQueue(freeTask);
                                         freeTask = null;
@@ -368,15 +354,14 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <summary>
         /// 更新计数
         /// </summary>
-        protected override void update()
+        protected internal override void OnTimer()
         {
-            do
+            while (updateTaskCount == 0)
             {
                 Monitor.Enter(counterLock);
                 if (idIndex == 0)
                 {
                     Monitor.Exit(counterLock);
-                    second = timeout;
                     return;
                 }
                 if (updateIndex == 0) updateIndex = idIndex;
@@ -389,7 +374,6 @@ namespace AutoCSer.Sql.Cache.Whole
                     if (updateIndex == 0)
                     {
                         Monitor.Exit(counterLock);
-                        second = timeout;
                         return;
                     }
                     goto NEXT;
@@ -405,8 +389,10 @@ namespace AutoCSer.Sql.Cache.Whole
                 updateTask.Set(this);
                 try
                 {
-                    if (table.Client.Update(table, updateValue, memberMap, ref updateTask.Query))
+                    ReturnType returnType = table.Client.Update(table, updateValue, memberMap, ref updateTask.Query);
+                    if (returnType == ReturnType.Success)
                     {
+                        Interlocked.Increment(ref updateTaskCount);
                         table.AddQueue(updateTask);
                         updateTask = null;
                         return;
@@ -414,14 +400,13 @@ namespace AutoCSer.Sql.Cache.Whole
                 }
                 catch (Exception error)
                 {
-                    table.Log.Add(Log.LogType.Error, error);
+                    table.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 finally
                 {
                     if (updateTask != null) updateTask.Push();
                 }
             }
-            while (true);
         }
         /// <summary>
         /// 检测更新处理
@@ -429,58 +414,58 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <param name="connection"></param>
         private void check(ref DbConnection connection)
         {
-            if (isDisposed == 0)
+            //if (isDisposed == 0)
+            //{
+            //    second = timeout;
+            //    if (isDisposed == 0 || Interlocked.Exchange(ref second, 0) == 0) return;
+            //}
+            if (Interlocked.Decrement(ref updateTaskCount) == 0)
             {
-                second = timeout;
-                if (isDisposed == 0 || Interlocked.Exchange(ref second, 0) == 0) return;
-            }
-            Sql.Client client = table.Client;
-            UpdateQuery<modelType> query = new UpdateQuery<modelType> { MemberMap = selectMemberMap };
-            do
-            {
-                Monitor.Enter(counterLock);
-                if (idIndex == 0)
+                Sql.Client client = table.Client;
+                UpdateQuery<modelType> query = new UpdateQuery<modelType> { MemberMap = selectMemberMap };
+                do
                 {
-                    Monitor.Exit(counterLock);
-                    return;
-                }
-                if (updateIndex == 0) updateIndex = idIndex;
-            NEXT:
-                int id = ids[--updateIndex];
-                valueType value = cache[id];
-                ids[updateIndex] = ids[--idIndex];
-                if (value == null)
-                {
-                    if (updateIndex == 0)
+                    Monitor.Enter(counterLock);
+                    if (idIndex == 0)
                     {
                         Monitor.Exit(counterLock);
                         return;
                     }
-                    goto NEXT;
-                }
-                memberCacheType memberCache = cache.GetMemberCache(value);
-                int count = getCount(memberCache);
-                setCount(memberCache, 0);
-                Monitor.Exit(counterLock);
+                    if (updateIndex == 0) updateIndex = idIndex;
+                    NEXT:
+                    int id = ids[--updateIndex];
+                    valueType value = cache[id];
+                    ids[updateIndex] = ids[--idIndex];
+                    if (value == null)
+                    {
+                        if (updateIndex == 0)
+                        {
+                            Monitor.Exit(counterLock);
+                            return;
+                        }
+                        goto NEXT;
+                    }
+                    memberCacheType memberCache = cache.GetMemberCache(value);
+                    int count = getCount(memberCache);
+                    setCount(memberCache, 0);
+                    Monitor.Exit(counterLock);
 
-                setIdentity(updateValue, id);
-                setCacheCount(updateValue, getCacheCount(value) + count);
-                try
-                {
-                    if (client.Update(table, updateValue, memberMap, ref query)) client.Update(table, ref connection, updateValue, memberMap, ref query, true);
+                    setIdentity(updateValue, id);
+                    setCacheCount(updateValue, getCacheCount(value) + count);
+                    try
+                    {
+                        ReturnType returnType = client.Update(table, updateValue, memberMap, ref query);
+                        if (returnType == ReturnType.Success) returnType = client.Update(table, ref connection, updateValue, memberMap, ref query, true);
+                        //if (returnType != ReturnType.Success) table.Log.Add(LogLevel.Error, error);
+                    }
+                    catch (Exception error)
+                    {
+                        table.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                    }
+                    finally { query.ClearSql(); }
                 }
-                catch (Exception error)
-                {
-                    table.Log.Add(Log.LogType.Error, error);
-                }
-                finally { query.ClearSql(); }
+                while (true);
             }
-            while (true);
-        }
-
-        static CountMember()
-        {
-            OnTime.Default.Set();
         }
     }
 }

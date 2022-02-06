@@ -18,7 +18,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 接收 HTTP Body 数据内存缓冲区的最大字节数，超出限定则使用文件储存方式。
         /// </summary>
-        public SubBuffer.Size MaxMemoryStreamSize;
+        public AutoCSer.Memory.BufferSize MaxMemoryStreamSize;
         ///// <summary>
         ///// 是否异步请求
         ///// </summary>

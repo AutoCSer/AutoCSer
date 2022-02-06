@@ -21,9 +21,9 @@ namespace AutoCSer.Example.Json
         /// 自定义序列化函数
         /// </summary>
         /// <param name="serializer">JSON 序列化</param>
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void ToJson(AutoCSer.Json.Serializer serializer)
+        internal void ToJson(AutoCSer.JsonSerializer serializer)
         {
             if (MemberMap == null || MemberMap.IsDefault) serializer.TypeSerialize(Value);
             else
@@ -40,13 +40,13 @@ namespace AutoCSer.Example.Json
         /// 自定义反序列化函数
         /// </summary>
         /// <param name="parser">JSON 解析</param>
-        [AutoCSer.Json.ParseCustom]
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void ParseJson(AutoCSer.Json.Parser parser)
+        internal void ParseJson(AutoCSer.JsonDeSerializer parser)
         {
             if (MemberMap == null) MemberMap = AutoCSer.Metadata.MemberMap<valueType>.NewEmpty();
             parser.MemberMap = MemberMap;
-            parser.TypeParse(ref Value);
+            parser.TypeDeSerialize(ref Value);
         }
     }
     /// <summary>
@@ -76,8 +76,8 @@ namespace AutoCSer.Example.Json
 #endif
             MemberMapValue value = new MemberMapValue { Value = new MemberMapValue<MemberMap> { MemberMap = serializeMemberMap, Value = new MemberMap { Value1 = 1, Value2 = 2, Value3 = 3 } } };
 
-            string json = AutoCSer.Json.Serializer.Serialize(value);
-            MemberMapValue newValue = AutoCSer.Json.Parser.Parse<MemberMapValue>(json);
+            string json = AutoCSer.JsonSerializer.Serialize(value);
+            MemberMapValue newValue = AutoCSer.JsonDeSerializer.DeSerialize<MemberMapValue>(json);
 
             return newValue != null && newValue.Value.Value != null && newValue.Value.Value.Value1 == 1 && newValue.Value.Value.Value2 == 2 && newValue.Value.Value.Value3 == 0;
         }

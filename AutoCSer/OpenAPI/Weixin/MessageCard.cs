@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -60,7 +60,7 @@ namespace AutoCSer.OpenAPI.Weixin
         private static string getSignature(string[] values)
         {
             Array.Sort(values, string.CompareOrdinal);
-            return SHA.Sha1(Extension.String_Weixin.ConcatBytes(values)).toLowerHex();
+            return SHA.Sha1(Extensions.StringExtensionWeixin.ConcatBytes(values)).toLowerHex();
         }
     }
 }

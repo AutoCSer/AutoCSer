@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer.Cache.Value
@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 数组
         /// </summary>
-        private valueType[][] arrays = NullValue<valueType[]>.Array;
+        private valueType[][] arrays = EmptyArray<valueType[]>.Array;
         /// <summary>
         /// 有效数据数量
         /// </summary>
@@ -130,7 +130,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 case OperationParameter.OperationType.Clear:
                     if (arrays.Length != 0)
                     {
-                        arrays = NullValue<valueType[]>.Array;
+                        arrays = EmptyArray<valueType[]>.Array;
                         count = 0;
                         parser.IsOperation = true;
                     }

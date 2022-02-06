@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Drawing
@@ -23,7 +23,7 @@ namespace AutoCSer.Drawing
         /// <returns>图像缩略文件数据</returns>
         public static SubArray<byte> Cut(byte[] data, int width, int height, ImageFormat type, int seek = 0)
         {
-            if (data == null) return default(SubArray<byte>);
+            if (data == null) return new SubArray<byte>();
             SubArray<byte> dataArray = new SubArray<byte>(0, data.Length, data);
             Cut(ref dataArray, width, height, type, seek);
             return dataArray;
@@ -70,7 +70,7 @@ namespace AutoCSer.Drawing
                 }
                 catch (Exception error)
                 {
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             data.SetNull();
@@ -119,7 +119,7 @@ namespace AutoCSer.Drawing
                 }
                 catch (Exception error)
                 {
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             data.SetNull();

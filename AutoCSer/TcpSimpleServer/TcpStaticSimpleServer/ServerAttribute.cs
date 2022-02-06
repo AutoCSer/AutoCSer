@@ -35,7 +35,7 @@ namespace AutoCSer.Net.TcpStaticSimpleServer
         /// <returns>TCP 调用服务器端配置信息</returns>
         public static TcpInternalSimpleServer.ServerAttribute GetConfig(string serviceName, Type type)
         {
-            TcpInternalSimpleServer.ServerAttribute attribute = new TcpInternalSimpleServer.UnionType { Value = AutoCSer.Config.Loader.GetObject(typeof(TcpInternalSimpleServer.ServerAttribute), serviceName) }.ServerAttribute;
+            TcpInternalSimpleServer.ServerAttribute attribute = (TcpInternalSimpleServer.ServerAttribute)AutoCSer.Configuration.Common.Get(typeof(TcpInternalSimpleServer.ServerAttribute), serviceName);
             if (attribute == null && type != null)
             {
                 ServerAttribute staticAttribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<ServerAttribute>(type, false);

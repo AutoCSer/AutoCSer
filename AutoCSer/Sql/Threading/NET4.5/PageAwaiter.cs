@@ -19,9 +19,9 @@ namespace AutoCSer.Sql.Threading
             /// </summary>
             internal NullValue() : base(0, 0, false)
             {
-                Value.Key = NullValue<valueType>.Array;
-                continuation = Pub.EmptyAction;
-                isCompleted = true;
+                Value.Key = EmptyArray<valueType>.Array;
+                continuation = Common.EmptyAction;
+                IsCompleted = true;
             }
             /// <summary>
             /// 

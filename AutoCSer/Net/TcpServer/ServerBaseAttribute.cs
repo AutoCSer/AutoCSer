@@ -66,7 +66,7 @@ namespace AutoCSer.Net.TcpServer
             get
             {
                 if (string.IsNullOrEmpty(VerifyString)) return 0;
-                fixed (char* verifyFixed = VerifyString) return (ulong)Memory.GetHashCode64((byte*)verifyFixed, VerifyString.Length << 1);
+                fixed (char* verifyFixed = VerifyString) return (ulong)AutoCSer.Memory.Common.GetHashCode64((byte*)verifyFixed, VerifyString.Length << 1);
             }
         }
         /// <summary>
@@ -96,12 +96,12 @@ namespace AutoCSer.Net.TcpServer
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal abstract SubBuffer.Size GetSendBufferSize { get; }
+        internal abstract AutoCSer.Memory.BufferSize GetSendBufferSize { get; }
         /// <summary>
         /// 服务器端接受数据（包括客户端发送数据）缓冲区初始化字节数
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal abstract SubBuffer.Size GetReceiveBufferSize { get; }
+        internal abstract AutoCSer.Memory.BufferSize GetReceiveBufferSize { get; }
         /// <summary>
         /// 服务器端发送数据缓冲区最大字节数
         /// </summary>
@@ -145,15 +145,15 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal virtual byte GetCommandPoolBitSize { get { return 0; } }
         /// <summary>
-        /// 服务端批量处理休眠毫秒数
+        /// 服务端批量处理等待类型
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal virtual int GetServerOutputSleep { get { return 0; } }
+        internal virtual OutputWaitType GetServerOutputWaitType { get { return OutputWaitType.ThreadYield; } }
         /// <summary>
-        /// 客户端批量处理休眠毫秒数
+        /// 客户端批量处理等待类型
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal virtual int GetClientOutputSleep { get { return 0; } }
+        internal virtual OutputWaitType GetClientOutputWaitType { get { return OutputWaitType.ThreadYield; } }
         /// <summary>
         /// 客户端重建连接休眠毫秒数
         /// </summary>
@@ -165,8 +165,8 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal virtual int GetClientFirstTryCreateSleep { get { return GetClientTryCreateSleep; } }
         /// <summary>
-                                                                                                             /// 提供当前类型的一个泛型实例类型，用于获取命令序号记忆数据
-                                                                                                             /// </summary>
+        /// 提供当前类型的一个泛型实例类型，用于获取命令序号记忆数据
+        /// </summary>
         public Type GenericType;
         /// <summary>
         /// 是否使用 JSON 序列化
@@ -178,6 +178,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         [AutoCSer.Metadata.Ignore]
         internal virtual uint GetClientWaitConnectedMilliseconds { get { return 0; } }
+        /// <summary>
+        /// 客户端行为跟踪日志延迟秒数，默认为 60s
+        /// </summary>
+        public int ClientLazyLogSeconds = 60;
         /// <summary>
         /// 默认为 true 表示在创建服务对象的时候自动启动监听，否则需要手动 Start
         /// </summary>
@@ -257,6 +261,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         [AutoCSer.Metadata.Ignore]
         internal virtual int GetMaxCustomDataSize { get { return 0; } }
+        /// <summary>
+        /// 验证失败创建新客户端尝试次数，默认为 4
+        /// </summary>
+        public int VerifyCount = 4;
 
         /// <summary>
         /// 获取配置

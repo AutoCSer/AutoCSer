@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.SerializePerformance
 {
@@ -13,7 +13,7 @@ namespace AutoCSer.TestCase.SerializePerformance
 #else
             int count = 100 * 10000;
 #endif
-            bool isJson = true, isJsonThread = true, isXml = true, isBinary = true;
+            bool isJson = true, isJsonThread = true, isXml = false, isBinary = true;
             AutoCSer.RandomObject.Config randomConfig = new AutoCSer.RandomObject.Config { IsSecondDateTime = true, IsParseFloat = true };
             do
             {
@@ -66,7 +66,7 @@ http://www.AutoCSer.com/Serialize/Json.html");
             string json = null;
             Stopwatch time = new Stopwatch();
             time.Start();
-            for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
+            for (int index = count; index != 0; --index) json = AutoCSer.JsonSerializer.Serialize(value);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " Json Serialize " + ((json.Length * count * 2) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
 
@@ -74,7 +74,7 @@ http://www.AutoCSer.com/Serialize/Json.html");
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<T>(json);
+            for (int index = count; index != 0; --index) value = AutoCSer.JsonDeSerializer.DeSerialize<T>(json);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " Json DeSerialize " + ((json.Length * count * 2) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
         }
@@ -93,7 +93,7 @@ http://www.AutoCSer.com/Serialize/Json.html");
             string json = null;
             Stopwatch time = new Stopwatch();
             time.Start();
-            for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.SerializeThread(value);
+            for (int index = count; index != 0; --index) json = AutoCSer.JsonSerializer.ThreadStaticSerialize(value);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " Json Serialize ThreadStatic " + ((json.Length * count * 2) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
 
@@ -101,7 +101,7 @@ http://www.AutoCSer.com/Serialize/Json.html");
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.ParseThread<T>(json);
+            for (int index = count; index != 0; --index) value = AutoCSer.JsonDeSerializer.ThreadStaticDeSerialize<T>(json);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " Json DeSerialize ThreadStatic " + ((json.Length * count * 2) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
         }
@@ -120,7 +120,7 @@ http://www.AutoCSer.com/Serialize/Xml.html");
             string xml = null;
             Stopwatch time = new Stopwatch();
             time.Start();
-            for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
+            for (int index = count; index != 0; --index) xml = AutoCSer.XmlSerializer.Serialize(value);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " XML Serialize " + ((xml.Length * count * 2) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
 
@@ -128,7 +128,7 @@ http://www.AutoCSer.com/Serialize/Xml.html");
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<T>(xml);
+            for (int index = count; index != 0; --index) value = AutoCSer.XmlDeSerializer.DeSerialize<T>(xml);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " XML DeSerialize " + ((xml.Length * count * 2) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
         }
@@ -145,13 +145,13 @@ http://www.AutoCSer.com/Serialize/Binary.html");
             byte[] bytes = null;
             Stopwatch time = new Stopwatch();
             time.Start();
-            for (int index = count; index != 0; --index) bytes = AutoCSer.BinarySerialize.Serializer.Serialize(value);
+            for (int index = count; index != 0; --index) bytes = AutoCSer.BinarySerializer.Serialize(value);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " Binary Serialize " + ((bytes.Length * count) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<T>(bytes);
+            for (int index = count; index != 0; --index) value = AutoCSer.BinaryDeSerializer.DeSerialize<T>(bytes);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W " + typeof(T).Name + " Binary DeSerialize " + ((bytes.Length * count) >> 20).toString() + "MB " + time.ElapsedMilliseconds.toString() + "ms");
         }

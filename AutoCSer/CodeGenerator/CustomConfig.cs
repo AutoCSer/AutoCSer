@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CodeGenerator
 {
@@ -35,8 +35,8 @@ namespace AutoCSer.CodeGenerator
         static CustomConfig()
         {
             FileInfo jsonFile = new FileInfo(configFileName + ".json");
-            if (jsonFile.Exists) Default = AutoCSer.Json.Parser.Parse<CustomConfig>(File.ReadAllText(jsonFile.FullName));
-            else if (File.Exists(configFileName + ".xml")) Default = AutoCSer.Xml.Parser.Parse<CustomConfig>(File.ReadAllText(configFileName + ".xml"));
+            if (jsonFile.Exists) Default = AutoCSer.JsonDeSerializer.DeSerialize<CustomConfig>(File.ReadAllText(jsonFile.FullName));
+            else if (File.Exists(configFileName + ".xml")) Default = AutoCSer.XmlDeSerializer.DeSerialize<CustomConfig>(File.ReadAllText(configFileName + ".xml"));
             else if (jsonFile.Directory.Name == "Release" && jsonFile.Directory.Parent.Name == "bin")
             {
 #if DotNetStandard
@@ -44,8 +44,8 @@ namespace AutoCSer.CodeGenerator
 #else
                 string fileName = jsonFile.Directory.Parent.Parent.Parent.fullName() + configFileName;
 #endif
-                if (File.Exists(fileName + ".json")) Default = AutoCSer.Json.Parser.Parse<CustomConfig>(File.ReadAllText(fileName + ".json"));
-                else if (File.Exists(fileName + ".xml")) Default = AutoCSer.Xml.Parser.Parse<CustomConfig>(File.ReadAllText(fileName + ".xml"));
+                if (File.Exists(fileName + ".json")) Default = AutoCSer.JsonDeSerializer.DeSerialize<CustomConfig>(File.ReadAllText(fileName + ".json"));
+                else if (File.Exists(fileName + ".xml")) Default = AutoCSer.XmlDeSerializer.DeSerialize<CustomConfig>(File.ReadAllText(fileName + ".xml"));
             }
             if (Default == null) Default = new CustomConfig();
             FileInfo assemblyFile = new FileInfo(new FileInfo(ProjectParameter.CurrentAssembly.Location).Directory.fullName() + CustomAssemblyName + ".dll");

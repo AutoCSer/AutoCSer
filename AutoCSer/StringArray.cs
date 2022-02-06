@@ -11,7 +11,7 @@ namespace AutoCSer
         /// <summary>
         /// 字符串数组
         /// </summary>
-        private LeftArray<string> array;
+        private LeftArray<string> array = new LeftArray<string>(0);
         /// <summary>
         /// 字符串数量
         /// </summary>
@@ -72,7 +72,7 @@ namespace AutoCSer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public string Join(char join)
         {
-            return AutoCSer.Extension.ArrayExtension.JoinString(array.ToArray(), join);
+            return AutoCSer.Extensions.ArrayExtension.JoinString(array.ToArray(), join);
         }
         /// <summary>
         /// 生成字符串

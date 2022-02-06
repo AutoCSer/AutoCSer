@@ -23,8 +23,8 @@ namespace AutoCSer.IO.Compression
         internal static bool Get(byte[] data, int startIndex, int count, ref SubBuffer.PoolBufferFull buffer, ref SubArray<byte> compressData, int seek = 0, int compressHeadSize = 0)
         {
             int length = count + seek;
-            SubBuffer.Pool.GetBuffer(ref buffer, length);
-            using (MemoryStream dataStream = AutoCSer.Extension.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
+            SubBuffer.Pool.GetSingleBuffer(ref buffer, length);
+            using (MemoryStream dataStream = AutoCSer.Extensions.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
             {
                 if (seek != 0) dataStream.Seek(seek, SeekOrigin.Begin);
 #if DOTNET2 || DOTNET4 || UNITY3D

@@ -14,17 +14,17 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 基本类型设置函数
         /// </summary>
-        private static readonly Dictionary<Type, MethodInfo> dataReaderGetMethods;
+        private static readonly Dictionary<Type, Delegate> dataReaderGetDelegates;
         /// <summary>
         /// 获取基本类型设置函数
         /// </summary>
         /// <param name="type">基本类型</param>
         /// <returns>设置函数</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static MethodInfo GetMethod(Type type)
+        internal static Delegate GetDelegate(Type type)
         {
-            MethodInfo method;
-            return dataReaderGetMethods.TryGetValue(type, out method) ? method : null;
+            Delegate method;
+            return dataReaderGetDelegates.TryGetValue(type, out method) ? method : null;
         }
 #if NOJIT
         /// <summary>
@@ -35,12 +35,155 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 判断数据是否为空
         /// </summary>
-        internal static readonly MethodInfo IsDBNullMethod = typeof(DbDataReader).GetMethod("IsDBNull", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(int) }, null);
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static bool isDBNull(DbDataReader reader, int index)
+        {
+            return reader.IsDBNull(index);
+        }
+        /// <summary>
+        /// 判断数据是否为空
+        /// </summary>
+        internal static readonly MethodInfo IsDBNullMethod = ((Func<DbDataReader, int, bool>)isDBNull).Method;
+        /// <summary>
+        /// 获取字符串（兼容 Excel）
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private static string getString(DbDataReader reader, int index)
+        {
+            object value = reader[index];
+            if (value == null) return null;
+            return value.ToString();
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static bool getBoolean(DbDataReader reader, int index)
+        {
+            return reader.GetBoolean(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static byte getByte(DbDataReader reader, int index)
+        {
+            return reader.GetByte(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static char getChar(DbDataReader reader, int index)
+        {
+            return reader.GetChar(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static DateTime getDateTime(DbDataReader reader, int index)
+        {
+            return reader.GetDateTime(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static decimal getDecimal(DbDataReader reader, int index)
+        {
+            return reader.GetDecimal(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static double getDouble(DbDataReader reader, int index)
+        {
+            return reader.GetDouble(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static float getFloat(DbDataReader reader, int index)
+        {
+            return reader.GetFloat(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static Guid getGuid(DbDataReader reader, int index)
+        {
+            return reader.GetGuid(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static short getInt16(DbDataReader reader, int index)
+        {
+            return reader.GetInt16(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static int getInt32(DbDataReader reader, int index)
+        {
+            return reader.GetInt32(index);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static long getInt64(DbDataReader reader, int index)
+        {
+            return reader.GetInt64(index);
+        }
 #endif
-
         static DataReader()
         {
-            dataReaderGetMethods = DictionaryCreator.CreateOnly<Type, MethodInfo>();
+            dataReaderGetDelegates = DictionaryCreator.CreateOnly<Type, Delegate>();
 #if NOJIT
             GetMethodInfo = typeof(pub).GetMethod("GetDataReaderMethod", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { typeof(Type) }, null);
             dataReaderGetMethods.Add(typeof(bool), GetMethodInfo);
@@ -57,18 +200,18 @@ namespace AutoCSer.Sql
             dataReaderGetMethods.Add(typeof(string), GetMethodInfo);
 #else
             Type[] intType = new Type[] { typeof(int) };
-            dataReaderGetMethods.Add(typeof(bool), typeof(DbDataReader).GetMethod("GetBoolean", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(byte), typeof(DbDataReader).GetMethod("GetByte", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(char), typeof(DbDataReader).GetMethod("GetChar", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(DateTime), typeof(DbDataReader).GetMethod("GetDateTime", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(decimal), typeof(DbDataReader).GetMethod("GetDecimal", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(double), typeof(DbDataReader).GetMethod("GetDouble", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(float), typeof(DbDataReader).GetMethod("GetFloat", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(Guid), typeof(DbDataReader).GetMethod("GetGuid", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(short), typeof(DbDataReader).GetMethod("GetInt16", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(int), typeof(DbDataReader).GetMethod("GetInt32", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(long), typeof(DbDataReader).GetMethod("GetInt64", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
-            dataReaderGetMethods.Add(typeof(string), typeof(DbDataReader).GetMethod("GetString", BindingFlags.Public | BindingFlags.Instance, null, intType, null));
+            dataReaderGetDelegates.Add(typeof(string), (Func<DbDataReader, int, string>)getString);
+            dataReaderGetDelegates.Add(typeof(int), (Func<DbDataReader, int, int>)getInt32);
+            dataReaderGetDelegates.Add(typeof(byte), (Func<DbDataReader, int, byte>)getByte);
+            dataReaderGetDelegates.Add(typeof(bool), (Func<DbDataReader, int, bool>)getBoolean);
+            dataReaderGetDelegates.Add(typeof(DateTime), (Func<DbDataReader, int, DateTime>)getDateTime);
+            dataReaderGetDelegates.Add(typeof(decimal), (Func<DbDataReader, int, decimal>)getDecimal);
+            dataReaderGetDelegates.Add(typeof(long), (Func<DbDataReader, int, long>)getInt64);
+            dataReaderGetDelegates.Add(typeof(double), (Func<DbDataReader, int, double>)getDouble);
+            dataReaderGetDelegates.Add(typeof(float), (Func<DbDataReader, int, float>)getFloat);
+            dataReaderGetDelegates.Add(typeof(short), (Func<DbDataReader, int, short>)getInt16);
+            dataReaderGetDelegates.Add(typeof(Guid), (Func<DbDataReader, int, Guid>)getGuid);
+            dataReaderGetDelegates.Add(typeof(char), (Func<DbDataReader, int, char>)getChar);
 #endif
         }
     }

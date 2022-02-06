@@ -1,32 +1,11 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.ColumnGroup
 {
-    /// <summary>
-    /// 数据列
-    /// </summary>
-    internal static class Column
-    {
-        /// <summary>
-        /// 获取成员名称与类型集合
-        /// </summary>
-        /// <param name="name">列名前缀</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static KeyValue<string, Type>[] getDataColumns<valueType>(string name)
-        {
-            return Column<valueType>.GetDataColumns(name);
-        }
-        /// <summary>
-        /// 获取成员名称与类型集合函数信息
-        /// </summary>
-        internal static readonly MethodInfo GetDataColumnsMethod = typeof(Column).GetMethod("getDataColumns", BindingFlags.Static | BindingFlags.NonPublic);
-    }
     /// <summary>
     /// 数据列
     /// </summary>
@@ -54,7 +33,7 @@ namespace AutoCSer.Sql.ColumnGroup
         /// <summary>
         /// 数据列名与类型集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<HashString, KeyValue<string, Type>[]> dataColumns;
+        private static readonly AutoCSer.Threading.LockDictionary<HashString, KeyValue<string, Type>[]> dataColumns;
         /// <summary>
         /// 获取成员名称与类型集合
         /// </summary>
@@ -67,27 +46,18 @@ namespace AutoCSer.Sql.ColumnGroup
             {
                 KeyValue<string, Type>[] values;
                 HashString nameKey = name;
-                if (dataColumns.TryGetValue(ref nameKey, out values)) return values;
+                if (dataColumns.TryGetValue(nameKey, out values)) return values;
                 LeftArray<KeyValue<string, Type>> columns = new LeftArray<KeyValue<string, Type>>(Fields.Length);
                 foreach (Field field in Fields)
                 {
-                    if (field.IsSqlColumn) ColumnGroup.ToArray.GetDataColumns(field.DataType)(name + "_" + field.FieldInfo.Name);
+                    if (field.IsSqlColumn) ((Func<string, KeyValue<string, Type>[]>)AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).GetDataColumnsMethod)(name + "_" + field.FieldInfo.Name);
                     else columns.Add(new KeyValue<string, Type>(name + "_" + field.FieldInfo.Name, field.DataType));
                 }
                 values = columns.ToArray();
-                dataColumns.Set(ref nameKey, values);
+                dataColumns.Set(nameKey, values);
                 return values;
             }
             return null;
-        }
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            dataColumns.Clear();
         }
 
         static Column()
@@ -95,7 +65,7 @@ namespace AutoCSer.Sql.ColumnGroup
             Type type = typeof(valueType);
             if (type.IsEnum || !type.IsValueType)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, type.fullName() + " 非值类型，不能用作数据列");
+                AutoCSer.LogHelper.Error(type.fullName() + " 非值类型，不能用作数据列", LogLevel.Error | LogLevel.AutoCSer);
                 return;
             }
             attribute = TypeAttribute.GetAttribute<ColumnAttribute>(type, true) ?? ColumnAttribute.Default;
@@ -121,8 +91,8 @@ namespace AutoCSer.Sql.ColumnGroup
                 }
             }
             Fields = Field.Get(MemberIndexGroup<valueType>.GetFields(attribute.MemberFilters), true).ToArray();
-            dataColumns = new AutoCSer.Threading.LockEquatableLastDictionary<HashString, KeyValue<string, Type>[]>();
-            AutoCSer.Pub.ClearCaches += clearCache;
+            dataColumns = new AutoCSer.Threading.LockDictionary<HashString, KeyValue<string, Type>[]>();
+            AutoCSer.Memory.Common.AddClearCache(dataColumns.Clear, typeof(Column<valueType>), 60 * 60);
         }
     }
 }

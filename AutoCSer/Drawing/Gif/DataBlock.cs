@@ -20,7 +20,7 @@ namespace AutoCSer.Drawing.Gif
         {
             get
             {
-                if (Type == DataType.Image) return new UnionType { Value = value }.Image;
+                if (Type == DataType.Image) return new UnionType.Image { Object = value }.Value;
                 throw new InvalidCastException(Type.ToString());
             }
         }
@@ -31,7 +31,7 @@ namespace AutoCSer.Drawing.Gif
         {
             get
             {
-                if (Type == DataType.Image) return new UnionType { Value = value }.PraphicControl;
+                if (Type == DataType.Image) return new UnionType.PraphicControl { Object = value }.Value;
                 throw new InvalidCastException(Type.ToString());
             }
         }
@@ -42,7 +42,7 @@ namespace AutoCSer.Drawing.Gif
         {
             get
             {
-                if (Type == DataType.Image) return new UnionType { Value = value }.PlainText;
+                if (Type == DataType.Image) return new UnionType.PlainText { Object = value }.Value;
                 throw new InvalidCastException(Type.ToString());
             }
         }
@@ -53,7 +53,7 @@ namespace AutoCSer.Drawing.Gif
         {
             get
             {
-                if (Type == DataType.Image) return new UnionType { Value = value }.Application;
+                if (Type == DataType.Image) return new UnionType.Application { Object = value }.Value;
                 throw new InvalidCastException(Type.ToString());
             }
         }
@@ -68,7 +68,7 @@ namespace AutoCSer.Drawing.Gif
         {
             get
             {
-                if (Type == DataType.Comment) return new SubArray<byte> { Array = new UnionType { Value = value }.ByteArray, Start = commentRangeLength.Start, Length = commentRangeLength.Length };
+                if (Type == DataType.Comment) return new SubArray<byte> { Array = new AutoCSer.UnionType.ByteArray { Object = value }.Value, Start = commentRangeLength.Start, Length = commentRangeLength.Length };
                 throw new InvalidCastException(Type.ToString());
             }
         }

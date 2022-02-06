@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 #pragma warning disable
 
 namespace AutoCSer.OpenAPI.Weixin
@@ -66,7 +66,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [AutoCSer.Xml.UnknownName]
-        private unsafe static bool parseCoupon(AutoCSer.Xml.Parser parser, ref PayNotify value, ref Pointer.Size name)
+        private unsafe static bool parseCoupon(AutoCSer.XmlDeSerializer parser, ref PayNotify value, ref AutoCSer.Memory.Pointer name)
         {
             return value.parseCoupon(parser, name.Char);
         }
@@ -76,7 +76,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="parser"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        protected unsafe bool parseCoupon(AutoCSer.Xml.Parser parser, char* name)
+        protected unsafe bool parseCoupon(AutoCSer.XmlDeSerializer parser, char* name)
         {
             int index;
             char code = *(name + 7);
@@ -84,14 +84,14 @@ namespace AutoCSer.OpenAPI.Weixin
             {
                 if ((index = getCouponIndex("coupon_id_", name)) >= 0)
                 {
-                    return parser.CustomParse(ref coupons[index].coupon_id);
+                    return parser.CustomDeSerialize(ref coupons[index].coupon_id);
                 }
             }
             else if (code == 'f')
             {
                 if ((index = getCouponIndex("coupon_fee_", name)) >= 0)
                 {
-                    return parser.CustomParse(ref coupons[index].coupon_fee);
+                    return parser.CustomDeSerialize(ref coupons[index].coupon_fee);
                 }
             }
             return parser.CustomIgnoreValue();
@@ -104,7 +104,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         private unsafe int getCouponIndex(string name, char* nameStart)
         {
-            if (AutoCSer.Extension.String_Weixin.SimpleEqual(name, nameStart))
+            if (AutoCSer.Extensions.StringExtensionWeixin.SimpleEqual(name, nameStart))
             {
                 int index = *(nameStart += name.Length) - '0';
                 do
@@ -149,7 +149,7 @@ namespace AutoCSer.OpenAPI.Weixin
             {
                 if (config == null) config = Config.Default;
                 if (appid == config.appid && mch_id == config.mch_id && Sign<PayNotify>.Check(this, config.key, sign)) return true;
-                config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "微信支付回调验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                config.PayLog.Debug("微信支付回调验证错误 " + AutoCSer.JsonSerializer.Serialize(this), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }
@@ -170,7 +170,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         public ReturnCode GetErrorResult(string return_msg, Config config = null)
         {
-            (config ?? Config.Default).PayLog.Add(Log.LogType.Debug | Log.LogType.Info, return_msg);
+            (config ?? Config.Default).PayLog.Debug(return_msg, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             return new ReturnCode { return_msg = return_msg };
         }
     }

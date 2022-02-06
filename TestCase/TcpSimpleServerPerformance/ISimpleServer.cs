@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
     /// <summary>
     /// TCP 内部应答服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalSimpleServer.Server(Host = "127.0.0.1", Port = 12106, SendBufferSize = SubBuffer.Size.Byte256, CheckSeconds = 0)]
+    [AutoCSer.Net.TcpInternalSimpleServer.Server(Host = "127.0.0.1", Port = 12106, SendBufferSize = AutoCSer.Memory.BufferSize.Byte256, CheckSeconds = 0)]
     public interface ISimpleServer
     {
         /// <summary>

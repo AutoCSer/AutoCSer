@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CodeGenerator
 {
@@ -11,17 +13,39 @@ namespace AutoCSer.CodeGenerator
     internal unsafe sealed class XmlDocumentAssembly
     {
         /// <summary>
+        /// 程序集
+        /// </summary>
+        private readonly HashAssembly assembly;
+        /// <summary>
         /// 类型：类、接口、结构、枚举、委托
         /// </summary>
         private readonly Dictionary<HashString, Xml.Node> types = DictionaryCreator.CreateHashString<Xml.Node>();
         /// <summary>
         /// 类型集合访问锁
         /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<Type, Xml.Node> typeLock = new AutoCSer.Threading.LockLastDictionary<Type, Xml.Node>();
+        private AutoCSer.Threading.LockDictionary<Type, Xml.Node> typeLock = new AutoCSer.Threading.LockDictionary<Type, Xml.Node>();
         /// <summary>
         /// 类型名称流
         /// </summary>
-        private readonly CharStream typeNameStream = new CharStream(null, 0);
+        private readonly CharStream typeNameStream = new CharStream(default(AutoCSer.Memory.Pointer));
+        /// <summary>
+        /// 程序集 XML 文档注释信息
+        /// </summary>
+        /// <param name="assembly"></param>
+        internal XmlDocumentAssembly(Assembly assembly)
+        {
+            this.assembly = assembly;
+        }
+        /// <summary>
+        /// 获取程序集
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static HashAssembly GetAssembly(XmlDocumentAssembly value)
+        {
+            return value.assembly;
+        }
         /// <summary>
         /// 获取类型信息
         /// </summary>
@@ -33,25 +57,22 @@ namespace AutoCSer.CodeGenerator
             {
                 Xml.Node node;
                 if (typeLock.TryGetValue(type, out node)) return node;
+
+                HashString typeName;
+                AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                 try
                 {
-                    HashString typeName;
-                    byte* buffer = UnmanagedPool.Default.Get();
-                    try
+                    using (typeNameStream)
                     {
-                        using (typeNameStream)
-                        {
-                            typeNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = typeNameStream, IsXml = true };
-                            nameBuilder.Xml(type);
-                            typeName = typeNameStream.ToString();
-                        }
+                        typeNameStream.Reset(ref buffer);
+                        AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder { NameStream = typeNameStream, IsXml = true };
+                        nameBuilder.Xml(type);
+                        typeName = typeNameStream.ToString();
                     }
-                    finally { UnmanagedPool.Default.Push(buffer); }
-                    if (types.TryGetValue(typeName, out node)) types.Remove(typeName);
-                    typeLock.Set(type, node);
                 }
-                finally { typeLock.Exit(); }
+                finally { UnmanagedPool.Default.PushOnly(ref buffer); }
+                if (types.TryGetValue(typeName, out node)) types.Remove(typeName);
+                typeLock.Set(type, node);
                 return node;
             }
             return default(Xml.Node);
@@ -71,13 +92,9 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         private readonly Dictionary<HashString, Xml.Node> fields = DictionaryCreator.CreateHashString<Xml.Node>();
         /// <summary>
-        /// 字段集合访问锁
-        /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<FieldInfo, Xml.Node> fieldLock = new AutoCSer.Threading.LockLastDictionary<FieldInfo, Xml.Node>();
-        /// <summary>
         /// 字段
         /// </summary>
-        private readonly CharStream fieldNameStream = new CharStream(null, 0);
+        private readonly CharStream fieldNameStream = new CharStream(default(AutoCSer.Memory.Pointer));
         /// <summary>
         /// 获取字段信息
         /// </summary>
@@ -87,29 +104,23 @@ namespace AutoCSer.CodeGenerator
         {
             if (field != null)
             {
-                Xml.Node node;
-                if (fieldLock.TryGetValue(field, out node)) return node;
+                HashString fieldName;
+                AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                 try
                 {
-                    HashString fieldName;
-                    byte* buffer = UnmanagedPool.Default.Get();
-                    try
+                    using (fieldNameStream)
                     {
-                        using (fieldNameStream)
-                        {
-                            fieldNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = fieldNameStream, IsXml = true };
-                            nameBuilder.Xml(field.DeclaringType);
-                            fieldNameStream.Write('.');
-                            fieldNameStream.SimpleWriteNotNull(field.Name);
-                            fieldName = fieldNameStream.ToString();
-                        }
+                        fieldNameStream.Reset(ref buffer);
+                        AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder { NameStream = fieldNameStream, IsXml = true };
+                        nameBuilder.Xml(field.DeclaringType);
+                        fieldNameStream.Write('.');
+                        fieldNameStream.SimpleWrite(field.Name);
+                        fieldName = fieldNameStream.ToString();
                     }
-                    finally { UnmanagedPool.Default.Push(buffer); }
-                    if (fields.TryGetValue(fieldName, out node)) fields.Remove(fieldName);
-                    fieldLock.Set(field, node);
                 }
-                finally { fieldLock.Exit(); }
+                finally { UnmanagedPool.Default.PushOnly(ref buffer); }
+                Xml.Node node;
+                fields.TryGetValue(fieldName, out node);
                 return node;
             }
             return default(Xml.Node);
@@ -129,13 +140,9 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         private readonly Dictionary<HashString, Xml.Node> properties = DictionaryCreator.CreateHashString<Xml.Node>();
         /// <summary>
-        /// 属性集合访问锁
-        /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<PropertyInfo, Xml.Node> propertyLock = new AutoCSer.Threading.LockLastDictionary<PropertyInfo, Xml.Node>();
-        /// <summary>
         /// 属性
         /// </summary>
-        private readonly CharStream propertyNameStream = new CharStream(null, 0);
+        private readonly CharStream propertyNameStream = new CharStream(default(AutoCSer.Memory.Pointer));
         /// <summary>
         /// 获取属性信息
         /// </summary>
@@ -145,29 +152,23 @@ namespace AutoCSer.CodeGenerator
         {
             if (property != null)
             {
-                Xml.Node node;
-                if (propertyLock.TryGetValue(property, out node)) return node;
+                HashString propertyName;
+                AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                 try
                 {
-                    HashString propertyName;
-                    byte* buffer = UnmanagedPool.Default.Get();
-                    try
+                    using (propertyNameStream)
                     {
-                        using (propertyNameStream)
-                        {
-                            propertyNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = propertyNameStream, IsXml = true };
-                            nameBuilder.Xml(property.DeclaringType);
-                            propertyNameStream.Write('.');
-                            propertyNameStream.SimpleWriteNotNull(property.Name);
-                            propertyName = propertyNameStream.ToString();
-                        }
+                        propertyNameStream.Reset(ref buffer);
+                        AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder { NameStream = propertyNameStream, IsXml = true };
+                        nameBuilder.Xml(property.DeclaringType);
+                        propertyNameStream.Write('.');
+                        propertyNameStream.SimpleWrite(property.Name);
+                        propertyName = propertyNameStream.ToString();
                     }
-                    finally { UnmanagedPool.Default.Push(buffer); }
-                    if (properties.TryGetValue(propertyName, out node)) properties.Remove(propertyName);
-                    propertyLock.Set(property, node);
                 }
-                finally { propertyLock.Exit(); }
+                finally { UnmanagedPool.Default.PushOnly(ref buffer); }
+                Xml.Node node;
+                properties.TryGetValue(propertyName, out node);
                 return node;
             }
             return default(Xml.Node);
@@ -189,11 +190,11 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 方法集合访问锁
         /// </summary>
-        private AutoCSer.Threading.LockLastDictionary<MethodInfo, Xml.Node> methodLock = new AutoCSer.Threading.LockLastDictionary<MethodInfo, Xml.Node>();
+        private AutoCSer.Threading.LockDictionary<MethodInfo, Xml.Node> methodLock = new AutoCSer.Threading.LockDictionary<MethodInfo, Xml.Node>();
         /// <summary>
         /// 方法名称流
         /// </summary>
-        private readonly CharStream methodNameStream = new CharStream(null, 0);
+        private readonly CharStream methodNameStream = new CharStream(default(AutoCSer.Memory.Pointer));
         /// <summary>
         /// 获取方法信息
         /// </summary>
@@ -205,47 +206,44 @@ namespace AutoCSer.CodeGenerator
             {
                 Xml.Node node;
                 if (methodLock.TryGetValue(method, out node)) return node;
+
+                HashString methodName;
+                AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                 try
                 {
-                    HashString methodName;
-                    byte* buffer = UnmanagedPool.Default.Get();
-                    try
+                    using (methodNameStream)
                     {
-                        using (methodNameStream)
+                        methodNameStream.Reset(ref buffer);
+                        AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extensions.TypeExtensionCodeGenerator.NameBuilder { NameStream = methodNameStream, IsXml = true };
+                        nameBuilder.Xml(method.DeclaringType);
+                        methodNameStream.Write('.');
+                        string name = method.Name;
+                        if (name[0] == '.')
                         {
-                            methodNameStream.Reset(buffer, UnmanagedPool.DefaultSize);
-                            AutoCSer.Extension.TypeCodeGenerator.NameBuilder nameBuilder = new AutoCSer.Extension.TypeCodeGenerator.NameBuilder { NameStream = methodNameStream, IsXml = true };
-                            nameBuilder.Xml(method.DeclaringType);
-                            methodNameStream.Write('.');
-                            string name = method.Name;
-                            if (name[0] == '.')
-                            {
-                                methodNameStream.Write('#');
-                                methodNameStream.Write(new SubString { String = name, Start = 1, Length = name.Length - 1 });
-                            }
-                            else methodNameStream.SimpleWriteNotNull(name);
-                            ParameterInfo[] parameters = method.GetParameters();
-                            if (parameters.Length != 0)
-                            {
-                                bool isFirst = true;
-                                methodNameStream.Write('(');
-                                foreach (ParameterInfo parameter in parameters)
-                                {
-                                    if (isFirst) isFirst = false;
-                                    else methodNameStream.Write(',');
-                                    nameBuilder.Xml(parameter.ParameterType);
-                                }
-                                methodNameStream.Write(')');
-                            }
-                            formatName(methodNameStream.Char, methodNameStream.CurrentChar);
-                            methodName = methodNameStream.ToString();
+                            methodNameStream.Write('#');
+                            methodNameStream.Write(new SubString { String = name, Start = 1, Length = name.Length - 1 });
                         }
+                        else methodNameStream.SimpleWrite(name);
+                        ParameterInfo[] parameters = method.GetParameters();
+                        if (parameters.Length != 0)
+                        {
+                            bool isFirst = true;
+                            methodNameStream.Write('(');
+                            foreach (ParameterInfo parameter in parameters)
+                            {
+                                if (isFirst) isFirst = false;
+                                else methodNameStream.Write(',');
+                                nameBuilder.Xml(parameter.ParameterType);
+                            }
+                            methodNameStream.Write(')');
+                        }
+                        formatName(methodNameStream.Char, methodNameStream.CurrentChar);
+                        methodName = methodNameStream.ToString();
                     }
-                    finally { UnmanagedPool.Default.Push(buffer); }
-                    if (methods.TryGetValue(methodName, out node)) methods.Remove(methodName);
-                    methodLock.Set(method, node);
                 }
-                finally { methodLock.Exit(); }
+                finally { UnmanagedPool.Default.PushOnly(ref buffer); }
+                methods.TryGetValue(methodName, out node);
+                methodLock.Set(method, node);
                 return node;
             }
             return default(Xml.Node);
@@ -291,9 +289,9 @@ namespace AutoCSer.CodeGenerator
                             && node.Value.GetAttribute(nameFixed, 4, ref attribute)
                             && attribute.Length == parameterName.Length)
                         {
-                            fixed (char* attributeFixed = node.Key.String)
+                            fixed (char* attributeFixed = node.Key.GetFixedBuffer())
                             {
-                                if (AutoCSer.Memory.SimpleEqualNotNull((byte*)parameterFixed, (byte*)(attributeFixed + attribute.StartIndex), parameterName.Length << 1))
+                                if (AutoCSer.Memory.Common.SimpleEqualNotNull((byte*)parameterFixed, (byte*)(attributeFixed + attribute.StartIndex), parameterName.Length << 1))
                                 {
                                     return node.Value.String.Length == 0 ? string.Empty : node.Value.String.ToString();
                                 }

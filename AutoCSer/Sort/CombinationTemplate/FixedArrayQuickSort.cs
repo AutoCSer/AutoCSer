@@ -1,6 +1,6 @@
 ﻿using System;
-/*Type:ulong,ULongSortIndex;long,LongSortIndex;uint,UIntSortIndex;int,IntSortIndex;double,DoubleSortIndex;float,FloatSortIndex;DateTime,DateTimeSortIndex*/
-/*Compare:,>,<;Desc,<,>*/
+/*ulong,ULong;long,Long;uint,UInt;int,Int;double,Double;float,Float;DateTime,DateTime
+Desc,CompareTo;,CompareFrom*/
 
 namespace AutoCSer.Algorithm
 {
@@ -14,32 +14,30 @@ namespace AutoCSer.Algorithm
         /// </summary>
         /// <param name="startIndex">起始位置</param>
         /// <param name="endIndex">结束位置-1</param>
-        private static void sort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/* startIndex, /*Type[0]*/ulong/*Type[0]*/* endIndex)
+        private static void sortDesc(ulong* startIndex, ulong* endIndex)
         {
             do
             {
-                /*Type*/
-                ulong/*Type*/ leftValue = *startIndex, rightValue = *endIndex;
+                ulong leftValue = *startIndex, rightValue = *endIndex;
                 int average = (int)(endIndex - startIndex) >> 1;
                 if (average == 0)
                 {
-                    if (leftValue /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                    if (leftValue.CompareTo(rightValue) < 0)
                     {
                         *startIndex = rightValue;
                         *endIndex = leftValue;
                     }
                     break;
                 }
-                /*Type*/
-                ulong/*Type*/* leftIndex = startIndex, rightIndex = endIndex, averageIndex = startIndex + average;
-                /*Type*/
-                ulong/*Type*/ value = *averageIndex;
-                if (leftValue /*Compare[1]*/>/*Compare[1]*/ value)
+                
+                ulong* leftIndex = startIndex, rightIndex = endIndex, averageIndex = startIndex + average;
+                ulong value = *averageIndex;
+                if (leftValue.CompareTo(value) < 0)
                 {
-                    if (leftValue /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                    if (leftValue.CompareTo(rightValue) < 0)
                     {
                         *rightIndex = leftValue;
-                        if (value /*Compare[1]*/>/*Compare[1]*/ rightValue) *leftIndex = rightValue;
+                        if (value.CompareTo(rightValue) < 0) *leftIndex = rightValue;
                         else
                         {
                             *leftIndex = value;
@@ -54,10 +52,10 @@ namespace AutoCSer.Algorithm
                 }
                 else
                 {
-                    if (value /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                    if (value.CompareTo(rightValue) < 0)
                     {
                         *rightIndex = value;
-                        if (leftValue /*Compare[1]*/>/*Compare[1]*/ rightValue)
+                        if (leftValue.CompareTo(rightValue) < 0)
                         {
                             *leftIndex = rightValue;
                             *averageIndex = value = leftValue;
@@ -69,8 +67,8 @@ namespace AutoCSer.Algorithm
                 --rightIndex;
                 do
                 {
-                    while (*leftIndex /*Compare[2]*/</*Compare[2]*/ value) ++leftIndex;
-                    while (value /*Compare[2]*/</*Compare[2]*/ *rightIndex) --rightIndex;
+                    while ((*leftIndex).CompareTo(value) > 0) ++leftIndex;
+                    while (value.CompareTo(*rightIndex) > 0) --rightIndex;
                     if (leftIndex < rightIndex)
                     {
                         leftValue = *leftIndex;
@@ -90,12 +88,12 @@ namespace AutoCSer.Algorithm
                 while (++leftIndex <= --rightIndex);
                 if (rightIndex - startIndex <= endIndex - leftIndex)
                 {
-                    if (startIndex < rightIndex) sort/*Compare[0]*//*Compare[0]*/(startIndex, rightIndex);
+                    if (startIndex < rightIndex) sortDesc(startIndex, rightIndex);
                     startIndex = leftIndex;
                 }
                 else
                 {
-                    if (leftIndex < endIndex) sort/*Compare[0]*//*Compare[0]*/(leftIndex, endIndex);
+                    if (leftIndex < endIndex) sortDesc(leftIndex, endIndex);
                     endIndex = rightIndex;
                 }
             }
@@ -106,11 +104,11 @@ namespace AutoCSer.Algorithm
         /// </summary>
         /// <param name="values">待排序数组</param>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static void Sort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] values)
+        public static void SortDesc(ulong[] values)
         {
             if (values.Length > 1)
             {
-                fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = values) sort/*Compare[0]*//*Compare[0]*/(valueFixed, valueFixed + values.Length - 1);
+                fixed (ulong* valueFixed = values) sortDesc(valueFixed, valueFixed + values.Length - 1);
             }
         }
         /// <summary>
@@ -118,13 +116,12 @@ namespace AutoCSer.Algorithm
         /// </summary>
         /// <param name="values">待排序数组</param>
         /// <returns>排序后的新数组</returns>
-        public static /*Type[0]*/ulong/*Type[0]*/[] GetSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] values)
+        public static ulong[] GetSortDesc(ulong[] values)
         {
             if (values.Length == 0) return values;
-            /*Type[0]*/
-            ulong/*Type[0]*/[] newValue = new /*Type[0]*/ulong/*Type[0]*/[values.Length];
-            Buffer.BlockCopy(values, 0, newValue, 0, values.Length * sizeof(/*Type[0]*/ulong/*Type[0]*/));
-            fixed (/*Type[0]*/ulong/*Type[0]*/* newValueFixed = newValue, valueFixed = values) sort/*Compare[0]*//*Compare[0]*/(newValueFixed, newValueFixed + values.Length - 1);
+            ulong[] newValue = new ulong[values.Length];
+            Buffer.BlockCopy(values, 0, newValue, 0, values.Length * sizeof(ulong));
+            fixed (ulong* newValueFixed = newValue, valueFixed = values) sortDesc(newValueFixed, newValueFixed + values.Length - 1);
             return newValue;
         }
         /// <summary>
@@ -134,13 +131,12 @@ namespace AutoCSer.Algorithm
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">排序数据数量</param>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static void Sort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] values, int startIndex, int count)
+        public static void SortDesc(ulong[] values, int startIndex, int count)
         {
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = values)
+            fixed (ulong* valueFixed = values)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = valueFixed + startIndex;
-                sort/*Compare[0]*//*Compare[0]*/(start, start + count - 1);
+                ulong* start = valueFixed + startIndex;
+                sortDesc(start, start + count - 1);
             }
         }
         /// <summary>
@@ -150,15 +146,14 @@ namespace AutoCSer.Algorithm
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">排序数据数量</param>
         /// <returns>排序后的新数组</returns>
-        public static /*Type[0]*/ulong/*Type[0]*/[] GetSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] values, int startIndex, int count)
+        public static ulong[] GetSortDesc(ulong[] values, int startIndex, int count)
         {
-            if (count == 0) return NullValue</*Type[0]*/ulong/*Type[0]*/>.Array;
-            /*Type[0]*/
-            ulong/*Type[0]*/[] newValues = new /*Type[0]*/ulong/*Type[0]*/[count];
-            Buffer.BlockCopy(values, startIndex * sizeof(/*Type[0]*/ulong/*Type[0]*/), newValues, 0, count * sizeof(/*Type[0]*/ulong/*Type[0]*/));
-            fixed (/*Type[0]*/ulong/*Type[0]*/* newValueFixed = newValues, valueFixed = values)
+            if (count == 0) return EmptyArray<ulong>.Array;
+            ulong[] newValues = new ulong[count];
+            Buffer.BlockCopy(values, startIndex * sizeof(ulong), newValues, 0, count * sizeof(ulong));
+            fixed (ulong* newValueFixed = newValues, valueFixed = values)
             {
-                if (--count > 0) sort/*Compare[0]*//*Compare[0]*/(newValueFixed, newValueFixed + count);
+                if (--count > 0) sortDesc(newValueFixed, newValueFixed + count);
             }
             return newValues;
         }
@@ -167,32 +162,29 @@ namespace AutoCSer.Algorithm
         /// </summary>
         /// <param name="startIndex">起始位置</param>
         /// <param name="endIndex">结束位置-1</param>
-        internal static void sort/*Compare[0]*//*Compare[0]*/(/*Type[1]*/ULongSortIndex/*Type[1]*/* startIndex, /*Type[1]*/ULongSortIndex/*Type[1]*/* endIndex)
+        internal static void sortDesc(ULongSortIndex* startIndex, ULongSortIndex* endIndex)
         {
             do
             {
-                /*Type[1]*/
-                ULongSortIndex/*Type[1]*/ leftValue = *startIndex, rightValue = *endIndex;
+                ULongSortIndex leftValue = *startIndex, rightValue = *endIndex;
                 int average = (int)(endIndex - startIndex) >> 1;
                 if (average == 0)
                 {
-                    if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                    if (leftValue.Value.CompareTo(rightValue.Value) < 0)
                     {
                         *startIndex = rightValue;
                         *endIndex = leftValue;
                     }
                     break;
                 }
-                /*Type[1]*/
-                ULongSortIndex/*Type[1]*/* leftIndex = startIndex, rightIndex = endIndex, averageIndex = startIndex + average;
-                /*Type[1]*/
-                ULongSortIndex/*Type[1]*/ indexValue = *averageIndex;
-                if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ indexValue.Value)
+                ULongSortIndex* leftIndex = startIndex, rightIndex = endIndex, averageIndex = startIndex + average;
+                ULongSortIndex indexValue = *averageIndex;
+                if (leftValue.Value.CompareTo(indexValue.Value) < 0)
                 {
-                    if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                    if (leftValue.Value.CompareTo(rightValue.Value) < 0)
                     {
                         *rightIndex = leftValue;
-                        if (indexValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value) *leftIndex = rightValue;
+                        if (indexValue.Value.CompareTo(rightValue.Value) < 0) *leftIndex = rightValue;
                         else
                         {
                             *leftIndex = indexValue;
@@ -207,10 +199,10 @@ namespace AutoCSer.Algorithm
                 }
                 else
                 {
-                    if (indexValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                    if (indexValue.Value.CompareTo(rightValue.Value) < 0)
                     {
                         *rightIndex = indexValue;
-                        if (leftValue.Value /*Compare[1]*/>/*Compare[1]*/ rightValue.Value)
+                        if (leftValue.Value.CompareTo(rightValue.Value) < 0)
                         {
                             *leftIndex = rightValue;
                             *averageIndex = indexValue = leftValue;
@@ -220,12 +212,11 @@ namespace AutoCSer.Algorithm
                 }
                 ++leftIndex;
                 --rightIndex;
-                /*Type[0]*/
-                ulong/*Type[0]*/ value = indexValue.Value;
+                ulong value = indexValue.Value;
                 do
                 {
-                    while ((*leftIndex).Value /*Compare[2]*/</*Compare[2]*/ value) ++leftIndex;
-                    while (value /*Compare[2]*/</*Compare[2]*/ (*rightIndex).Value) --rightIndex;
+                    while ((*leftIndex).Value.CompareTo(value) > 0) ++leftIndex;
+                    while (value.CompareTo((*rightIndex).Value) > 0) --rightIndex;
                     if (leftIndex < rightIndex)
                     {
                         leftValue = *leftIndex;
@@ -245,12 +236,12 @@ namespace AutoCSer.Algorithm
                 while (++leftIndex <= --rightIndex);
                 if (rightIndex - startIndex <= endIndex - leftIndex)
                 {
-                    if (startIndex < rightIndex) sort/*Compare[0]*//*Compare[0]*/(startIndex, rightIndex);
+                    if (startIndex < rightIndex) sortDesc(startIndex, rightIndex);
                     startIndex = leftIndex;
                 }
                 else
                 {
-                    if (leftIndex < endIndex) sort/*Compare[0]*//*Compare[0]*/(leftIndex, endIndex);
+                    if (leftIndex < endIndex) sortDesc(leftIndex, endIndex);
                     endIndex = rightIndex;
                 }
             }
@@ -263,16 +254,16 @@ namespace AutoCSer.Algorithm
         /// <param name="values">待排序数组</param>
         /// <param name="getKey">排序键值获取器</param>
         /// <returns>排序后的数组</returns>
-        public static valueType[] GetSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey)
+        public static valueType[] GetSortDesc<valueType>(valueType[] values, Func<valueType, ulong> getKey)
         {
-            int length = values.Length * sizeof(/*Type[1]*/ULongSortIndex/*Type[1]*/);
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(length);
-            Pointer.Size data = pool.GetSize(length);
+            int length = values.Length * sizeof(ULongSortIndex);
+            AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(length);
+            AutoCSer.Memory.Pointer data = pool.GetMinSize(length);
             try
             {
-                return getSort/*Compare[0]*//*Compare[0]*/(values, getKey, (/*Type[1]*/ULongSortIndex/*Type[1]*/*)data.Data);
+                return getSortDesc(values, getKey, (ULongSortIndex*)data.Data);
             }
-            finally { pool.PushOnly(ref data); }
+            finally { pool.Push(ref data); }
         }
         /// <summary>
         /// 数组排序
@@ -282,12 +273,11 @@ namespace AutoCSer.Algorithm
         /// <param name="getKey">排序键值获取器</param>
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
-        private static valueType[] getSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, /*Type[1]*/ULongSortIndex/*Type[1]*/* fixedIndex)
+        private static valueType[] getSortDesc<valueType>(valueType[] values, Func<valueType, ulong> getKey, ULongSortIndex* fixedIndex)
         {
-            /*Type[1]*/
-            ULongSortIndex/*Type[1]*/.Create(fixedIndex, values, getKey);
-            sort/*Compare[0]*//*Compare[0]*/(fixedIndex, fixedIndex + values.Length - 1);
-            return /*Type[1]*/ULongSortIndex/*Type[1]*/.Create(fixedIndex, values, values.Length);
+            ULongSortIndex.Create(fixedIndex, values, getKey);
+            sortDesc(fixedIndex, fixedIndex + values.Length - 1);
+            return ULongSortIndex.Create(fixedIndex, values, values.Length);
         }
         /// <summary>
         /// 数组排序
@@ -298,16 +288,16 @@ namespace AutoCSer.Algorithm
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">排序数据数量</param>
         /// <returns>排序后的数组</returns>
-        public static valueType[] GetSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int startIndex, int count)
+        public static valueType[] GetSortDesc<valueType>(valueType[] values, Func<valueType, ulong> getKey, int startIndex, int count)
         {
-            int length = count * sizeof(/*Type[1]*/ULongSortIndex/*Type[1]*/);
-            UnmanagedPool pool = AutoCSer.UnmanagedPool.GetDefaultPool(length);
-            Pointer.Size data = pool.GetSize(length);
+            int length = count * sizeof(ULongSortIndex);
+            AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(length);
+            AutoCSer.Memory.Pointer data = pool.GetMinSize(length);
             try
             {
-                return getSort/*Compare[0]*//*Compare[0]*/(values, getKey, startIndex, count, (/*Type[1]*/ULongSortIndex/*Type[1]*/*)data.Data);
+                return getSortDesc(values, getKey, startIndex, count, (ULongSortIndex*)data.Data);
             }
-            finally { pool.PushOnly(ref data); }
+            finally { pool.Push(ref data); }
         }
         /// <summary>
         /// 数组排序
@@ -319,12 +309,11 @@ namespace AutoCSer.Algorithm
         /// <param name="count">排序数据数量</param>
         /// <param name="fixedIndex">索引位置</param>
         /// <returns>排序后的数组</returns>
-        private static valueType[] getSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int startIndex, int count, /*Type[1]*/ULongSortIndex/*Type[1]*/* fixedIndex)
+        private static valueType[] getSortDesc<valueType>(valueType[] values, Func<valueType, ulong> getKey, int startIndex, int count, ULongSortIndex* fixedIndex)
         {
-            /*Type[1]*/
-            ULongSortIndex/*Type[1]*/.Create(fixedIndex, values, getKey, startIndex, count);
-            sort/*Compare[0]*//*Compare[0]*/(fixedIndex, fixedIndex + count - 1);
-            return /*Type[1]*/ULongSortIndex/*Type[1]*/.Create(fixedIndex, values, count);
+            ULongSortIndex.Create(fixedIndex, values, getKey, startIndex, count);
+            sortDesc(fixedIndex, fixedIndex + count - 1);
+            return ULongSortIndex.Create(fixedIndex, values, count);
         }
     }
 }

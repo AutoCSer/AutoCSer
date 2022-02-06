@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
@@ -259,7 +259,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                 break;
             }
             if (Attribute == null) Attribute = AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(serverMethodAttribute);
-            OutputParameters = NullValue<ParameterInfo>.Array;
+            OutputParameters = EmptyArray<ParameterInfo>.Array;
         }
         /// <summary>
         /// 属性设置 TCP 函数信息

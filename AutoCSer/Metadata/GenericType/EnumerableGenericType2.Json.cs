@@ -13,11 +13,11 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeStructEnumerableMethod { get; }
+        internal abstract Delegate JsonSerializeStructEnumerableMethod { get; }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeEnumerableMethod { get; }
+        internal abstract Delegate JsonSerializeEnumerableMethod { get; }
     }
     /// <summary>
     /// 泛型类型元数据
@@ -28,18 +28,23 @@ namespace AutoCSer.Metadata
          where Type1 : IEnumerable<Type2>
     {
         /// <summary>
+        /// 获取当前类型
+        /// </summary>
+        internal override TypeKey CurrentType { get { return new TypeKey(typeof(Type1), typeof(Type2)); } }
+
+        /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeStructEnumerableMethod
+        internal override Delegate JsonSerializeStructEnumerableMethod
         {
-            get { return ((Action<Type1>)GenericType.JsonSerializer.structEnumerable<Type1, Type2>).Method; }
+            get { return (Action<JsonSerializer, Type1>)JsonSerializer.StructEnumerable<Type1, Type2>; }
         }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeEnumerableMethod
+        internal override Delegate JsonSerializeEnumerableMethod
         {
-            get { return ((Action<Type1>)GenericType.JsonSerializer.enumerable<Type1, Type2>).Method; }
+            get { return (Action<JsonSerializer, Type1>)JsonSerializer.Enumerable<Type1, Type2>; }
         }
     }
 }

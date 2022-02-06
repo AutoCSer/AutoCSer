@@ -47,8 +47,8 @@
     <Compile Include="CompressionStream.cs" />
     <Compile Include="DeCompressor.cs" />
     <Compile Include="DeflateStream.cs" />
-    <Compile Include="Extension\Memory.cs" />
     <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Extensions\MemoryExtension.WebClient.cs" />
     <Compile Include="Form\CustomAttribute.cs" />
     <Compile Include="Form\FormAttribute.cs" />
     <Compile Include="Form\Getter.cs" />

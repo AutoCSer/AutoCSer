@@ -1,7 +1,7 @@
 ﻿using System;
-/*Type:ulong;long;uint;int;ushort;short;byte;sbyte;double;float;char;DateTime*/
+/*ulong;long;uint;int;ushort;short;byte;sbyte;double;float;char;DateTime*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 可枚举相关扩展
@@ -14,20 +14,20 @@ namespace AutoCSer.Extension
         /// <param name="values">值集合</param>
         /// <param name="value">最大值</param>
         /// <returns>是否存在最大值</returns>
-        public static bool max(this System.Collections.Generic.IEnumerable</*Type[0]*/ulong/*Type[0]*/> values, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool max(this System.Collections.Generic.IEnumerable<ulong> values, out ulong value)
         {
             if (values != null)
             {
                 bool isValue = false;
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
-                foreach (/*Type[0]*/ulong/*Type[0]*/ nextValue in values)
+                value = ulong.MinValue;
+                foreach (ulong nextValue in values)
                 {
                     if (nextValue > value) value = nextValue;
                     isValue = true;
                 }
                 if (isValue) return true;
             }
-            value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+            value = ulong.MinValue;
             return false;
         }
         /// <summary>
@@ -37,10 +37,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最大值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ max(this System.Collections.Generic.IEnumerable</*Type[0]*/ulong/*Type[0]*/> values, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong max(this System.Collections.Generic.IEnumerable<ulong> values, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return max(values, out value) ? value : nullValue;
         }
         /// <summary>
@@ -51,21 +50,19 @@ namespace AutoCSer.Extension
         /// <param name="getKey">获取排序键的委托</param>
         /// <param name="value">最大值</param>
         /// <returns>是否存在最大值</returns>
-        public static bool max<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out valueType value)
+        public static bool max<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, out valueType value)
         {
             value = default(valueType);
             if (values != null)
             {
                 int count = -1;
-                /*Type[0]*/
-                ulong/*Type[0]*/ key = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                ulong key = ulong.MinValue;
                 foreach (valueType nextValue in values)
                 {
                     if (++count == 0) key = getKey(value = nextValue);
                     else
                     {
-                        /*Type[0]*/
-                        ulong/*Type[0]*/ nextKey = getKey(nextValue);
+                        ulong nextKey = getKey(nextValue);
                         if (nextKey > key)
                         {
                             value = nextValue;
@@ -86,7 +83,7 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最大值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType max<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, valueType nullValue)
+        public static valueType max<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, valueType nullValue)
         {
             valueType value;
             return max(values, getKey, out value) ? value : nullValue;
@@ -99,25 +96,24 @@ namespace AutoCSer.Extension
         /// <param name="getKey">获取排序键的委托</param>
         /// <param name="value">最大值</param>
         /// <returns>是否存在最大值</returns>
-        public static bool maxKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool maxKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, out ulong value)
         {
             if (values != null)
             {
                 int count = -1;
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                value = ulong.MinValue;
                 foreach (valueType nextValue in values)
                 {
                     if (++count == 0) value = getKey(nextValue);
                     else
                     {
-                        /*Type[0]*/
-                        ulong/*Type[0]*/ nextKey = getKey(nextValue);
+                        ulong nextKey = getKey(nextValue);
                         if (nextKey > value) value = nextKey;
                     }
                 }
                 if (count != -1) return true;
             }
-            value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+            value = ulong.MinValue;
             return false;
         }
         /// <summary>
@@ -129,10 +125,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最大值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ maxKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong maxKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return maxKey(values, getKey, out value) ? value : nullValue;
         }
         /// <summary>
@@ -141,20 +136,20 @@ namespace AutoCSer.Extension
         /// <param name="values">值集合</param>
         /// <param name="value">最小值</param>
         /// <returns>是否存在最小值</returns>
-        public static bool min(this System.Collections.Generic.IEnumerable</*Type[0]*/ulong/*Type[0]*/> values, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool min(this System.Collections.Generic.IEnumerable<ulong> values, out ulong value)
         {
             if (values != null)
             {
                 bool isValue = false;
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
-                foreach (/*Type[0]*/ulong/*Type[0]*/ nextValue in values)
+                value = ulong.MinValue;
+                foreach (ulong nextValue in values)
                 {
                     if (nextValue < value) value = nextValue;
                     isValue = true;
                 }
                 if (isValue) return true;
             }
-            value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+            value = ulong.MinValue;
             return false;
         }
         /// <summary>
@@ -164,10 +159,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最小值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ min(this System.Collections.Generic.IEnumerable</*Type[0]*/ulong/*Type[0]*/> values, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong min(this System.Collections.Generic.IEnumerable<ulong> values, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return min(values, out value) ? value : nullValue;
         }
         /// <summary>
@@ -178,21 +172,19 @@ namespace AutoCSer.Extension
         /// <param name="getKey">获取排序键的委托</param>
         /// <param name="value">最小值</param>
         /// <returns>是否存在最小值</returns>
-        public static bool min<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out valueType value)
+        public static bool min<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, out valueType value)
         {
             value = default(valueType);
             if (values != null)
             {
                 int count = -1;
-                /*Type[0]*/
-                ulong/*Type[0]*/ key = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                ulong key = ulong.MinValue;
                 foreach (valueType nextValue in values)
                 {
                     if (++count == 0) key = getKey(value = nextValue);
                     else
                     {
-                        /*Type[0]*/
-                        ulong/*Type[0]*/ nextKey = getKey(nextValue);
+                        ulong nextKey = getKey(nextValue);
                         if (nextKey < key)
                         {
                             value = nextValue;
@@ -213,7 +205,7 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最小值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType min<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, valueType nullValue)
+        public static valueType min<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, valueType nullValue)
         {
             valueType value;
             return min(values, getKey, out value) ? value : nullValue;
@@ -226,25 +218,24 @@ namespace AutoCSer.Extension
         /// <param name="getKey">获取排序键的委托</param>
         /// <param name="value">最小值</param>
         /// <returns>是否存在最小值</returns>
-        public static bool minKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool minKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, out ulong value)
         {
             if (values != null)
             {
                 int count = -1;
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                value = ulong.MinValue;
                 foreach (valueType nextValue in values)
                 {
                     if (++count == 0) value = getKey(nextValue);
                     else
                     {
-                        /*Type[0]*/
-                        ulong/*Type[0]*/ nextKey = getKey(nextValue);
+                        ulong nextKey = getKey(nextValue);
                         if (nextKey < value) value = nextKey;
                     }
                 }
                 if (count != -1) return true;
             }
-            value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+            value = ulong.MinValue;
             return false;
         }
         /// <summary>
@@ -256,10 +247,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最小值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ minKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong minKey<valueType>(this System.Collections.Generic.IEnumerable<valueType> values, Func<valueType, ulong> getKey, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return minKey(values, getKey, out value) ? value : nullValue;
         }
     }

@@ -62,7 +62,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             this.fileInfo = fileInfo ?? new FileInfo(Path.Combine(Path.Combine(server.Path, path), listFileItem.Name));
             IsUpload = fileInfo == null;
             Identity = Interlocked.Increment(ref identity);
-            checkTimeoutSeconds = AutoCSer.Date.NowTime.CurrentSeconds;
+            checkTimeoutSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
         }
         /// <summary>
         /// 检测是否超时
@@ -71,7 +71,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool CheckTimeout(int timeoutSeconds)
         {
-            return checkTimeoutSeconds + timeoutSeconds < AutoCSer.Date.NowTime.CurrentSeconds;
+            return checkTimeoutSeconds + timeoutSeconds < AutoCSer.Threading.SecondTimer.CurrentSeconds;
         }
     }
 }

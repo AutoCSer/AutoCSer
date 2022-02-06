@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.TcpInternalServer.Emit
 {

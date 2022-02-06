@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Web
 {
@@ -41,10 +41,17 @@ namespace AutoCSer.Web
                 {
                     using (AutoCSer.Net.HttpRegister.Server.TcpInternalClient httpClient = new AutoCSer.Net.HttpRegister.Server.TcpInternalClient(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute)))
                     {
+                        Console.WriteLine("停止 WEB");
                         location.Stop(httpClient);
                         file.Stop(httpClient);
                         main.Stop(httpClient);
-                        if (main.Start(httpClient) && file.Start(httpClient) && location.Start(httpClient)) return;
+                        Console.WriteLine("准备启动 WEB");
+                        if (main.Start(httpClient) && file.Start(httpClient) && location.Start(httpClient))
+                        {
+                            Console.WriteLine("WEB 启动成功");
+                            return;
+                        }
+                        Console.WriteLine("WEB 启动失败");
                     }
                 }
                 catch (Exception error)

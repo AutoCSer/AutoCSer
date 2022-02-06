@@ -33,16 +33,16 @@ namespace AutoCSer.OpenAPI.Weixin
         {
             set
             {
-                topcolor = AutoCSer.Extension.StringExtension.FastAllocateString(7);
+                topcolor = AutoCSer.Extensions.StringExtension.FastAllocateString(7);
                 fixed (char* valueFixed = topcolor)
                 {
                     *valueFixed = '#';
-                    *(valueFixed + 1) = (char)AutoCSer.Extension.Number.ToHex((uint)value.R >> 4);
-                    *(valueFixed + 2) = (char)AutoCSer.Extension.Number.ToHex((uint)value.R & 0xf);
-                    *(valueFixed + 3) = (char)AutoCSer.Extension.Number.ToHex((uint)value.G >> 4);
-                    *(valueFixed + 4) = (char)AutoCSer.Extension.Number.ToHex((uint)value.G & 0xf);
-                    *(valueFixed + 5) = (char)AutoCSer.Extension.Number.ToHex((uint)value.B >> 4);
-                    *(valueFixed + 6) = (char)AutoCSer.Extension.Number.ToHex((uint)value.B & 0xf);
+                    *(valueFixed + 1) = (char)AutoCSer.Extensions.NumberExtension.ToHex((uint)value.R >> 4);
+                    *(valueFixed + 2) = (char)AutoCSer.Extensions.NumberExtension.ToHex((uint)value.R & 0xf);
+                    *(valueFixed + 3) = (char)AutoCSer.Extensions.NumberExtension.ToHex((uint)value.G >> 4);
+                    *(valueFixed + 4) = (char)AutoCSer.Extensions.NumberExtension.ToHex((uint)value.G & 0xf);
+                    *(valueFixed + 5) = (char)AutoCSer.Extensions.NumberExtension.ToHex((uint)value.B >> 4);
+                    *(valueFixed + 6) = (char)AutoCSer.Extensions.NumberExtension.ToHex((uint)value.B & 0xf);
                 }
             }
         }

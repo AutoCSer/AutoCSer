@@ -6,7 +6,7 @@ namespace AutoCSer.Sql.Threading
     /// <summary>
     /// SQL 队列任务
     /// </summary>
-    public abstract class QueueTask : AutoCSer.Threading.TaskLinkNode<QueueTask>
+    public abstract class QueueTask : AutoCSer.Threading.TaskLinkNode
     {
         /// <summary>
         /// 添加任务
@@ -55,10 +55,10 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// SQL 队列处理
         /// </summary>
-        private static readonly AutoCSer.Threading.QueueTaskLinkThread<QueueTask> queueTaskLinkThread = new AutoCSer.Threading.QueueTaskLinkThread<QueueTask>(false);
+        private static readonly AutoCSer.Threading.TaskQueueThread queueTaskLinkThread = new AutoCSer.Threading.TaskQueueThread(false);
         /// <summary>
         /// SQL 队列处理
         /// </summary>
-        private static readonly AutoCSer.Threading.QueueTaskLinkThread<QueueTask> backgroundQueueTaskLinkThread = new AutoCSer.Threading.QueueTaskLinkThread<QueueTask>(true);
+        private static readonly AutoCSer.Threading.TaskQueueThread backgroundQueueTaskLinkThread = new AutoCSer.Threading.TaskQueueThread(true);
     }
 }

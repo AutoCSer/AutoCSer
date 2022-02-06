@@ -22,9 +22,9 @@ namespace AutoCSer.Metadata
         /// 对象转换成JSON字符串
         /// </summary>
         /// <param name="serializer">对象转换成JSON字符串</param>
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void ToJson(AutoCSer.Json.Serializer serializer)
+        internal void ToJson(AutoCSer.JsonSerializer serializer)
         {
             MemberMap memberMap = MemberMap;
             if (memberMap == null || memberMap.IsDefault) serializer.TypeSerialize(Value);
@@ -50,21 +50,21 @@ namespace AutoCSer.Metadata
         /// 对象转换成JSON字符串
         /// </summary>
         /// <param name="parser">Json解析器</param>
-        [AutoCSer.Json.ParseCustom]
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void parseJson(AutoCSer.Json.Parser parser)
+        private void parseJson(AutoCSer.JsonDeSerializer parser)
         {
             if (MemberMap == null) MemberMap = new MemberMap<valueType>();
             parser.MemberMap = MemberMap;
-            parser.TypeParse(ref Value);
+            parser.TypeDeSerialize(ref Value);
         }
         /// <summary>
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        internal void Serialize(AutoCSer.BinarySerializer serializer)
         {
             if (MemberMap == null || MemberMap.IsDefault) serializer.TypeSerialize(Value);
             else
@@ -81,9 +81,9 @@ namespace AutoCSer.Metadata
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             MemberMap memberMap = deSerializer.SetCustomMemberMap(MemberMap);
             try
@@ -116,9 +116,9 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <param name="toJsoner">对象转换成JSON字符串</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void toJson(AutoCSer.Json.Serializer toJsoner)
+        private void toJson(AutoCSer.JsonSerializer toJsoner)
         {
             new MemberMapValue<memberMapType> { MemberMap = MemberMap, Value = Value }.ToJson(toJsoner);
         }
@@ -126,17 +126,17 @@ namespace AutoCSer.Metadata
         /// 对象转换成JSON字符串
         /// </summary>
         /// <param name="parser">Json解析器</param>
-        [AutoCSer.Json.ParseCustom]
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void parseJson(AutoCSer.Json.Parser parser)
+        private void parseJson(AutoCSer.JsonDeSerializer parser)
         {
             if (MemberMap == null) MemberMap = new MemberMap<memberMapType>();
             parser.MemberMap = MemberMap;
-            if (Value == null) parser.TypeParse(ref Value);
+            if (Value == null) parser.TypeDeSerialize(ref Value);
             else
             {
                 memberMapType parseValue = Value;
-                parser.TypeParse(ref parseValue);
+                parser.TypeDeSerialize(ref parseValue);
             }
         }
         /// <summary>
@@ -144,9 +144,9 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <param name="serializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             new MemberMapValue<memberMapType> { MemberMap = MemberMap, Value = Value }.Serialize(serializer);
         }
@@ -154,9 +154,9 @@ namespace AutoCSer.Metadata
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             MemberMap memberMap = deSerializer.SetCustomMemberMap(MemberMap);
             try

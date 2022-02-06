@@ -41,7 +41,7 @@ namespace AutoCSer.Metadata
             try
             {
                 if (staticMethods.TryGetValue(type, out values)) return values;
-                LeftArray<AttributeMethod> array = default(LeftArray<AttributeMethod>);
+                LeftArray<AttributeMethod> array = new LeftArray<AttributeMethod>(0);
                 foreach (MethodInfo method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy))
                 {
                     object[] attributes = method.GetCustomAttributes(true);
@@ -73,7 +73,7 @@ namespace AutoCSer.Metadata
             try
             {
                 if (methods.TryGetValue(type, out values)) return values;
-                LeftArray<AttributeMethod> array = default(LeftArray<AttributeMethod>);
+                LeftArray<AttributeMethod> array = new LeftArray<AttributeMethod>(0);
                 foreach (MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy))
                 {
                     object[] attributes = method.GetCustomAttributes(true);
@@ -83,15 +83,6 @@ namespace AutoCSer.Metadata
             }
             finally { Monitor.Exit(createLock); }
             return values;
-        }
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void ClearCache()
-        {
-            methods.Clear();
-            staticMethods.Clear();
         }
         /// <summary>
         /// 获取自定义属性集合
@@ -116,6 +107,18 @@ namespace AutoCSer.Metadata
         {
             foreach (attributeType attribute in Attributes<attributeType>()) return attribute;
             return null;
+        }
+        /// <summary>
+        /// 清除缓存数据
+        /// </summary>
+        private static void clearCache()
+        {
+            methods.Clear();
+            staticMethods.Clear();
+        }
+        static AttributeMethod()
+        {
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(AttributeMethod), 60 * 60);
         }
     }
 }

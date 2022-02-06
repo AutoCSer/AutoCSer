@@ -22,8 +22,8 @@ namespace AutoCSer.Example.BinarySerialize
             Reference value = new Reference();
             value.This = value;//构造循环引用
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value);
-            Reference newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<Reference>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value);
+            Reference newValue = AutoCSer.BinaryDeSerializer.DeSerialize<Reference>(data);
 
             return newValue != null && newValue.This == newValue;
         }

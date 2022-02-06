@@ -16,7 +16,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 默认二进制反序列化配置参数
         /// </summary>
-        internal static readonly AutoCSer.BinarySerialize.DeSerializeConfig DefaultBinaryDeSerializeConfig = AutoCSer.BinarySerialize.ConfigLoader.GetUnion(typeof(AutoCSer.BinarySerialize.DeSerializeConfig), BinaryDeSerializeConfigName).DeSerializeConfig ?? new AutoCSer.BinarySerialize.DeSerializeConfig { IsDisposeMemberMap = true, MaxArraySize = 1024 };
+        internal static readonly AutoCSer.BinarySerialize.DeSerializeConfig DefaultBinaryDeSerializeConfig = (AutoCSer.BinarySerialize.DeSerializeConfig)AutoCSer.Configuration.Common.Get(typeof(AutoCSer.BinarySerialize.DeSerializeConfig), BinaryDeSerializeConfigName) ?? new AutoCSer.BinarySerialize.DeSerializeConfig { IsDisposeMemberMap = true, MaxArraySize = 1024 };
         /// <summary>
         /// 获取二进制反序列化配置参数
         /// </summary>
@@ -25,7 +25,7 @@ namespace AutoCSer.Net.TcpOpenServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static AutoCSer.BinarySerialize.DeSerializeConfig GetBinaryDeSerializeConfig(int maxArraySize)
         {
-            if (maxArraySize == AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize) return AutoCSer.BinarySerialize.DeSerializer.DefaultConfig;
+            if (maxArraySize == AutoCSer.BinaryDeSerializer.DefaultConfig.MaxArraySize) return AutoCSer.BinaryDeSerializer.DefaultConfig;
             if (maxArraySize == DefaultBinaryDeSerializeConfig.MaxArraySize) return DefaultBinaryDeSerializeConfig;
             return new AutoCSer.BinarySerialize.DeSerializeConfig { IsDisposeMemberMap = true, MaxArraySize = maxArraySize };
         }
@@ -42,12 +42,12 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 8KB。
         /// </summary>
-        public SubBuffer.Size SendBufferSize = SubBuffer.Size.Kilobyte8;
+        public AutoCSer.Memory.BufferSize SendBufferSize = AutoCSer.Memory.BufferSize.Kilobyte8;
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override SubBuffer.Size GetSendBufferSize { get { return SendBufferSize; } }
+        internal override AutoCSer.Memory.BufferSize GetSendBufferSize { get { return SendBufferSize; } }
         /// <summary>
         /// 服务器端发送数据缓冲区最大字节数
         /// </summary>
@@ -60,12 +60,12 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 服务器端接受数据（包括客户端发送数据）缓冲区初始化字节数，默认为 8KB。
         /// </summary>
-        public SubBuffer.Size ReceiveBufferSize = SubBuffer.Size.Kilobyte8;
+        public AutoCSer.Memory.BufferSize ReceiveBufferSize = AutoCSer.Memory.BufferSize.Kilobyte8;
         /// <summary>
         /// 服务器端接受数据（包括客户端发送数据）缓冲区初始化字节数
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override SubBuffer.Size GetReceiveBufferSize { get { return ReceiveBufferSize; } }
+        internal override AutoCSer.Memory.BufferSize GetReceiveBufferSize { get { return ReceiveBufferSize; } }
         /// <summary>
         /// 最大输入数据字节数，默认为 16 KB，小于等于 0 表示不限
         /// </summary>
@@ -85,9 +85,9 @@ namespace AutoCSer.Net.TcpOpenServer
         //[AutoCSer.Metadata.Ignore]
         //internal override int GetMinCompressSize { get { return MinCompressSize; } }
         /// <summary>
-        /// 客户端保持连接心跳包间隔时间默认为 59 秒，对于频率稳定可靠的服务类型可以设置为 0 禁用心跳包。
+        /// 客户端保持连接心跳包间隔时间默认为 60 秒，对于频率稳定可靠的服务类型可以设置为 0 禁用心跳包。
         /// </summary>
-        public int CheckSeconds = 59;
+        public int CheckSeconds = 60;
         /// <summary>
         /// 客户端保持连接心跳包间隔时间
         /// </summary>
@@ -143,23 +143,23 @@ namespace AutoCSer.Net.TcpOpenServer
         [AutoCSer.Metadata.Ignore]
         internal override int GetClientFirstTryCreateSleep { get { return ClientFirstTryCreateSleep; } }
         /// <summary>
-        /// 批量处理休眠毫秒数，默认为 -1 表示不等待，设置为 0 适应于延时要求不高只要求吞吐量的情况以减少套接字调用次数，设置为 0 适应于低延时高频串行调用
+        /// 客户端批量处理等待类型，默认为不等待
         /// </summary>
-        public int ClientOutputSleep = -1;
+        public TcpServer.OutputWaitType ClientOutputWaitType = TcpServer.OutputWaitType.DontWait;
         /// <summary>
-        /// 批量处理休眠毫秒数
+        /// 客户端批量处理等待类型
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override int GetClientOutputSleep { get { return ClientOutputSleep; } }
+        internal override TcpServer.OutputWaitType GetClientOutputWaitType { get { return ClientOutputWaitType; } }
         /// <summary>
-        /// 批量处理休眠毫秒数，默认为 -1 表示不等待，设置为 0 适应于低延时高频串行调用，大于 0 适应于延时要求不高只要求吞吐量的情况以减少套接字调用次数
+        /// 服务端批量处理等待类型，默认为不等待
         /// </summary>
-        public int ServerOutputSleep = -1;
+        public TcpServer.OutputWaitType ServerOutputWaitType = TcpServer.OutputWaitType.DontWait;
         /// <summary>
-        /// 批量处理休眠毫秒数
+        /// 服务端批量处理等待类型
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override int GetServerOutputSleep { get { return ServerOutputSleep; } }
+        internal override TcpServer.OutputWaitType GetServerOutputWaitType { get { return ServerOutputWaitType; } }
         /// <summary>
         /// 命令池初始化二进制大小，默认为 3
         /// </summary>
@@ -250,7 +250,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <returns>TCP 调用服务器端配置信息</returns>
         public static ServerAttribute GetConfig(string serviceName, Type type = null)
         {
-            return GetConfig(serviceName, type, new UnionType { Value = AutoCSer.Config.Loader.GetObject(typeof(ServerAttribute), serviceName) }.ServerAttribute);
+            return GetConfig(serviceName, type, (ServerAttribute)AutoCSer.Configuration.Common.Get(typeof(ServerAttribute), serviceName));
         }
     }
 }

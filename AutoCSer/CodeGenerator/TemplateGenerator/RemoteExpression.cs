@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
@@ -203,7 +203,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        return Method == null ? NullValue<ExtensionType>.Array : Method.GenericParameters;
+                        return Method == null ? EmptyArray<ExtensionType>.Array : Method.GenericParameters;
                     }
                 }
                 /// <summary>
@@ -287,14 +287,14 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     this.type = type;
                     this.memberNodeTypeName = memberNodeTypeName;
-                    LeftArray<Expression> members = default(LeftArray<Expression>);
+                    LeftArray<Expression> members = new LeftArray<Expression>(0);
                     nodeTypeNames.Clear();
                     foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, true, false))
                     {
                         if (!member.IsIgnore && member.CanGet)
                         {
                             AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
-                            IsMember &= addMember(ref members, new Expression { Attribute = attribute,Member = member, IntputParameters = member.IsField ? NullValue<ExpressionParameter>.Array : ExpressionParameter.Get(MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), NullValue<Type>.Array)) });
+                            IsMember &= addMember(ref members, new Expression { Attribute = attribute,Member = member, IntputParameters = member.IsField ? EmptyArray<ExpressionParameter>.Array : ExpressionParameter.Get(MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), EmptyArray<Type>.Array)) });
                         }
                     }
                     foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, false, true, false))
@@ -308,13 +308,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     Members = members.ToArray();
                     if (memberNodeTypeName == null)
                     {
-                        LeftArray<StaticExpression> staticMembers = default(LeftArray<StaticExpression>);
+                        LeftArray<StaticExpression> staticMembers = new LeftArray<StaticExpression>(0);
                         foreach (MemberIndex member in MemberIndex.GetStaticMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Static, true, false))
                         {
                             if (!member.IsIgnore && member.CanGet)
                             {
                                 AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
-                                IsMember &= addMember(ref staticMembers, new StaticExpression { Attribute = attribute, Member = member, IntputParameters = NullValue<ExpressionParameter>.Array });
+                                IsMember &= addMember(ref staticMembers, new StaticExpression { Attribute = attribute, Member = member, IntputParameters = EmptyArray<ExpressionParameter>.Array });
                             }
                         }
                         foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Static, false, true, false))
@@ -327,7 +327,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                         StaticMembers = staticMembers.ToArray();
                     }
-                    else StaticMembers = NullValue<StaticExpression>.Array;
+                    else StaticMembers = EmptyArray<StaticExpression>.Array;
                     if ((IsMember &= (Members.Length | StaticMembers.Length) != 0) && memberNodeTypeName == null)
                     {
                         foreach (Expression member in Members) member.CheckGenericMemberGroup();
@@ -347,7 +347,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     string name = member.GenericMemberNodeTypeName;
                     if (!nodeTypeNames.Add(name))
                     {
-                        Messages.Add(type.FullName + " 远程表达式节点类型名称冲突 " + name);
+                        Messages.Error(type.FullName + " 远程表达式节点类型名称冲突 " + name);
                         return false;
                     }
                     member.Type = type;

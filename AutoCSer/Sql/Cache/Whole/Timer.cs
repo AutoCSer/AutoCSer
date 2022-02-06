@@ -37,7 +37,7 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <summary>
         /// 事件时间集合
         /// </summary>
-        private LeftArray<DateTime> times;
+        private LeftArray<DateTime> times = new LeftArray<DateTime>(0);
         /// <summary>
         /// 事件时间访问锁
         /// </summary>
@@ -65,7 +65,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 foreach (valueType value in cache.Values)
                 {
                     DateTime time = getTime(value);
-                    if (time < minTime && time > AutoCSer.Pub.MinTime) minTime = time;
+                    if (time < minTime && time > AutoCSer.Date.BaseTime) minTime = time;
                 }
                 Append(minTime);
                 cache.OnInserted += onInserted;
@@ -78,7 +78,7 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <param name="time"></param>
         public void Append(DateTime time)
         {
-            if (time < minTime && time > AutoCSer.Pub.MinTime)
+            if (time < minTime && time > AutoCSer.Date.BaseTime)
             {
                 Monitor.Enter(timeLock);
                 if (time < minTime)
@@ -91,8 +91,8 @@ namespace AutoCSer.Sql.Cache.Whole
                     finally { Monitor.Exit(timeLock); }
                 }
                 else Monitor.Exit(timeLock);
-                if (time <= Date.NowTime.Now) AutoCSer.Threading.ThreadPool.TinyBackground.Start(runTimeHandle);
-                else AutoCSer.Threading.TimerTask.Default.Add(runTimeHandle, time);
+                if (time <= AutoCSer.Threading.SecondTimer.Now) AutoCSer.Threading.ThreadPool.TinyBackground.Start(runTimeHandle);
+                else AutoCSer.Threading.SecondTimer.TaskArray.Append(runTimeHandle, time, AutoCSer.Threading.SecondTimerThreadMode.TinyBackgroundThreadPool);
             }
         }
         /// <summary>
@@ -100,11 +100,11 @@ namespace AutoCSer.Sql.Cache.Whole
         /// </summary>
         private unsafe void runTime()
         {
-            DateTime now = Date.NowTime.Set();
+            DateTime now = AutoCSer.Threading.SecondTimer.SetNow();
             Monitor.Enter(timeLock);
             if (times.Length != 0)
             {
-                fixed (DateTime* timeFixed = times.Array)
+                fixed (DateTime* timeFixed = times.GetFixedBuffer())
                 {
                     if (*timeFixed <= now)
                     {

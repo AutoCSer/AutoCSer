@@ -48,12 +48,12 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 128KB。
         /// </summary>
-        public SubBuffer.Size SendBufferSize = SubBuffer.Size.Kilobyte128;
+        public AutoCSer.Memory.BufferSize SendBufferSize = AutoCSer.Memory.BufferSize.Kilobyte128;
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override SubBuffer.Size GetSendBufferSize { get { return SendBufferSize; } }
+        internal override AutoCSer.Memory.BufferSize GetSendBufferSize { get { return SendBufferSize; } }
         /// <summary>
         /// 服务器端发送数据缓冲区最大字节数，默认为 1MB。
         /// </summary>
@@ -134,7 +134,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
-        public int BinaryDeSerializeMaxArraySize = AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize;
+        public int BinaryDeSerializeMaxArraySize = AutoCSer.BinaryDeSerializer.DefaultConfig.MaxArraySize;
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>

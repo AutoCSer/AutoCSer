@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer
@@ -24,7 +24,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         internal MasterServerConfig MasterConfig
         {
-            get { return new UnionType { Value = Config }.MasterServerConfig; }
+            get { return (MasterServerConfig)Config; }
         }
         /// <summary>
         /// 缓存服务
@@ -57,7 +57,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 服务启动时间
         /// </summary>
-        private readonly long startTicks = Date.NowTime.Set().Ticks;
+        private readonly long startTicks = AutoCSer.Threading.SecondTimer.SetNow().Ticks;
         /// <summary>
         /// 文件流写入器
         /// </summary>
@@ -81,15 +81,15 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 数据结构数组集合
         /// </summary>
-        internal DataStructureItem[] Array = NullValue<DataStructureItem>.Array;
+        internal DataStructureItem[] Array = EmptyArray<DataStructureItem>.Array;
         /// <summary>
         /// 数据结构空闲索引
         /// </summary>
-        internal LeftArray<int> FreeIndexs;
+        internal LeftArray<int> FreeIndexs = new LeftArray<int>(0);
         /// <summary>
         /// 加载中的消息队列集合
         /// </summary>
-        internal LeftArray<Cache.MessageQueue.Node> LoadMessageQueues;
+        internal LeftArray<Cache.MessageQueue.Node> LoadMessageQueues = new LeftArray<Cache.MessageQueue.Node>(0);
         /// <summary>
         /// 创建缓存节点后的回调操作
         /// </summary>
@@ -135,7 +135,7 @@ namespace AutoCSer.CacheServer
                 IsFile = true;
                 File = new FileStreamWriter(this, config);
                 foreach (Cache.MessageQueue.Node messageQueue in LoadMessageQueues) messageQueue.Start();
-                LoadMessageQueues.SetNull();
+                LoadMessageQueues.SetEmpty();
                 IsLoaded = CanWrite = true;
                 AutoCSer.DomainUnload.Unloader.Add(disposeHandle, DomainUnload.Type.Action);
             }
@@ -521,7 +521,7 @@ namespace AutoCSer.CacheServer
         {
             if (CanWrite)
             {
-                fixed (byte* dataFixed = buffer.Array.Array)
+                fixed (byte* dataFixed = buffer.GetFixedBuffer())
                 {
                     OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, buffer, dataFixed);
                     ServerDataStructure dataStructure = parser.Get(Array);
@@ -551,7 +551,7 @@ namespace AutoCSer.CacheServer
             {
                 if (CanWrite)
                 {
-                    fixed (byte* dataFixed = buffer.Array.Array)
+                    fixed (byte* dataFixed = buffer.GetFixedBuffer())
                     {
                         OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, buffer, dataFixed);
                         ServerDataStructure dataStructure = parser.Get(Array);
@@ -591,7 +591,7 @@ namespace AutoCSer.CacheServer
         internal ValueData.Data Query(ref SubArray<byte> queryData)
         {
             queryBuffer.Set(ref queryData);
-            fixed (byte* dataFixed = queryData.Array)
+            fixed (byte* dataFixed = queryData.GetFixedBuffer())
             {
                 OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
                 ServerDataStructure dataStructure = parser.Get(Array);
@@ -614,7 +614,7 @@ namespace AutoCSer.CacheServer
             try
             {
                 queryBuffer.Set(ref queryData);
-                fixed (byte* dataFixed = queryData.Array)
+                fixed (byte* dataFixed = queryData.GetFixedBuffer())
                 {
                     OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
                     ServerDataStructure dataStructure = parser.Get(Array);
@@ -649,7 +649,7 @@ namespace AutoCSer.CacheServer
             try
             {
                 queryBuffer.Set(ref queryData);
-                fixed (byte* dataFixed = queryData.Array)
+                fixed (byte* dataFixed = queryData.GetFixedBuffer())
                 {
                     OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
                     ServerDataStructure dataStructure = parser.Get(Array);
@@ -792,7 +792,7 @@ namespace AutoCSer.CacheServer
         {
             byte[] data = queryData.Array;
             ReturnType returnType = ReturnType.NotFoundShortPath;
-            fixed (byte* dataFixed = queryData.Array)
+            fixed (byte* dataFixed = queryData.GetFixedBuffer())
             {
                 byte* start = dataFixed + queryData.Start;
                 ShortPathIdentity identity = new ShortPathIdentity(start + OperationParameter.Serializer.HeaderSize);
@@ -857,7 +857,7 @@ namespace AutoCSer.CacheServer
             ReturnType returnType = ReturnType.ServerDeSerializeError;
             try
             {
-                fixed (byte* dataFixed = queryData.Array)
+                fixed (byte* dataFixed = queryData.GetFixedBuffer())
                 {
                     byte* start = dataFixed + queryData.Start;
                     ShortPathIdentity identity = new ShortPathIdentity(start + OperationParameter.Serializer.HeaderSize);
@@ -975,12 +975,12 @@ namespace AutoCSer.CacheServer
                 if (data.Length != 0)
                 {
                     LoadData loadData = new LoadData { Buffer = loadBuffer };
-                    fixed (byte* dataFixed = data.Array)
+                    fixed (byte* dataFixed = data.GetFixedBuffer())
                     {
                         loadData.Set(ref data, dataFixed);
                         if (Load(ref loadData)) return;
                     }
-                    TcpServer.Log.Add(Log.LogType.Fatal, "缓存数据解析失败");
+                    TcpServer.Log.Fatal("缓存数据解析失败", LogLevel.Fatal | LogLevel.AutoCSer);
                 }
                 else
                 {

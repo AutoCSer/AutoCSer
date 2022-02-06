@@ -12,9 +12,9 @@ namespace AutoCSer.CodeGenerator.Template
         #endregion NOTE
         #region PART CLASS
         #region IF Attribute.IsDefaultSerialize
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false/*NOT:IsDefaultSerializeIsMemberMap*/, IsMemberMap = false/*NOT:IsDefaultSerializeIsMemberMap*/)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false/*NOT:IsDefaultSerializeIsMemberMap*/, IsMemberMap = false/*NOT:IsDefaultSerializeIsMemberMap*/)]
         #endregion IF Attribute.IsDefaultSerialize
         /*NOTE*/
         public partial class /*NOTE*/@TypeNameDefinition
@@ -72,7 +72,7 @@ namespace AutoCSer.CodeGenerator.Template
                         sqlTable.WaitCreateCache();
                         #endregion IF IsCreateEventCache
                         #region NOT IsCreateEventCache
-                        if (@IdentityArrayCacheName == null) throw new NullReferenceException(AutoCSer.Extension.TypeExtension.fullName(typeof(tableType)) + ".@IdentityArrayCacheName is null");
+                        if (@IdentityArrayCacheName == null) throw new NullReferenceException(AutoCSer.Extensions.TypeExtension.fullName(typeof(tableType)) + ".@IdentityArrayCacheName is null");
                         #endregion NOT IsCreateEventCache
                         isEventCacheLoaded = true;
                     }
@@ -525,7 +525,7 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsUpdateMemberMapClassType
                     {
                         #region NOT Attribute.IsUpdateMemberMapClassType
-                        this.value = value ?? AutoCSer.Emit.Constructor<tableType>.New();
+                        this.value = value ?? AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
                         this.memberMap = memberMap;
                         #endregion NOT Attribute.IsUpdateMemberMapClassType
                     }
@@ -543,7 +543,7 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsUpdateMemberMapClassType
                     {
                         #region NOT Attribute.IsUpdateMemberMapClassType
-                        value = AutoCSer.Emit.Constructor<tableType>.New();
+                        value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
                         this.memberMap = memberMap;
                         #endregion NOT Attribute.IsUpdateMemberMapClassType
                         value./*PUSH:Identity*/@MemberName/*PUSH:Identity*/ = /*NOTE*/(Pub)(object)/*NOTE*//*PUSH:Identity*/@MemberName/*PUSH:Identity*/;
@@ -561,7 +561,7 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsUpdateMemberMapClassType
                     {
                         #region NOT Attribute.IsUpdateMemberMapClassType
-                        value = AutoCSer.Emit.Constructor<tableType>.New();
+                        value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
                         this.memberMap = memberMap;
                         #endregion NOT Attribute.IsUpdateMemberMapClassType
                         sqlTable.SetPrimaryKey(value, key);
@@ -595,13 +595,14 @@ namespace AutoCSer.CodeGenerator.Template
                     /// <returns>更新是否成功</returns>
                     [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 
-                    public bool Update(bool isIgnoreTransaction = false)
+                    public AutoCSer.Sql.ReturnValue Update(bool isIgnoreTransaction = false)
                     {
                         #region IF Attribute.IsUpdateMemberMapClassType
-                        base.update(sqlTable, isIgnoreTransaction);
+                        return base.update(sqlTable, isIgnoreTransaction);
                         #endregion IF Attribute.IsUpdateMemberMapClassType
                         #region NOT Attribute.IsUpdateMemberMapClassType
-                        return memberMap != null && sqlTable.UpdateQueue(value, memberMap, isIgnoreTransaction);
+                        if (memberMap == null) return AutoCSer.Sql.ReturnType.ArgumentNull;
+                        return sqlTable.UpdateQueue(value, memberMap, isIgnoreTransaction);
                         #endregion NOT Attribute.IsUpdateMemberMapClassType
                     }
                     /// <summary>
@@ -610,13 +611,13 @@ namespace AutoCSer.CodeGenerator.Template
                     /// <param name="onUpdated">更新数据回调</param>
                     /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
                     [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                    public void Update(Action<tableType> onUpdated, bool isIgnoreTransaction = false)
+                    public void Update(Action<AutoCSer.Sql.ReturnValue<tableType>> onUpdated, bool isIgnoreTransaction = false)
                     {
                         #region IF Attribute.IsUpdateMemberMapClassType
                         base.update(sqlTable, onUpdated, isIgnoreTransaction);
                         #endregion IF Attribute.IsUpdateMemberMapClassType
                         #region NOT Attribute.IsUpdateMemberMapClassType
-                        if (memberMap == null) onUpdated(null);
+                        if (memberMap == null) onUpdated(AutoCSer.Sql.ReturnType.ArgumentNull);
                         sqlTable.UpdateQueue(value, memberMap, onUpdated, isIgnoreTransaction);
                         #endregion NOT Attribute.IsUpdateMemberMapClassType
                     }

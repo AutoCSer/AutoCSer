@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 #if !NOJIT
 using/**/System.Reflection.Emit;
@@ -52,18 +52,19 @@ namespace AutoCSer.OpenAPI.Weixin
                 MethodInfo numberToStringMethod;
                 if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
+                    AutoCSer.Metadata.StructGenericType StructGenericType = AutoCSer.Metadata.StructGenericType.Get(type);
                     Label end = generator.DefineLabel();
                     if (isValueType) generator.Emit(OpCodes.Ldarga_S, 0);
                     else generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldflda, field);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableHasValue(type));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableHasValueMethod);
                     generator.Emit(OpCodes.Brfalse_S, end);
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.int32(index);
                     if (isValueType) generator.Emit(OpCodes.Ldarga_S, 0);
                     else generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldflda, field);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableValue(type));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableValueMethod);
                     Type nullableType = type.GetGenericArguments()[0];
                     if (nullableType.IsEnum)
                     {
@@ -129,18 +130,19 @@ namespace AutoCSer.OpenAPI.Weixin
                 MethodInfo numberToStringMethod;
                 if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
+                    AutoCSer.Metadata.StructGenericType StructGenericType = AutoCSer.Metadata.StructGenericType.Get(type);
                     Label end = generator.DefineLabel();
                     if (isValueType) generator.Emit(OpCodes.Ldarga_S, 0);
                     else generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Call, method);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableHasValue(type));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableHasValueMethod);
                     generator.Emit(OpCodes.Brfalse_S, end);
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.int32(index);
                     if (isValueType) generator.Emit(OpCodes.Ldarga_S, 0);
                     else generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Call, method);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableValue(type));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableValueMethod);
                     Type nullableType = type.GetGenericArguments()[0];
                     if (nullableType.IsEnum)
                     {

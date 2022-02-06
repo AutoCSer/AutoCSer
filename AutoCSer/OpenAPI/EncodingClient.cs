@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI
 {
@@ -113,7 +113,7 @@ namespace AutoCSer.OpenAPI
         public valueType RequestJson<valueType, formType>(string url, formType formValue)
             where valueType : class, IReturn
         {
-            string json = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.Json.Serializer.Serialize(formValue)));
+            string json = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.JsonSerializer.Serialize(formValue)));
             return parseJson<valueType>(json, url);
         }
         /// <summary>
@@ -129,7 +129,7 @@ namespace AutoCSer.OpenAPI
         public valueType RequestJson<valueType>(string url, byte[] data, string filename, byte[] contentType, KeyValue<byte[], byte[]>[] form)
             where valueType : class, IReturn
         {
-            string json = request.Upload(url, encoding, data, filename ?? "file", contentType, form ?? NullValue<KeyValue<byte[], byte[]>>.Array);
+            string json = request.Upload(url, encoding, data, filename ?? "file", contentType, form ?? EmptyArray<KeyValue<byte[], byte[]>>.Array);
             return parseJson<valueType>(json, url);
         }
         /// <summary>
@@ -148,18 +148,18 @@ namespace AutoCSer.OpenAPI
                 bool isError = false, isJson = false;
                 try
                 {
-                    if (AutoCSer.Json.Parser.Parse(json, ref value)) isJson = true;
+                    if (AutoCSer.JsonDeSerializer.DeSerialize(json, ref value)) isJson = true;
                 }
                 catch (Exception error)
                 {
                     isError = true;
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
-" + json);
+                    AutoCSer.LogHelper.Exception(error, url + @"
+" + json, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 if (isJson && value.IsReturn) return value;
-                if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
+                if (!isError) AutoCSer.LogHelper.Debug(url + @"
 " + value.Message + @"
-" + json);
+" + json, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return default(valueType);
         }
@@ -192,7 +192,7 @@ namespace AutoCSer.OpenAPI
         public valueType RequestXml<valueType, formType>(string url, formType formValue, out string xml, AutoCSer.Xml.SerializeConfig config = null)
             where valueType : class, IReturn
         {
-            return parseXml<valueType>(xml = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.Xml.Serializer.Serialize(formValue, config))), url, true);
+            return parseXml<valueType>(xml = request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.XmlSerializer.Serialize(formValue, config))), url, true);
         }
         /// <summary>
         /// API请求XML数据
@@ -211,18 +211,18 @@ namespace AutoCSer.OpenAPI
                 bool isError = false, isXml = false;
                 try
                 {
-                    if (AutoCSer.Xml.Parser.Parse(xml, ref value)) isXml = true;
+                    if (AutoCSer.XmlDeSerializer.DeSerialize(xml, ref value)) isXml = true;
                 }
                 catch (Exception error)
                 {
                     isError = true;
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
-" + xml);
+                    AutoCSer.LogHelper.Exception(error, url + @"
+" + xml, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 if (isXml && (!isValue || value.IsReturn)) return value;
-                if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
+                if (!isError) AutoCSer.LogHelper.Debug(url + @"
 " + value.Message + @"
-" + xml);
+" + xml, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return default(valueType);
         }
@@ -236,7 +236,7 @@ namespace AutoCSer.OpenAPI
         /// <returns>数据对象,失败放回null</returns>
         public string RequestXml<formType>(string url, formType formValue, AutoCSer.Xml.SerializeConfig config = null)
         {
-            return request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.Xml.Serializer.Serialize(formValue, config)));
+            return request.Request(url, encoding, null, Encoding.UTF8.GetBytes(AutoCSer.XmlSerializer.Serialize(formValue, config)));
         }
         /// <summary>
         /// API请求
@@ -256,7 +256,7 @@ namespace AutoCSer.OpenAPI
         /// <returns></returns>
         public byte[] DownloadJson<formType>(string url, formType formValue)
         {
-            return request.Download(url, Encoding.UTF8.GetBytes(AutoCSer.Json.Serializer.Serialize(formValue)));
+            return request.Download(url, Encoding.UTF8.GetBytes(AutoCSer.JsonSerializer.Serialize(formValue)));
         }
     }
 }

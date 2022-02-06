@@ -10,7 +10,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 检测链接类型集合
         /// </summary>
-        public string[] CheckConnectionNames = NullValue<string>.Array;
+        public string[] CheckConnectionNames = EmptyArray<string>.Array;
         /// <summary>
         /// 检测链接类型
         /// </summary>
@@ -21,7 +21,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// SQL表格名称前缀集合
         /// </summary>
-        public string[] TableNamePrefixs = NullValue<string>.Array;
+        public string[] TableNamePrefixs = EmptyArray<string>.Array;
         /// <summary>
         /// SQL表格名称缺省前缀深度，默认为 2
         /// </summary>

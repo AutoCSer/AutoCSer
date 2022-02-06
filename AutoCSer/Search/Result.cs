@@ -96,7 +96,7 @@ namespace AutoCSer.Search
                     }
                     if ((flags & SearchFlags.ResultIndexs) == 0)
                     {
-                        resultIndex.Set(NullValue<int>.Array, result.Value.TextLength);
+                        resultIndex.Set(EmptyArray<int>.Array, result.Value.TextLength);
                         counterIndex.Add(key, result.Value.WordType, ref resultIndex);
                         ++WordCount;
                     }

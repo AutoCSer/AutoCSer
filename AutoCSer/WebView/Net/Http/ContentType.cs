@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.Http
@@ -487,11 +487,11 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 默认内容类型头部
         /// </summary>
-        internal static readonly byte[] Html = ("text/html; charset=" + AutoCSer.Config.Pub.Default.Encoding.WebName).getBytes();
+        internal static readonly byte[] Html = ("text/html; charset=" + AutoCSer.Common.Config.Encoding.WebName).getBytes();
         /// <summary>
         /// 默认内容类型头部
         /// </summary>
-        internal static readonly byte[] Js = ("application/x-javascript; charset=" + AutoCSer.Config.Pub.Default.Encoding.WebName).getBytes();
+        internal static readonly byte[] Js = ("application/x-javascript; charset=" + AutoCSer.Common.Config.Encoding.WebName).getBytes();
         /// <summary>
         /// 内容类型头部
         /// </summary>

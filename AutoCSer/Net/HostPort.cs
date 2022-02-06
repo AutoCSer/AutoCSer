@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net
@@ -100,7 +100,7 @@ namespace AutoCSer.Net
                 }
                 catch (Exception error)
                 {
-                    (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, error, host);
+                    (log ?? AutoCSer.LogHelper.Default).Exception(error, host, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             return IPAddress.Any;

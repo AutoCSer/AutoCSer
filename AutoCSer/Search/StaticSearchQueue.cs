@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Search
@@ -52,7 +52,7 @@ namespace AutoCSer.Search
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                        AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 while (searcher.isDisposed == 0 && (data = data.LinkNext) != null);
@@ -64,7 +64,7 @@ namespace AutoCSer.Search
             /// <param name="text"></param>
             internal void Add(ref keyType key, string text)
             {
-                getResult(text);
+                GetResult(text);
                 if (result.Count != 0)
                 {
                     searcher.add(ref key, text, result);
@@ -78,7 +78,7 @@ namespace AutoCSer.Search
             /// <param name="data"></param>
             internal void Remove(SearchData data)
             {
-                if (searcher.getRemoveText(data))
+                if (searcher.getRemoveText(data) && !string.IsNullOrEmpty(data.Text))
                 {
                     getRemoveResult(data.Text);
                     searcher.remove(ref data.Key, removeResult);
@@ -92,7 +92,7 @@ namespace AutoCSer.Search
             {
                 removeResult.Clear();
                 formatLength = text.Length;
-                formatText = AutoCSer.Extension.StringExtension.FastAllocateString(formatLength + 1);
+                formatText = AutoCSer.Extensions.StringExtension.FastAllocateString(formatLength + 1);
                 fixed (char* textFixed = formatText)
                 {
                     Simplified.FormatNotEmpty(text, textFixed, formatLength);
@@ -133,7 +133,7 @@ namespace AutoCSer.Search
                             }
                             if ((int)(start - segment) == 1)
                             {
-                                if ((type & (byte)WordType.Chinese) != 0) removeResult.Add(new SubString((int)(segment - textFixed), 1, formatText));
+                                if ((charTypeData[*segment] & (byte)WordType.Chinese) != 0) removeResult.Add(new SubString((int)(segment - textFixed), 1, formatText));
                             }
                             else
                             {
@@ -198,6 +198,7 @@ namespace AutoCSer.Search
                         *end = ' ';
                         if ((type & (byte)WordType.Chinese) != 0)
                         {
+                            type = charTypeData[*start];
                             do
                             {
                                 if ((type & (byte)WordType.TrieGraph) == 0) removeResult.Add(new SubString((int)(start - textFixed), 1, formatText));

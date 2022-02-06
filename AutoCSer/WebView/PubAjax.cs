@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.WebView
 {
@@ -44,7 +44,7 @@ namespace AutoCSer.WebView
                     }
                 }
                 finally { Monitor.Exit(errorQueueLock); }
-                if (isLog) DomainServer.WebClientLog.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, error);
+                if (isLog) DomainServer.WebClientLog.Debug(error, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
         }
 
@@ -59,15 +59,14 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        private static void clearCache(int count)
+        private static void clearCache()
         {
             if (errorQueue.Count != 0) errorQueue = new FifoPriorityQueue<HashString, string>();
         }
 
         static PubAjax()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(PubAjax), 0);
         }
     }
 }

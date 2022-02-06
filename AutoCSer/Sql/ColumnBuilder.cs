@@ -101,19 +101,21 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        private static void clearCache(int count)
+        private static void clearCache()
         {
-            Monitor.Enter(sqlColumnLock);
-            try
+            if (sqlColumns.Count != 0)
             {
-                if (sqlColumns.Count != 0) sqlColumns = DictionaryCreator.CreateOnly<Type, Column[]>();
+                Monitor.Enter(sqlColumnLock);
+                try
+                {
+                    if (sqlColumns.Count != 0) sqlColumns = DictionaryCreator.CreateOnly<Type, Column[]>();
+                }
+                finally { Monitor.Exit(sqlColumnLock); }
             }
-            finally { Monitor.Exit(sqlColumnLock); }
         }
         static ColumnBuilder()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(ColumnBuilder), 60 * 60);
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System;
-/*Type:ulong;long;uint;int;DateTime*/
+/*ulong;long;uint;int;DateTime*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数组子串扩展操作
     /// </summary>
-    public static unsafe partial class SubArray
+    public static unsafe partial class SubArrayExtension
     {
         /// <summary>
         /// 数据去重
@@ -14,10 +14,10 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> distinct(this SubArray</*Type[0]*/ulong/*Type[0]*/> array)
+        public static SubArray<ulong> distinct(this SubArray<ulong> array)
         {
             if (array.Length <= 1) return array;
-            return new SubArray</*Type[0]*/ulong/*Type[0]*/> { Array = array.Array, Start = array.Start, Length = FixedArraySortGroup.Distinct(array.Array, array.Start, array.Length) - array.Start };
+            return new SubArray<ulong> { Array = array.Array, Start = array.Start, Length = FixedArraySortGroup.Distinct(array.Array, array.Start, array.Length) - array.Start };
         }
         /// <summary>
         /// 数据去重
@@ -27,9 +27,9 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] distinct<valueType>(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, valueType> getValue)
+        public static valueType[] distinct<valueType>(this SubArray<ulong> array, Func<ulong, valueType> getValue)
         {
-            return array.Length == 0 ? NullValue<valueType>.Array : FixedArraySortGroup.Distinct(array.Array, getValue, array.Start, array.Length);
+            return array.Length == 0 ? EmptyArray<valueType>.Array : FixedArraySortGroup.Distinct(array.Array, getValue, array.Start, array.Length);
         }
         /// <summary>
         /// 数据去重
@@ -39,10 +39,9 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static LeftArray</*Type[0]*/ulong/*Type[0]*/> distinct<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue)
+        public static LeftArray<ulong> distinct<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/[] newValues = array.getArray(getValue);
+            ulong[] newValues = array.getArray(getValue);
             newValues.sort(0, newValues.Length);
             return newValues.distinct();
         }
@@ -52,9 +51,9 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <returns>分组数量</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static KeyValue</*Type[0]*/ulong/*Type[0]*/, int>[] SortGroupCount(this SubArray</*Type[0]*/ulong/*Type[0]*/> array)
+        public static KeyValue<ulong, int>[] SortGroupCount(this SubArray<ulong> array)
         {
-            return array.Length == 0 ? NullValue<KeyValue</*Type[0]*/ulong/*Type[0]*/, int>>.Array : FixedArraySortGroup.SortGroupCount(array.Array, array.Start, array.Length);
+            return array.Length == 0 ? EmptyArray<KeyValue<ulong, int>>.Array : FixedArraySortGroup.SortGroupCount(array.Array, array.Start, array.Length);
         }
         /// <summary>
         /// 数据排序分组
@@ -64,9 +63,9 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static LeftArray<SubArray<valueType>> SortGroup<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue)
+        public static LeftArray<SubArray<valueType>> SortGroup<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getValue)
         {
-            return array.Length == 0 ? default(LeftArray<SubArray<valueType>>) : FixedArraySortGroup.SortGroup(array.Array, getValue, array.Start, array.Length);
+            return array.Length == 0 ? new LeftArray<SubArray<valueType>>(0) : FixedArraySortGroup.SortGroup(array.Array, getValue, array.Start, array.Length);
         }
         /// <summary>
         /// 数据排序分组数量
@@ -76,7 +75,7 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数据集合数量</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static int SortGroupCount<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue)
+        public static int SortGroupCount<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getValue)
         {
             return array.Length == 0 ? 0 : FixedArraySortGroup.SortGroupCount(array.Array, getValue, array.Start, array.Length);
         }

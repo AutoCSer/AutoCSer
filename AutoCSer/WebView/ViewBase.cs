@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -46,7 +47,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// AJAX 输出数据流
         /// </summary>
-        internal readonly CharStream AjaxStream = new CharStream(null, 0);
+        internal readonly CharStream AjaxStream = new CharStream(default(AutoCSer.Memory.Pointer));
         /// <summary>
         /// JSON序列化是否使用默认模式(非视图模式模式)
         /// </summary>
@@ -120,7 +121,7 @@ namespace AutoCSer.WebView
         /// </summary>
         protected ServerTime serverTime
         {
-            get { return new ServerTime { Now = Date.NowTime.Set() }; }
+            get { return new ServerTime { Now = AutoCSer.Threading.SecondTimer.SetNow() }; }
         }
         /// <summary>
         /// HTTP请求头部处理
@@ -205,18 +206,18 @@ namespace AutoCSer.WebView
                         {
                             return htmls = treeBuilder.HtmlArray.getArray(value => DomainServer.ResponseEncoding.GetBytesNotNull(value));
                         }
-                        DomainServer.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, "HTML模版文件不匹配 " + fileName);
+                        DomainServer.RegisterServer.TcpServer.Log.Error("HTML模版文件不匹配 " + fileName, LogLevel.Error | LogLevel.AutoCSer);
                     }
-                    else DomainServer.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, "没有找到HTML模版文件 " + fileName);
+                    else DomainServer.RegisterServer.TcpServer.Log.Error("没有找到HTML模版文件 " + fileName, LogLevel.Error | LogLevel.AutoCSer);
                 }
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, error, fileName);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, fileName, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
-                if (htmls == null) htmls = NullValue<byte[]>.Array;
+                if (htmls == null) htmls = EmptyArray<byte[]>.Array;
                 Monitor.Exit(htmlLock);
             }
             return htmls.Length == 0 ? null : htmls;
@@ -231,15 +232,15 @@ namespace AutoCSer.WebView
             if (LocationPath.ReturnPath == null) HttpResponse.SetLocation(socket.HttpHeader, LocationPath.ErrorPath, Net.Http.ResponseState.Found302);
             else
             {
-                SubArray<byte> data = default(SubArray<byte>);
+                SubArray<byte> data = new SubArray<byte>();
                 socket.HttpHeader.SetResponseLocationRange(LocationPath.ErrorPath.Length + 5 + LocationPath.ReturnPath.Length, ref data);
                 fixed (byte* dataFixed = data.Array)
                 {
                     byte* write = dataFixed + data.Start;
-                    fixed (char* pathFixed = LocationPath.ErrorPath) AutoCSer.Extension.StringExtension.WriteBytes(pathFixed, LocationPath.ErrorPath.Length, write);
+                    fixed (char* pathFixed = LocationPath.ErrorPath) AutoCSer.Extensions.StringExtension.WriteBytes(pathFixed, LocationPath.ErrorPath.Length, write);
                     *(write += LocationPath.ErrorPath.Length) = LocationPath.ErrorPath.IndexOf('#') >= 0 ? (byte)'&' : (byte)'#';
                     *(long*)(++write) = 'u' + ('r' << 16) + ((long)'l' << 32) + ((long)'=' << 48);
-                    fixed (char* pathFixed = LocationPath.ReturnPath) AutoCSer.Extension.StringExtension.WriteBytes(pathFixed, LocationPath.ReturnPath.Length, write + sizeof(long));
+                    fixed (char* pathFixed = LocationPath.ReturnPath) AutoCSer.Extensions.StringExtension.WriteBytes(pathFixed, LocationPath.ReturnPath.Length, write + sizeof(long));
                 }
                 HttpResponse.SetLocation(ref data, Net.Http.ResponseState.Found302);
             }
@@ -249,25 +250,26 @@ namespace AutoCSer.WebView
         /// </summary>
         /// <param name="buffer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void ResponseLocationPathAjax(ref byte* buffer)
+        internal void ResponseLocationPathAjax(ref AutoCSer.Memory.Pointer buffer)
         {
-            AjaxStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+            buffer = UnmanagedPool.Default.GetPointer();
+            AjaxStream.Reset(ref buffer);
             using (AjaxStream)
             {
                 SetJsContentType();
                 bool isCallBack = ResponseAjaxCallBack(AjaxStream);
                 if (LocationPath.ErrorPath == null)
                 {
-                    AjaxStream.WriteNotNull(@"{""LocationPath"":");
+                    AjaxStream.Write(@"{""LocationPath"":");
                     AjaxStream.WriteJson(LocationPath.LocationPath ?? notFound404);
                 }
                 else
                 {
-                    AjaxStream.WriteNotNull(@"{""ErrorPath"":");
+                    AjaxStream.Write(@"{""ErrorPath"":");
                     AjaxStream.WriteJson(LocationPath.ErrorPath);
                     if (LocationPath.ReturnPath != null)
                     {
-                        AjaxStream.WriteNotNull(@",""ReturnPath"":");
+                        AjaxStream.Write(@",""ReturnPath"":");
                         AjaxStream.WriteJson(LocationPath.ReturnPath);
                     }
                 }

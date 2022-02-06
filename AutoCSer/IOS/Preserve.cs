@@ -3,7 +3,7 @@
 namespace AutoCSer.IOS
 {
     /// <summary>
-    /// 编译连接
+    /// AOT 编译连接
     /// </summary>
     public sealed class Preserve : Attribute
     {

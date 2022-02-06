@@ -1,7 +1,8 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -64,14 +65,14 @@ namespace AutoCSer.Sql.DataModel
                 generator.Emit(OpCodes.Ldfld, field.FieldInfo);
                 generator.Emit(OpCodes.Ldarg_3);
                 generator.Emit(OpCodes.Ldstr, field.FieldInfo.Name);
-                generator.Emit(OpCodes.Call, ColumnGroup.Updater.GetTypeUpdate(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).UpdateMethod);
             }
             else
             {
                 generator.Emit(OpCodes.Ldarg_3);
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldstr, field.FieldInfo.Name);
-                generator.call(AutoCSer.Extension.EmitGenerator_Sql.ConstantConverterConvertNameToSqlStreamMethod);
+                generator.call(AutoCSer.Extensions.EmitGeneratorSql.ConstantConverterConvertNameToSqlStreamMethod);
                 generator.charStreamWriteChar(OpCodes.Ldarg_0, '=');
                 //generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_0, AutoCSer.Emit.Pub.GetNameAssignmentPool(field.SqlFieldName), field.SqlFieldName.Length + 1);
                 generator.Emit(OpCodes.Ldarg_3);
@@ -82,7 +83,7 @@ namespace AutoCSer.Sql.DataModel
                 if (field.NowTimeType != NowTimeType.None)
                 {
                     generator.int32(field.MemberMapIndex);
-                    generator.call(AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod);
+                    generator.call(AutoCSer.Extensions.EmitGeneratorSql.TableGetNowTimeMethod);
                 }
                 if (field.ToSqlCastMethod != null) generator.Emit(OpCodes.Call, field.ToSqlCastMethod);
                 if (attribute.IsNullStringEmpty && field.DataType == typeof(string)) generator.nullStringEmpty();
@@ -157,14 +158,14 @@ namespace AutoCSer.Sql.DataModel
 
             static Updater()
             {
-                if (attribute != null)
+                if (Attribute != null)
                 {
 #if NOJIT
                     fields = new sqlModel.updateField[Fields.Length];
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.Updater dynamicMethod = new DataModel.Updater(typeof(modelType), attribute);
+                    DataModel.Updater dynamicMethod = new DataModel.Updater(typeof(modelType), Attribute);
                     foreach (Field member in Fields) dynamicMethod.Push(member);
                     updater = (Action<CharStream, MemberMap, modelType, ConstantConverter, Table>)dynamicMethod.Create<Action<CharStream, MemberMap, modelType, ConstantConverter, Table>>();
 #endif

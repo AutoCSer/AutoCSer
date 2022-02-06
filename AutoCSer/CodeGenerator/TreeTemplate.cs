@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AutoCSer.Metadata;
 using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Reflection;
@@ -128,7 +128,10 @@ namespace AutoCSer.CodeGenerator
                                 .groupCount(value => value.Member.Name)
                                 .getFind(value => value.Value != 1)
                                 .GetArray(value => value.Key));
-                            AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, Type.FullName + " : " + output, true);
+                            AutoCSer.LogHelper.Exception(error, Type.FullName + " : " + output, LogLevel.All);
+                            AutoCSer.LogHelper.Flush();
+                            throw error;
+
                         }
                     }
                     return values;
@@ -280,7 +283,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 当前成员节点集合
         /// </summary>
-        protected LeftArray<MemberNode> currentMembers;
+        protected LeftArray<MemberNode> currentMembers = new LeftArray<MemberNode>(0);
         /// <summary>
         /// 错误处理委托
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.CacheServer.Snapshot
 {
@@ -25,13 +26,13 @@ namespace AutoCSer.CacheServer.Snapshot
         /// <param name="stream"></param>
         internal unsafe void Serialize(UnmanagedStream stream)
         {
-            stream.ByteSize = 0;
+            stream.Data.CurrentIndex = 0;
             OperationParameter.Serializer operationSerializer = new OperationParameter.Serializer(stream);
             Identity.UnsafeSerialize(stream);
-            fixed (char* nameFixed = CacheName) AutoCSer.BinarySerialize.Serializer.Serialize(nameFixed, stream, CacheName.Length);
-            int startIndex = stream.ByteSize;
+            fixed (char* nameFixed = CacheName) AutoCSer.BinarySerializer.Serialize(nameFixed, stream, CacheName.Length);
+            int startIndex = stream.Data.CurrentIndex;
             stream.Write(ref NodeData);
-            stream.SerializeFillWithStartIndex(startIndex);
+            stream.Data.SerializeFillWithStartIndex(startIndex);
             operationSerializer.End(OperationParameter.OperationType.GetOrCreateDataStructure);
         }
     }

@@ -17,7 +17,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 是否等待中
         /// </summary>
-        private volatile int isWait;
+        internal volatile int IsWait;
         /// <summary>
         /// 保留
         /// </summary>
@@ -29,7 +29,7 @@ namespace AutoCSer.Threading
         internal void Set(int isWait)
         {
             waitLock = new object();
-            this.isWait = isWait;
+            IsWait = isWait;
         }
         /// <summary>
         /// 等待结束
@@ -38,12 +38,12 @@ namespace AutoCSer.Threading
         public void Wait()
         {
             Monitor.Enter(waitLock);
-            if (isWait == 0)
+            if (IsWait == 0)
             {
-                isWait = 1;
+                IsWait = 1;
                 Monitor.Wait(waitLock);
             }
-            isWait = 0;
+            IsWait = 0;
             Monitor.Exit(waitLock);
         }
         /// <summary>
@@ -53,7 +53,7 @@ namespace AutoCSer.Threading
         public void Set()
         {
             Monitor.Enter(waitLock);
-            if (isWait == 0) isWait = 1;
+            if (IsWait == 0) IsWait = 1;
             else Monitor.Pulse(waitLock);
             Monitor.Exit(waitLock);
         }

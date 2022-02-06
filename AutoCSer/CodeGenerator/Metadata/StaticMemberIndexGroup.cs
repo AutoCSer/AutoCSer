@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Threading;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CodeGenerator.Metadata
 {

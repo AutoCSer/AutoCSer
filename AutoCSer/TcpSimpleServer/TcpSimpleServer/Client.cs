@@ -2,9 +2,10 @@
 using System.Threading;
 using System.Net.Sockets;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Net;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpSimpleServer
 {
@@ -17,6 +18,10 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// 是否需要心跳检测
         /// </summary>
         private int isCheck;
+        /// <summary>
+        /// 是否正在检测心跳
+        /// </summary>
+        private int isCheckThread;
         /// <summary>
         /// 套接字发送数据次数
         /// </summary>
@@ -37,6 +42,10 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// 服务 IP 地址
         /// </summary>
         internal IPAddress IpAddress;
+        /// <summary>
+        /// 心跳检测
+        /// </summary>
+        private Action checkHandle;
         /// <summary>
         /// 服务端口
         /// </summary>
@@ -61,19 +70,19 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 输出数据二进制序列化
         /// </summary>
-        private readonly BinarySerialize.Serializer outputSerializer;
+        private readonly BinarySerializer outputSerializer;
         /// <summary>
         /// 输出数据 JSON 序列化
         /// </summary>
-        private Json.Serializer outputJsonSerializer;
+        private AutoCSer.JsonSerializer outputJsonSerializer;
         /// <summary>
         /// 回调数据二进制反序列化
         /// </summary>
-        private BinarySerialize.DeSerializer receiveDeSerializer;
+        private AutoCSer.BinaryDeSerializer receiveDeSerializer;
         /// <summary>
         /// 回调数据 JSON 解析
         /// </summary>
-        private Json.Parser receiveJsonParser;
+        private AutoCSer.JsonDeSerializer receiveJsonParser;
         /// <summary>
         /// 发送变换数据
         /// </summary>
@@ -126,7 +135,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             IpAddress = HostPort.HostToIPAddress(this.Host, Log);
 
             this.maxInputSize = maxInputSize <= 0 ? int.MaxValue : maxInputSize;
-            outputStream = (outputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
+            outputStream = (outputSerializer = BinarySerializer.YieldPool.Default.Pop() ?? new BinarySerializer()).SetTcpServer();
 
             SubBuffer.Pool.GetPool(attribute.GetSendBufferSize).Get(ref Buffer);
             if (attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Client = this };
@@ -141,12 +150,12 @@ namespace AutoCSer.Net.TcpSimpleServer
         {
             if (ipAddress == null)
             {
-                Log.Add(AutoCSer.Log.LogType.Error, Host + " IP 解析失败");
+                Log.Error(Host + " IP 解析失败", LogLevel.Error | LogLevel.AutoCSer);
                 return false;
             }
             if (port == 0)
             {
-                Log.Add(AutoCSer.Log.LogType.Error, Attribute.ServerName + " 端口号不能为 0");
+                Log.Error(Attribute.ServerName + " 端口号不能为 0", LogLevel.Error | LogLevel.AutoCSer);
                 return false;
             }
             return true;
@@ -154,54 +163,68 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 心跳检测
         /// </summary>
+        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Check()
+        internal bool Check()
         {
             if (IsDisposed == 0)
             {
                 if (Socket != null)
                 {
                     if (isCheck == 0) isCheck = 1;
-                    else check();
+                    else if (Interlocked.CompareExchange(ref isCheckThread, 1, 0) == 0)
+                    {
+                        if (checkHandle == null) checkHandle = check;
+                        AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(checkHandle);
+                    }
                 }
-                CheckTimer.Reset(this);
+                return true;
             }
+            return false;
         }
         /// <summary>
         /// 心跳检测
         /// </summary>
         private unsafe void check()
         {
-            SocketError socketError;
-            bool isError = false;
-            if (Monitor.TryEnter(SocketLock))
+            try
             {
-                try
+                SocketError socketError;
+                bool isError = false;
+                if (Monitor.TryEnter(SocketLock))
                 {
-                    if (Socket != null && isCheck != 0 && IsDisposed == 0)
+                    try
                     {
-                        byte[] buffer = Buffer.Buffer;
-                        fixed (byte* dataFixed = buffer)
+                        if (Socket != null && isCheck != 0 && IsDisposed == 0)
                         {
-                            byte* start = dataFixed + Buffer.StartIndex;
-                            *(uint*)start = (uint)TcpServer.Server.CheckCommandIndex | (uint)TcpServer.CommandFlags.NullData;
-                            isError = true;
-                            int size = Socket.Send(buffer, Buffer.StartIndex, sizeof(uint), SocketFlags.None, out socketError);
-                            ++SendCount;
-                            if (size == sizeof(uint))
+                            byte[] buffer = Buffer.Buffer;
+                            fixed (byte* dataFixed = buffer)
                             {
-                                size = Socket.Receive(buffer, Buffer.StartIndex, sizeof(int), SocketFlags.None, out socketError);
-                                ++ReceiveCount;
-                                if (size == sizeof(uint) && (TcpServer.ReturnType)(*start) == TcpServer.ReturnType.Success) isError = false;
+                                byte* start = dataFixed + Buffer.StartIndex;
+                                *(uint*)start = (uint)TcpServer.Server.CheckCommandIndex | (uint)TcpServer.CommandFlags.NullData;
+                                isError = true;
+                                int size = Socket.Send(buffer, Buffer.StartIndex, sizeof(uint), SocketFlags.None, out socketError);
+                                ++SendCount;
+                                if (size == sizeof(uint))
+                                {
+                                    size = Socket.Receive(buffer, Buffer.StartIndex, sizeof(int), SocketFlags.None, out socketError);
+                                    ++ReceiveCount;
+                                    if (size == sizeof(uint) && (TcpServer.ReturnType)(*start) == TcpServer.ReturnType.Success) isError = false;
+                                }
                             }
                         }
                     }
+                    finally
+                    {
+                        if (isError) closeSocket();
+                        Monitor.Exit(SocketLock);
+                    }
                 }
-                finally
-                {
-                    if (isError) closeSocket();
-                    Monitor.Exit(SocketLock);
-                }
+            }
+            finally
+            {
+                isCheck = 0;
+                Interlocked.Exchange(ref isCheckThread, 0);
             }
         }
         /// <summary>
@@ -239,11 +262,6 @@ namespace AutoCSer.Net.TcpSimpleServer
                         IsDisposed = 1;
                         closeSocket();
 
-                        if (CheckTimer != null)
-                        {
-                            CheckTimer.Free(this);
-                            ClientCheckTimer.FreeNotNull(CheckTimer);
-                        }
                         outputSerializer.Free();
                         if (outputJsonSerializer != null) outputJsonSerializer.Free();
                         Buffer.Free();
@@ -291,12 +309,11 @@ namespace AutoCSer.Net.TcpSimpleServer
                 {
                     if (Attribute.GetCheckSeconds > 0 && CheckTimer == null)
                     {
-                        CheckTimer = ClientCheckTimer.Get(Attribute.GetCheckSeconds);
-                        if (IsDisposed == 0) CheckTimer.Push(this);
-                        else
+                        ClientCheckTimer checkTimer = new ClientCheckTimer(this, Math.Max(Attribute.GetCheckSeconds, 1));
+                        if (Interlocked.CompareExchange(ref CheckTimer, checkTimer, null) == null)
                         {
-                            ClientCheckTimer.Free(ref CheckTimer);
-                            return isVerifyMethod = false;
+                            if (IsDisposed == 0) checkTimer.AppendTaskArray();
+                            else return isVerifyMethod = false;
                         }
                     }
                     return true;
@@ -330,7 +347,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             where inputParameterType : struct
         {
             byte* start = outputStream.Data.Byte;
-            outputStream.ByteSize = sizeof(uint) + sizeof(int);
+            outputStream.Data.CurrentIndex = sizeof(uint) + sizeof(int);
             if ((commandInfo.CommandFlags & TcpServer.CommandFlags.JsonSerialize) == 0)
             {
                 if (commandInfo.SimpleSerializeInputParamter == 0)
@@ -349,27 +366,27 @@ namespace AutoCSer.Net.TcpSimpleServer
             {
                 if (outputJsonSerializer == null)
                 {
-                    outputJsonSerializer = Json.Serializer.YieldPool.Default.Pop() ?? new Json.Serializer();
+                    outputJsonSerializer = AutoCSer.JsonSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonSerializer();
                     outputJsonSerializer.SetTcpServer();
                 }
                 outputJsonSerializer.SerializeTcpServer(ref inputParameter, outputSerializer.Stream);
             }
-            int dataLength = outputStream.ByteSize - (sizeof(uint) + sizeof(int));
+            int dataLength = outputStream.Data.CurrentIndex - (sizeof(uint) + sizeof(int));
             if (dataLength <= maxInputSize)
             {
                 byte* write = outputStream.Data.Byte;
                 *(uint*)write = (uint)commandInfo.Command | (uint)commandInfo.CommandFlags;
                 *(int*)(write + sizeof(uint)) = dataLength;
 
-                if (outputStream.ByteSize <= Buffer.Length)
+                if (outputStream.Data.CurrentIndex <= Buffer.Length)
                 {
-                    if (start != write) Memory.CopyNotNull(write, start, outputStream.ByteSize);
-                    clientBuffer.Data.Set(Buffer.Buffer, Buffer.StartIndex, outputStream.ByteSize);
+                    if (start != write) AutoCSer.Memory.Common.CopyNotNull(write, start, outputStream.Data.CurrentIndex);
+                    clientBuffer.Data.Set(Buffer.Buffer, Buffer.StartIndex, outputStream.Data.CurrentIndex);
                 }
                 else
                 {
-                    outputStream.GetSubBuffer(ref clientBuffer.CopyBuffer);
-                    clientBuffer.SetSendDataCopyBuffer(outputStream.ByteSize);
+                    outputStream.Data.GetSubBuffer(ref clientBuffer.CopyBuffer);
+                    clientBuffer.SetSendDataCopyBuffer(outputStream.Data.CurrentIndex);
                     if (clientBuffer.CopyBuffer.Length <= SendBufferMaxSize)
                     {
                         Buffer.Free();
@@ -397,7 +414,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             ++ReceiveCount;
             if (receiveSize >= sizeof(int) * 2)
             {
-                fixed (byte* bufferFixed = Buffer.Buffer)
+                fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
                 {
                     byte* start = bufferFixed + Buffer.StartIndex;
                     if ((compressionDataSize = *(int*)start) > 0)
@@ -524,8 +541,8 @@ namespace AutoCSer.Net.TcpSimpleServer
                 {
                     if (receiveDeSerializer == null)
                     {
-                        receiveDeSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                        receiveDeSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig, null);
+                        receiveDeSerializer = AutoCSer.BinaryDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.BinaryDeSerializer();
+                        receiveDeSerializer.SetTcpServer(AutoCSer.BinaryDeSerializer.DefaultConfig, null);
                     }
                     if (receiveDeSerializer.DeSerializeTcpServer(ref clientBuffer.Data, ref outputParameter))
                     {
@@ -535,7 +552,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 }
                 else
                 {
-                    fixed (byte* dataFixed = clientBuffer.Data.Array)
+                    fixed (byte* dataFixed = clientBuffer.Data.GetFixedBuffer())
                     {
                         byte* start = dataFixed + clientBuffer.Data.Start, end = start + clientBuffer.Data.Length;
                         if (SimpleSerialize.TypeDeSerializer<outputParameterType>.DeSerialize(start, ref outputParameter, end) == end)
@@ -550,10 +567,10 @@ namespace AutoCSer.Net.TcpSimpleServer
             {
                 if (receiveJsonParser == null)
                 {
-                    receiveJsonParser = Json.Parser.YieldPool.Default.Pop() ?? new Json.Parser();
+                    receiveJsonParser = AutoCSer.JsonDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonDeSerializer();
                     receiveJsonParser.SetTcpServer();
                 }
-                if (receiveJsonParser.ParseTcpServer(ref clientBuffer.Data, ref outputParameter))
+                if (receiveJsonParser.DeSerializeTcpServer(ref clientBuffer.Data, ref outputParameter))
                 {
                     clientBuffer.ReturnType = TcpServer.ReturnType.Success;
                     return;
@@ -570,7 +587,6 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="inputParameter">输入参数</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>返回值类型</returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Get<inputParameterType, outputParameterType>(TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter, ref outputParameterType outputParameter)
             where inputParameterType : struct
             where outputParameterType : struct
@@ -583,7 +599,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 {
                     if (commandInfo.IsVerifyMethod || getSocket())
                     {
-                        fixed (byte* dataFixed = Buffer.Buffer)
+                        fixed (byte* dataFixed = Buffer.GetFixedBuffer())
                         {
                             outputStream.Reset(dataFixed + Buffer.StartIndex, Buffer.Length);
                             build(commandInfo, ref inputParameter, ref clientBuffer);
@@ -609,11 +625,27 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// TCP调用并返回参数值
         /// </summary>
+        /// <typeparam name="inputParameterType">输入参数类型</typeparam>
+        /// <typeparam name="outputParameterType">输出参数类型</typeparam>
+        /// <param name="client"></param>
+        /// <param name="commandInfo">命令信息</param>
+        /// <param name="inputParameter">输入参数</param>
+        /// <param name="outputParameter">输出参数</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static unsafe TcpServer.ReturnType Get<inputParameterType, outputParameterType>(Client client, TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter, ref outputParameterType outputParameter)
+            where inputParameterType : struct
+            where outputParameterType : struct
+        {
+            return client.Get(commandInfo, ref inputParameter, ref outputParameter);
+        }
+        /// <summary>
+        /// TCP调用并返回参数值
+        /// </summary>
         /// <typeparam name="outputParameterType">输出参数类型</typeparam>
         /// <param name="commandInfo">命令信息</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>返回值类型</returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Get<outputParameterType>(TcpServer.CommandInfoBase commandInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
@@ -625,7 +657,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 {
                     if (getSocket())
                     {
-                        fixed (byte* dataFixed = Buffer.Buffer)
+                        fixed (byte* dataFixed = Buffer.GetFixedBuffer())
                         {
                             *(uint*)(dataFixed + Buffer.StartIndex) = (uint)commandInfo.Command | (uint)TcpServer.CommandFlags.NullData | (uint)commandInfo.CommandFlags;
                             clientBuffer.IsError = true;
@@ -648,13 +680,26 @@ namespace AutoCSer.Net.TcpSimpleServer
             return clientBuffer.ReturnType;
         }
         /// <summary>
+        /// TCP调用并返回参数值
+        /// </summary>
+        /// <typeparam name="outputParameterType">输出参数类型</typeparam>
+        /// <param name="client"></param>
+        /// <param name="commandInfo">命令信息</param>
+        /// <param name="outputParameter">输出参数</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static unsafe TcpServer.ReturnType Get<outputParameterType>(Client client, TcpServer.CommandInfoBase commandInfo, ref outputParameterType outputParameter)
+            where outputParameterType : struct
+        {
+            return client.Get(commandInfo, ref outputParameter);
+        }
+        /// <summary>
         /// TCP调用
         /// </summary>
         /// <typeparam name="inputParameterType">输入参数类型</typeparam>
         /// <param name="commandInfo">命令信息</param>
         /// <param name="inputParameter">输入参数</param>
         /// <returns>返回值类型</returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Call<inputParameterType>(TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter)
             where inputParameterType : struct
         {
@@ -666,7 +711,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 {
                     if (commandInfo.IsVerifyMethod || getSocket())
                     {
-                        fixed (byte* dataFixed = Buffer.Buffer)
+                        fixed (byte* dataFixed = Buffer.GetFixedBuffer())
                         {
                             outputStream.Reset(dataFixed + Buffer.StartIndex, Buffer.Length);
                             build(commandInfo, ref inputParameter, ref clientBuffer);
@@ -694,9 +739,22 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// TCP调用
         /// </summary>
+        /// <typeparam name="inputParameterType">输入参数类型</typeparam>
+        /// <param name="client"></param>
+        /// <param name="commandInfo">命令信息</param>
+        /// <param name="inputParameter">输入参数</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static unsafe TcpServer.ReturnType Call<inputParameterType>(Client client, TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter)
+            where inputParameterType : struct
+        {
+            return client.Call(commandInfo, ref inputParameter);
+        }
+        /// <summary>
+        /// TCP调用
+        /// </summary>
         /// <param name="commandInfo">命令信息</param>
         /// <returns>返回值类型</returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Call(TcpServer.CommandInfoBase commandInfo)
         {
             TcpServer.ReturnType returnType = TcpServer.ReturnType.ClientDisposed;
@@ -743,12 +801,23 @@ namespace AutoCSer.Net.TcpSimpleServer
             return returnType;
         }
         /// <summary>
+        /// TCP调用
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="commandInfo">命令信息</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static unsafe TcpServer.ReturnType Call(Client client, TcpServer.CommandInfoBase commandInfo)
+        {
+            return client.Call(commandInfo);
+        }
+        /// <summary>
         /// 获取远程表达式服务端节点标识
         /// </summary>
         /// <param name="types">表达式服务端节点类型集合</param>
         /// <returns>表达式服务端节点标识集合</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal TcpServer.ReturnValue<int[]> GetRemoteExpressionNodeId(RemoteType[] types)
+        internal TcpServer.ReturnValue<int[]> GetRemoteExpressionNodeId(AutoCSer.Reflection.RemoteType[] types)
         {
             RemoteExpression.ServerNodeIdChecker.Input inputParameter = new RemoteExpression.ServerNodeIdChecker.Input { Types = types };
             RemoteExpression.ServerNodeIdChecker.Output outputParameter = default(RemoteExpression.ServerNodeIdChecker.Output);

@@ -7,9 +7,9 @@ using AutoCSer;
 #pragma warning disable
 namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class AsciiMember
         {
             /// <summary>
@@ -43,9 +43,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class CastMember
         {
             /// <summary>
@@ -79,9 +79,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class CombinationMember
         {
             /// <summary>
@@ -175,9 +175,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class ComparablePrimaryKey
         {
             /// <summary>
@@ -211,9 +211,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class EnumMember
         {
             /// <summary>
@@ -247,9 +247,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class IdentityMember
         {
             /// <summary>
@@ -283,9 +283,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class IgnoreMember
         {
             /// <summary>
@@ -319,9 +319,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class InstanceField
         {
             /// <summary>
@@ -355,9 +355,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class JsonMember
         {
             /// <summary>
@@ -437,9 +437,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class ManyPrimaryKey
         {
             /// <summary>
@@ -473,9 +473,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class MemberCache
         {
             /// <summary>
@@ -512,7 +512,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isEventCacheLoaded)
                     {
-                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extension.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
+                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extensions.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
                         isEventCacheLoaded = true;
                     }
                 }
@@ -550,9 +550,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class MemberIndex
         {
             /// <summary>
@@ -596,9 +596,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class NowTime
         {
             /// <summary>
@@ -660,9 +660,9 @@ namespace AutoCSer.Example.OrmModel
         }
 }namespace AutoCSer.Example.OrmModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         public partial class NullMember
         {
             /// <summary>

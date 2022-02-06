@@ -41,15 +41,15 @@ namespace AutoCSer.Example.WebView.Ajax
             using (WebClient webClient = new WebClient())
             {
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
-                string json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=Name.AddName", "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 1, right = 2 }));
-                if (AutoCSer.Json.Parser.Parse<AddReturn>(json).Return != 1 + 2)
+                string json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=Name.AddName", "POST", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 1, right = 2 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<AddReturn>(json).Return != 1 + 2)
                 {
                     return false;
                 }
 
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
-                json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=AddFullName", "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 2, right = 3 }));
-                if (AutoCSer.Json.Parser.Parse<AddReturn>(json).Return != 2 + 3)
+                json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=AddFullName", "POST", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 2, right = 3 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<AddReturn>(json).Return != 2 + 3)
                 {
                     return false;
                 }

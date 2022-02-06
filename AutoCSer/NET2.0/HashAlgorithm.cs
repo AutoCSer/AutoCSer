@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// HASH 算法

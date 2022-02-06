@@ -5,7 +5,7 @@ namespace AutoCSer.Example.Json
     /// <summary>
     /// 仅选择公共字段成员 示例
     /// </summary>
-    [AutoCSer.Json.Serialize(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
+    [AutoCSer.JsonSerialize(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
     class PublicInstanceField
     {
         /// <summary>
@@ -38,8 +38,8 @@ namespace AutoCSer.Example.Json
         {
             PublicInstanceField value = new PublicInstanceField { Public = 1, Private = 2, Protected = 3, Internal = 4, Property = 5 };
 
-            string json = AutoCSer.Json.Serializer.Serialize(value);
-            PublicInstanceField newValue = AutoCSer.Json.Parser.Parse<PublicInstanceField>(json);
+            string json = AutoCSer.JsonSerializer.Serialize(value);
+            PublicInstanceField newValue = AutoCSer.JsonDeSerializer.DeSerialize<PublicInstanceField>(json);
 
             return newValue != null && newValue.Public == 1 && newValue.Private == 0 && newValue.Protected == 0 && newValue.Internal == 0 && newValue.Property == 0;
         }

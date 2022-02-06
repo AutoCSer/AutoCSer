@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CacheServer
 {
@@ -24,7 +24,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 日志处理
         /// </summary>
-        private readonly AutoCSer.Log.ILog log;
+        private readonly AutoCSer.ILog log;
         /// <summary>
         /// 读取数据回调委托
         /// </summary>
@@ -60,12 +60,12 @@ namespace AutoCSer.CacheServer
         /// <param name="trySeconds">失败重试间隔秒数</param>
         /// <param name="masterClient">缓存主服务客户端</param>
         /// <param name="log">日志处理</param>
-        public FileBackup(string fileName, int trySeconds = 4, MasterServer.TcpInternalClient masterClient = null, AutoCSer.Log.ILog log = null)
+        public FileBackup(string fileName, int trySeconds = 4, MasterServer.TcpInternalClient masterClient = null, AutoCSer.ILog log = null)
         {
             this.fileName = fileName;
             tryTicks = Math.Max(trySeconds, 1) * TimeSpan.TicksPerSecond;
             this.masterClient = masterClient ?? new MasterServer.TcpInternalClient();
-            this.log = log ?? AutoCSer.Log.Pub.Log;
+            this.log = log ?? AutoCSer.LogHelper.Default;
             onReadHandle = onRead;
             AutoCSer.Threading.ThreadPool.TinyBackground.Start(getVersion);
         }
@@ -113,7 +113,7 @@ namespace AutoCSer.CacheServer
                 }
                 catch (Exception error)
                 {
-                    log.Add(Log.LogType.Error, error);
+                    log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             if (isTry)
@@ -123,7 +123,7 @@ namespace AutoCSer.CacheServer
                     fileStream.Dispose();
                     fileStream = null;
                 }
-                if (!isDisposed) AutoCSer.Threading.TimerTask.Default.Add(getVersion, Date.NowTime.Set().AddTicks(tryTicks));
+                if (!isDisposed) AutoCSer.Threading.SecondTimer.TaskArray.Append(getVersion, AutoCSer.Threading.SecondTimer.SetNow().AddTicks(tryTicks));
             }
         }
         /// <summary>
@@ -146,7 +146,7 @@ namespace AutoCSer.CacheServer
                     }
                     catch (Exception error)
                     {
-                        log.Add(Log.LogType.Error, error);
+                        log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 isClose = true;
@@ -163,7 +163,7 @@ namespace AutoCSer.CacheServer
                     if (!isClose) readKeepCallback.Cancel();
                     readKeepCallback = null;
                 }
-                if (!isDisposed) AutoCSer.Threading.TimerTask.Default.Add(getVersion, Date.NowTime.Set().AddTicks(tryTicks));
+                if (!isDisposed) AutoCSer.Threading.SecondTimer.TaskArray.Append(getVersion, AutoCSer.Threading.SecondTimer.SetNow().AddTicks(tryTicks));
             }
         }
     }

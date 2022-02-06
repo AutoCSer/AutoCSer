@@ -7,7 +7,7 @@ namespace AutoCSer.Expand.Metadata
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    internal abstract class StructGenericType
+    internal abstract class StructGenericType : AutoCSer.Metadata.GenericTypeBase
     {
         /// <summary>
         /// 连接字符串集合
@@ -29,16 +29,16 @@ namespace AutoCSer.Expand.Metadata
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, StructGenericType> cache = new LockLastDictionary<Type, StructGenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, StructGenericType> cache = new LockLastDictionary<HashType, StructGenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
-        /// <typeparam name="Type"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static StructGenericType create<Type>() where Type : struct
+        private static StructGenericType create<T>() where T : struct
         {
-            return new StructGenericType<Type>();
+            return new StructGenericType<T>();
         }
         /// <summary>
         /// 创建泛型类型元数据 函数信息
@@ -49,14 +49,14 @@ namespace AutoCSer.Expand.Metadata
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static StructGenericType Get(Type type)
+        public static StructGenericType Get(HashType type)
         {
             StructGenericType value;
             if (!cache.TryGetValue(type, out value))
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(type).Invoke(null, null) }.StructGenericType;
+                    value = new UnionType.StructGenericType { Object = createMethod.MakeGenericMethod(type).Invoke(null, null) }.Value;
                     cache.Set(type, value);
                 }
                 finally { cache.Exit(); }
@@ -67,36 +67,42 @@ namespace AutoCSer.Expand.Metadata
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    /// <typeparam name="Type"></typeparam>
-    internal sealed class StructGenericType<Type> : StructGenericType where Type : struct
+    /// <typeparam name="T"></typeparam>
+    internal sealed class StructGenericType<T> : StructGenericType
+        where T : struct
     {
+        /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(T); } }
+
         /// <summary>
         /// 连接字符串集合
         /// </summary>
         internal override Delegate NumberToCharStreamStructJoinCharDelegate
         {
-            get { return (Func<Type[], char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.structJoinChar<Type>; }
+            get { return (Func<T[], char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.structJoinChar<T>; }
         }
         /// <summary>
         /// 连接字符串集合
         /// </summary>
         internal override Delegate NumberToCharStreamStructSubArrayJoinCharDelegate
         {
-            get { return (Func<SubArray<Type>, char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.structSubArrayJoinChar<Type>; }
+            get { return (Func<SubArray<T>, char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.structSubArrayJoinChar<T>; }
         }
         /// <summary>
         /// 连接字符串集合
         /// </summary>
         internal override Delegate NumberToCharStreamNullableJoinCharDelegate
         {
-            get { return (Func<Nullable<Type>[], char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.nullableJoinChar<Type>; }
+            get { return (Func<Nullable<T>[], char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.nullableJoinChar<T>; }
         }
         /// <summary>
         /// 连接字符串集合
         /// </summary>
         internal override Delegate NumberToCharStreamNullableSubArrayJoinCharDelegate
         {
-            get { return (Func<SubArray<Nullable<Type>>, char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.nullableSubArrayJoinChar<Type>; }
+            get { return (Func<SubArray<Nullable<T>>, char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.nullableSubArrayJoinChar<T>; }
         }
     }
 }

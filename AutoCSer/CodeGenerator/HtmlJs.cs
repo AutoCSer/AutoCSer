@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -90,7 +90,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 包含标识集合
         /// </summary>
-        private LeftArray<string> includes;
+        private LeftArray<string> includes = new LeftArray<string>(0);
         /// <summary>
         /// JS文件集合
         /// </summary>
@@ -119,10 +119,12 @@ namespace AutoCSer.CodeGenerator
             {
                 if (history.Contains(this))
                 {
-                    AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, @"HTML循环引用:
+                    AutoCSer.LogHelper.Error(@"HTML循环引用:
 " + history.JoinString(@"
 ", value => value.fileName) + @"
-" + fileName);
+" + fileName, LogLevel.All);
+                    AutoCSer.LogHelper.Flush();
+                    throw new Exception("HTML循环引用");
                 }
                 history.Add(this);
             }
@@ -130,7 +132,7 @@ namespace AutoCSer.CodeGenerator
             if (jsFiles.Array == null)
             {
                 #region javascript
-                jsFiles.Array = NullValue<HtmlJs>.Array;
+                jsFiles.SetEmpty();
                 string code = null, pageJsFileName = fileName + pageExtension + jsExtension;
                 if (File.Exists(pageJsFileName)) code = File.ReadAllText(pageJsFileName, File.Exists(fileName + pageExtension + tsExtension) ? Encoding.UTF8 : htmlAuto.WebConfig.Encoding);
                 else
@@ -149,7 +151,12 @@ namespace AutoCSer.CodeGenerator
                         if (index != 0)
                         {
                             int splitIndex = splitCode.IndexOf("*/", StringComparison.Ordinal);
-                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + jsInclude[0] + splitCode);
+                            if (splitIndex == -1)
+                            {
+                                AutoCSer.LogHelper.Error("非法标签:" + jsInclude[0] + splitCode, LogLevel.All);
+                                AutoCSer.LogHelper.Flush();
+                                throw new Exception("非法标签");
+                            }
                             HtmlJs file;
                             if (htmlAuto.Htmls.TryGetValue(new FileInfo(IncludePath + splitCode.Substring(0, splitIndex)).FullName.toLowerNotEmpty(), out file))
                             {
@@ -161,9 +168,14 @@ namespace AutoCSer.CodeGenerator
                                 newCode.Add(code.Substring(startIndex + jsIncludeLength + (splitIndex += 2), splitCode.Length - splitIndex));
                                 startIndex += jsIncludeLength + splitCode.Length;
                             }
-                            else AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + jsExtension + @"
+                            else
+                            {
+                                AutoCSer.LogHelper.Error("未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + jsExtension + @"
 in " + this.fileName + @"
-" + splitCode);
+" + splitCode, LogLevel.All);
+                                AutoCSer.LogHelper.Flush();
+                                throw new Exception("未找到文件");
+                            }
                         }
                         ++index;
                     }
@@ -188,9 +200,14 @@ in " + this.fileName + @"
                         if (index != 0)
                         {
                             int splitIndex = splitCode.IndexOf("-->", StringComparison.Ordinal);
-                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + htmlInclude[0] + splitCode);
+                            if (splitIndex == -1)
+                            {
+                                AutoCSer.LogHelper.Error("非法标签:" + htmlInclude[0] + splitCode, LogLevel.All);
+                                AutoCSer.LogHelper.Flush();
+                                throw new Exception("非法标签");
+                            }
                             SubString name = new SubString { String = code, Start = startIndex + htmlIncludeLength, Length = splitIndex }, memberName = default(SubString);
-                            LeftArray<SubString> array = default(LeftArray<SubString>);
+                            LeftArray<SubString> array = new LeftArray<SubString>(0);
                             bool isHash = false;
                             if (name.Length != 0 && name[0] == '#')
                             {
@@ -260,8 +277,13 @@ in " + this.fileName + @"
                                 newCode.Add(code.Substring(startIndex + htmlIncludeLength + (splitIndex += 3), splitCode.Length - splitIndex));
                                 startIndex += htmlIncludeLength + splitCode.Length;
                             }
-                            else AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + htmlExtension + @"
-in " + this.fileName + @"");
+                            else
+                            {
+                                AutoCSer.LogHelper.Error("未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + htmlExtension + @"
+in " + this.fileName + @"", LogLevel.All);
+                                AutoCSer.LogHelper.Flush();
+                                throw new Exception("未找到文件");
+                            }
                         }
                         ++index;
                     }
@@ -1032,7 +1054,7 @@ in " + this.fileName + @"");
         /// <summary>
         /// 模板版本号
         /// </summary>
-        internal static readonly string Version = ((uint)(Date.NowTime.Now - new DateTime(2017, 4, 22, 0, 3, 16)).TotalSeconds).toHex().TrimStart('0');
+        internal static readonly string Version = ((uint)(AutoCSer.Threading.SecondTimer.Now - new DateTime(2017, 4, 22, 0, 3, 16)).TotalSeconds).toHex().TrimStart('0');
         /// <summary>
         /// 写入目标文件
         /// </summary>
@@ -1117,7 +1139,7 @@ in " + this.fileName + @"");
             }
             foreach (HtmlJs value in htmlAuto.Htmls.Values)
             {
-                LeftArray<HtmlJs> history = default(LeftArray<HtmlJs>);
+                LeftArray<HtmlJs> history = new LeftArray<HtmlJs>(0);
                 value.create(ref history, true);
             }
             return true;
@@ -1134,7 +1156,7 @@ in " + this.fileName + @"");
             SubString name = new SubString { String = fileName, Length = fileName.Length - (isHtml ? htmlExtension : jsExtension).Length };
             fixed (char* nameFixed = fileName, pageFixed = pageExtension)
             {
-                if (Memory.SimpleEqualNotNull((byte*)(nameFixed + name.Length - pageExtension.Length), (byte*)pageFixed, pageExtension.Length << 1))
+                if (AutoCSer.Memory.Common.SimpleEqualNotNull((byte*)(nameFixed + name.Length - pageExtension.Length), (byte*)pageFixed, pageExtension.Length << 1))
                 {
                     string jsFile = name + jsExtension;
                     if (!File.Exists(jsFile)) File.WriteAllText(jsFile, string.Empty, htmlAuto.WebConfig.Encoding);

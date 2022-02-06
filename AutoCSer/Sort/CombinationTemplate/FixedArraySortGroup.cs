@@ -1,7 +1,7 @@
 ﻿using System;
-/*Type:ulong;long;uint;int;DateTime*/
+/*ulong;long;uint;int;DateTime*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数组扩展操作
@@ -14,11 +14,11 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static LeftArray</*Type[0]*/ulong/*Type[0]*/> distinct(this /*Type[0]*/ulong/*Type[0]*/[] array)
+        public static LeftArray<ulong> distinct(this ulong[] array)
         {
-            if (array == null) return default(LeftArray</*Type[0]*/ulong/*Type[0]*/>);
-            if (array.Length <= 1) return new LeftArray</*Type[0]*/ulong/*Type[0]*/> { Array = array, Length = array.Length };
-            return new LeftArray</*Type[0]*/ulong/*Type[0]*/> { Array = array, Length = Distinct(array, 0, array.Length) };
+            if (array == null) return new LeftArray<ulong>(0);
+            if (array.Length <= 1) return new LeftArray<ulong> { Array = array, Length = array.Length };
+            return new LeftArray<ulong> { Array = array, Length = Distinct(array, 0, array.Length) };
         }
         /// <summary>
         /// 数据去重
@@ -27,13 +27,12 @@ namespace AutoCSer.Extension
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">数据数量</param>
         /// <returns>结束位置</returns>
-        internal static int Distinct(/*Type[0]*/ulong/*Type[0]*/[] array, int startIndex, int count)
+        internal static int Distinct(ulong[] array, int startIndex, int count)
         {
             array.sort(startIndex, count);
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array)
+            fixed (ulong* valueFixed = array)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* write = valueFixed + startIndex, start = write + 1, end = write + count;
+                ulong* write = valueFixed + startIndex, start = write + 1, end = write + count;
                 do
                 {
                     if (*start != *write) *++write = *start;
@@ -50,9 +49,9 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] distinct<valueType>(this /*Type[0]*/ulong/*Type[0]*/[] array, Func</*Type[0]*/ulong/*Type[0]*/, valueType> getValue)
+        public static valueType[] distinct<valueType>(this ulong[] array, Func<ulong, valueType> getValue)
         {
-            return array.isEmpty() ? NullValue<valueType>.Array : Distinct(array, getValue, 0, array.Length);
+            return array.isEmpty() ? EmptyArray<valueType>.Array : Distinct(array, getValue, 0, array.Length);
         }
         /// <summary>
         /// 数据去重
@@ -63,15 +62,13 @@ namespace AutoCSer.Extension
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">数据数量</param>
         /// <returns>目标数据集合</returns>
-        internal static valueType[] Distinct<valueType>(/*Type[0]*/ulong/*Type[0]*/[] array, Func</*Type[0]*/ulong/*Type[0]*/, valueType> getValue, int startIndex, int count)
+        internal static valueType[] Distinct<valueType>(ulong[] array, Func<ulong, valueType> getValue, int startIndex, int count)
         {
             array.sort(startIndex, count);
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array)
+            fixed (ulong* valueFixed = array)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = valueFixed + startIndex, end = start + count;
-                /*Type[0]*/
-                ulong/*Type[0]*/ value = *start;
+                ulong* start = valueFixed + startIndex, end = start + count;
+                ulong value = *start;
                 int valueCount = 1;
                 while (++start != end)
                 {
@@ -99,10 +96,9 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static LeftArray</*Type[0]*/ulong/*Type[0]*/> distinct<valueType>(this valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue)
+        public static LeftArray<ulong> distinct<valueType>(this valueType[] array, Func<valueType, ulong> getValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/[] newValues = array.getArray(getValue);
+            ulong[] newValues = array.getArray(getValue);
             newValues.sort(0, newValues.Length);
             return newValues.distinct();
         }
@@ -112,9 +108,9 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <returns>分组数量</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static KeyValue</*Type[0]*/ulong/*Type[0]*/, int>[] sortGroupCount(this /*Type[0]*/ulong/*Type[0]*/[] array)
+        public static KeyValue<ulong, int>[] sortGroupCount(this ulong[] array)
         {
-            return array.isEmpty() ? NullValue<KeyValue</*Type[0]*/ulong/*Type[0]*/, int>>.Array : SortGroupCount(array, 0, array.Length);
+            return array.isEmpty() ? EmptyArray<KeyValue<ulong, int>>.Array : SortGroupCount(array, 0, array.Length);
         }
         /// <summary>
         /// 数据排序分组数量
@@ -123,15 +119,13 @@ namespace AutoCSer.Extension
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">数据数量</param>
         /// <returns>分组数量</returns>
-        internal static KeyValue</*Type[0]*/ulong/*Type[0]*/, int>[] SortGroupCount(/*Type[0]*/ulong/*Type[0]*/[] array, int startIndex, int count)
+        internal static KeyValue<ulong, int>[] SortGroupCount(ulong[] array, int startIndex, int count)
         {
             array.sort(startIndex, count);
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array)
+            fixed (ulong* valueFixed = array)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = valueFixed + startIndex, lastStart = start, end = start + count;
-                /*Type[0]*/
-                ulong/*Type[0]*/ value = *start;
+                ulong* start = valueFixed + startIndex, lastStart = start, end = start + count;
+                ulong value = *start;
                 int valueCount = 1;
                 while (++start != end)
                 {
@@ -141,7 +135,7 @@ namespace AutoCSer.Extension
                         value = *start;
                     }
                 }
-                KeyValue</*Type[0]*/ulong/*Type[0]*/, int>[] values = new KeyValue</*Type[0]*/ulong/*Type[0]*/, int>[valueCount];
+                KeyValue<ulong, int>[] values = new KeyValue<ulong, int>[valueCount];
                 value = *(start = lastStart);
                 valueCount = 0;
                 while (++start != end)
@@ -165,9 +159,9 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数据集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static LeftArray<SubArray<valueType>> sortGroup<valueType>(this valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue)
+        public static LeftArray<SubArray<valueType>> sortGroup<valueType>(this valueType[] array, Func<valueType, ulong> getValue)
         {
-            return array.isEmpty() ? default(LeftArray<SubArray<valueType>>) : SortGroup(array, getValue, 0, array.Length);
+            return array.isEmpty() ? new LeftArray<SubArray<valueType>>(0) : SortGroup(array, getValue, 0, array.Length);
         }
         /// <summary>
         /// 数据排序分组
@@ -178,17 +172,15 @@ namespace AutoCSer.Extension
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">数据数量</param>
         /// <returns>目标数据集合</returns>
-        internal static LeftArray<SubArray<valueType>> SortGroup<valueType>(this valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue, int startIndex, int count)
+        internal static LeftArray<SubArray<valueType>> SortGroup<valueType>(this valueType[] array, Func<valueType, ulong> getValue, int startIndex, int count)
         {
             valueType[] sortArray = array.getSort(getValue, startIndex, count);
             SubArray<valueType>[] values = new SubArray<valueType>[sortArray.Length];
-            /*Type[0]*/
-            ulong/*Type[0]*/ key = getValue(sortArray[0]);
+            ulong key = getValue(sortArray[0]);
             int valueStartIndex = 0, valueIndex = 0;
             for (int index = 1; index != sortArray.Length; ++index)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/ nextKey = getValue(sortArray[index]);
+                ulong nextKey = getValue(sortArray[index]);
                 if (key != nextKey)
                 {
                     values[valueIndex++].Set(sortArray, valueStartIndex, index - valueStartIndex);
@@ -207,7 +199,7 @@ namespace AutoCSer.Extension
         /// <param name="getValue">数据获取器</param>
         /// <returns>数据排序分组数量</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static int sortGroupCount<valueType>(this valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue)
+        public static int sortGroupCount<valueType>(this valueType[] array, Func<valueType, ulong> getValue)
         {
             return array.isEmpty() ? 0 : SortGroupCount(array, getValue, 0, array.Length);
         }
@@ -220,16 +212,14 @@ namespace AutoCSer.Extension
         /// <param name="startIndex">起始位置</param>
         /// <param name="count">数据数量</param>
         /// <returns>数据排序分组数量</returns>
-        internal static int SortGroupCount<valueType>(this valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue, int startIndex, int count)
+        internal static int SortGroupCount<valueType>(this valueType[] array, Func<valueType, ulong> getValue, int startIndex, int count)
         {
             valueType[] sortArray = array.getSort(getValue, startIndex, count);
-            /*Type[0]*/
-            ulong/*Type[0]*/ key = getValue(sortArray[0]);
+            ulong key = getValue(sortArray[0]);
             int valueCount = 0;
             for (int index = 1; index != sortArray.Length; ++index)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/ nextKey = getValue(sortArray[index]);
+                ulong nextKey = getValue(sortArray[index]);
                 if (key != nextKey)
                 {
                     ++valueCount;

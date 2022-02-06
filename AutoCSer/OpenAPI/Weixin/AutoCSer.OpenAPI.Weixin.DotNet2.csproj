@@ -94,8 +94,8 @@
     <Compile Include="Emit\Pub.cs" />
     <Compile Include="ErrorCode.cs" />
     <Compile Include="ErrorCodeEnum.cs" />
-    <Compile Include="Extension\Memory.cs" />
-    <Compile Include="Extension\String.cs" />
+    <Compile Include="Extensions\MemoryExtension.Weixin.cs" />
+    <Compile Include="Extensions\StringExtension.Weixin.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="GroupCount.cs" />
     <Compile Include="GroupIdResult.cs" />

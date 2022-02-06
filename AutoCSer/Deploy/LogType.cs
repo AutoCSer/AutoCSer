@@ -11,14 +11,14 @@ namespace AutoCSer.Deploy
         /// 部署错误结束
         /// </summary>
         Error,
-        /// <summary>
-        /// 创建备份目录
-        /// </summary>
-        CreateBakDirectory,
-        /// <summary>
-        /// 创建备份目录完毕
-        /// </summary>
-        OnCreateBakDirectory,
+        ///// <summary>
+        ///// 创建备份目录
+        ///// </summary>
+        //CreateBakDirectory,
+        ///// <summary>
+        ///// 创建备份目录完毕
+        ///// </summary>
+        //OnCreateBakDirectory,
         /// <summary>
         /// 启动任务
         /// </summary>

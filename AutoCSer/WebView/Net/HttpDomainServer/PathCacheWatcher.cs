@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.HttpDomainServer
@@ -86,7 +86,7 @@ namespace AutoCSer.Net.HttpDomainServer
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>

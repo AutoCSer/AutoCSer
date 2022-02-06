@@ -309,7 +309,7 @@ namespace AutoCSer.Net.Packet
         {
             get
             {
-                return HeaderSize > DefaultHeaderSize ?  new SubArray<byte>(data.StartIndex + DefaultHeaderSize, HeaderSize - DefaultHeaderSize, data.Array) : default(SubArray<byte>);
+                return HeaderSize > DefaultHeaderSize ?  new SubArray<byte>(data.StartIndex + DefaultHeaderSize, HeaderSize - DefaultHeaderSize, data.Array) : new SubArray<byte>();
             }
         }
         /// <summary>
@@ -348,7 +348,7 @@ namespace AutoCSer.Net.Packet
         {
             if (data.Length >= DefaultHeaderSize)
             {
-                fixed (byte* dataFixed = data.Array)
+                fixed (byte* dataFixed = data.GetFixedBuffer())
                 {
                     byte* start = dataFixed + data.StartIndex;
                     uint packetSize = ((uint)*(start + 2) << 8) + *(start + 3);
@@ -359,7 +359,7 @@ namespace AutoCSer.Net.Packet
                     }
                 }
             }
-            this.data = default(SubArray<byte>);
+            this.data = new SubArray<byte>();
         }
         /// <summary>
         /// 获取校验和，IP、ICMP、IGMP、TCP和UDP协议采用相同的检验和算法(对首部中每个16bit进行二进制反码求和，如果首部在传输过程中没有发生任何差错，那么接收方计算的结果应该为全1。)
@@ -369,7 +369,7 @@ namespace AutoCSer.Net.Packet
         /// <returns>校验和</returns>
         public unsafe static ushort CreateCheckSum(ref SubArray<byte> data, uint checkSum = 0)
         {
-            fixed (byte* fixedData = data.Array)
+            fixed (byte* fixedData = data.GetFixedBuffer())
             {
                 byte* start = fixedData + data.StartIndex, end = start + data.Length - 1;
                 while (start < end)

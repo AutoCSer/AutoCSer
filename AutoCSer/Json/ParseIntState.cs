@@ -6,7 +6,7 @@ namespace AutoCSer.Json
     /// 整数解析状态
     /// </summary>
     [Flags]
-    internal enum ParseIntState : byte
+    //internal enum ParseIntState : byte
     {
         /// <summary>
         /// 成功

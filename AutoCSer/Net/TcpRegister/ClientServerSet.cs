@@ -15,7 +15,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// 客户端集合
         /// </summary>
-        private LeftArray<IClient> clients;
+        private LeftArray<IClient> clients = new LeftArray<IClient>(0);
         /// <summary>
         /// 客户端 TCP 服务信息集合
         /// </summary>

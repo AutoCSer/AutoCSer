@@ -21,9 +21,9 @@ namespace AutoCSer.Example.BinarySerialize
         /// 自定义序列化函数
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        internal void Serialize(AutoCSer.BinarySerializer serializer)
         {
             if (MemberMap == null || MemberMap.IsDefault) serializer.TypeSerialize(Value);
             else
@@ -40,9 +40,9 @@ namespace AutoCSer.Example.BinarySerialize
         /// 自定义反序列化函数
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             AutoCSer.Metadata.MemberMap oldMemberMap = deSerializer.SetCustomMemberMap(MemberMap);
             try
@@ -79,8 +79,8 @@ namespace AutoCSer.Example.BinarySerialize
 #endif
             MemberMapValue value = new MemberMapValue { Value = new MemberMapValue<MemberMap> { MemberMap = serializeMemberMap, Value = new MemberMap { Value1 = 1, Value2 = 2, Value3 = 3 } } };
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value);
-            MemberMapValue newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<MemberMapValue>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value);
+            MemberMapValue newValue = AutoCSer.BinaryDeSerializer.DeSerialize<MemberMapValue>(data);
 
             return newValue != null && newValue.Value.Value != null && newValue.Value.Value.Value1 == 1 && newValue.Value.Value.Value2 == 2 && newValue.Value.Value.Value3 == 0;
         }

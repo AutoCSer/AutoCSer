@@ -130,7 +130,7 @@ namespace AutoCSer.OpenAPI.QQ
         //    //需要xml解析
         //    value.oauth_consumer_key = config.client_id;
         //    //https://graph.qq.com/share/get_comment
-        //    return default(LeftArray<Comment>);
+        //    return new LeftArray<Comment>（0);
         //}
         /// <summary>
         /// 发表一条微博信息（纯文本）到腾讯微博平台上

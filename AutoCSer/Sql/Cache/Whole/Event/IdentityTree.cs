@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Sql.Cache.Whole.Event
 {
@@ -20,7 +21,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <summary>
         /// 排序树节点数量集合
         /// </summary>
-        private Pointer.Size counts;
+        private AutoCSer.Memory.Pointer counts;
         /// <summary>
         /// 排序树容器数量
         /// </summary>
@@ -63,41 +64,45 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="query">查询信息</param>
         internal override void Reset(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            LeftArray<valueType> array = SqlTable.SelectQueue(ref connection, ref query);
-            int maxIdentity = array.maxKey(value => GetKey(value), 0);
-            if (memberGroup == 0) SqlTable.Identity64 = maxIdentity + baseIdentity;
-            int length = maxIdentity >= IdentityArray.ArraySize ? 1 << ((uint)maxIdentity).bits() : IdentityArray.ArraySize;
-            IdentityArray<valueType> newValues = new IdentityArray<valueType>(length);
-            Pointer.Size newCounts = Unmanaged.GetSize64(length * sizeof(int), true);
-            try
+            ReturnValue<LeftArray<valueType>> valueArray = SqlTable.SelectQueue(ref connection, ref query);
+            if (valueArray.ReturnType == ReturnType.Success)
             {
-                int* intCounts = newCounts.Int;
-                foreach (valueType value in array)
+                int maxIdentity = valueArray.Value.maxKey(value => GetKey(value), 0);
+                if (memberGroup == 0) SqlTable.Identity64 = maxIdentity + baseIdentity;
+                int length = maxIdentity >= IdentityArray.ArraySize ? 1 << ((uint)maxIdentity).bits() : IdentityArray.ArraySize;
+                IdentityArray<valueType> newValues = new IdentityArray<valueType>(length);
+                AutoCSer.Memory.Pointer newCounts = Unmanaged.GetPointer8(length * sizeof(int), true);
+                try
                 {
-                    setMemberCacheAndValue(value);
-                    int identity = GetKey(value);
-                    newValues[identity] = value;
-                    intCounts[identity] = 1;
-                }
-                for (int step = 2; step != length; step <<= 1)
-                {
-                    for (int index = step, countStep = step >> 1; index != length; index += step)
+                    int* intCounts = newCounts.Int;
+                    foreach (valueType value in valueArray.Value)
                     {
-                        intCounts[index] += intCounts[index - countStep];
+                        setMemberCacheAndValue(value);
+                        int identity = GetKey(value);
+                        newValues[identity] = value;
+                        intCounts[identity] = 1;
                     }
+                    for (int step = 2; step != length; step <<= 1)
+                    {
+                        for (int index = step, countStep = step >> 1; index != length; index += step)
+                        {
+                            intCounts[index] += intCounts[index - countStep];
+                        }
+                    }
+                    Unmanaged.Free(ref counts);
+                    this.Array = newValues;
+                    counts = newCounts;
+                    size = length;
+                    Count = valueArray.Value.Length;
+                    newCounts.SetNull();
                 }
-                Unmanaged.Free(ref counts);
-                this.Array = newValues;
-                counts = newCounts;
-                size = length;
-                Count = array.Length;
-                newCounts.SetNull();
+                catch (Exception error)
+                {
+                    SqlTable.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                }
+                finally { Unmanaged.Free(ref newCounts); }
             }
-            catch (Exception error)
-            {
-                SqlTable.Log.Add(AutoCSer.Log.LogType.Error, error);
-            }
-            finally { Unmanaged.Free(ref newCounts); }
+            else SqlTable.Log.Fatal(typeof(valueType).fullName() + " 数据加载失败 " + valueArray.ReturnType.ToString(), LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 增加数据
@@ -115,10 +120,10 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                     for (newLength = oldLength << 1; newLength <= identity; newLength <<= 1) ;
                 }
                 Array.ToSize(newLength);
-                Pointer.Size newCounts = Unmanaged.GetSize64(newLength * sizeof(int), true);
+                AutoCSer.Memory.Pointer newCounts = Unmanaged.GetPointer8(newLength * sizeof(int), true);
                 try
                 {
-                    Memory.CopyNotNull(intCounts, newCounts.Int, size * sizeof(int));
+                    AutoCSer.Memory.Common.CopyNotNull(intCounts, newCounts.Int, size * sizeof(int));
                     Unmanaged.Free(ref counts);
                     counts = newCounts;
                     size = newLength;
@@ -130,11 +135,11 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 }
                 catch (Exception error)
                 {
-                    SqlTable.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    SqlTable.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 finally { Unmanaged.Free(ref newCounts); }
             }
-            valueType newValue = AutoCSer.Emit.Constructor<valueType>.New();
+            valueType newValue = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
             AutoCSer.MemberCopy.Copyer<modelType>.Copy(newValue, value, MemberMap);
             setMemberCacheAndValue(newValue);
             Array[identity] = newValue;

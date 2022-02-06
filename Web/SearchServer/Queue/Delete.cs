@@ -6,7 +6,7 @@ namespace AutoCSer.Web.SearchServer.Queue
     /// <summary>
     /// 删除数据
     /// </summary>
-    internal sealed class Delete : Node
+    internal sealed class Delete : AutoCSer.Threading.TaskLinkNode
     {
         /// <summary>
         /// 关键字

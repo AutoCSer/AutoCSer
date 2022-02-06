@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Search
 {
@@ -88,7 +88,7 @@ namespace AutoCSer.Search
             /// <returns></returns>
             private KeyValue<char, int>[] create(Dictionary<char, StringTrieGraph.Node> nodes)
             {
-                if (nodes == null || nodes.Count == 0) return NullValue<KeyValue<char, int>>.Array;
+                if (nodes == null || nodes.Count == 0) return EmptyArray<KeyValue<char, int>>.Array;
                 int index = 0;
                 KeyValue<char, int>[] array = new KeyValue<char, int>[nodes.Count];
                 foreach (KeyValuePair<char, StringTrieGraph.Node> value in nodes) array[index++].Set(value.Key, create(value.Value));

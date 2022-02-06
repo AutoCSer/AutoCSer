@@ -21,6 +21,6 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 自定义属性
         /// </summary>
-        public MemberAttribute Attribute;
+        public XmlSerializeMemberAttribute Attribute;
     }
 }

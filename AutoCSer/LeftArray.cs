@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
@@ -9,18 +9,14 @@ namespace AutoCSer
     /// <summary>
     /// 数组子串
     /// </summary>
-    /// <typeparam name="valueType"></typeparam>
+    /// <typeparam name="T"></typeparam>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    public partial struct LeftArray<valueType> : IList<valueType>
+    public partial struct LeftArray<T> : IList<T>
     {
-        /// <summary>
-        /// 默认数组长度
-        /// </summary>
-        private const int defalutArraySize = sizeof(int);
         /// <summary>
         /// 原数组
         /// </summary>
-        internal valueType[] Array;
+        internal T[] Array;
         /// <summary>
         /// 长度
         /// </summary>
@@ -33,11 +29,26 @@ namespace AutoCSer
             get { return Length; }
         }
         /// <summary>
+        /// 保留字段
+        /// </summary>
+        internal int Reserve;
+        /// <summary>
+        /// 只读
+        /// </summary>
+        public bool IsReadOnly { get { return false; } }
+        /// <summary>
+        /// 空闲元素数量
+        /// </summary>
+        public int FreeCount
+        {
+            get { return Array.Length - Length; }
+        }
+        /// <summary>
         /// 设置或获取值
         /// </summary>
         /// <param name="index">位置</param>
         /// <returns>数据值</returns>
-        public valueType this[int index]
+        public T this[int index]
         {
             get
             {
@@ -46,45 +57,44 @@ namespace AutoCSer
             }
             set
             {
-                if ((uint)index < (uint)Length)
-                {
-                    Array[index] = value;
-                    return;
-                }
-                throw new IndexOutOfRangeException("index[" + index.toString() + "] >= Length[" + Length.toString() + "]");
+                if ((uint)index < (uint)Length) Array[index] = value;
+                else throw new IndexOutOfRangeException("index[" + index.toString() + "] >= Length[" + Length.toString() + "]");
             }
         }
         /// <summary>
-        /// 只读
-        /// </summary>
-        public bool IsReadOnly { get { return false; } }
-        /// <summary>
         /// 数组子串
         /// </summary>
-        /// <param name="size">容器大小</param>
-        public LeftArray(int size)
+        /// <param name="capacity">容器大小</param>
+        public LeftArray(int capacity)
         {
-            Array = size > 0 ? new valueType[size] : null;
-            Length = 0;
+            Array = capacity > 0 ? new T[capacity] : EmptyArray<T>.Array;
+            Length = Reserve = 0;
         }
         /// <summary>
         /// 数组子串
         /// </summary>
-        /// <param name="value">数组</param>
-        public LeftArray(valueType[] value)
+        /// <param name="array">数组</param>
+        public LeftArray(T[] array) : this(array.Length, array) { }
+        /// <summary>
+        /// 数组子串
+        /// </summary>
+        /// <param name="length">初始化数据长度</param>
+        /// <param name="array">原数组</param>
+        internal LeftArray(int length, T[] array)
         {
-            Array = value;
-            Length = value == null ? 0 : value.Length;
+            Array = array;
+            Length = length;
+            Reserve = 0;
         }
         /// <summary>
         /// 枚举器
         /// </summary>
         /// <returns>枚举器</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        IEnumerator<valueType> IEnumerable<valueType>.GetEnumerator()
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            if (Length != 0) return new Enumerator<valueType>.Array(this);
-            return Enumerator<valueType>.Empty;
+            if (Length != 0) return new Enumerator<T>.Array(this);
+            return Enumerator<T>.Empty;
         }
         /// <summary>
         /// 枚举器
@@ -93,82 +103,17 @@ namespace AutoCSer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator()
         {
-            if (Length != 0) return new Enumerator<valueType>.Array(this);
-            return Enumerator<valueType>.Empty;
-        }
-        /// <summary>
-        /// 置空并释放数组
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void SetNull()
-        {
-            Array = null;
-            Length = 0;
-        }
-        /// <summary>
-        /// 置空并释放数组
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal valueType[] GetNull()
-        {
-            valueType[] array = Array;
-            SetNull();
-            return array;
-        }
-        /// <summary>
-        /// 置空并释放数组
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void GetNull(ref valueType[] array, ref int length)
-        {
-            array = Array;
-            length = Length;
-            SetNull();
-        }
-        /// <summary>
-        /// 数组互换
-        /// </summary>
-        /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Exchange(ref LeftArray<valueType> value)
-        {
-            LeftArray<valueType> temp = value;
-            value = this;
-            this = temp;
-        }
-        /// <summary>
-        /// 重置数据
-        /// </summary>
-        /// <param name="value">数组,不能为null</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Set(valueType[] value)
-        {
-            Array = value;
-            Length = value.Length;
-        }
-        /// <summary>
-        /// 重置数据
-        /// </summary>
-        /// <param name="value">数组,不能为null</param>
-        /// <param name="length">长度,必须合法</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Set(valueType[] value, int length)
-        {
-            Array = value;
-            Length = length;
+            if (Length != 0) return new Enumerator<T>.Array(this);
+            return Enumerator<T>.Empty;
         }
         /// <summary>
         /// 设置数据容器长度
         /// </summary>
-        /// <param name="count">数据长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void setLength(int count)
+        /// <param name="capacity">数据长度</param>
+        private void setCapacity(int capacity)
         {
-            valueType[] newArray = DynamicArray<valueType>.GetNewArray(count);
-            System.Array.Copy(Array, 0, newArray, 0, Length);
+            T[] newArray = DynamicArray<T>.GetNewArray(capacity);
+            Array.CopyTo(newArray.AsSpan());
             Array = newArray;
         }
         /// <summary>
@@ -178,8 +123,7 @@ namespace AutoCSer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void addToLength(int length)
         {
-            if (Array == null) Array = new valueType[length < defalutArraySize ? defalutArraySize : length];
-            else if (length > Array.Length) setLength(length);
+            if (length > Array.Length) setCapacity(length);
         }
         /// <summary>
         /// 预增长度
@@ -188,30 +132,21 @@ namespace AutoCSer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void PrepLength(int length)
         {
-            if (Array == null) Array = new valueType[length < defalutArraySize ? defalutArraySize : length];
-            else if ((length += this.Length) > Array.Length) setLength(Math.Max(length, Array.Length << 1));
+            if ((length += Length) > Array.Length)
+            {
+                long newSize = (long)Array.Length << 1;
+                if (newSize <= int.MaxValue) setCapacity(Math.Max(length, (int)newSize));
+                else setCapacity(int.MaxValue);
+            }
         }
         /// <summary>
         /// 清除所有数据
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Clear()
         {
-            if (Array != null)
+            if (Array.Length != 0)
             {
-                if (DynamicArray<valueType>.IsClearArray) System.Array.Clear(Array, 0, Array.Length);
-                Length = 0;
-            }
-        }
-        /// <summary>
-        /// 清除当前长度有效数据
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void ClearOnlyLength()
-        {
-            if (Array != null)
-            {
-                if (DynamicArray<valueType>.IsClearArray) System.Array.Clear(Array, 0, Length);
+                if (DynamicArray<T>.IsClearArray) System.Array.Clear(Array, 0, Array.Length);
                 Length = 0;
             }
         }
@@ -219,21 +154,26 @@ namespace AutoCSer
         /// 添加数据
         /// </summary>
         /// <param name="value">数据</param>
-        public void Add(valueType value)
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UnsafeAdd(T value)
         {
-            if (Array == null)
+            Array[Length++] = value;
+        }
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <param name="value">数据</param>
+        public void Add(T value)
+        {
+            if (Array.Length == 0)
             {
-                Array = new valueType[defalutArraySize];
+                Array = new T[DynamicArray.DefalutArrayCapacity];
                 Array[0] = value;
                 Length = 1;
             }
             else
             {
-                if (Length == Array.Length)
-                {
-                    if (Length == 0) Array = new valueType[defalutArraySize];
-                    else setLength(Length << 1);
-                }
+                if (Length == Array.Length) setCapacity(Length << 1);
                 Array[Length++] = value;
             }
         }
@@ -241,13 +181,40 @@ namespace AutoCSer
         /// 添加数据集合
         /// </summary>
         /// <param name="values">数据集合</param>
-        public void Add(ICollection<valueType> values)
+        public void Add(ICollection<T> values)
         {
             int count = values.count();
             if (count != 0)
             {
                 addToLength(Length + count);
-                foreach (valueType value in values) Array[Length++] = value;
+                foreach (T value in values) Array[Length++] = value;
+            }
+        }
+        /// <summary>
+        /// 添加数据集合
+        /// </summary>
+        /// <param name="array">数据集合</param>
+        public void Add(T[] array)
+        {
+            int count = array.Length;
+            if (count != 0)
+            {
+                addToLength(Length + count);
+                array.AsSpan().CopyTo(Array.AsSpan(Length, count));
+                Length += count;
+            }
+        }
+        /// <summary>
+        /// 添加数据集合
+        /// </summary>
+        /// <param name="array">数据集合</param>
+        public void Add(ref LeftArray<T> array)
+        {
+            if (array.Length != 0)
+            {
+                addToLength(Length + array.Length);
+                array.Array.AsSpan(0, array.Length).CopyTo(Array.AsSpan(Length, array.Length));
+                Length += array.Length;
             }
         }
         /// <summary>
@@ -255,28 +222,28 @@ namespace AutoCSer
         /// </summary>
         /// <param name="index">插入位置</param>
         /// <param name="value">数据</param>
-        public void Insert(int index, valueType value)
+        public void Insert(int index, T value)
         {
-            if ((uint)index > (uint)Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] > Length[" + Length.toString() + "]");
-            if (index == Length)
+            if ((uint)index <= (uint)Length)
             {
-                Add(value);
+                if (index != Length)
+                {
+                    int size = Length - index;
+                    if (Length == Array.Length)
+                    {
+                        T[] values = DynamicArray<T>.GetNewArray(Length << 1);
+                        Array.AsSpan(0, index).CopyTo(values.AsSpan());
+                        Array.AsSpan(index, size).CopyTo(values.AsSpan(index + 1, size));
+                        Array = values;
+                    }
+                    else Array.AsSpan(index, size).CopyTo(Array.AsSpan(index + 1, size));
+                    Array[index] = value;
+                    ++Length;
+                }
+                else Add(value);
                 return;
             }
-            if (Length == Array.Length)
-            {
-                valueType[] values = DynamicArray<valueType>.GetNewArray(Length << 1);
-                System.Array.Copy(Array, 0, values, 0, index);
-                values[index] = value;
-                System.Array.Copy(Array, index, values, index + 1, Length++ - index);
-                Array = values;
-            }
-            else
-            {
-                AutoCSer.Extension.ArrayExtension.MoveNotNull(Array, index, index + 1, Length - index);
-                Array[index] = value;
-                ++Length;
-            }
+            throw new IndexOutOfRangeException("index[" + index.toString() + "] > Length[" + Length.toString() + "]");
         }
         /// <summary>
         /// 判断是否存在数据
@@ -284,7 +251,7 @@ namespace AutoCSer
         /// <param name="value">匹配数据</param>
         /// <returns>是否存在数据</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Contains(valueType value)
+        public bool Contains(T value)
         {
             return IndexOf(value) != -1;
         }
@@ -294,42 +261,16 @@ namespace AutoCSer
         /// <param name="value">匹配数据</param>
         /// <returns>匹配位置,失败为-1</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public int IndexOf(valueType value)
+        public int IndexOf(T value)
         {
             return Length == 0 ? -1 : System.Array.IndexOf(Array, value, 0, Length);
-        }
-        /// <summary>
-        /// 获取获取数组中的匹配位置
-        /// </summary>
-        /// <param name="isValue">数据匹配器</param>
-        /// <returns>数组中的匹配位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private int indexOf(Func<valueType, bool> isValue)
-        {
-            int index = 0;
-            foreach (valueType value in Array)
-            {
-                if (isValue(value)) return index;
-                if (++index == Length) return -1;
-            }
-            return -1;
-        }
-        /// <summary>
-        /// 获取获取数组中的匹配位置
-        /// </summary>
-        /// <param name="isValue">数据匹配器</param>
-        /// <returns>数组中的匹配位置,失败为-1</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public int IndexOf(Func<valueType, bool> isValue)
-        {
-            return Length == 0 ? -1 : indexOf(isValue);
         }
         /// <summary>
         /// 移除数据
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns>是否存在移除数据</returns>
-        public bool Remove(valueType value)
+        public bool Remove(T value)
         {
             int index = IndexOf(value);
             if (index >= 0)
@@ -346,21 +287,213 @@ namespace AutoCSer
         /// <returns>被移除数据</returns>
         public void RemoveAt(int index)
         {
-            if ((uint)index >= (uint)Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] >= Length[" + Length.toString() + "]");
-            AutoCSer.Extension.ArrayExtension.MoveNotNull(Array, index + 1, index, --Length - index);
-            Array[Length] = default(valueType);
+            int size = Length - index;
+            if (size > 0)
+            {
+                --size;
+                Array.AsSpan(index + 1, size).CopyTo(Array.AsSpan(index, size));
+                --Length;
+                Array[Length] = AutoCSer.Common.GetDefault<T>();
+                return;
+            }
+            throw new IndexOutOfRangeException("index[" + index.toString() + "] >= Length[" + Length.toString() + "]");
+        }
+        /// <summary>
+        /// 复制数据
+        /// </summary>
+        /// <param name="values">目标数据</param>
+        /// <param name="index">目标位置</param>
+        public void CopyTo(T[] values, int index)
+        {
+            if (index >= 0)
+            {
+                if (Length + index <= values.Length)
+                {
+                    if (Length != 0) AsSpan().CopyTo(values.AsSpan(index, Length));
+                    return;
+                }
+                throw new IndexOutOfRangeException("Length + index[" + (Length + index).toString() + "] > values.Length[" + values.Length.toString() + "]");
+            }
+            throw new IndexOutOfRangeException("index[" + index.toString() + "]");
+        }
+        /// <summary>
+        /// 转换数组
+        /// </summary>
+        /// <returns>数组</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public T[] ToArray()
+        {
+            if (Length == 0) return EmptyArray<T>.Array;
+            return Length == Array.Length ? Array : getArray();
+        }
+        /// <summary>
+        /// 转换数组
+        /// </summary>
+        /// <returns>数组</returns>
+        private T[] getArray()
+        {
+            T[] newArray = new T[Length];
+            Array.AsSpan(0, Length).CopyTo(newArray.AsSpan());
+            return newArray;
+        }
+        /// <summary>
+        /// 转换数组
+        /// </summary>
+        /// <returns>数组</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public T[] GetArray()
+        {
+            return Length != 0 ? getArray() : EmptyArray<T>.Array;
+        }
+        /// <summary>
+        /// 转换数组
+        /// </summary>
+        /// <typeparam name="VT">数组类型</typeparam>
+        /// <param name="getValue">数据获取委托</param>
+        /// <returns>数组</returns>
+        public VT[] GetArray<VT>(Func<T, VT> getValue)
+        {
+            if (Length == 0) return EmptyArray<VT>.Array;
+            VT[] newArray = new VT[Length];
+            int index = 0;
+            do
+            {
+                newArray[index] = getValue(Array[index]);
+            }
+            while (++index != Length);
+            return newArray;
+        }
+
+        /// <summary>
+        /// 置空并释放数组
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void SetNull()
+        {
+            Array = null;
+            Length = 0;
+        }
+        /// <summary>
+        /// 设置为非空数组
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void NotNull()
+        {
+            if (Array == null) Array = EmptyArray<T>.Array;
+        }
+        /// <summary>
+        /// 置空并释放数组
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void SetEmpty()
+        {
+            Array = EmptyArray<T>.Array;
+            Length = 0;
+        }
+        /// <summary>
+        /// 置空并释放数组
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal T[] GetArraySetEmpty()
+        {
+            T[] array = Array;
+            SetEmpty();
+            return array;
+        }
+        /// <summary>
+        /// 置空并释放数组
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="length"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void GetArraySetEmpty(ref T[] array, ref int length)
+        {
+            array = Array;
+            length = Length;
+            SetEmpty();
+        }
+        /// <summary>
+        /// 数组互换
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Exchange(ref LeftArray<T> value)
+        {
+            LeftArray<T> temp = value;
+            value = this;
+            this = temp;
+        }
+        /// <summary>
+        /// 重置数据
+        /// </summary>
+        /// <param name="value">数组,不能为null</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Set(T[] value)
+        {
+            Array = value;
+            Length = value.Length;
+        }
+        /// <summary>
+        /// 重置数据
+        /// </summary>
+        /// <param name="value">数组,不能为null</param>
+        /// <param name="length">长度,必须合法</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Set(T[] value, int length)
+        {
+            Array = value;
+            Length = length;
+        }
+        /// <summary>
+        /// 清除当前长度有效数据
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void ClearOnlyLength()
+        {
+            if (Array.Length != 0)
+            {
+                if (DynamicArray<T>.IsClearArray) System.Array.Clear(Array, 0, Length);
+                Length = 0;
+            }
+        }
+        /// <summary>
+        /// 获取获取数组中的匹配位置
+        /// </summary>
+        /// <param name="isValue">数据匹配器</param>
+        /// <returns>数组中的匹配位置,失败为-1</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private int indexOf(Func<T, bool> isValue)
+        {
+            int index = 0;
+            foreach (T value in Array)
+            {
+                if (isValue(value)) return index;
+                if (++index == Length) return -1;
+            }
+            return -1;
+        }
+        /// <summary>
+        /// 获取获取数组中的匹配位置
+        /// </summary>
+        /// <param name="isValue">数据匹配器</param>
+        /// <returns>数组中的匹配位置,失败为-1</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public int IndexOf(Func<T, bool> isValue)
+        {
+            return Length == 0 ? -1 : indexOf(isValue);
         }
         /// <summary>
         /// 最后一个数据移动到被删除数据位置
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private bool removeAtToEnd(int index)
+        internal bool TryRemoveAtToEnd(int index)
         {
             if (index >= 0)
             {
                 if (index != --Length) Array[index] = Array[Length];
-                Array[Length] = default(valueType);
+                Array[Length] = default(T);
                 return true;
             }
             return false;
@@ -371,61 +504,20 @@ namespace AutoCSer
         /// <param name="isValue">数据匹配器</param>
         /// <returns>是否存在移除数据</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool RemoveToEnd(Func<valueType, bool> isValue)
+        public bool RemoveToEnd(Func<T, bool> isValue)
         {
-            return removeAtToEnd(IndexOf(isValue));
+            return TryRemoveAtToEnd(IndexOf(isValue));
         }
         /// <summary>
         /// 弹出最后一个数据
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal valueType UnsafePop()
+        internal T UnsafePop()
         {
-            valueType value = Array[--Length];
-            Array[Length] = default(valueType);
+            T value = Array[--Length];
+            Array[Length] = default(T);
             return value;
-        }
-        /// <summary>
-        /// 复制数据
-        /// </summary>
-        /// <param name="values">目标数据</param>
-        /// <param name="index">目标位置</param>
-        public void CopyTo(valueType[] values, int index)
-        {
-            if (index < 0) throw new IndexOutOfRangeException("index[" + index.toString() + "]");
-            if (Length + index > values.Length) throw new IndexOutOfRangeException("Length + index[" + (Length + index).toString() + "] > values.Length[" + values.Length.toString() + "]");
-            if (Length != 0) System.Array.Copy(Array, 0, values, index, Length);
-        }
-        /// <summary>
-        /// 转换数组
-        /// </summary>
-        /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public valueType[] ToArray()
-        {
-            if (Length == 0) return NullValue<valueType>.Array;
-            return Length == Array.Length ? Array : getArray();
-        }
-        /// <summary>
-        /// 转换数组
-        /// </summary>
-        /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private valueType[] getArray()
-        {
-            valueType[] newArray = new valueType[Length];
-            System.Array.Copy(Array, 0, newArray, 0, Length);
-            return newArray;
-        }
-        /// <summary>
-        /// 转换数组
-        /// </summary>
-        /// <returns>数组</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public valueType[] GetArray()
-        {
-            return Length != 0 ? getArray() : NullValue<valueType>.Array;
         }
         /// <summary>
         /// 排序
@@ -433,10 +525,23 @@ namespace AutoCSer
         /// <param name="comparer">比较器</param>
         /// <returns>排序后的数组</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public LeftArray<valueType> Sort(Func<valueType, valueType, int> comparer)
+        public LeftArray<T> Sort(Func<T, T, int> comparer)
         {
             AutoCSer.Algorithm.QuickSort.Sort(Array, comparer, 0, Length);
             return this;
+        }
+        /// <summary>
+        /// 获取 fixed 缓冲区，DEBUG 模式对数据范围进行检测
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal T[] GetFixedBuffer()
+        {
+#if DEBUG
+            if (Length < 0) throw new Exception(Length.toString() + " < 0");
+            if (Length > Array.Length) throw new Exception(Length.toString() + " > " + Array.Length.toString());
+#endif
+            return Array;
         }
     }
 }

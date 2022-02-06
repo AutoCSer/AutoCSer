@@ -5,8 +5,9 @@ using System.Data.OleDb;
 using System.Data.Common;
 using System.Data;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Sql.Excel
 {
@@ -38,7 +39,7 @@ namespace AutoCSer.Sql.Excel
         /// <returns>SQL命令</returns>
         protected override DbCommand getCommand(DbConnection connection, string sql, CommandType commandType)
         {
-            DbCommand command = new OleDbCommand(sql, new UnionType { Value = connection }.OleDbConnection);
+            DbCommand command = new OleDbCommand(sql, new UnionType.OleDbConnection { Object = connection }.Value);
             command.CommandType = commandType;
             return command;
         }
@@ -49,7 +50,7 @@ namespace AutoCSer.Sql.Excel
         /// <returns>数据适配器</returns>
         protected override DbDataAdapter getAdapter(DbCommand command)
         {
-            return new OleDbDataAdapter(new UnionType { Value = command }.OleDbCommand);
+            return new OleDbDataAdapter(new UnionType.OleDbCommand { Object = command }.Value);
         }
         /// <summary>
         /// 表格名称
@@ -69,6 +70,27 @@ namespace AutoCSer.Sql.Excel
                 foreach (DataRow row in rows) names.UnsafeAdd(row[schemaTableName].ToString());
                 return names;
             }
+        }
+        /// <summary>
+        /// 获取指定表格名称，如果表格不存在返回第一个表格名称
+        /// </summary>
+        /// <param name="TableName"></param>
+        /// <returns></returns>
+        public override string GetFirstTableName(string TableName)
+        {
+            string FirstTableName = null;
+            using (DbConnection dbConnection = GetConnection())
+            using (DataTable table = ((OleDbConnection)dbConnection).GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null))
+            {
+                DataRowCollection rows = table.Rows;
+                foreach (DataRow row in rows)
+                {
+                    string NextTableName = row[schemaTableName].ToString();
+                    if (NextTableName == TableName) return TableName;
+                    if (FirstTableName == null) FirstTableName = NextTableName;
+                }
+            }
+            return FirstTableName;
         }
         /// <summary>
         /// 成员信息转换为数据列
@@ -163,14 +185,15 @@ namespace AutoCSer.Sql.Excel
         {
             string tableName = table.Columns.Name, sql;
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
-                sqlStream.SimpleWriteNotNull("create table ");
-                sqlStream.SimpleWriteNotNull(tableName);
-                sqlStream.SimpleWriteNotNull(" (");
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
+                sqlStream.SimpleWrite("create table ");
+                sqlStream.SimpleWrite(tableName);
+                sqlStream.SimpleWrite(" (");
                 bool isNext = false;
                 foreach (Column column in table.Columns.Columns)
                 {
@@ -185,7 +208,7 @@ namespace AutoCSer.Sql.Excel
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -234,6 +257,27 @@ namespace AutoCSer.Sql.Excel
             throw new InvalidOperationException();
         }
         /// <summary>
+        /// 设置真实成员位图
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <typeparam name="modelType"></typeparam>
+        /// <param name="sqlTool"></param>
+        /// <param name="memberMap"></param>
+        internal override void SetRealMemberMap<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, MemberMap<modelType> memberMap)
+        {
+            if (sqlTool.Attribute.IsSetRealMemberMap)
+            {
+                MemberMap<modelType> realMemberMap = MemberMap<modelType>.NewEmpty();
+                using (DbConnection connection = GetConnection())
+                using (DbCommand command = getCommand(connection, "select top 1 * from [" + sqlTool.TableName + "]", CommandType.Text))
+                using (DataSet dataSet = getDataSet(command))
+                {
+                    foreach (DataColumn dataColumn in dataSet.Tables[0].Columns) realMemberMap.SetMember(dataColumn.ColumnName);
+                }
+                memberMap.And(realMemberMap);
+            }
+        }
+        /// <summary>
         /// 委托关联表达式转SQL表达式
         /// </summary>
         /// <param name="expression">委托关联表达式</param>
@@ -256,23 +300,24 @@ namespace AutoCSer.Sql.Excel
             (Sql.Table<valueType, modelType> sqlTool, ref CreateSelectQuery<modelType> createQuery, ref SelectQuery<modelType> query)
         {
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
-                sqlStream.SimpleWriteNotNull("select ");
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
+                sqlStream.SimpleWrite("select ");
                 int count = query.SkipCount + createQuery.GetCount;
                 if (count != 0)
                 {
-                    sqlStream.SimpleWriteNotNull("top ");
-                    AutoCSer.Extension.Number.ToString(count, sqlStream);
+                    sqlStream.SimpleWrite("top ");
+                    AutoCSer.Extensions.NumberExtension.ToString(count, sqlStream);
                     sqlStream.Write(' ');
                 }
-                if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
+                if (query.MemberMap != null) AutoCSer.Sql.DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
                 else sqlStream.Write('*');
-                sqlStream.SimpleWriteNotNull(" from [");
-                sqlStream.SimpleWriteNotNull(sqlTool.TableName);
+                sqlStream.SimpleWrite(" from [");
+                sqlStream.SimpleWrite(sqlTool.TableName);
                 sqlStream.Write(']');
                 createQuery.WriteWhere(sqlTool, sqlStream, ref query);
                 createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
@@ -280,7 +325,7 @@ namespace AutoCSer.Sql.Excel
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -294,7 +339,7 @@ namespace AutoCSer.Sql.Excel
         /// <param name="connection"></param>
         /// <param name="query">查询信息</param>
         /// <returns>对象集合</returns>
-        internal override LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query)
+        internal override ReturnValue<LeftArray<valueType>> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query)
         {
             try
             {
@@ -303,7 +348,7 @@ namespace AutoCSer.Sql.Excel
                     if (connection == null) connection = GetConnection();
                     if (connection != null)
                     {
-                        bool isFinally = false;
+                        ReturnType returnType = ReturnType.Unknown;
                         try
                         {
                             using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
@@ -313,28 +358,30 @@ namespace AutoCSer.Sql.Excel
                                 while (skipCount != 0 && reader.Read()) --skipCount;
                                 if (skipCount == 0)
                                 {
-                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    LeftArray<valueType> array = new LeftArray<valueType>(0);
                                     while (reader.Read())
                                     {
-                                        valueType value = AutoCSer.Emit.Constructor<valueType>.New();
+                                        valueType value = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
                                         DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
                                         array.Add(value);
                                     }
-                                    isFinally = true;
-                                    return array.NotNull();
+                                    returnType = ReturnType.Success;
+                                    return array;
                                 }
                             }
-                            isFinally = true;
+                            returnType = ReturnType.Success;
+                            return new LeftArray<valueType>(0);
                         }
                         finally
                         {
-                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
+                            if (returnType == ReturnType.Unknown) sqlTool.Log.Error(query.Sql, LogLevel.Error | LogLevel.AutoCSer);
                         }
                     }
+                    return ReturnType.ConnectionFailed;
                 }
             }
             finally { query.Free(); }
-            return default(LeftArray<valueType>);
+            return ReturnType.NotFoundSql;
         }
         /// <summary>
         /// 获取查询信息
@@ -346,7 +393,7 @@ namespace AutoCSer.Sql.Excel
         /// <param name="query">查询信息</param>
         /// <param name="readValue"></param>
         /// <returns>对象集合</returns>
-        internal override LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query, Func<DbDataReader, valueType> readValue)
+        internal override ReturnValue<LeftArray<valueType>> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query, Func<DbDataReader, valueType> readValue)
         {
             try
             {
@@ -355,7 +402,7 @@ namespace AutoCSer.Sql.Excel
                     if (connection == null) connection = GetConnection();
                     if (connection != null)
                     {
-                        bool isFinally = false;
+                        ReturnType returnType = ReturnType.Unknown;
                         try
                         {
                             using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
@@ -365,27 +412,29 @@ namespace AutoCSer.Sql.Excel
                                 while (skipCount != 0 && reader.Read()) --skipCount;
                                 if (skipCount == 0)
                                 {
-                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    LeftArray<valueType> array = new LeftArray<valueType>(0);
                                     while (reader.Read())
                                     {
                                         valueType value = readValue(reader);
                                         if (value != null) array.Add(value);
                                     }
-                                    isFinally = true;
-                                    return array.NotNull();
+                                    returnType = ReturnType.Success;
+                                    return array;
                                 }
                             }
-                            isFinally = true;
+                            returnType = ReturnType.Success;
+                            return new LeftArray<valueType>(0);
                         }
                         finally
                         {
-                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
+                            if (returnType == ReturnType.Unknown) sqlTool.Log.Error(query.Sql, LogLevel.Error | LogLevel.AutoCSer);
                         }
                     }
+                    return ReturnType.ConnectionFailed;
                 }
             }
             finally { query.Free(); }
-            return default(LeftArray<valueType>);
+            return ReturnType.NotFoundSql;
         }
         /// <summary>
         /// 查询对象
@@ -425,10 +474,10 @@ namespace AutoCSer.Sql.Excel
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns></returns>
-        internal override bool Update<valueType, modelType>
+        internal override ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 更新数据
@@ -441,10 +490,10 @@ namespace AutoCSer.Sql.Excel
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns>更新是否成功</returns>
-        internal override bool Update<valueType, modelType>
+        internal override ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 更新数据
@@ -457,10 +506,10 @@ namespace AutoCSer.Sql.Excel
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns>更新是否成功</returns>
-        internal override bool Update<valueType, modelType>
+        internal override ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 获取添加数据 SQL 语句
@@ -485,9 +534,9 @@ namespace AutoCSer.Sql.Excel
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+        internal override ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 添加数据
@@ -499,9 +548,9 @@ namespace AutoCSer.Sql.Excel
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        internal override ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 添加数据
@@ -512,9 +561,9 @@ namespace AutoCSer.Sql.Excel
         /// <param name="connection">SQL连接</param>
         /// <param name="array">数据数组</param>
         /// <returns></returns>
-        internal override SubArray<valueType> Insert<valueType, modelType>(Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
+        internal override ReturnValue<SubArray<valueType>> Insert<valueType, modelType>(Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
         {
-            throw new NotImplementedException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 添加数据
@@ -525,9 +574,9 @@ namespace AutoCSer.Sql.Excel
         /// <param name="transaction">事务操作</param>
         /// <param name="array">数据数组</param>
         /// <returns></returns>
-        internal override SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
+        internal override ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 获取删除数据 SQL 语句
@@ -538,9 +587,9 @@ namespace AutoCSer.Sql.Excel
         /// <param name="value">删除数据</param>
         /// <param name="query">删除数据查询信息</param>
         /// <returns></returns>
-        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, ref InsertQuery query)
+        internal override ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, ref InsertQuery query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 删除数据
@@ -552,9 +601,9 @@ namespace AutoCSer.Sql.Excel
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+        internal override ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 删除数据
@@ -566,9 +615,9 @@ namespace AutoCSer.Sql.Excel
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        internal override ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
         {
-            throw new InvalidOperationException();
+            return ReturnType.InvalidOperation;
         }
     }
 }

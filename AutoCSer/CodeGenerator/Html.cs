@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -88,7 +88,7 @@ namespace AutoCSer.CodeGenerator
                     case "ace": copyJs(directory, scriptPath + directory.Name + @"\", new string[] { "load.js", "ace.js" }); break;
                     case "mathJax": copyJs(directory, scriptPath + directory.Name + @"\", new string[] { "load.js", "MathJax.js" }); break;
                     case "highcharts": copyJs(directory, scriptPath + directory.Name + @"\"); break;
-                    default: Messages.Add("未知的js文件夹 " + directory.fullName()); break;
+                    default: Messages.Error("未知的js文件夹 " + directory.fullName()); break;
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace AutoCSer.CodeGenerator
         private static readonly string AutoCSerScriptPath;
         static Html()
         {
-            string path = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath).Parent.Parent.Parent
+            string path = new DirectoryInfo(AutoCSer.Config.ApplicationPath).Parent.Parent.Parent
 #if !DOTNET45
                 .Parent
 #endif
@@ -230,10 +230,10 @@ namespace AutoCSer.CodeGenerator
             string jsPath = path + @"CodeGenerator\Js\";
             if (!Directory.Exists(jsPath))
             {
-                jsPath = AutoCSer.PubPath.ApplicationPath + @"Js\";
+                jsPath = AutoCSer.Config.ApplicationPath + @"Js\";
                 if (!Directory.Exists(jsPath)) jsPath = path + @"CodeGenerator\Js\";
             }
-            if (Directory.Exists(jsPath)) AutoCSerScriptPath = new DirectoryInfo(jsPath).fullName().fileNameToLower();
+            if (Directory.Exists(jsPath)) AutoCSerScriptPath = new DirectoryInfo(jsPath).fullName();
         }
     }
 }

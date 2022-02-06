@@ -29,10 +29,10 @@ namespace AutoCSer.Example.Xml
         internal static bool TestCase()
         {
             NoConstructorSon value = new NoConstructorSon { Value = 1 };
-            string xml = AutoCSer.Xml.Serializer.Serialize(value);
+            string xml = AutoCSer.XmlSerializer.Serialize(value);
 
-            AutoCSer.Xml.ParseConfig parseConfig = new AutoCSer.Xml.ParseConfig { Constructor = checkConstructor };
-            NoConstructor newValue = AutoCSer.Xml.Parser.Parse<NoConstructor>(xml, parseConfig);
+            AutoCSer.Xml.DeSerializeConfig parseConfig = new AutoCSer.Xml.DeSerializeConfig { Constructor = checkConstructor };
+            NoConstructor newValue = AutoCSer.XmlDeSerializer.DeSerialize<NoConstructor>(xml, parseConfig);
             return newValue != null && newValue.Value == 1;
         }
     }

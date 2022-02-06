@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Log
+namespace AutoCSer
 {
     /// <summary>
     /// 日志处理
@@ -9,80 +9,21 @@ namespace AutoCSer.Log
     public partial interface ILog
     {
         /// <summary>
-        /// 日志处理类型
+        /// 允许日志级别
         /// </summary>
-        LogType Type { get; set; }
+        LogLevel LogLevel { get; }
         /// <summary>
-        /// 添加日志
+        /// 添加异常日志
         /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="error">错误异常</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="cache">缓存类型</param>
-        void Add(LogType type, Exception error, string message, CacheType cache);
+        /// <param name="exception">异常信息</param>
+        /// <param name="message">附加信息</param>
+        /// <param name="level">日志级别</param>
+        void Exception(Exception exception, string message = null, LogLevel level = LogLevel.Exception);
         /// <summary>
-        /// 添加日志
+        /// 等待写入完成
         /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="stackFrame">堆栈帧函数信息</param>
-        /// <param name="stackTrace">调用堆栈</param>
-        /// <param name="cache">缓存类型</param>
-        void Add(LogType type, string message, StackFrame stackFrame, StackTrace stackTrace, CacheType cache);
-        /// <summary>
-        /// 同步添加日志
-        /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="error">错误异常</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="cache">缓存类型</param>
-        void Wait(LogType type, Exception error, string message, CacheType cache);
-        /// <summary>
-        /// 同步添加日志
-        /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="stackFrame">堆栈帧函数信息</param>
-        /// <param name="stackTrace">调用堆栈</param>
-        /// <param name="cache">缓存类型</param>
-        void Wait(LogType type, string message, StackFrame stackFrame, StackTrace stackTrace, CacheType cache);
-        /// <summary>
-        /// 添加日志并抛出异常
-        /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="error">错误异常</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="cache">缓存类型</param>
-        void Throw(LogType type, Exception error, string message, CacheType cache);
-        /// <summary>
-        /// 添加日志并抛出异常
-        /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="stackFrame">堆栈帧函数信息</param>
-        /// <param name="stackTrace">调用堆栈</param>
-        /// <param name="cache">缓存类型</param>
-        void Throw(LogType type, string message, StackFrame stackFrame, StackTrace stackTrace, CacheType cache);
-        /// <summary>
-        /// 同步添加日志并抛出异常
-        /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="error">错误异常</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="cache">缓存类型</param>
-        void WaitThrow(LogType type, Exception error, string message, CacheType cache);
-        /// <summary>
-        /// 同步添加日志并抛出异常
-        /// </summary>
-        /// <param name="type">日志类型</param>
-        /// <param name="message">提示信息</param>
-        /// <param name="stackFrame">堆栈帧函数信息</param>
-        /// <param name="stackTrace">调用堆栈</param>
-        /// <param name="cache">缓存类型</param>
-        void WaitThrow(LogType type, string message, StackFrame stackFrame, StackTrace stackTrace, CacheType cache);
-        /// <summary>
-        /// 等待写入文件
-        /// </summary>
-        void Flush();
+        /// <param name="waitMilliseconds">轮询等待毫秒数</param>
+        /// <returns>写盘是否成功</returns>
+        bool Flush(int waitMilliseconds);
     }
 }

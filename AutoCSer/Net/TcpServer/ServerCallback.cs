@@ -13,6 +13,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         public virtual bool IsSocket { get { return false; } }
         /// <summary>
+        /// 套接字最后接收数据时间
+        /// </summary>
+        public virtual DateTime LastReceiveTime { get { return default(DateTime); } }
+        /// <summary>
         /// 取消保持调用
         /// </summary>
         internal virtual void CancelKeep() { }
@@ -91,9 +95,21 @@ namespace AutoCSer.Net.TcpServer
             }
         }
         /// <summary>
+        /// 套接字最后接收数据时间
+        /// </summary>
+        public override DateTime LastReceiveTime
+        {
+            get
+            {
+                serverSocketSenderType socket = this.socket;
+                if (socket != null) return socket.ServerSocket.LastReceiveTime;
+                return base.LastReceiveTime;
+            }
+        }
+        /// <summary>
         /// 保持回调访问锁
         /// </summary>
-        protected int keepLock;
+        protected AutoCSer.Threading.SpinLock keepLock;
         /// <summary>
         /// 会话标识
         /// </summary>
@@ -266,6 +282,18 @@ namespace AutoCSer.Net.TcpServer
             }
         }
         /// <summary>
+        /// 套接字最后接收数据时间
+        /// </summary>
+        public override DateTime LastReceiveTime
+        {
+            get
+            {
+                serverSocketSenderType socket = this.socket;
+                if (socket != null) return socket.ServerSocket.LastReceiveTime;
+                return base.LastReceiveTime;
+            }
+        }
+        /// <summary>
         /// 服务端输出信息
         /// </summary>
         protected readonly OutputInfo outputInfo;
@@ -276,7 +304,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 保持回调访问锁
         /// </summary>
-        protected int keepLock;
+        protected AutoCSer.Threading.SpinLock keepLock;
         /// <summary>
         /// 输出参数
         /// </summary>

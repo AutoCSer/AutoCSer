@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.StateSearcher
@@ -37,7 +38,12 @@ namespace AutoCSer.StateSearcher
         /// 字符搜索器
         /// </summary>
         /// <param name="data">数据起始位置</param>
-        public CharSearcher(Pointer data)
+        public CharSearcher(Pointer data) : this(ref data) { }
+        /// <summary>
+        /// 字符搜索器
+        /// </summary>
+        /// <param name="data">数据起始位置</param>
+        public CharSearcher(ref Pointer data)
         {
             if (data.Data == null)
             {
@@ -103,7 +109,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="value"></param>
         /// <returns>状态索引,失败返回-1</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public unsafe int Search(string value)
+        public int Search(string value)
         {
             if (state == null || value == null) return -1;
             fixed (char* valueFixed = value) return UnsafeSearch(valueFixed, valueFixed + value.Length);

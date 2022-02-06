@@ -3,7 +3,7 @@ using AutoCSer.Metadata;
 using System.Linq.Expressions;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql.Cache.Whole.Event
 {
@@ -50,9 +50,13 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="query">查询信息</param>
         internal override void Reset(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            LeftArray<valueType> array = SqlTable.SelectQueue(ref connection, ref query);
-            array.RemoveNot(isValue);
-            reset(array);
+            ReturnValue<LeftArray<valueType>> valueArray = SqlTable.SelectQueue(ref connection, ref query);
+            if (valueArray.ReturnType == ReturnType.Success)
+            {
+                valueArray.Value.RemoveNot(isValue);
+                reset(valueArray.Value);
+            }
+            else SqlTable.Log.Fatal(typeof(valueType).fullName() + " 数据加载失败 " + valueArray.ReturnType.ToString(), LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 增加数据

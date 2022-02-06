@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.Example.TcpRegisterClient
 {
     /// <summary>
     /// 测试服务配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal static class Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
+        /// <summary>
+        /// 主配置类型集合
+        /// </summary>
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// TCP 内部注册服务 标识配置名称
         /// </summary>
@@ -15,7 +20,7 @@ namespace AutoCSer.Example.TcpRegisterClient
         /// <summary>
         /// TCP 内部注册写服务 TCP 服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = TcpRegisterConfigName)]
+        [AutoCSer.Configuration.Member(TcpRegisterConfigName)]
         internal static AutoCSer.Net.TcpInternalServer.ServerAttribute TcpRegisterServerAttribute
         {
             get

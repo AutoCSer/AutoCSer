@@ -14,6 +14,6 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <summary>
         /// 时间戳,1970/1/1经过的秒数
         /// </summary>
-        public long time_stamp = (long)(Date.NowTime.SetUtc() - Config.MinTime).TotalSeconds;
+        public long time_stamp = (long)(AutoCSer.Threading.SecondTimer.SetUtcNow() - Config.MinTime).TotalSeconds;
     }
 }

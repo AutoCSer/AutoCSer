@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
 namespace AutoCSer.Sql.ColumnGroup
 {
+#if !NOJIT
     /// <summary>
     /// 数据列转换数组动态函数
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     internal struct ToArray
     {
-#if !NOJIT
         /// <summary>
         /// 动态函数
         /// </summary>
@@ -50,7 +50,7 @@ namespace AutoCSer.Sql.ColumnGroup
                 generator.Emit(OpCodes.Ldfld, field.FieldInfo);
                 generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldarg_2);
-                generator.Emit(OpCodes.Call, GetTypeToArray(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).ToArrayMethod);
             }
             else
             {
@@ -68,17 +68,18 @@ namespace AutoCSer.Sql.ColumnGroup
                 }
                 else
                 {
+                    AutoCSer.Metadata.StructGenericType StructGenericType = AutoCSer.Metadata.StructGenericType.Get(field.NullableDataType);
                     Label end = generator.DefineLabel();
                     generator.Emit(OpCodes.Ldarga_S, 0);
                     generator.Emit(OpCodes.Ldflda, field.FieldInfo);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableHasValue(field.NullableDataType));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableHasValueMethod);
                     generator.Emit(OpCodes.Brtrue_S, end);
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldind_I4);
                     generator.Emit(OpCodes.Ldarga_S, 0);
                     generator.Emit(OpCodes.Ldflda, field.FieldInfo);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableValue(field.NullableDataType));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableValueMethod);
                     generator.Emit(OpCodes.Box, field.DataType);
                     generator.Emit(OpCodes.Stelem_Ref);
                     generator.MarkLabel(end);
@@ -100,71 +101,8 @@ namespace AutoCSer.Sql.ColumnGroup
             generator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(typeof(delegateType));
         }
-#endif
-        /// <summary>
-        /// 类型调用函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> typeToArrays = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 类型委托调用函数信息
-        /// </summary>
-        /// <param name="type">数组类型</param>
-        /// <returns>类型委托调用函数信息</returns>
-        public static MethodInfo GetTypeToArray(Type type)
-        {
-            MethodInfo method;
-            if (typeToArrays.TryGetValue(type, out method)) return method;
-            typeToArrays.Set(type, method = toArrayMethod.MakeGenericMethod(type));
-            return method;
-        }
-        /// <summary>
-        /// 数据列转换数组
-        /// </summary>
-        /// <param name="values">目标数组</param>
-        /// <param name="value">数据列</param>
-        /// <param name="index">当前读取位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void toArray<valueType>(valueType value, object[] values, ref int index)
-        {
-            Column<valueType>.ToArray.Write(value, values, ref index);
-        }
-        /// <summary>
-        /// 数据列转换数组函数信息
-        /// </summary>
-        private static readonly MethodInfo toArrayMethod = typeof(ToArray).GetMethod("toArray", BindingFlags.Static | BindingFlags.NonPublic);
-        /// <summary>
-        /// 获取列名与类型委托集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, Func<string, KeyValue<string, Type>[]>> getDataColumns = new AutoCSer.Threading.LockDictionary<Type, Func<string, KeyValue<string, Type>[]>>();
-        /// <summary>
-        /// 获取列名与类型委托
-        /// </summary>
-        /// <param name="type">数据列类型</param>
-        /// <returns>获取列名与类型委托</returns>
-        public static Func<string, KeyValue<string, Type>[]> GetDataColumns(Type type)
-        {
-            Func<string, KeyValue<string, Type>[]> getDataColumn;
-            if (getDataColumns.TryGetValue(type, out getDataColumn)) return getDataColumn;
-            getDataColumn = (Func<string, KeyValue<string, Type>[]>)Delegate.CreateDelegate(typeof(Func<string, KeyValue<string, Type>[]>), Column.GetDataColumnsMethod.MakeGenericMethod(type));
-            getDataColumns.Set(type, getDataColumn);
-            return getDataColumn;
-        }
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            typeToArrays.Clear();
-            getDataColumns.Clear();
-        }
-        static ToArray()
-        {
-            AutoCSer.Pub.ClearCaches += clearCache;
-        }
     }
+#endif
     /// <summary>
     /// 数据列
     /// </summary>

@@ -26,7 +26,11 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 定时任务线程模式
         /// </summary>
-        private readonly TimerTaskThreadType threadType;
+        private readonly SecondTimerThreadMode threadMode;
+         /// <summary>
+        /// 下一次执行是否跳过当前时间
+        /// </summary>
+        private readonly bool isSkipTime;
         /// <summary>
         /// 是否已经停止
         /// </summary>
@@ -40,13 +44,16 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="run">定时任务</param>
         /// <param name="timerPeriodic">定时器周期数据</param>
-        /// <param name="threadType">定时任务线程模式</param>
-        public TimerPeriodicTask(Action run, TimerPeriodic timerPeriodic, TimerTaskThreadType threadType = TimerTaskThreadType.ThreadPool)
+        /// <param name="threadMode">定时任务线程模式</param>
+        /// <param name="isSkipTime">下一次执行是否跳过当前时间，比如电脑休眠以后会产生时间差</param>
+        public TimerPeriodicTask(Action run, TimerPeriodic timerPeriodic, SecondTimerThreadMode threadMode = SecondTimerThreadMode.TinyBackgroundThreadPool, bool isSkipTime = true)
         {
             if (run == null) throw new ArgumentNullException();
             this.run = run;
-            this.threadType = threadType;
-            TimerTask.Default.Add(runHandle = Run, runTime = timerPeriodic.GetStartRunTime(intervalTicks = timerPeriodic.GetIntervalTicks()), threadType);
+            this.timerPeriodic = timerPeriodic;
+            this.threadMode = threadMode;
+            this.isSkipTime = isSkipTime;
+            SecondTimer.TaskArray.Append(runHandle = Run, runTime = timerPeriodic.GetStartRunTime(intervalTicks = timerPeriodic.GetIntervalTicks()), threadMode);
         }
         /// <summary>
         /// 停止执行任务
@@ -68,7 +75,12 @@ namespace AutoCSer.Threading
             {
                 if (timerPeriodic.PeriodicUnit != TimerPeriodicUnit.Once && !isStop)
                 {
-                    TimerTask.Default.Add(runHandle, runTime = timerPeriodic.GetNextRunTime(runTime, intervalTicks), threadType);
+                    runTime = timerPeriodic.GetNextRunTime(runTime, intervalTicks);
+                    if (isSkipTime)
+                    {
+                        for (DateTime now = DateTime.Now; runTime <= now; runTime = timerPeriodic.GetNextRunTime(runTime, intervalTicks)) ;
+                    }
+                    SecondTimer.TaskArray.Append(runHandle, runTime, threadMode);
                 }
             }
         }

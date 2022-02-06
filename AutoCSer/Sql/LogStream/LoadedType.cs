@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.LogStream
@@ -118,7 +118,7 @@ namespace AutoCSer.Sql.LogStream
                 }
             }
             finally { Monitor.Exit(loadedLock); }
-            if (isLoaded) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "数据完成类型注册冲突 " + modelType.fullName() + "[" + tableNumber.toString() + "]");
+            if (isLoaded) AutoCSer.LogHelper.Error("数据完成类型注册冲突 " + modelType.fullName() + "[" + tableNumber.toString() + "]", LogLevel.Error | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 数据完成类型注册

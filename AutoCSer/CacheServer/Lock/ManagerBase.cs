@@ -56,7 +56,7 @@ namespace AutoCSer.CacheServer.Lock
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void exit()
         {
-            if (Date.NowTime.Now.Ticks >= timeoutTicks) node.ClientDataStructure.Client.MasterClient.QueryAsynchronous(new OperationParameter.QueryNode { Node = node.GetExitNode(randomNo) }, null);
+            if (AutoCSer.Threading.SecondTimer.Now.Ticks >= timeoutTicks) node.ClientDataStructure.Client.MasterClient.QueryAsynchronous(new OperationParameter.QueryNode { Node = node.GetExitNode(randomNo) }, null);
             else node.ClientDataStructure.Client.MasterClient.QueryAsynchronous(new OperationParameter.QueryNode { Node = node.GetExitNode(randomNo) }, onExit);
         }
         /// <summary>
@@ -65,7 +65,7 @@ namespace AutoCSer.CacheServer.Lock
         /// <param name="returnParameter"></param>
         private void onExit(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> returnParameter)
         {
-            if (returnParameter.Type != Net.TcpServer.ReturnType.Success && Date.NowTime.Now.Ticks < timeoutTicks) AutoCSer.Threading.TimerTask.Default.Add(exit, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
+            if (returnParameter.Type != Net.TcpServer.ReturnType.Success && AutoCSer.Threading.SecondTimer.Now.Ticks < timeoutTicks) AutoCSer.Threading.SecondTimer.InternalTaskArray.AppendNext(exit);
         }
         /// <summary>
         /// 释放资源

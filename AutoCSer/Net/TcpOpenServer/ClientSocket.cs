@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -78,7 +78,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         internal override void Create()
         {
-            bool isErrorLog = false, isReceiveAsync = false;
+            bool isErrorLog = false;
             socketError = SocketError.Success;
             do
             {
@@ -90,12 +90,12 @@ namespace AutoCSer.Net.TcpOpenServer
                 }
                 try
                 {
-                    Socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    Socket = new Socket(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 #if !MONO
                     Socket.ReceiveBufferSize = ClientCreator.CommandClient.ReceiveBufferPool.Size;
                     Socket.SendBufferSize = ClientCreator.CommandClient.SendBufferPool.Size;
 #endif
-                    Socket.Connect(ipAddress, port);
+                    Socket.Connect(IpAddress, Port);
                     if (checkCreate() == 0) return;
                     if (onReceiveAsyncCallback == null) onReceiveAsyncCallback = onReceive;
 #if !DOTNET2
@@ -109,50 +109,47 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (Sender == null) SetSender(new ClientSocketSender(this));
                     receiveBufferSize = ReceiveBuffer.PoolBuffer.Pool.Size;
                     receiveCount = receiveIndex = 0;
-                    ReceiveType = TcpServer.ClientSocketReceiveType.CommandIdentity;
+                    ReceiveType = TcpServer.ClientSocketReceiveType.CommandIdentityAgain;
 #if DOTNET2
                     Socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, Socket);
                     if (socketError == SocketError.Success)
 #else
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 1);
+                    Interlocked.Exchange(ref receiveAsyncLock.Lock, 1);
 #endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
                     if (Socket.ReceiveAsync(receiveAsyncEventArgs))
 #endif
                     {
 #if !DOTNET2 && !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
-                        isReceiveAsync = true;
-                        if (verifyMethod())
+                        if (verifyMethod() && ClientCreator.OnSocketVerifyMethod(this))
                         {
-                            if (ClientCreator.OnSocketVerifyMethod(this))
+                            if (isErrorLog)
                             {
-                                if (isErrorLog)
-                                {
-                                    ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接成功 " + ipAddress.ToString() + ":" + port.toString());
-                                }
-                                return;
+                                ClientCreator.CommandClient.Log.Debug(ClientCreator.Attribute.ServerName + " 客户端 TCP 连接成功 " + IpAddress.ToString() + ":" + Port.toString(), LogLevel.Debug | LogLevel.AutoCSer);
                             }
+                            ClientCreator.VerifyCount = 0;
+                            return;
                         }
-                        VerifyMethodSleep();
-                        return;
                     }
+                    ++ClientCreator.VerifyCount;
                 }
                 catch (Exception error)
                 {
                     if (!isErrorLog)
                     {
                         isErrorLog = true;
-                        ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, error, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
+                        ClientCreator.CommandClient.Log.Exception(error, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接失败 " + IpAddress.ToString() + ":" + Port.toString(), LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
-                if (isReceiveAsync)
+                if (Sender != null)
                 {
                     VerifyMethodSleep();
                     return;
                 }
+                ClientCreator.VerifyCount = 0;
                 CreateSleep();
             }
             while (true);
@@ -175,7 +172,7 @@ namespace AutoCSer.Net.TcpOpenServer
             try
             {
 #if DOTNET2
-                Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
+                Socket socket = (Socket)async.AsyncState;
                 if (socket == Socket)
                 {
                     int count = socket.EndReceive(async, out socketError);
@@ -186,27 +183,35 @@ namespace AutoCSer.Net.TcpOpenServer
                 {
                     int count = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                        if (count > 0)
+                    if (count > 0)
+                    {
+                        ++ReceiveCount;
+                        switch (ReceiveType)
                         {
-                            ++ReceiveCount;
-                            switch (ReceiveType)
-                            {
-                                case TcpServer.ClientSocketReceiveType.CommandIdentity: if (commandIdentityAsync(count)) return; break;
-                                case TcpServer.ClientSocketReceiveType.Data: if (dataAsync(count)) return; break;
-                                case TcpServer.ClientSocketReceiveType.BigData: if (bigDataAsync(count)) return; break;
-                            }
+                            case TcpServer.ClientSocketReceiveType.CommandIdentity:
+                            case TcpServer.ClientSocketReceiveType.CommandIdentityAgain:
+                                if (commandIdentityAsync(count)) return;
+                                break;
+                            case TcpServer.ClientSocketReceiveType.Data: if (dataAsync(count)) return; break;
+                            case TcpServer.ClientSocketReceiveType.BigData: if (bigDataAsync(count)) return; break;
                         }
+                    }
 #if DOTNET2
                     }
+                    else Log.Error(IpAddress.ToString() + ":" + Port.toString() + " " + socketError.ToString());
 #endif
                 }
 #if !DOTNET2
-                else socketError = receiveAsyncEventArgs.SocketError;
+                else
+                {
+                    socketError = receiveAsyncEventArgs.SocketError;
+                    Log.Error(IpAddress.ToString() + ":" + Port.toString() + " " + socketError.ToString());
+                }
 #endif
             }
             catch (Exception error)
             {
-                Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Log.Exception(error, IpAddress.ToString() + ":" + Port.toString());
             }
             if (CheckCreateVersion())
             {
@@ -225,7 +230,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <param name="commandIndex">会话标识</param>
         internal override void CancelKeep(int commandIndex)
         {
-            new UnionType { Value = Sender }.ClientSocketSender.CancelKeep(commandIndex);
+            new UnionType.ClientSocketSender { Object = Sender }.Value.CancelKeep(commandIndex);
         }
     }
 }

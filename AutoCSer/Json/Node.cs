@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Json
 {
@@ -45,17 +46,17 @@ namespace AutoCSer.Json
                         int count = (int)Int64;
                         if (count == 0) return "[]";
                         int isNext = 0;
-                        Parser parser = null;
-                        byte* buffer = UnmanagedPool.Default.Get();
+                        JsonDeSerializer deSerializer = null;
+                        AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                         try
                         {
-                            CharStream charStream = new CharStream((char*)buffer, UnmanagedPool.DefaultSize >> 1);
-                            charStream.UnsafeWrite('[');
+                            CharStream charStream = new CharStream(ref buffer);
+                            charStream.Data.Write('[');
                             foreach (Node node in ListArray)
                             {
                                 if (isNext == 0) isNext = 1;
                                 else charStream.Write(',');
-                                node.toString(charStream, ref parser);
+                                node.toString(charStream, ref deSerializer);
                                 if (--count == 0) break;
                             }
                             charStream.Write(']');
@@ -63,8 +64,8 @@ namespace AutoCSer.Json
                         }
                         finally
                         {
-                            UnmanagedPool.Default.Push(buffer);
-                            if (parser != null) Parser.YieldPool.Default.PushNotNull(parser);
+                            UnmanagedPool.Default.PushOnly(ref buffer);
+                            if (deSerializer != null) JsonDeSerializer.YieldPool.Default.Push(deSerializer);
                         }
                     case NodeType.Dictionary:
                         return "[object Object]";
@@ -84,14 +85,14 @@ namespace AutoCSer.Json
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void checkQuoteString()
         {
-            Type = Parser.ParseQuoteString(ref SubString, (int)(Int64 >> 32), (char)Int64, (int)Int64 >> 16) ? NodeType.String : NodeType.ErrorQuoteString;
+            Type = JsonDeSerializer.DeSerializeQuoteString(ref SubString, (int)(Int64 >> 32), (char)Int64, (int)Int64 >> 16) ? NodeType.String : NodeType.ErrorQuoteString;
         }
         /// <summary>
         /// 输出字符串
         /// </summary>
         /// <param name="charStream"></param>
-        /// <param name="parser"></param>
-        private void toString(CharStream charStream, ref Parser parser)
+        /// <param name="deSerializer"></param>
+        private void toString(CharStream charStream, ref JsonDeSerializer deSerializer)
         {
             switch (Type)
             {
@@ -101,8 +102,8 @@ namespace AutoCSer.Json
                     charStream.Write(ref SubString);
                     return;
                 case NodeType.QuoteString:
-                    if (parser == null) parser = Parser.YieldPool.Default.Pop() ?? new Parser();
-                    if (!parser.ParseQuoteString(ref SubString, charStream, (int)(Int64 >> 32), (char)Int64)) Type = NodeType.ErrorQuoteString;
+                    if (deSerializer == null) deSerializer = JsonDeSerializer.YieldPool.Default.Pop() ?? new JsonDeSerializer();
+                    if (!deSerializer.DeSerializeQuoteString(ref SubString, charStream, (int)(Int64 >> 32), (char)Int64)) Type = NodeType.ErrorQuoteString;
                     return;
                 case NodeType.NaN:
                     charStream.WriteJsonNaN();
@@ -128,7 +129,7 @@ namespace AutoCSer.Json
                     {
                         if (isNext == 0) isNext = 1;
                         else charStream.Write(',');
-                        node.toString(charStream, ref parser);
+                        node.toString(charStream, ref deSerializer);
                         if (--count == 0)
                         {
                             charStream.Write(']');
@@ -162,8 +163,8 @@ namespace AutoCSer.Json
                         if ((int)Int64 == 0)
                         {
                             if (SubString.Length == 1) return SubString[0] != '0';
-                            double value = double.Parse(SubString, System.Globalization.CultureInfo.InvariantCulture);
-                            return value != 0 && !double.IsNaN(value);
+                            double value;
+                            return JsonSerializer.CustomConfig.DeSerialize(ref SubString, out value) && value != 0 && !double.IsNaN(value);
                         }
                         return true;
                     case NodeType.DateTimeTick:
@@ -195,7 +196,9 @@ namespace AutoCSer.Json
                             int value = SubString[0] - '0';
                             if ((uint)value < 10) return value;
                         }
-                        return double.Parse(SubString, System.Globalization.CultureInfo.InvariantCulture);
+                        double doubleValue;
+                        if (JsonSerializer.CustomConfig.DeSerialize(ref SubString, out doubleValue)) return doubleValue;
+                        break;
                     case NodeType.NaN:
                         return double.NaN;
                     case NodeType.PositiveInfinity:
@@ -255,7 +258,7 @@ namespace AutoCSer.Json
             get
             {
                 if (Type == NodeType.Array) return Dictionary;
-                if (Type == NodeType.Null) return NullValue<KeyValue<Node, Node>>.Array;
+                if (Type == NodeType.Null) return EmptyArray<KeyValue<Node, Node>>.Array;
                 throw new InvalidCastException(Type.ToString());
             }
         }
@@ -281,7 +284,7 @@ namespace AutoCSer.Json
             get
             {
                 if (Type == NodeType.Array) return LeftArray;
-                if (Type == NodeType.Null) return default(LeftArray<Node>);
+                if (Type == NodeType.Null) return new LeftArray<Node>(0);
                 throw new InvalidCastException(Type.ToString());
             }
         }
@@ -420,7 +423,7 @@ namespace AutoCSer.Json
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void SetList()
         {
-            ListArray = null;
+            ListArray = EmptyArray<Node>.Array;
             Int64 = 0;
             Type = NodeType.Array;
         }
@@ -441,7 +444,7 @@ namespace AutoCSer.Json
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void SetDictionary()
         {
-            DictionaryArray = null;
+            DictionaryArray = EmptyArray<KeyValue<Node, Node>>.Array;
             Int64 = 0;
             Type = NodeType.Dictionary;
         }

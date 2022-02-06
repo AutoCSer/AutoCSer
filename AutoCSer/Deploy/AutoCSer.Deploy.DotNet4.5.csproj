@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;Deploy</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -59,13 +59,12 @@
     <Compile Include="ClientTask\UpdateSwitchFile.cs" />
     <Compile Include="ClientTask\WaitRunSwitch.cs" />
     <Compile Include="ClientTask\WebFile.cs" />
-    <Compile Include="ConfigLoader.cs" />
     <Compile Include="CustomAttribute.cs" />
     <Compile Include="CustomPushResult.cs" />
     <Compile Include="DeployInfo.cs" />
     <Compile Include="DeployResult.cs" />
+    <Compile Include="DeployResultData.cs" />
     <Compile Include="DeployState.cs" />
-    <Compile Include="Diagnostics\ConfigLoader.cs" />
     <Compile Include="Diagnostics\NET4.5\ProcessCopyClient.cs" />
     <Compile Include="Diagnostics\ProcessCopyClient.cs" />
     <Compile Include="Diagnostics\ProcessCopyConfig.cs" />
@@ -73,7 +72,6 @@
     <Compile Include="Diagnostics\ProcessCopySaveCache.cs" />
     <Compile Include="Diagnostics\ProcessCopyServer.cs" />
     <Compile Include="Diagnostics\ProcessCopyerServerCall.cs" />
-    <Compile Include="Diagnostics\UnionType.cs" />
     <Compile Include="Directory.cs" />
     <Compile Include="FileSource.cs" />
     <Compile Include="FileTime.cs" />
@@ -89,7 +87,6 @@
     <Compile Include="TaskType.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="Timer.cs" />
-    <Compile Include="UnionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Win32\ErrorMode.cs" />
     <Compile Include="Win32\Kernel32.cs" />
@@ -105,6 +102,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

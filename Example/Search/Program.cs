@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 
 namespace AutoCSer.Example.Search

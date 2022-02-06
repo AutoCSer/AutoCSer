@@ -27,7 +27,7 @@ namespace AutoCSer.Web.DeployClient.Nuget
         {
             get
             {
-                return AutoCSer.Xml.Parser.Parse<Package>(System.IO.File.ReadAllText(MetadataFile, Encoding.UTF8), Package.XmlConfig).metadata;
+                return AutoCSer.XmlDeSerializer.DeSerialize<Package>(System.IO.File.ReadAllText(MetadataFile, Encoding.UTF8), Package.XmlConfig).metadata;
             }
         }
         /// <summary>

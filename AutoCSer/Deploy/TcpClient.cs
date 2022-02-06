@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Deploy
 {
@@ -87,7 +87,7 @@ namespace AutoCSer.Deploy
                         }
                         catch (Exception error)
                         {
-                            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                            AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                             checkSocketVersion.DisposeSocket();
                         }
                         IsClient = false;

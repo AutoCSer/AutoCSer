@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 #if !NOJIT
 using System.Reflection;
 using/**/System.Reflection.Emit;

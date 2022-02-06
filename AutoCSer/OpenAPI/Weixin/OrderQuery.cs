@@ -5,7 +5,7 @@ namespace AutoCSer.OpenAPI.Weixin
     /// <summary>
     /// 订单查询信息
     /// </summary>
-    [AutoCSer.Xml.Serialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
+    [AutoCSer.XmlSerialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
     public sealed class OrderQuery : SignQuery
     {
         /// <summary>

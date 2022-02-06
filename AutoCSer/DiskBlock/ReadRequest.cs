@@ -116,17 +116,17 @@ namespace AutoCSer.DiskBlock
             {
                 byte[] bufferArray = buffer.Buffer;
                 int size = data.Length;
-                fixed (byte* dataFixed = data.Array, bufferFixed = bufferArray)
+                fixed (byte* dataFixed = data.GetFixedBuffer(), bufferFixed = bufferArray)
                 {
                     byte* dataStart = dataFixed + data.Start, bufferStart = bufferFixed + buffer.StartIndex;
                     while (size > BlockBase.CheckSize)
                     {
                         if (fileStream.Read(bufferArray, buffer.StartIndex, BlockBase.CheckSize) != BlockBase.CheckSize) return false;
-                        if (!AutoCSer.Memory.EqualNotNull(dataStart, bufferStart, BlockBase.CheckSize)) return false;
+                        if (!AutoCSer.Memory.Common.EqualNotNull(dataStart, bufferStart, BlockBase.CheckSize)) return false;
                         dataStart += BlockBase.CheckSize;
                         size -= BlockBase.CheckSize;
                     }
-                    return fileStream.Read(bufferArray, buffer.StartIndex, size) == size && AutoCSer.Memory.EqualNotNull(dataStart, bufferStart, size);
+                    return fileStream.Read(bufferArray, buffer.StartIndex, size) == size && AutoCSer.Memory.Common.EqualNotNull(dataStart, bufferStart, size);
                 }
             }
             finally { buffer.Free(); }

@@ -12,7 +12,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 回调委托集合
         /// </summary>
-        private LeftArray<Func<AutoCSer.Net.TcpServer.ReturnValue<valueType>, bool>> callbacks;
+        private LeftArray<Func<AutoCSer.Net.TcpServer.ReturnValue<valueType>, bool>> callbacks = new LeftArray<Func<Net.TcpServer.ReturnValue<valueType>, bool>>(0);
         /// <summary>
         /// 回调委托集合访问锁
         /// </summary>

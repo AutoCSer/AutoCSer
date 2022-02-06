@@ -27,7 +27,7 @@ namespace AutoCSer.Net.RemoteExpression
             where nodeType : Node
         {
             if (typeof(nodeType).Name != RemoteExpressionTypeName) throw new InvalidCastException();
-            nodeType value = AutoCSer.Emit.Constructor<nodeType>.New();
+            nodeType value = AutoCSer.Metadata.DefaultConstructor<nodeType>.Constructor();
             value.Parent = this;
             value.ClientNodeId = 0;
             return value;
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.RemoteExpression
             where nodeType : Node
         {
             if (typeof(nodeType).DeclaringType != typeof(returnType) || typeof(nodeType).Name != RemoteExpressionTypeName) throw new InvalidCastException();
-            nodeType value = AutoCSer.Emit.Constructor<nodeType>.New();
+            nodeType value = AutoCSer.Metadata.DefaultConstructor<nodeType>.Constructor();
             value.Parent = this;
             return value;
         }

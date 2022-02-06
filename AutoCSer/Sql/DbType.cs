@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Sql
 {
@@ -128,7 +129,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 类型默认长度
         /// </summary>
-        private static Pointer sizes;
+        private static AutoCSer.Memory.Pointer sizes;
         /// <summary>
         /// 获取数据长度
         /// </summary>
@@ -215,7 +216,7 @@ namespace AutoCSer.Sql
 
             #region 类型默认长度
             MaxEnumValue = EnumAttribute<SqlDbType>.GetMaxValue(-1) + 1;
-            sizes = new Pointer { Data = Unmanaged.GetStatic64(((MaxEnumValue + 1) & (int.MaxValue - 1)) * sizeof(int), false) };
+            sizes = Unmanaged.GetStaticPointer(((MaxEnumValue + 1) & (int.MaxValue - 1)) * sizeof(int), false);
             int* sizeData = sizes.Int;
             for (int i = 0; i != MaxEnumValue; i++) sizeData[i] = UnknownSize;
             sizeData[(int)SqlDbType.BigInt] = sizeof(long);

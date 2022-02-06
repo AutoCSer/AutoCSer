@@ -1,32 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace AutoCSer.TestCase.HttpFilePerformance
+namespace AutoCSer.TestCase.WebPerformance
 {
     /// <summary>
-    /// 网站生成配置
+    /// 网站配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    [AutoCSer.WebView.Config]
-    internal sealed class WebConfig : AutoCSer.WebView.Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
         /// <summary>
-        /// 是否进行WebView前期处理
+        /// 主配置类型集合
         /// </summary>
-        public override bool IsWebView
-        {
-            get { return false; }
-        }
-        /// <summary>
-        /// 是否复制js脚本文件
-        /// </summary>
-        public override bool IsCopyScript
-        {
-            get { return false; }
-        }
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// HTTP 配置
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.Net.Http.Config HttpConfig
         {
             get
@@ -35,8 +25,8 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                 {
                     MaxHeaderCount = 0,
                     MaxQueryCount = 0,
-                    HeadSize = SubBuffer.Size.Kilobyte2,
-                    BufferSize = SubBuffer.Size.Kilobyte2,
+                    HeadSize = AutoCSer.Memory.BufferSize.Kilobyte2,
+                    BufferSize = AutoCSer.Memory.BufferSize.Kilobyte2,
                     IsResponseServer = true,
                     IsResponseCacheControl = false,
                     IsResponseContentType = false,
@@ -45,5 +35,6 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                 };
             }
         }
+
     }
 }

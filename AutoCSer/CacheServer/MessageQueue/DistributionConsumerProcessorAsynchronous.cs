@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 
 namespace AutoCSer.CacheServer.MessageQueue
@@ -47,6 +47,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// </summary>
         private void nextMessage()
         {
+            KeyValue<ulong, valueType>[] messages = this.messages;
             do
             {
                 START:
@@ -61,7 +62,7 @@ namespace AutoCSer.CacheServer.MessageQueue
                 }
                 catch (Exception error)
                 {
-                    consumer.Log.Add(Log.LogType.Error, error);
+                    consumer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     Thread.Sleep(1);
                     goto START;
                 }
@@ -76,6 +77,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// </summary>
         private void onMessageCompleted()
         {
+            KeyValue<ulong, valueType>[] messages = this.messages;
             consumer.SetDequeueIdentity(messages[messageIndex].Key);
             if (++messageIndex == messages.Length) messageIndex = 0;
             nextMessage();

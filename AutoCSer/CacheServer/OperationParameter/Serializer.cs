@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -34,9 +35,9 @@ namespace AutoCSer.CacheServer.OperationParameter
         internal Serializer(UnmanagedStream stream)
         {
             Stream = stream;
-            startIndex = stream.ByteSize;
-            stream.PrepLength(HeaderSize + IndexIdentity.SerializeSize + sizeof(int));
-            stream.ByteSize += HeaderSize;
+            startIndex = stream.Data.CurrentIndex;
+            stream.PrepSize(HeaderSize + IndexIdentity.SerializeSize + sizeof(int));
+            stream.Data.CurrentIndex += HeaderSize;
         }
         /// <summary>
         /// 操作数据序列化
@@ -46,9 +47,9 @@ namespace AutoCSer.CacheServer.OperationParameter
         internal Serializer(UnmanagedStream stream, int identitySize)
         {
             Stream = stream;
-            startIndex = stream.ByteSize;
-            stream.PrepLength(HeaderSize + identitySize);
-            stream.ByteSize += HeaderSize;
+            startIndex = stream.Data.CurrentIndex;
+            stream.PrepSize(HeaderSize + identitySize);
+            stream.Data.CurrentIndex += HeaderSize;
         }
         /// <summary>
         /// 序列化结束处理
@@ -58,7 +59,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         internal void End(OperationType type)
         {
             byte* write = Stream.Data.Byte + startIndex;
-            *(int*)write = Stream.ByteSize - startIndex;
+            *(int*)write = Stream.Data.CurrentIndex - startIndex;
             *(uint*)(write + OperationTypeOffset) = (ushort)type;
         }
         /// <summary>
@@ -66,7 +67,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <returns></returns>
-        internal static Buffer GetOperationData(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        internal static Buffer GetOperationData(AutoCSer.BinaryDeSerializer deSerializer)
         {
             byte* read = deSerializer.Read;
             int size = *(int*)read;
@@ -85,7 +86,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// <param name="queryData"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void GetQueryData(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref SubArray<byte> queryData)
+        internal static void GetQueryData(AutoCSer.BinaryDeSerializer deSerializer, ref SubArray<byte> queryData)
         {
             byte* read = deSerializer.Read;
             if (deSerializer.MoveRead(*(int*)read)) deSerializer.DeSerializeTcpServer(ref queryData, read, *(int*)read);

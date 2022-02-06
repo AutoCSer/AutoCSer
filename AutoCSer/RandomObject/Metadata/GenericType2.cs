@@ -9,7 +9,7 @@ namespace AutoCSer.RandomObject.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal abstract partial class GenericType2
+    internal abstract partial class GenericType2 : AutoCSer.Metadata.GenericType2Base
     {
         /// <summary>
         /// 创建随机对象
@@ -47,7 +47,7 @@ namespace AutoCSer.RandomObject.Metadata
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, GenericType2> cache = new LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, GenericType2>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<TypeKey, GenericType2> cache = new LockLastDictionary<TypeKey, GenericType2>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -72,11 +72,15 @@ namespace AutoCSer.RandomObject.Metadata
         public static GenericType2 Get(Type type1, Type type2)
         {
             GenericType2 value;
-            AutoCSer.Metadata.GenericType2.TypeKey typeKey = new AutoCSer.Metadata.GenericType2.TypeKey { Type1 = type1, Type2 = type2 };
-            if (!cache.TryGetValue(ref typeKey, out value))
+            TypeKey typeKey = new TypeKey(type1, type2);
+            if (!cache.TryGetValue(typeKey, out value))
             {
-                value = new UnionType { Value = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.GenericType2;
-                cache.Set(ref typeKey, value);
+                try
+                {
+                    value = new UnionType.GenericType2 { Object = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.Value;
+                    cache.Set(typeKey, value);
+                }
+                finally { cache.Exit(); }
             }
             return value;
         }
@@ -98,6 +102,11 @@ namespace AutoCSer.RandomObject.Metadata
     /// <typeparam name="Type2">泛型类型</typeparam>
     internal sealed partial class GenericType2<Type1, Type2> : GenericType2
     {
+        /// <summary>
+        /// 获取当前类型
+        /// </summary>
+        internal override TypeKey CurrentType { get { return new TypeKey(typeof(Type1), typeof(Type2)); } }
+
         /// <summary>
         /// 创建随机对象
         /// </summary>

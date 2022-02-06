@@ -18,7 +18,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 内存流最大字节数
         /// </summary>
-        public SubBuffer.Size MaxMemoryStreamSize;
+        public AutoCSer.Memory.BufferSize MaxMemoryStreamSize;
         /// <summary>
         /// 是否视图页面
         /// </summary>

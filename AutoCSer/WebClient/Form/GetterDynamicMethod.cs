@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -59,7 +59,7 @@ namespace AutoCSer.Net.WebClient.Form
                     if (isValueType) generator.Emit(OpCodes.Ldarga_S, 0);
                     else generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldflda, field);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableHasValue(type));
+                    generator.Emit(OpCodes.Call, AutoCSer.Metadata.StructGenericType.Get(type).GetNullableHasValueMethod);
                     generator.Emit(OpCodes.Brfalse_S, end);
                     push(field, nullType);
                     generator.MarkLabel(end);
@@ -113,7 +113,7 @@ namespace AutoCSer.Net.WebClient.Form
                     else
                     {
                         generator.Emit(OpCodes.Ldflda, field);
-                        generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableValue(field.FieldType));
+                        generator.Emit(OpCodes.Call, AutoCSer.Metadata.StructGenericType.Get(field.FieldType).GetNullableValueMethod);
                     }
                     generator.Emit(OpCodes.Call, method);
                 }

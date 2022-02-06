@@ -6,7 +6,7 @@ namespace AutoCSer.Web.SearchServer.Queue
     /// <summary>
     /// 添加数据
     /// </summary>
-    internal sealed class Append : Node
+    internal sealed class Append : AutoCSer.Threading.TaskLinkNode
     {
         /// <summary>
         /// 关键字

@@ -17,7 +17,7 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 二进制数据序列化成员配置
         /// </summary>
-        internal SerializeMemberAttribute Attribute;
+        internal BinarySerializeMemberAttribute Attribute;
         /// <summary>
         /// 是否删除字段
         /// </summary>

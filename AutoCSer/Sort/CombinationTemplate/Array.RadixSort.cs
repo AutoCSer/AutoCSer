@@ -1,8 +1,8 @@
 ﻿using System;
-/*Type:ulong,ULongSortIndex;long,LongSortIndex;uint,UIntSortIndex;int,IntSortIndex;DateTime,DateTimeSortIndex*/
-/*Compare:;Desc*/
+/*ulong,ULong;long,Long;uint,UInt;int,Int;DateTime,DateTime
+Desc;*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数组扩展操作
@@ -16,10 +16,10 @@ namespace AutoCSer.Extension
         /// <param name="index">起始位置</param>
         /// <param name="count">数量</param>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void Sort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int index, int count)
+        internal static void SortDesc(ulong[] array, int index, int count)
         {
-            if (array.Length >= AutoCSer.Algorithm.RadixSort.SortSize64) AutoCSer.Algorithm.RadixSort.Sort/*Compare[0]*//*Compare[0]*/(array, index, count);
-            else AutoCSer.Algorithm.FixedArrayQuickSort.Sort/*Compare[0]*//*Compare[0]*/(array, index, count);
+            if (array.Length >= AutoCSer.Algorithm.RadixSort.SortSize64) AutoCSer.Algorithm.RadixSort.SortDesc(array, index, count);
+            else AutoCSer.Algorithm.FixedArrayQuickSort.SortDesc(array, index, count);
         }
         /// <summary>
         /// 数组排序
@@ -27,10 +27,10 @@ namespace AutoCSer.Extension
         /// <param name="array">待排序数组</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/[] sort/*Compare[0]*//*Compare[0]*/(this /*Type[0]*/ulong/*Type[0]*/[] array)
+        public static ulong[] sortDesc(this ulong[] array)
         {
-            if (array == null) return NullValue</*Type[0]*/ulong/*Type[0]*/>.Array;
-            if (array.Length > 1) Sort/*Compare[0]*//*Compare[0]*/(array, 0, array.Length);
+            if (array == null) return EmptyArray<ulong>.Array;
+            if (array.Length > 1) SortDesc(array, 0, array.Length);
             return array;
         }
         /// <summary>
@@ -41,13 +41,13 @@ namespace AutoCSer.Extension
         /// <param name="count">数量</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> sort/*Compare[0]*//*Compare[0]*/(this /*Type[0]*/ulong/*Type[0]*/[] array, int index, int count)
+        public static SubArray<ulong> sortDesc(this ulong[] array, int index, int count)
         {
-            if (array == null) return default(SubArray</*Type[0]*/ulong/*Type[0]*/>);
+            if (array == null) return new SubArray<ulong>();
             if (index < 0) throw new IndexOutOfRangeException("index[" + index.toString() + "] < 0");
             if (index + count > array.Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] + count[" + count.toString() + "] > array.Length[" + array.Length.toString() + "]");
-            if (count > 1) Sort/*Compare[0]*//*Compare[0]*/(array, index, count);
-            return new SubArray</*Type[0]*/ulong/*Type[0]*/> { Array = array, Start = index, Length = count };
+            if (count > 1) SortDesc(array, index, count);
+            return new SubArray<ulong> { Array = array, Start = index, Length = count };
         }
         /// <summary>
         /// 数组子串排序
@@ -57,10 +57,10 @@ namespace AutoCSer.Extension
         /// <param name="count">数量</param>
         /// <returns>排序后的新数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static /*Type[0]*/ulong/*Type[0]*/[] GetSort/*Compare[0]*//*Compare[0]*/(/*Type[0]*/ulong/*Type[0]*/[] array, int index, int count)
+        internal static ulong[] GetSortDesc(ulong[] array, int index, int count)
         {
-            if (count >= AutoCSer.Algorithm.RadixSort.SortSize64) return AutoCSer.Algorithm.RadixSort.GetSort/*Compare[0]*//*Compare[0]*/(array, index, count);
-            return AutoCSer.Algorithm.FixedArrayQuickSort.GetSort/*Compare[0]*//*Compare[0]*/(array, index, count);
+            if (count >= AutoCSer.Algorithm.RadixSort.SortSize64) return AutoCSer.Algorithm.RadixSort.GetSortDesc(array, index, count);
+            return AutoCSer.Algorithm.FixedArrayQuickSort.GetSortDesc(array, index, count);
         }
         /// <summary>
         /// 数组排序
@@ -68,10 +68,10 @@ namespace AutoCSer.Extension
         /// <param name="array">待排序数组</param>
         /// <returns>排序后的新数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/[] getSort/*Compare[0]*//*Compare[0]*/(this /*Type[0]*/ulong/*Type[0]*/[] array)
+        public static ulong[] getSortDesc(this ulong[] array)
         {
-            if (array == null) return NullValue</*Type[0]*/ulong/*Type[0]*/>.Array;
-            return array.Length > 1 ? GetSort/*Compare[0]*//*Compare[0]*/(array, 0, array.Length) : array.copy();
+            if (array == null) return EmptyArray<ulong>.Array;
+            return array.Length > 1 ? GetSortDesc(array, 0, array.Length) : array.copy();
         }
         /// <summary>
         /// 数组排序
@@ -81,13 +81,13 @@ namespace AutoCSer.Extension
         /// <param name="count">数量</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/[] getSort/*Compare[0]*//*Compare[0]*/(this /*Type[0]*/ulong/*Type[0]*/[] array, int index, int count)
+        public static ulong[] getSortDesc(this ulong[] array, int index, int count)
         {
-            if (array == null || count == 0) return NullValue</*Type[0]*/ulong/*Type[0]*/>.Array;
+            if (array == null || count == 0) return EmptyArray<ulong>.Array;
             if (index < 0) throw new IndexOutOfRangeException("index[" + index.toString() + "] < 0");
             if (index + count > array.Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] + count[" + count.toString() + "] > array.Length[" + array.Length.toString() + "]");
-            if (count == 1) return new /*Type[0]*/ulong/*Type[0]*/[] { array[index] };
-            return GetSort/*Compare[0]*//*Compare[0]*/(array, index, count);
+            if (count == 1) return new ulong[] { array[index] };
+            return GetSortDesc(array, index, count);
         }
         /// <summary>
         /// 数组子串排序
@@ -98,23 +98,23 @@ namespace AutoCSer.Extension
         /// <param name="index">起始位置</param>
         /// <param name="count">数量</param>
         /// <returns>排序后的数组</returns>
-        internal static valueType[] GetSort/*Compare[0]*//*Compare[0]*/<valueType>(valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int index, int count)
+        internal static valueType[] GetSortDesc<valueType>(valueType[] array, Func<valueType, ulong> getKey, int index, int count)
         {
             if (count >= AutoCSer.Algorithm.RadixSort.SortSize64)
             {
-                int size = (count << 1) * sizeof(AutoCSer.Algorithm./*Type[1]*/ULongSortIndex/*Type[1]*/);
-                UnmanagedPool pool = AutoCSer.Algorithm.RadixSort.GetUnmanagedPool(size);
-                Pointer.Size data = pool.GetSize(size);
+                int size = (count << 1) * sizeof(AutoCSer.Algorithm.ULongSortIndex);
+                AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(size);
+                AutoCSer.Memory.Pointer data = pool.GetMinSize(size);
                 try
                 {
-                    AutoCSer.Algorithm./*Type[1]*/ULongSortIndex/*Type[1]*/* indexFixed = (AutoCSer.Algorithm./*Type[1]*/ULongSortIndex/*Type[1]*/*)data.Data;
-                    AutoCSer.Algorithm./*Type[1]*/ULongSortIndex/*Type[1]*/.Create(indexFixed, array, getKey, index, count);
-                    AutoCSer.Algorithm.RadixSort.Sort/*Compare[0]*//*Compare[0]*/(indexFixed, indexFixed + count, count);
-                    return AutoCSer.Algorithm./*Type[1]*/ULongSortIndex/*Type[1]*/.Create(indexFixed, array, count);
+                    AutoCSer.Algorithm.ULongSortIndex* indexFixed = (AutoCSer.Algorithm.ULongSortIndex*)data.Data;
+                    AutoCSer.Algorithm.ULongSortIndex.Create(indexFixed, array, getKey, index, count);
+                    AutoCSer.Algorithm.RadixSort.SortDesc(indexFixed, indexFixed + count, count);
+                    return AutoCSer.Algorithm.ULongSortIndex.Create(indexFixed, array, count);
                 }
-                finally { pool.PushOnly(ref data); }
+                finally { pool.Push(ref data); }
             }
-            return AutoCSer.Algorithm.FixedArrayQuickSort.GetSort/*Compare[0]*//*Compare[0]*/(array, getKey, index, count);
+            return AutoCSer.Algorithm.FixedArrayQuickSort.GetSortDesc(array, getKey, index, count);
         }
         /// <summary>
         /// 数组排序
@@ -124,10 +124,10 @@ namespace AutoCSer.Extension
         /// <param name="getKey">排序键</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] getSort/*Compare[0]*//*Compare[0]*/<valueType>(this valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey)
+        public static valueType[] getSortDesc<valueType>(this valueType[] array, Func<valueType, ulong> getKey)
         {
-            if (array == null) return NullValue<valueType>.Array;
-            return array.Length > 1 ? GetSort/*Compare[0]*//*Compare[0]*/(array, getKey, 0, array.Length) : array.copy();
+            if (array == null) return EmptyArray<valueType>.Array;
+            return array.Length > 1 ? GetSortDesc(array, getKey, 0, array.Length) : array.copy();
         }
         /// <summary>
         /// 数组排序
@@ -139,13 +139,13 @@ namespace AutoCSer.Extension
         /// <param name="count">数量</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] getSort/*Compare[0]*//*Compare[0]*/<valueType>(this valueType[] array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, int index, int count)
+        public static valueType[] getSortDesc<valueType>(this valueType[] array, Func<valueType, ulong> getKey, int index, int count)
         {
-            if (array == null || count == 0) return NullValue<valueType>.Array;
+            if (array == null || count == 0) return EmptyArray<valueType>.Array;
             if (index < 0) throw new IndexOutOfRangeException("index[" + index.toString() + "] < 0");
             if (index + count > array.Length) throw new IndexOutOfRangeException("index[" + index.toString() + "] + count[" + count.toString() + "] > array.Length[" + array.Length.toString() + "]");
             if (count == 1) return new valueType[] { array[index] };
-            return GetSort/*Compare[0]*//*Compare[0]*/(array, getKey, index, count);
+            return GetSortDesc(array, getKey, index, count);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 using System.Data.Common;
@@ -83,7 +83,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onInserted(valueType value, keyType key, int index)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 LazyOrderArray<valueType>[] arrays = getMember(target);
@@ -114,7 +114,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 if (index != oldIndex)
                 {
                     targetType target = getValue(key);
-                    if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+                    if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                     else
                     {
                         LazyOrderArray<valueType>[] arrays = getMember(target);
@@ -129,7 +129,7 @@ namespace AutoCSer.Sql.Cache.Whole
                                 return;
                             }
                         }
-                        cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                        cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -148,7 +148,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key, int index)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 LazyOrderArray<valueType>[] arrays = getMember(target);
@@ -161,7 +161,7 @@ namespace AutoCSer.Sql.Cache.Whole
                         return;
                     }
                 }
-                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -210,7 +210,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 return task.Wait(out count);
             }
             count = 0;
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
     }
 }

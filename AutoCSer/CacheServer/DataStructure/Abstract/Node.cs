@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CacheServer.DataStructure.Abstract
 {
@@ -28,7 +29,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         internal ClientDataStructure ClientDataStructure
         {
-            get { return Parent != null ? Parent.ClientDataStructure : new UnionType { Value = Parameter.Value }.ClientDataStructure; }
+            get { return Parent != null ? Parent.ClientDataStructure : new UnionType.ClientDataStructure { Object = Parameter.Value }.Value; }
         }
         ///// <summary>
         ///// 操作类型

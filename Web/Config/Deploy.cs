@@ -23,7 +23,7 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 服务器 IP 地址
         /// </summary>
-        public static readonly string ServerIp = Pub.IsLocal ? "127.0.0.1" : "139.196.98.185";
+        public static readonly string ServerIp = Pub.IsLocal ? "127.0.0.1" : "118.25.107.241";//139.196.98.185
         /// <summary>
         /// 服务端路径
         /// </summary>

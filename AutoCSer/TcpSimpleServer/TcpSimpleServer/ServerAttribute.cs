@@ -11,6 +11,6 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// 服务器端接受数据（包括客户端发送数据）缓冲区初始化字节数
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override SubBuffer.Size GetReceiveBufferSize { get { return GetSendBufferSize; } }
+        internal override AutoCSer.Memory.BufferSize GetReceiveBufferSize { get { return GetSendBufferSize; } }
     }
 }

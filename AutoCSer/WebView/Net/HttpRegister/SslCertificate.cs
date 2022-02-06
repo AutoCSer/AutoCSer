@@ -2,7 +2,7 @@
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Net.Http;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -69,10 +69,10 @@ namespace AutoCSer.Net.HttpRegister
                         }
                         catch (Exception error)
                         {
-                            (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, error);
+                            (log ?? AutoCSer.LogHelper.Default).Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                     }
-                    else (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, "没有找到安全证书文件 [" + Host.Host + ":" + Host.Port.toString() + "] " + FileName);
+                    else (log ?? AutoCSer.LogHelper.Default).Error("没有找到安全证书文件 [" + Host.Host + ":" + Host.Port.toString() + "] " + FileName, LogLevel.Error | LogLevel.AutoCSer);
                 }
             }
             return Certificate != null;

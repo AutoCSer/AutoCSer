@@ -12,7 +12,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <summary>
         /// 默认配置
         /// </summary>
-        private static readonly ConsumerConfig defaultConfig = MessageQueue.ConfigLoader.GetUnion(typeof(ConsumerConfig)).ConsumerConfig ?? new ConsumerConfig();
+        private static readonly ConsumerConfig defaultConfig = (ConsumerConfig)AutoCSer.Configuration.Common.Get(typeof(ConsumerConfig)) ?? new ConsumerConfig();
 
         /// <summary>
         /// 队列数据 读取配置
@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <summary>
         /// 日志处理
         /// </summary>
-        internal readonly AutoCSer.Log.ILog Log;
+        internal readonly AutoCSer.ILog Log;
         /// <summary>
         /// 获取当前读取数据标识
         /// </summary>
@@ -57,7 +57,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="log">日志处理</param>
         /// <param name="readerIndexNode"></param>
-        protected Consumer(MasterServer.TcpInternalClient client, ConsumerConfig config, AutoCSer.Log.ILog log, DataStructure.Abstract.Node readerIndexNode)
+        protected Consumer(MasterServer.TcpInternalClient client, ConsumerConfig config, AutoCSer.ILog log, DataStructure.Abstract.Node readerIndexNode)
         {
             if (client == null) throw new InvalidOperationException();
             this.client = client;
@@ -186,7 +186,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="messageQueue">队列消费节点</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="log">日志处理</param>
-        protected Consumer(DataStructure.Abstract.MessageQueue<valueType> messageQueue, ConsumerConfig config, AutoCSer.Log.ILog log) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue) { }
+        protected Consumer(DataStructure.Abstract.MessageQueue<valueType> messageQueue, ConsumerConfig config, AutoCSer.ILog log) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue) { }
         /// <summary>
         /// 消息队列 客户端消费者
         /// </summary>
@@ -194,7 +194,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="log">日志处理</param>
         /// <param name="readerIndex">读取编号</param>
-        protected Consumer(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, ConsumerConfig config, AutoCSer.Log.ILog log, int readerIndex) 
+        protected Consumer(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, ConsumerConfig config, AutoCSer.ILog log, int readerIndex) 
             : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, getReaderIndexNode(messageQueue, readerIndex)) { }
         /// <summary>
         /// TCP 客户端套接字初始化处理
@@ -260,7 +260,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="log">日志处理</param>
         /// <param name="getValue">获取参数数据委托</param>
-        protected Consumer(DataStructure.Abstract.MessageQueue<nodeType> messageQueue, ConsumerConfig config, AutoCSer.Log.ILog log, ValueData.GetData<valueType> getValue) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue)
+        protected Consumer(DataStructure.Abstract.MessageQueue<nodeType> messageQueue, ConsumerConfig config, AutoCSer.ILog log, ValueData.GetData<valueType> getValue) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue)
         {
             if (getValue == null) throw new ArgumentNullException();
             GetValue = getValue;
@@ -273,7 +273,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="log">日志处理</param>
         /// <param name="readerIndex">读取编号</param>
         /// <param name="getValue">获取参数数据委托</param>
-        protected Consumer(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, ConsumerConfig config, AutoCSer.Log.ILog log, int readerIndex, ValueData.GetData<valueType> getValue)
+        protected Consumer(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, ConsumerConfig config, AutoCSer.ILog log, int readerIndex, ValueData.GetData<valueType> getValue)
             : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, getReaderIndexNode(messageQueue, readerIndex))
         {
             if (getValue == null) throw new ArgumentNullException();

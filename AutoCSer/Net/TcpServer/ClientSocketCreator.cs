@@ -2,7 +2,7 @@
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer
 {
@@ -14,7 +14,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
-        internal readonly ClientBase CommandClient;
+        public readonly ClientBase CommandClient;
         /// <summary>
         /// TCP 服务调用配置
         /// </summary>
@@ -31,6 +31,10 @@ namespace AutoCSer.Net.TcpServer
         /// 服务端口
         /// </summary>
         internal int Port;
+        /// <summary>
+        /// 验证失败次数
+        /// </summary>
+        internal int VerifyCount;
         /// <summary>
         /// TCP 服务客户端套接字
         /// </summary>
@@ -100,12 +104,12 @@ namespace AutoCSer.Net.TcpServer
         {
             if (ipAddress == null)
             {
-                CommandClient.Log.Add(AutoCSer.Log.LogType.Error, Host + " IP 解析失败");
+                CommandClient.Log.Error(Host + " IP 解析失败", LogLevel.Error | LogLevel.AutoCSer);
                 return false;
             }
             if (port == 0)
             {
-                CommandClient.Log.Add(AutoCSer.Log.LogType.Error, CommandClient.Attribute.ServerName + " 端口号不能为 0");
+                CommandClient.Log.Error(CommandClient.Attribute.ServerName + " 端口号不能为 0", LogLevel.Error | LogLevel.AutoCSer);
                 return false;
             }
             return true;
@@ -146,7 +150,7 @@ namespace AutoCSer.Net.TcpServer
                     CommandClient.CallOnSocket(this, socket, ClientSocketEventParameter.EventType.SetSocket);
                     return true;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpCommandClientSetSocket);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }

@@ -16,8 +16,8 @@ namespace AutoCSer.Example.Json
         {
             var value = new { Number = 1.1, Bool = true, DateTime = new DateTime(2000, 1, 2, 3, 4, 5), String = @"大
 小" };
-            string json = AutoCSer.Json.Serializer.Serialize(value);
-            AutoCSer.Json.Node node = AutoCSer.Json.Parser.Parse<AutoCSer.Json.Node>(json);
+            string json = AutoCSer.JsonSerializer.Serialize(value);
+            AutoCSer.Json.Node node = AutoCSer.JsonDeSerializer.DeSerialize<AutoCSer.Json.Node>(json);
             return node.Type == AutoCSer.Json.NodeType.Dictionary && node["Number"].Number == value.Number && node["Bool"].Bool == value.Bool && node["DateTime"].DateTime == value.DateTime && node["String"].String == value.String;
         }
     }

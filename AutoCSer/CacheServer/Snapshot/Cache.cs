@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CacheServer.Snapshot
 {
@@ -36,7 +37,7 @@ namespace AutoCSer.CacheServer.Snapshot
         /// <summary>
         /// 缓存快照历史节点集合
         /// </summary>
-        private LeftArray<KeyValue<Node, int>> historyNodes;
+        private LeftArray<KeyValue<Node, int>> historyNodes = new LeftArray<KeyValue<Node, int>>(0);
         /// <summary>
         /// 缓存快照
         /// </summary>
@@ -103,25 +104,24 @@ namespace AutoCSer.CacheServer.Snapshot
                     }
                     break;
                 case 3:
-                    stream.ByteSize = OperationParameter.Serializer.HeaderSize + IndexIdentity.SerializeSize;
+                    stream.Data.CurrentIndex = OperationParameter.Serializer.HeaderSize + IndexIdentity.SerializeSize;
                     historyNodes.Length = 0;
                     historyNodes.Add(new KeyValue<Node, int>(dataStructures[dataStructureIndex].Node, OperationParameter.Serializer.HeaderSize + IndexIdentity.SerializeSize));
                     step = 0;
                     goto NODE;
                 case 4: return 0;
             }
-            return stream.ByteSize;
+            return stream.Data.CurrentIndex;
         }
         /// <summary>
         /// 重建缓存数组大小
         /// </summary>
         private void loadArraySize()
         {
-            byte* write = stream.GetPrepSizeCurrent(OperationParameter.Serializer.HeaderSize + sizeof(int));
+            byte* write = stream.GetBeforeMove(OperationParameter.Serializer.HeaderSize + sizeof(int));
             *(int*)write = OperationParameter.Serializer.HeaderSize + sizeof(int);
             *(uint*)(write + OperationParameter.Serializer.OperationTypeOffset) = (ushort)OperationParameter.OperationType.LoadArraySize;
             *(int*)(write + OperationParameter.Serializer.HeaderSize) = array.Length;
-            stream.ByteSize += OperationParameter.Serializer.HeaderSize + sizeof(int);
             step = 2;
         }
         /// <summary>
@@ -129,9 +129,9 @@ namespace AutoCSer.CacheServer.Snapshot
         /// </summary>
         private void loadIndexIdentity()
         {
-            stream.ByteSize = 0;
+            stream.Data.CurrentIndex = 0;
             int size = OperationParameter.Serializer.HeaderSize + sizeof(int) + sizeof(ulong) * array.Length;
-            byte* write = stream.GetPrepSizeCurrent(size);
+            byte* write = stream.GetBeforeMove(size);
             *(int*)write = size;
             *(uint*)(write + OperationParameter.Serializer.OperationTypeOffset) = (ushort)OperationParameter.OperationType.LoadIndexIdentity;
             *(int*)(write + OperationParameter.Serializer.HeaderSize) = array.Length;
@@ -141,7 +141,6 @@ namespace AutoCSer.CacheServer.Snapshot
                 write -= sizeof(ulong);
                 *(ulong*)write = item.Identity;
             }
-            stream.ByteSize += size;
         }
         /// <summary>
         /// 序列化结束处理
@@ -151,7 +150,7 @@ namespace AutoCSer.CacheServer.Snapshot
         private void serializeEnd(OperationParameter.OperationType operationType)
         {
             byte* write = stream.Data.Byte;
-            *(int*)write = stream.ByteSize;
+            *(int*)write = stream.Data.CurrentIndex;
             *(uint*)(write + OperationParameter.Serializer.OperationTypeOffset) = (ushort)operationType;
         }
         /// <summary>
@@ -160,9 +159,9 @@ namespace AutoCSer.CacheServer.Snapshot
         /// <param name="node"></param>
         internal void CreateNode(Node node)
         {
-            stream.ByteSize = historyNodes[historyNodes.Length - 1].Value;
+            stream.Data.CurrentIndex = historyNodes[historyNodes.Length - 1].Value;
             Parameter.Serialize(stream);
-            historyNodes.Add(new KeyValue<Node, int>(node, stream.ByteSize));
+            historyNodes.Add(new KeyValue<Node, int>(node, stream.Data.CurrentIndex));
             serializeEnd(OperationParameter.OperationType.GetOrCreateNode);
         }
         /// <summary>
@@ -171,7 +170,7 @@ namespace AutoCSer.CacheServer.Snapshot
         /// <param name="operationType"></param>
         internal void SerializeParameter(OperationParameter.OperationType operationType)
         {
-            stream.ByteSize = historyNodes[historyNodes.Length - 1].Value;
+            stream.Data.CurrentIndex = historyNodes[historyNodes.Length - 1].Value;
             Parameter.Serialize(stream);
             serializeEnd(operationType);
         }
@@ -181,7 +180,7 @@ namespace AutoCSer.CacheServer.Snapshot
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void SerializeParameterStart()
         {
-            stream.ByteSize = historyNodes[historyNodes.Length - 1].Value;
+            stream.Data.CurrentIndex = historyNodes[historyNodes.Length - 1].Value;
             Parameter.Serialize(stream);
         }
         /// <summary>
@@ -201,7 +200,7 @@ namespace AutoCSer.CacheServer.Snapshot
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CopyTo(UnmanagedStream stream)
         {
-            stream.WriteNotEmpty(this.stream.Data.Byte, this.stream.ByteSize);
+            stream.WriteNotEmpty(this.stream.Data.Byte, this.stream.Data.CurrentIndex);
         }
         /// <summary>
         /// 序列化数据复制
@@ -211,9 +210,9 @@ namespace AutoCSer.CacheServer.Snapshot
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool TryCopyTo(UnmanagedStream stream)
         {
-            if (stream.FreeSize - sizeof(int) >= this.stream.ByteSize)
+            if (stream.FreeSize - sizeof(int) >= this.stream.Data.CurrentIndex)
             {
-                stream.WriteNotEmpty(this.stream.Data.Byte, this.stream.ByteSize);
+                stream.WriteNotEmpty(this.stream.Data.Byte, this.stream.Data.CurrentIndex);
                 return true;
             }
             return false;
@@ -225,7 +224,7 @@ namespace AutoCSer.CacheServer.Snapshot
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CopyTo(byte* write)
         {
-            AutoCSer.Memory.CopyNotNull(stream.Data.Byte, write, stream.ByteSize);
+            AutoCSer.Memory.Common.CopyNotNull(stream.Data.Byte, write, stream.Data.CurrentIndex);
         }
     }
 }

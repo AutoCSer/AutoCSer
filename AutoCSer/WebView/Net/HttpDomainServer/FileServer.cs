@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -45,8 +45,8 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         protected FileServer()
         {
-            ResponseEncoding = new EncodingCache(WebConfig.Encoding ?? AutoCSer.Config.Pub.Default.Encoding);
-            if (ResponseEncoding.Encoding.CodePage == AutoCSer.Config.Pub.Default.Encoding.CodePage)
+            ResponseEncoding = new EncodingCache(WebConfig.Encoding ?? AutoCSer.Common.Config.Encoding);
+            if (ResponseEncoding.Encoding.CodePage == AutoCSer.Common.Config.Encoding.CodePage)
             {
                 HtmlContentType = Http.ContentTypeAttribute.Html;
                 JsContentType = Http.ContentTypeAttribute.Js;
@@ -66,7 +66,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <returns>是否启动成功</returns>
         public override bool Start(HttpRegister.Server registerServer, HttpRegister.Domain[] domains, Action onStop)
         {
-            string path = AutoCSer.IO.File.FileNameToLower((this.path.fileNameToLower() ?? LoadCheckPath).pathSuffix());
+            string path = AutoCSer.IO.File.FileNameToLower((this.path ?? LoadCheckPath).pathSuffix());
             if (Directory.Exists(path) && Interlocked.CompareExchange(ref isStart, 1, 0) == 0)
             {
                 pathIdentity = PathCacheWatcher.Add(path);
@@ -145,7 +145,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 {
                     byte[] contentType = null;
                     bool isCompress = true;
-                    fixed (byte* pathFixed = path.Array)
+                    fixed (byte* pathFixed = path.GetFixedBuffer())
                     {
                         byte* pathStart = pathFixed + path.Start, pathEnd = pathStart + path.Length;
                         if (isFile(pathEnd, ref contentType, ref isCompress) == 0)
@@ -207,7 +207,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                                     FileCacheQueue.Set(ref cacheKey, fileCache, fileCache.Set(ref fileData, contentType, cacheControl, isCompress));
                                                     if ((header.Flag & Http.HeaderFlag.IsSetIfModifiedSince) != 0 && header.IfModifiedSinceIndex.Length == fileCache.LastModified.Length)
                                                     {
-                                                        if (Memory.EqualNotNull(fileCache.LastModified, pathFixed + header.Buffer.StartIndex + header.IfModifiedSinceIndex.StartIndex, header.IfModifiedSinceIndex.Length))
+                                                        if (AutoCSer.Memory.Common.EqualNotNull(fileCache.LastModified, pathFixed + header.Buffer.StartIndex + header.IfModifiedSinceIndex.StartIndex, header.IfModifiedSinceIndex.Length))
                                                         {
                                                             response = Http.Response.NotChanged304;
                                                             return null;
@@ -250,7 +250,7 @@ namespace AutoCSer.Net.HttpDomainServer
             }
             catch (Exception error)
             {
-                RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error, cacheFileName);
+                RegisterServer.TcpServer.Log.Exception(error, cacheFileName, LogLevel.Exception | LogLevel.AutoCSer);
             }
             return null;
         }
@@ -348,7 +348,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             *(pathFixed + 2) = (byte)((value = stateValue / 10) + '0');
                             *(pathFixed + 3) = (byte)((stateValue - value * 10) + '0');
                             Http.Response response = null;
-                            FileCache fileCache = file(path, default(SubArray<byte>), ref response, true);
+                            FileCache fileCache = file(path, new SubArray<byte>(), ref response, true);
                             if (fileCache == null)
                             {
                                 if (response != null)
@@ -390,7 +390,7 @@ namespace AutoCSer.Net.HttpDomainServer
             }
             catch (Exception error)
             {
-                RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             if (isResponse != 0) this.errorResponses = errorResponses;
         }
@@ -756,9 +756,9 @@ namespace AutoCSer.Net.HttpDomainServer
                                                     FileCacheQueue.Set(ref cacheKey, fileCache, fileCache.Set(ref fileData, contentType, cacheControl, isCompress));
                                                     if (ifModifiedSince.Length == fileCache.LastModified.Length)
                                                     {
-                                                        fixed (byte* ifModifiedSinceFixed = ifModifiedSince.Array)
+                                                        fixed (byte* ifModifiedSinceFixed = ifModifiedSince.GetFixedBuffer())
                                                         {
-                                                            if (Memory.EqualNotNull(fileCache.LastModified, ifModifiedSinceFixed + ifModifiedSince.Start, ifModifiedSince.Length))
+                                                            if (AutoCSer.Memory.Common.EqualNotNull(fileCache.LastModified, ifModifiedSinceFixed + ifModifiedSince.Start, ifModifiedSince.Length))
                                                             {
                                                                 response = Http.Response.NotChanged304;
                                                                 return null;
@@ -802,7 +802,7 @@ namespace AutoCSer.Net.HttpDomainServer
             }
             catch (Exception error)
             {
-                RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error, cacheFileName);
+                RegisterServer.TcpServer.Log.Exception(error, cacheFileName, LogLevel.Exception | LogLevel.AutoCSer);
             }
             return null;
         }

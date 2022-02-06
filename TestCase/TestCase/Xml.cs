@@ -23,8 +23,8 @@ namespace AutoCSer.TestCase
         internal static bool TestCase()
         {
             Data.Float floatData = new Data.Float();
-            string xmlString = AutoCSer.Xml.Serializer.Serialize(floatData);
-            Data.Float newFloatData = AutoCSer.Xml.Parser.Parse<Data.Float>(xmlString);
+            string xmlString = AutoCSer.XmlSerializer.Serialize(floatData);
+            Data.Float newFloatData = AutoCSer.XmlDeSerializer.DeSerialize<Data.Float>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.Float>.Equals(floatData, newFloatData))
             {
                 return false;
@@ -32,9 +32,9 @@ namespace AutoCSer.TestCase
 
             #region 引用类型字段成员XML序列化测试
             Data.FieldData filedData = AutoCSer.RandomObject.Creator<Data.FieldData>.Create(randomConfig);
-            xmlString = AutoCSer.Xml.Serializer.Serialize(filedData);
+            xmlString = AutoCSer.XmlSerializer.Serialize(filedData);
             //AutoCSer.Log.Trace.Console(xmlString);
-            Data.FieldData newFieldData = AutoCSer.Xml.Parser.Parse<Data.FieldData>(xmlString);
+            Data.FieldData newFieldData = AutoCSer.XmlDeSerializer.DeSerialize<Data.FieldData>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.FieldData>.Equals(filedData, newFieldData))
             {
                 return false;
@@ -44,8 +44,8 @@ namespace AutoCSer.TestCase
 
             #region 带成员位图的引用类型字段成员XML序列化测试
             xmlSerializeConfig.MemberMap = AutoCSer.Metadata.MemberMap<Data.FieldData>.NewFull();
-            xmlString = AutoCSer.Xml.Serializer.Serialize(filedData, xmlSerializeConfig);
-            newFieldData = AutoCSer.Xml.Parser.Parse<Data.FieldData>(xmlString);
+            xmlString = AutoCSer.XmlSerializer.Serialize(filedData, xmlSerializeConfig);
+            newFieldData = AutoCSer.XmlDeSerializer.DeSerialize<Data.FieldData>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.FieldData>.MemberMapEquals(filedData, newFieldData, xmlSerializeConfig.MemberMap))
             {
                 return false;
@@ -54,8 +54,8 @@ namespace AutoCSer.TestCase
 
             #region 引用类型属性成员XML序列化测试
             Data.PropertyData propertyData = AutoCSer.RandomObject.Creator<Data.PropertyData>.Create(randomConfig);
-            xmlString = AutoCSer.Xml.Serializer.Serialize(propertyData);
-            Data.PropertyData newPropertyData = AutoCSer.Xml.Parser.Parse<Data.PropertyData>(xmlString);
+            xmlString = AutoCSer.XmlSerializer.Serialize(propertyData);
+            Data.PropertyData newPropertyData = AutoCSer.XmlDeSerializer.DeSerialize<Data.PropertyData>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.PropertyData>.Equals(propertyData, newPropertyData))
             {
                 return false;
@@ -64,8 +64,8 @@ namespace AutoCSer.TestCase
 
             #region 值类型字段成员XML序列化测试
             Data.StructFieldData structFieldData = AutoCSer.RandomObject.Creator<Data.StructFieldData>.Create(randomConfig);
-            xmlString = AutoCSer.Xml.Serializer.Serialize(structFieldData);
-            Data.StructFieldData newStructFieldData = AutoCSer.Xml.Parser.Parse<Data.StructFieldData>(xmlString);
+            xmlString = AutoCSer.XmlSerializer.Serialize(structFieldData);
+            Data.StructFieldData newStructFieldData = AutoCSer.XmlDeSerializer.DeSerialize<Data.StructFieldData>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.StructFieldData>.Equals(structFieldData, newStructFieldData))
             {
                 return false;
@@ -74,8 +74,8 @@ namespace AutoCSer.TestCase
 
             #region 带成员位图的值类型字段成员XML序列化测试
             xmlSerializeConfig.MemberMap = AutoCSer.Metadata.MemberMap<Data.StructFieldData>.NewFull();
-            xmlString = AutoCSer.Xml.Serializer.Serialize(structFieldData, xmlSerializeConfig);
-            newStructFieldData = AutoCSer.Xml.Parser.Parse<Data.StructFieldData>(xmlString);
+            xmlString = AutoCSer.XmlSerializer.Serialize(structFieldData, xmlSerializeConfig);
+            newStructFieldData = AutoCSer.XmlDeSerializer.DeSerialize<Data.StructFieldData>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.StructFieldData>.MemberMapEquals(structFieldData, newStructFieldData, xmlSerializeConfig.MemberMap))
             {
                 return false;
@@ -84,19 +84,19 @@ namespace AutoCSer.TestCase
 
             #region 值类型属性成员XML序列化测试
             Data.StructPropertyData structPropertyData = AutoCSer.RandomObject.Creator<Data.StructPropertyData>.Create(randomConfig);
-            xmlString = AutoCSer.Xml.Serializer.Serialize(structPropertyData);
-            Data.StructPropertyData newStructPropertyData = AutoCSer.Xml.Parser.Parse<Data.StructPropertyData>(xmlString);
+            xmlString = AutoCSer.XmlSerializer.Serialize(structPropertyData);
+            Data.StructPropertyData newStructPropertyData = AutoCSer.XmlDeSerializer.DeSerialize<Data.StructPropertyData>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.StructPropertyData>.Equals(structPropertyData, newStructPropertyData))
             {
                 return false;
             }
             #endregion
 
-            if (AutoCSer.Xml.Parser.Parse<int>(xmlString = AutoCSer.Xml.Serializer.Serialize<int>(1)) != 1)
+            if (AutoCSer.XmlDeSerializer.DeSerialize<int>(xmlString = AutoCSer.XmlSerializer.Serialize<int>(1)) != 1)
             {
                 return false;
             }
-            if (AutoCSer.Xml.Parser.Parse<string>(xmlString = AutoCSer.Xml.Serializer.Serialize<string>("1")) != "1")
+            if (AutoCSer.XmlDeSerializer.DeSerialize<string>(xmlString = AutoCSer.XmlSerializer.Serialize<string>("1")) != "1")
             {
                 return false;
             }

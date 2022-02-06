@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Deploy
@@ -8,7 +8,7 @@ namespace AutoCSer.Deploy
     /// <summary>
     /// 文件最后修改时间
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct FileTime
     {
@@ -67,7 +67,7 @@ namespace AutoCSer.Deploy
                 Data = File.ReadAllBytes(file.FullName);
                 LastWriteTimeUtc = file.LastWriteTimeUtc;
             }
-            else AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "文件同步时间冲突 " + file.FullName);
+            else AutoCSer.LogHelper.Error("文件同步时间冲突 " + file.FullName, LogLevel.Error | LogLevel.AutoCSer);
         }
     }
 }

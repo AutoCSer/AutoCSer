@@ -2,7 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -155,7 +156,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 内存流最大字节数
         /// </summary>
-        internal override SubBuffer.Size MaxMemoryStreamSize { get { return MethodInfo.MaxMemoryStreamSize; } }
+        internal override AutoCSer.Memory.BufferSize MaxMemoryStreamSize { get { return MethodInfo.MaxMemoryStreamSize; } }
         /// <summary>
         /// WEB 调用输出
         /// </summary>
@@ -168,13 +169,12 @@ namespace AutoCSer.WebView
         /// 获取页面输出数据流
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="size"></param>
         /// <returns></returns>
-        internal UnmanagedStream GetResponseStream(byte* buffer, int size)
+        internal UnmanagedStream GetResponseStream(ref AutoCSer.Memory.Pointer buffer)
         {
             UnmanagedStream responseStream = Interlocked.Exchange(ref ResponseStream, null);
-            if (responseStream == null) responseStream = new UnmanagedStream(buffer, size);
-            else responseStream.Reset(buffer, size);
+            if (responseStream == null) responseStream = new UnmanagedStream(ref buffer);
+            else responseStream.Reset(ref buffer);
             CallResponse.Set(responseStream, ref DomainServer.ResponseEncoding);
             return responseStream;
         }

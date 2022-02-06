@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net;
 using AutoCSer.Net.TcpServer;
@@ -61,7 +61,7 @@ namespace AutoCSer.Net.TcpInternalServer
                 if (clientRoute == null)
                 {
                     TcpServer.ClientSocketBase socket = clientCreator.WaitSocket();
-                    return socket == null ? null : new UnionType { Value = socket.Sender }.ClientSocketSender;
+                    return socket == null ? null : new UnionType.ClientSocketSender { Object = socket.Sender }.Value;
                 }
                 return clientRoute.Sender;
             }
@@ -163,13 +163,13 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 创建客户端等待连接
         /// </summary>
+        /// <param name="clientWaitConnected">客户端等待连接</param>
         /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
-        /// <returns>客户端等待连接</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public ClientWaitConnected CreateWaitConnected(Action<ClientSocketEventParameter> onCheckSocketVersion = null)
+        public void CreateWaitConnected(out ClientWaitConnected clientWaitConnected, Action<ClientSocketEventParameter> onCheckSocketVersion = null)
         {
+            clientWaitConnected = new ClientWaitConnected(this, onCheckSocketVersion);
             TryCreateSocket();
-            return new ClientWaitConnected(this, onCheckSocketVersion);
         }
         /// <summary>
         /// 发送自定义数据
@@ -300,7 +300,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// TCP 内部服务客户端代理对象
         /// </summary>
-        private readonly clientType client;
+        public readonly clientType MethodClient;
         /// <summary>
         /// 验证委托
         /// </summary>
@@ -318,7 +318,7 @@ namespace AutoCSer.Net.TcpInternalServer
         public Client(clientType client, ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
             : base(attribute, maxTimeoutSeconds, onCustomData, log, clientRoute)
         {
-            this.client = client;
+            this.MethodClient = client;
             this.verifyMethod = verifyMethod;
         }
         /// <summary>
@@ -328,7 +328,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <returns></returns>
         internal override bool SocketVerifyMethod(TcpServer.ClientSocketSenderBase socket)
         {
-            return verifyMethod == null || verifyMethod(client, new UnionType { Value = socket }.ClientSocketSender);
+            return verifyMethod == null || verifyMethod(MethodClient, new UnionType.ClientSocketSender { Object = socket }.Value);
         }
     }
 }

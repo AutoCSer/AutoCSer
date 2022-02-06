@@ -5,7 +5,7 @@ namespace AutoCSer.OpenAPI.Weixin
     /// <summary>
     /// 下载对账单
     /// </summary>
-    [AutoCSer.Xml.Serialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
+    [AutoCSer.XmlSerialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
     internal sealed class BillQuery : SignQuery
     {
         /// <summary>

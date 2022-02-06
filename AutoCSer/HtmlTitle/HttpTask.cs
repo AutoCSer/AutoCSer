@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.HtmlTitle
@@ -18,7 +18,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// <summary>
         /// 最小缓存区字节长度
         /// </summary>
-        internal const AutoCSer.SubBuffer.Size MinBufferSize = SubBuffer.Size.Kilobyte;
+        internal const AutoCSer.Memory.BufferSize MinBufferSize = AutoCSer.Memory.BufferSize.Kilobyte;
 
         /// <summary>
         /// 客户端集合
@@ -27,7 +27,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// <summary>
         /// 日志处理
         /// </summary>
-        internal readonly AutoCSer.Log.ILog Log;
+        internal readonly AutoCSer.ILog Log;
         /// <summary>
         /// 数据缓存区池
         /// </summary>
@@ -35,7 +35,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// <summary>
         /// HTTP 头部接收超时
         /// </summary>
-        private SocketTimeoutLink.TimerLink socketTimeout;
+        private SocketTimeoutLink socketTimeout;
         /// <summary>
         /// Uri与回调函数信息集合
         /// </summary>
@@ -47,7 +47,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// <summary>
         /// 客户端集合访问锁
         /// </summary>
-        private int clientLock;
+        private AutoCSer.Threading.SpinLock clientLock;
         /// <summary>
         /// 当前实例数量
         /// </summary>
@@ -77,17 +77,17 @@ namespace AutoCSer.Net.HtmlTitle
         /// <param name="maxSearchSize">最大搜索字节数</param>
         /// <param name="isValidateCertificate">是否验证安全证书</param>
         /// <param name="log">日志处理</param>
-        public HttpTask(int maxClientCount = 1, int timeoutSeconds = 15, AutoCSer.SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte4, int maxSearchSize = 0, bool isValidateCertificate = false, AutoCSer.Log.ILog log = null)
+        public HttpTask(int maxClientCount = 1, int timeoutSeconds = 15, AutoCSer.Memory.BufferSize bufferSize = AutoCSer.Memory.BufferSize.Kilobyte4, int maxSearchSize = 0, bool isValidateCertificate = false, AutoCSer.ILog log = null)
         {
             if (bufferSize < MinBufferSize) bufferSize = MinBufferSize;
-            else if (bufferSize > SubBuffer.Size.Kilobyte32) bufferSize = SubBuffer.Size.Kilobyte32;
+            else if (bufferSize > AutoCSer.Memory.BufferSize.Kilobyte32) bufferSize = AutoCSer.Memory.BufferSize.Kilobyte32;
             BufferSize = (int)bufferSize;
             MaxSearchSize = Math.Min(BufferSize - sizeof(int), maxSearchSize);
             IsValidateCertificate = isValidateCertificate;
-            this.Log = log ?? AutoCSer.Log.Pub.Log;
+            this.Log = log ?? AutoCSer.LogHelper.Default;
             BufferPool = AutoCSer.SubBuffer.Pool.GetPool(bufferSize);
             uris = new Uri.Queue(new Uri());
-            socketTimeout = SocketTimeoutLink.TimerLink.Get(Math.Max(timeoutSeconds, 15));
+            socketTimeout = new SocketTimeoutLink(Math.Max(timeoutSeconds, 15));
             clients = new HttpClient[maxClientCount <= 0 ? 1 : maxClientCount];
         }
         /// <summary>
@@ -99,7 +99,7 @@ namespace AutoCSer.Net.HtmlTitle
             {
                 int clientIndex = 0;
                 Uri uri = null;
-                while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+                clientLock.EnterYield();
                 if (isDisposed == 0)
                 {
                     isDisposed = 1;
@@ -107,7 +107,7 @@ namespace AutoCSer.Net.HtmlTitle
                     this.clientIndex = 0;
                     uri = uris.GetClear();
                 }
-                System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                clientLock.Exit();
 
                 if (clientIndex != 0)
                 {
@@ -120,7 +120,7 @@ namespace AutoCSer.Net.HtmlTitle
                 Array.Clear(clients, 0, clients.Length);
                 if (uri != null) uri.CancelQueue(Log);
 
-                SocketTimeoutLink.TimerLink.Free(ref socketTimeout);
+                SocketTimeoutLink.Free(ref socketTimeout);
             }
         }
         /// <summary>
@@ -179,7 +179,7 @@ namespace AutoCSer.Net.HtmlTitle
         private void get(Uri uri, ref bool isOnGet)
         {
             HttpClient client = null;
-            while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+            clientLock.EnterYield();
             if (isDisposed == 0)
             {
                 if (clientIndex == 0)
@@ -187,32 +187,32 @@ namespace AutoCSer.Net.HtmlTitle
                     if (clientCount == clients.Length)
                     {
                         uris.Push(uri);
-                        System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                        clientLock.Exit();
                         isOnGet = true;
                         return;
                     }
                     ++clientCount;
-                    System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                    clientLock.Exit();
                     try
                     {
                         client = new HttpClient(this);
                     }
                     catch (Exception error)
                     {
-                        Log.Add(AutoCSer.Log.LogType.Error, error);
+                        Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                     if (client == null)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+                        clientLock.EnterYield();
                         if (isDisposed == 0)
                         {
                             uris.Push(uri);
                             --clientCount;
-                            System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                            clientLock.Exit();
                             isOnGet = true;
                             return;
                         }
-                        System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                        clientLock.Exit();
                         isOnGet = true;
                         uri.Cancel();
                         return;
@@ -221,13 +221,13 @@ namespace AutoCSer.Net.HtmlTitle
                 else
                 {
                     client = clients[--clientIndex];
-                    System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                    clientLock.Exit();
                 }
                 isOnGet = client.Get(uri);
             }
             else
             {
-                System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                clientLock.Exit();
                 isOnGet = true;
                 uri.Cancel();
             }
@@ -239,19 +239,19 @@ namespace AutoCSer.Net.HtmlTitle
         /// <returns></returns>
         internal int Push(HttpClient client)
         {
-            START:
-            while (System.Threading.Interlocked.CompareExchange(ref clientLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient);
+        START:
+            clientLock.EnterYield();
             if (!uris.IsEmpty)
             {
                 Uri uri = uris.UnsafePopOnly();
-                System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                clientLock.Exit();
                 try
                 {
                     if (client.Get(uri)) return 0;
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 try
                 {
@@ -259,18 +259,18 @@ namespace AutoCSer.Net.HtmlTitle
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 goto START;
             }
             if (isDisposed == 0)
             {
                 clients[clientIndex++] = client;
-                System.Threading.Interlocked.Exchange(ref clientLock, 0);
+                clientLock.Exit();
                 return 0;
             }
             --clientCount;
-            System.Threading.Interlocked.Exchange(ref clientLock, 0);
+            clientLock.Exit();
             return 1;
         }
         /// <summary>
@@ -280,7 +280,7 @@ namespace AutoCSer.Net.HtmlTitle
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CancelTimeout(HttpClient client)
         {
-            SocketTimeoutLink.TimerLink socketTimeout = this.socketTimeout;
+            SocketTimeoutLink socketTimeout = this.socketTimeout;
             if (socketTimeout != null) socketTimeout.Cancel(client);
         }
         /// <summary>
@@ -291,7 +291,7 @@ namespace AutoCSer.Net.HtmlTitle
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void PushTimeout(HttpClient client, Socket socket)
         {
-            SocketTimeoutLink.TimerLink socketTimeout = this.socketTimeout;
+            SocketTimeoutLink socketTimeout = this.socketTimeout;
             if (socketTimeout != null) socketTimeout.Push(client, socket);
         }
         

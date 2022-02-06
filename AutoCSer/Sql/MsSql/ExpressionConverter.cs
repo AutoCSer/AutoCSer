@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Sql.MsSql
 {
@@ -40,41 +41,41 @@ namespace AutoCSer.Sql.MsSql
         {
             switch (expression.NodeType)
             {
-                case ExpressionType.OrElse: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, "or"); return;
-                case ExpressionType.AndAlso: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, "and"); return;
-                case ExpressionType.Not: convertNot(new UnionType { Value = expression }.UnaryExpression); return;
-                case ExpressionType.Equal: convertEqual(new UnionType { Value = expression }.BinaryExpression); return;
-                case ExpressionType.NotEqual: convertNotEqual(new UnionType { Value = expression }.BinaryExpression); return;
-                case ExpressionType.GreaterThanOrEqual: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '>', '='); return;
-                case ExpressionType.GreaterThan: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '>'); return;
-                case ExpressionType.LessThan: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '<'); return;
-                case ExpressionType.LessThanOrEqual: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '<', '='); return;
+                case ExpressionType.OrElse: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, "or"); return;
+                case ExpressionType.AndAlso: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, "and"); return;
+                case ExpressionType.Not: convertNot(new UnionType.UnaryExpression { Object = expression }.Value); return;
+                case ExpressionType.Equal: convertEqual(new UnionType.BinaryExpression { Object = expression }.Value); return;
+                case ExpressionType.NotEqual: convertNotEqual(new UnionType.BinaryExpression { Object = expression }.Value); return;
+                case ExpressionType.GreaterThanOrEqual: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '>', '='); return;
+                case ExpressionType.GreaterThan: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '>'); return;
+                case ExpressionType.LessThan: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '<'); return;
+                case ExpressionType.LessThanOrEqual: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '<', '='); return;
                 case ExpressionType.Add:
-                case ExpressionType.AddChecked: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '+'); return;
+                case ExpressionType.AddChecked: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '+'); return;
                 case ExpressionType.Subtract:
-                case ExpressionType.SubtractChecked: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '-'); return;
+                case ExpressionType.SubtractChecked: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '-'); return;
                 case ExpressionType.Multiply:
-                case ExpressionType.MultiplyChecked: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '*'); return;
-                case ExpressionType.Divide: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '/'); return;
-                case ExpressionType.Modulo: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '%'); return;
-                case ExpressionType.Or: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '|'); return;
-                case ExpressionType.And: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '&'); return;
-                case ExpressionType.ExclusiveOr: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '^'); return;
-                case ExpressionType.LeftShift: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '<', '<'); return;
-                case ExpressionType.RightShift: convertBinaryExpression(new UnionType { Value = expression }.BinaryExpression, '>', '>'); return;
-                case ExpressionType.MemberAccess: convertMemberAccess(new UnionType { Value = expression }.MemberExpression); return;
-                case ExpressionType.Coalesce: convertCoalesce(new UnionType { Value = expression }.BinaryExpression); return;
+                case ExpressionType.MultiplyChecked: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '*'); return;
+                case ExpressionType.Divide: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '/'); return;
+                case ExpressionType.Modulo: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '%'); return;
+                case ExpressionType.Or: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '|'); return;
+                case ExpressionType.And: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '&'); return;
+                case ExpressionType.ExclusiveOr: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '^'); return;
+                case ExpressionType.LeftShift: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '<', '<'); return;
+                case ExpressionType.RightShift: convertBinaryExpression(new UnionType.BinaryExpression { Object = expression }.Value, '>', '>'); return;
+                case ExpressionType.MemberAccess: convertMemberAccess(new UnionType.MemberExpression { Object = expression }.Value); return;
+                case ExpressionType.Coalesce: convertCoalesce(new UnionType.BinaryExpression { Object = expression }.Value); return;
                 case ExpressionType.Unbox:
                 case ExpressionType.UnaryPlus:
-                    convertIsSimple(new UnionType { Value = expression }.UnaryExpression.Operand); return;
+                    convertIsSimple(new UnionType.UnaryExpression { Object = expression }.Value.Operand); return;
                 case ExpressionType.Negate:
-                case ExpressionType.NegateChecked: convertNegate(new UnionType { Value = expression }.UnaryExpression); return;
-                case ExpressionType.IsTrue: convertIsTrue(new UnionType { Value = expression }.UnaryExpression); return;
-                case ExpressionType.IsFalse: convertIsFalse(new UnionType { Value = expression }.UnaryExpression); return;
+                case ExpressionType.NegateChecked: convertNegate(new UnionType.UnaryExpression { Object = expression }.Value); return;
+                case ExpressionType.IsTrue: convertIsTrue(new UnionType.UnaryExpression { Object = expression }.Value); return;
+                case ExpressionType.IsFalse: convertIsFalse(new UnionType.UnaryExpression { Object = expression }.Value); return;
                 case ExpressionType.Convert:
-                case ExpressionType.ConvertChecked: convertConvert(new UnionType { Value = expression }.UnaryExpression); return;
-                case ExpressionType.Conditional: convertConditional(new UnionType { Value = expression }.ConditionalExpression); return;
-                case ExpressionType.Call: convertCall(new UnionType { Value = expression }.MethodCallExpression); return;
+                case ExpressionType.ConvertChecked: convertConvert(new UnionType.UnaryExpression { Object = expression }.Value); return;
+                case ExpressionType.Conditional: convertConditional(new UnionType.ConditionalExpression { Object = expression }.Value); return;
+                case ExpressionType.Call: convertCall(new UnionType.MethodCallExpression { Object = expression }.Value); return;
                 case ExpressionType.Constant: convertConstant(expression.GetConstantValue()); return;
                 default: throw new InvalidCastException("未知表达式类型 " + expression.NodeType.ToString());
             }
@@ -139,7 +140,7 @@ namespace AutoCSer.Sql.MsSql
                 if (whereExpression.IsConstantNull)
                 {
                     convertIsSimple(expression.Right);
-                    SqlStream.SimpleWriteNotNull(" is null");
+                    SqlStream.SimpleWrite(" is null");
                     return;
                 }
                 Expression left = whereExpression.Expression;
@@ -147,7 +148,7 @@ namespace AutoCSer.Sql.MsSql
                 if (whereExpression.Type != WhereExpression.ConvertType.Unknown)
                 {
                     ConvertIsSimple(left);
-                    if (whereExpression.IsConstantNull) SqlStream.SimpleWriteNotNull(" is null");
+                    if (whereExpression.IsConstantNull) SqlStream.SimpleWrite(" is null");
                     else
                     {
                         SqlStream.Write('=');
@@ -170,7 +171,7 @@ namespace AutoCSer.Sql.MsSql
                 if (whereExpression.IsConstantNull)
                 {
                     convertIsSimple(expression.Right);
-                    SqlStream.SimpleWriteNotNull(" is not null");
+                    SqlStream.SimpleWrite(" is not null");
                     return;
                 }
                 Expression left = whereExpression.Expression;
@@ -178,7 +179,7 @@ namespace AutoCSer.Sql.MsSql
                 if (whereExpression.Type != WhereExpression.ConvertType.Unknown)
                 {
                     ConvertIsSimple(left);
-                    if (whereExpression.IsConstantNull) SqlStream.SimpleWriteNotNull(" is not null");
+                    if (whereExpression.IsConstantNull) SqlStream.SimpleWrite(" is not null");
                     else
                     {
                         SqlStream.Write('<');
@@ -230,7 +231,7 @@ namespace AutoCSer.Sql.MsSql
                 whereExpression.Convert(binaryExpression.Right);
                 if (whereExpression.Type != WhereExpression.ConvertType.Unknown)
                 {
-                    SqlStream.SimpleWriteNotNull(type);
+                    SqlStream.SimpleWrite(type);
                     convertWhereExpressionLogic();
                     return;
                 }
@@ -267,7 +268,7 @@ namespace AutoCSer.Sql.MsSql
                     FirstMemberName = name;
                     FirstMemberSqlName = sqlName;
                 }
-                SqlStream.SimpleWriteNotNull(sqlName);
+                SqlStream.SimpleWrite(sqlName);
                 return;
             }
             whereExpression.ConvertMemberAccess(expression);
@@ -284,7 +285,7 @@ namespace AutoCSer.Sql.MsSql
         /// <param name="binaryExpression"></param>
         private void convertCoalesce(BinaryExpression binaryExpression)
         {
-            SqlStream.SimpleWriteNotNull("isnull(");
+            SqlStream.SimpleWrite("isnull(");
             convert(binaryExpression.Left);
             SqlStream.Write(',');
             convert(binaryExpression.Right);
@@ -303,13 +304,13 @@ namespace AutoCSer.Sql.MsSql
                 if (expression.IsSimple())
                 {
                     Convert(expression);
-                    SqlStream.SimpleWriteNotNull("=0");
+                    SqlStream.SimpleWrite("=0");
                 }
                 else
                 {
                     SqlStream.Write('(');
                     Convert(expression);
-                    SqlStream.SimpleWriteNotNull(")=0");
+                    SqlStream.SimpleWrite(")=0");
                 }
             }
             else throwWhereExpressionError();
@@ -321,7 +322,7 @@ namespace AutoCSer.Sql.MsSql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void convertNegate(UnaryExpression unaryExpression)
         {
-            SqlStream.SimpleWriteNotNull("-(");
+            SqlStream.SimpleWrite("-(");
             convert(unaryExpression.Operand);
             SqlStream.Write(')');
         }
@@ -338,13 +339,13 @@ namespace AutoCSer.Sql.MsSql
                 if (expression.IsSimple())
                 {
                     Convert(expression);
-                    SqlStream.SimpleWriteNotNull("=1");
+                    SqlStream.SimpleWrite("=1");
                 }
                 else
                 {
                     SqlStream.Write('(');
                     Convert(expression);
-                    SqlStream.SimpleWriteNotNull(")=1");
+                    SqlStream.SimpleWrite(")=1");
                 }
             }
             else throwWhereExpressionError();
@@ -362,13 +363,13 @@ namespace AutoCSer.Sql.MsSql
                 if (expression.IsSimple())
                 {
                     Convert(expression);
-                    SqlStream.SimpleWriteNotNull("=0");
+                    SqlStream.SimpleWrite("=0");
                 }
                 else
                 {
                     SqlStream.Write('(');
                     Convert(expression);
-                    SqlStream.SimpleWriteNotNull(")=0");
+                    SqlStream.SimpleWrite(")=0");
                 }
             }
             else throwWhereExpressionError();
@@ -388,10 +389,10 @@ namespace AutoCSer.Sql.MsSql
                     return;
                 }
             }
-            SqlStream.SimpleWriteNotNull("cast(");
+            SqlStream.SimpleWrite("cast(");
             convert(expression.Operand);
-            SqlStream.SimpleWriteNotNull(" as ");
-            SqlStream.SimpleWriteNotNull(expression.Type.formCSharpType().ToString());
+            SqlStream.SimpleWrite(" as ");
+            SqlStream.SimpleWrite(expression.Type.formCSharpType().ToString());
             SqlStream.Write(')');
         }
         /// <summary>
@@ -419,7 +420,7 @@ namespace AutoCSer.Sql.MsSql
             if (whereExpression.Type != WhereExpression.ConvertType.Unknown)
             {
                 Expression test = whereExpression.Expression;
-                SqlStream.SimpleWriteNotNull("case when ");
+                SqlStream.SimpleWrite("case when ");
                 if (test.IsSimpleNotLogic())
                 {
                     Convert(test);
@@ -427,11 +428,11 @@ namespace AutoCSer.Sql.MsSql
                     SqlStream.Write('1');
                 }
                 else Convert(test);
-                SqlStream.SimpleWriteNotNull(" then ");
+                SqlStream.SimpleWrite(" then ");
                 convert(expression.IfTrue);
-                SqlStream.SimpleWriteNotNull(" else ");
+                SqlStream.SimpleWrite(" else ");
                 convert(expression.IfFalse);
-                SqlStream.SimpleWriteNotNull(" end");
+                SqlStream.SimpleWrite(" end");
             }
             else throwWhereExpressionError();
         }
@@ -458,80 +459,125 @@ namespace AutoCSer.Sql.MsSql
             MethodInfo method = expression.Method;
             if (method.ReflectedType == typeof(ExpressionCall))
             {
-                switch (method.Name)
+                switch (method.Name.Length)
                 {
-                    case "In": convertCallIn(expression, true); break;
-                    case "NotIn": convertCallIn(expression, false); break;
-                    case "Like":
+                    case 2:
+                        switch (method.Name)
                         {
-                            System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
-                            whereExpression.Convert(arguments[1]);
-                            if (whereExpression.Type != WhereExpression.ConvertType.Unknown)
-                            {
-                                if (whereExpression.Expression.NodeType == ExpressionType.Constant)
+                            case "In": convertCallIn(expression, true); break;
+                        }
+                        break;
+                    case 3:
+                        switch (method.Name)
+                        {
+                            case "Sum":
+                                SqlStream.SimpleWrite("sum(");
+                                convert(expression.Arguments[0]);
+                                SqlStream.Write(')');
+                                break;
+                            case "Len":
+                                SqlStream.SimpleWrite("len(");
+                                convert(expression.Arguments[0]);
+                                SqlStream.Write(')');
+                                break;
+                        }
+                        break;
+                    case 4:
+                        switch (method.Name)
+                        {
+                            case "Like": convertCallLike(expression, false, true, true); break;
+                            case "Call":
+                                int parameterIndex = 0;
+                                foreach (Expression argumentExpression in expression.Arguments)
                                 {
-                                    Expression like = whereExpression.Expression;
-                                    convertIsSimple(arguments[0]);
-                                    SqlStream.SimpleWriteNotNull(" like ");
-                                    ConstantConverter.ConvertLike(SqlStream, like.GetConstantValue(), true, true);
-                                }
-                                else throw new InvalidCastException("未知 Like 函数表达式值类型 " + whereExpression.Expression.NodeType.ToString());
-                            }
-                            else throw new InvalidCastException("未知 Like 函数表达式值 " + whereExpression.UnknownType.ToString());
-                        }
-                        break;
-                    case "Count":
-                        SqlStream.SimpleWriteNotNull("count(");
-                        convert(expression.Arguments[0]);
-                        SqlStream.Write(')');
-                        break;
-                    case "Sum":
-                        SqlStream.SimpleWriteNotNull("sum(");
-                        convert(expression.Arguments[0]);
-                        SqlStream.Write(')');
-                        break;
-                    case "GetDate": SqlStream.SimpleWriteNotNull("getdate()"); break;
-                    case "SysDateTime": SqlStream.SimpleWriteNotNull("sysdatetime()"); break;
-                    case "IsNull":
-                        SqlStream.SimpleWriteNotNull("isnull(");
-                        convert(expression.Arguments[0]);
-                        SqlStream.Write(',');
-                        convert(expression.Arguments[1]);
-                        SqlStream.Write(')');
-                        break;
-                    case "Call":
-                        int parameterIndex = 0;
-                        foreach (Expression argumentExpression in expression.Arguments)
-                        {
-                            switch(parameterIndex)
-                            {
-                                case 0:
-                                    whereExpression.Convert(argumentExpression);
-                                    if (whereExpression.Type == WhereExpression.ConvertType.Unknown || whereExpression.Expression.NodeType != ExpressionType.Constant)
+                                    switch (parameterIndex)
                                     {
-                                        throw new InvalidCastException("未知 SQL 函数名称 " + whereExpression.Expression.NodeType.ToString());
+                                        case 0:
+                                            whereExpression.Convert(argumentExpression);
+                                            if (whereExpression.Type == WhereExpression.ConvertType.Unknown || whereExpression.Expression.NodeType != ExpressionType.Constant)
+                                            {
+                                                throw new InvalidCastException("未知 SQL 函数名称 " + whereExpression.Expression.NodeType.ToString());
+                                            }
+                                            string functionName = (string)whereExpression.Expression.GetConstantValue();
+                                            if (string.IsNullOrEmpty(functionName)) throw new InvalidCastException("SQL 函数名称不能为空 " + whereExpression.Expression.NodeType.ToString());
+                                            SqlStream.SimpleWrite(functionName);
+                                            SqlStream.Write('(');
+                                            break;
+                                        case 1: convert(argumentExpression); break;
+                                        default:
+                                            SqlStream.Write(',');
+                                            convert(argumentExpression);
+                                            break;
                                     }
-                                    string functionName = (string)whereExpression.Expression.GetConstantValue();
-                                    if (string.IsNullOrEmpty(functionName)) throw new InvalidCastException("SQL 函数名称不能为空 " + whereExpression.Expression.NodeType.ToString());
-                                    SqlStream.SimpleWriteNotNull(functionName);
-                                    SqlStream.Write('(');
-                                    break;
-                                case 1: convert(argumentExpression); break;
-                                default:
-                                    SqlStream.Write(',');
-                                    convert(argumentExpression);
-                                    break;
-                            }
-                            ++parameterIndex;
+                                    ++parameterIndex;
+                                }
+                                SqlStream.Write(')');
+                                break;
                         }
-                        SqlStream.Write(')');
+                        break;
+                    case 5:
+                        switch (method.Name)
+                        {
+                            case "NotIn": convertCallIn(expression, false); break;
+                            case "Count":
+                                SqlStream.SimpleWrite("count(");
+                                convert(expression.Arguments[0]);
+                                SqlStream.Write(')');
+                                break;
+                        }
+                        break;
+                    case 6:
+                        switch (method.Name)
+                        {
+                            case "IsNull":
+                                SqlStream.SimpleWrite("isnull(");
+                                convert(expression.Arguments[0]);
+                                SqlStream.Write(',');
+                                convert(expression.Arguments[1]);
+                                SqlStream.Write(')');
+                                break;
+                        }
+                        break;
+                    case 7:
+                        switch (method.Name)
+                        {
+                            case "NotLike": convertCallLike(expression, true, true, true); break;
+                            case "GetDate": SqlStream.SimpleWrite("getdate()"); break;
+                            case "Replace": convertCallReplace(expression); break;
+                        }
+                        break;
+                    case 8:
+                        switch (method.Name)
+                        {
+                            case "EndsWith": convertCallLike(expression, false, true, false); break;
+                            case "DateDiff": convertDateDiff(expression); break;
+                        }
+                        break;
+                    case 10:
+                        switch (method.Name)
+                        {
+                            case "StartsWith": convertCallLike(expression, false, false, true); break;
+                        }
+                        break;
+                    case 11:
+                        switch (method.Name)
+                        {
+                            case "NotEndsWith": convertCallLike(expression, true, true, false); break;
+                            case "SysDateTime": SqlStream.SimpleWrite("sysdatetime()"); break;
+                        }
+                        break;
+                    case 13:
+                        switch (method.Name)
+                        {
+                            case "NotStartsWith": convertCallLike(expression, true, false, true); break;
+                        }
                         break;
                 }
             }
             //else if (IsStringContains(method))
             //{
             //    convertIsSimple(expression.Object);
-            //    SqlStream.SimpleWriteNotNull(" like ");
+            //    SqlStream.SimpleWrite(" like ");
             //    ConstantConverter.ConvertLike(SqlStream, expression.Arguments[0].GetConstant(), true, true);
             //}
             else
@@ -575,14 +621,14 @@ namespace AutoCSer.Sql.MsSql
                     System.Collections.IEnumerable values = (System.Collections.IEnumerable)whereExpression.Expression.GetConstantValue();
                     if (values != null)
                     {
-                        LeftArray<object> array = new LeftArray<object>();
+                        LeftArray<object> array = new LeftArray<object>(0);
                         foreach (object value in values) array.Add(value);
                         switch (array.Length)
                         {
                             case 0: break;
                             case 1:
                                 convertIsSimple(arguments[0]);
-                                if (array[0] == null) SqlStream.SimpleWriteNotNull(isIn ? " is null" : " is not null");
+                                if (array[0] == null) SqlStream.SimpleWrite(isIn ? " is null" : " is not null");
                                 else
                                 {
                                     if (isIn) SqlStream.Write('=');
@@ -596,7 +642,7 @@ namespace AutoCSer.Sql.MsSql
                                 return;
                             default:
                                 convert(arguments[0]);
-                                SqlStream.SimpleWriteNotNull(isIn ? " in(" : " not in(");
+                                SqlStream.SimpleWrite(isIn ? " in(" : " not in(");
                                 Action<CharStream, object> toString = ConstantConverter[array[0].GetType()];
                                 int index = 0;
                                 if (toString == null)
@@ -621,12 +667,76 @@ namespace AutoCSer.Sql.MsSql
                                 return;
                         }
                     }
-                    SqlStream.SimpleWriteNotNull(isIn ? "(1=0)" : "(1=1)");
+                    SqlStream.SimpleWrite(isIn ? "(1=0)" : "(1=1)");
                     return;
                 }
                 throw new InvalidCastException("未知函数表达式参数值类型 " + expression.Method.Name + " " + whereExpression.Expression.NodeType.ToString());
             }
             throw new InvalidCastException("未知函数表达式参数值 " + expression.Method.Name + " " + whereExpression.UnknownType.ToString());
+        }
+        /// <summary>
+        /// 转换 LIKE 表达式
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        /// <param name="isNot"></param>
+        /// <param name="isStart"></param>
+        /// <param name="isEnd"></param>
+        private void convertCallLike(MethodCallExpression expression, bool isNot, bool isStart, bool isEnd)
+        {
+            System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
+            whereExpression.Convert(arguments[1]);
+            if (whereExpression.Type != WhereExpression.ConvertType.Unknown)
+            {
+                if (whereExpression.Expression.NodeType == ExpressionType.Constant)
+                {
+                    Expression like = whereExpression.Expression;
+                    convertIsSimple(arguments[0]);
+                    SqlStream.SimpleWrite(isNot ? " not like " : " like ");
+                    ConstantConverter.ConvertLike(SqlStream, like.GetConstantValue(), isStart, isEnd);
+                }
+                else throw new InvalidCastException("未知 Like 函数表达式值类型 " + whereExpression.Expression.NodeType.ToString());
+            }
+            else throw new InvalidCastException("未知 Like 函数表达式值 " + whereExpression.UnknownType.ToString());
+        }
+        /// <summary>
+        /// 转换 REPLACE 表达式
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        private void convertCallReplace(MethodCallExpression expression)
+        {
+            System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
+            SqlStream.SimpleWrite("replace(");
+            convert(arguments[0]);
+            SqlStream.Write(',');
+            convert(arguments[1]);
+            SqlStream.Write(',');
+            convert(arguments[2]);
+            SqlStream.Write(')');
+        }
+        /// <summary>
+        /// 转换 DATEDIFF 表达式
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        private void convertDateDiff(MethodCallExpression expression)
+        {
+            System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
+            SqlStream.SimpleWrite("datediff(");
+
+            whereExpression.Convert(arguments[0]);
+            if (whereExpression.Type == WhereExpression.ConvertType.ConvertExpression)
+            {
+                ExpressionCallDateDiffType type = (ExpressionCallDateDiffType)whereExpression.Expression.GetConstantValue();
+                if (type != ExpressionCallDateDiffType.NONE)
+                {
+                    SqlStream.Write(type.ToString());
+                    SqlStream.Write(',');
+                }
+            }
+            else throw new InvalidCastException("未知函数表达式参数值类型 " + expression.Method.Name + " " + whereExpression.Expression.NodeType.ToString());
+            convert(arguments[1]);
+            SqlStream.Write(',');
+            convert(arguments[2]);
+            SqlStream.Write(')');
         }
     }
 }

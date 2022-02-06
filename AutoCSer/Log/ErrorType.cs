@@ -5,7 +5,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 异常类型
     /// </summary>
-    internal enum ErrorType : byte
+    //internal enum ErrorType : byte
     {
         /// <summary>
         /// 没有异常(不输出)

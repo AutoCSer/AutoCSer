@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;WebView</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -39,9 +39,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extension\Number.cs" />
+    <Compile Include="Extensions\NumberExtension.WebView.cs" />
     <Compile Include="Metadata\GenericType.cs" />
-    <Compile Include="Metadata\UnionType.cs" />
+    <Compile Include="Metadata\UnionType\GenericType.cs" />
     <Compile Include="IO\Compression\GzipCompressor.cs" />
     <Compile Include="IO\CreateFlieTimeoutCounter.cs" />
     <Compile Include="IO\CreateFlieTimeoutType.cs" />
@@ -61,7 +61,6 @@
     <Compile Include="Net\HttpDomainServer\ViewServer.cs" />
     <Compile Include="Net\HttpRegister\Cache.cs" />
     <Compile Include="Net\HttpRegister\Config.cs" />
-    <Compile Include="Net\HttpRegister\ConfigLoader.cs" />
     <Compile Include="Net\HttpRegister\Domain.cs" />
     <Compile Include="Net\HttpRegister\DomainSearchData.cs" />
     <Compile Include="Net\HttpRegister\DomainSearcher.cs" />
@@ -69,12 +68,10 @@
     <Compile Include="Net\HttpRegister\RegisterState.cs" />
     <Compile Include="Net\HttpRegister\Server.cs" />
     <Compile Include="Net\HttpRegister\SslCertificate.cs" />
-    <Compile Include="Net\HttpRegister\UnionType.cs" />
     <Compile Include="Net\Http\BoundaryReceiveLinkTaskType.cs" />
     <Compile Include="Net\Http\BoundaryReceiver.cs" />
     <Compile Include="Net\Http\BoundaryReceiveType.cs" />
     <Compile Include="Net\Http\Config.cs" />
-    <Compile Include="Net\Http\ConfigLoader.cs" />
     <Compile Include="Net\Http\ContentType.cs" />
     <Compile Include="Net\Http\Cookie.cs" />
     <Compile Include="Net\Http\DomainParser.cs" />
@@ -91,13 +88,14 @@
     <Compile Include="Net\Http\HeaderWebSocketFlag.cs" />
     <Compile Include="Net\Http\MethodType.cs" />
     <Compile Include="Net\Http\NET4.5\Config.SslProtocol.cs" />
+    <Compile Include="Net\Http\OnSendThreadArray.cs" />
     <Compile Include="Net\Http\PostType.cs" />
     <Compile Include="Net\Http\ReceiveType.cs" />
     <Compile Include="Net\Http\Response.cs" />
     <Compile Include="Net\Http\ResponseContentType.cs" />
     <Compile Include="Net\Http\ResponseFlag.cs" />
     <Compile Include="Net\Http\ResponseState.cs" />
-    <Compile Include="Net\Http\OnSendTask.cs" />
+    <Compile Include="Net\Http\OnSendThread.cs" />
     <Compile Include="Net\Http\ResponseType.cs" />
     <Compile Include="Net\Http\SearchEngineLetter.cs" />
     <Compile Include="Net\Http\SendType.cs" />
@@ -119,7 +117,7 @@
     <Compile Include="Net\Http\SslSocket.cs" />
     <Compile Include="Net\Http\SslStreamHeader.cs" />
     <Compile Include="Net\Http\TopDomain.cs" />
-    <Compile Include="Net\Http\UnionType.cs" />
+    <Compile Include="Net\Http\UnionType\SslServer.cs" />
     <Compile Include="Poll\Session.cs" />
     <Compile Include="Poll\SessionPool.cs" />
     <Compile Include="Poll\SessionTimeout.cs" />
@@ -145,10 +143,8 @@
     <Compile Include="ClearMemberAttribute.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigAttribute.cs" />
-    <Compile Include="ConfigLoader.cs" />
     <Compile Include="HtmlEncoder.cs" />
     <Compile Include="MethodAttribute.cs" />
-    <Compile Include="OnTime.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="PathMemberAttribute.cs" />
     <Compile Include="PubAjax.cs" />
@@ -156,7 +152,10 @@
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="ServerTime.cs" />
-    <Compile Include="UnionType.cs" />
+    <Compile Include="UnionType\AjaxBase.cs" />
+    <Compile Include="UnionType\CallAsynchronousBase.cs" />
+    <Compile Include="UnionType\CallSynchronize.cs" />
+    <Compile Include="UnionType\PubAjax.cs" />
     <Compile Include="View.cs" />
     <Compile Include="ViewAttribute.cs" />
     <Compile Include="ViewBase.cs" />
@@ -182,6 +181,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

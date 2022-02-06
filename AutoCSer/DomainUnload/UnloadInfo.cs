@@ -33,10 +33,9 @@ namespace AutoCSer.DomainUnload
         {
             switch (Type)
             {
-                case Type.Action: new AutoCSer.Threading.UnionType { Value = Unload }.Action(); return;
-                case Type.LogFileDispose: new AutoCSer.Log.UnionType { Value = Unload }.File.Dispose(); return;
-                case Type.TcpCommandBaseDispose: new AutoCSer.Net.TcpServer.UnionType { Value = Unload }.CommandBase.Dispose(); return;
-                case Type.ThreadPoolDispose: new AutoCSer.Threading.UnionType { Value = Unload }.ThreadPool.Dispose(); return;
+                case Type.Action: new AutoCSer.UnionType.Action { Object = Unload }.Value(); return;
+                case Type.LogFileDispose: ((AutoCSer.Log.File)Unload).Dispose(); return;
+                case Type.TcpCommandBaseDispose: ((AutoCSer.Net.TcpServer.CommandBase)Unload).Dispose(); return;
             }
         }
         /// <summary>

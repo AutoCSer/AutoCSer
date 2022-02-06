@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace AutoCSer
 {
@@ -11,13 +11,18 @@ namespace AutoCSer
     public unsafe sealed class Random
     {
         /// <summary>
+        /// 系统随机数默认种子数组
+        /// </summary>
+        internal static readonly FieldInfo SeedArrayField = typeof(Random).GetField("SeedArray", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        /// <summary>
         /// 公用种子
         /// </summary>
-        private uint* seeds;
+        private readonly uint* seeds;
         /// <summary>
         /// 安全种子
         /// </summary>
-        private uint* secureSeeds;
+        private readonly uint* secureSeeds;
         /// <summary>
         /// 32位种子位置
         /// </summary>
@@ -29,7 +34,7 @@ namespace AutoCSer
         /// <summary>
         /// 64位种子位置访问锁
         /// </summary>
-        private int currentLock;
+        private AutoCSer.Threading.SpinLock currentLock;
         /// <summary>
         /// 随机位缓存
         /// </summary>
@@ -41,7 +46,7 @@ namespace AutoCSer
         /// <summary>
         /// 字节缓存访问锁
         /// </summary>
-        private int byteLock;
+        private AutoCSer.Threading.SpinLock byteLock;
         /// <summary>
         /// 字节缓存
         /// </summary>
@@ -53,7 +58,7 @@ namespace AutoCSer
         /// <summary>
         /// 双字节缓存访问锁
         /// </summary>
-        private int ushortLock;
+        private AutoCSer.Threading.SpinLock ushortLock;
         /// <summary>
         /// 双字节缓存
         /// </summary>
@@ -67,15 +72,14 @@ namespace AutoCSer
         /// </summary>
         private Random()
         {
-            secureSeeds = (uint*)Unmanaged.GetStatic(64 * sizeof(uint) + 5 * 11 * sizeof(uint), false);
+            secureSeeds = (uint*)AutoCSer.Memory.Unmanaged.GetStatic(64 * sizeof(uint) + 5 * 11 * sizeof(uint), false);
             seeds = secureSeeds + 64;
             current64 = 5 * 11 - 2;
-            ulong tick = (ulong)AutoCSer.Date.StartTime.Ticks ^ (ulong)System.Diagnostics.Stopwatch.GetTimestamp() ^ (ulong)Environment.TickCount ^ ((ulong)Pub.Identity32 << 8) ^ ((ulong)Date.NowTimerInterval << 24);
+            ulong tick = (ulong)AutoCSer.Date.StartTime.Ticks ^ (ulong)System.Diagnostics.Stopwatch.GetTimestamp() ^ (ulong)Environment.TickCount ^ ((ulong)AutoCSer.Threading.SecondTimer.TimerInterval << 24);
             int isSeedArray = 0;
-            FieldInfo seedField = typeof(Random).GetField("SeedArray", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (seedField != null)
+            if (SeedArrayField != null)
             {
-                int[] seedArray = seedField.GetValue(new Random()) as int[];
+                int[] seedArray = SeedArrayField.GetValue(new Random()) as int[];
                 if (seedArray != null && seedArray.Length == 5 * 11 + 1)
                 {
                     tick *= 0xb163dUL;
@@ -106,7 +110,6 @@ namespace AutoCSer
         /// 获取随机种子位置
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private int nextIndex()
         {
             int index = Interlocked.Increment(ref current);
@@ -164,14 +167,14 @@ namespace AutoCSer
             int count = Interlocked.Decrement(ref bitCount);
             while (count < 0)
             {
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextBit);
+                while (bitCount <= 0) AutoCSer.Threading.ThreadYield.Yield();
                 count = Interlocked.Decrement(ref bitCount);
             }
             if (count == 0)
             {
                 uint value = bits & 1;
                 bits = (uint)Next();
-                bitCount = 32;
+                Interlocked.Exchange(ref bitCount, 32);
                 return value;
             }
             return bits & (1U << count);
@@ -183,16 +186,16 @@ namespace AutoCSer
         public byte NextByte()
         {
         START:
-            while (System.Threading.Interlocked.CompareExchange(ref byteLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextByte);
+            byteLock.EnterYield();
             if (byteCount == 0)
             {
                 byteCount = -1;
-                System.Threading.Interlocked.Exchange(ref byteLock, 0);
+                byteLock.Exit();
                 byte value = (byte)(bytes = NextULong());
                 bytes >>= 8;
-                while (System.Threading.Interlocked.CompareExchange(ref byteLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextByte);
+                byteLock.EnterYield();
                 byteCount = 7;
-                System.Threading.Interlocked.Exchange(ref byteLock, 0);
+                byteLock.Exit();
                 return value;
             }
             else if (byteCount > 0)
@@ -200,13 +203,13 @@ namespace AutoCSer
                 byte value = (byte)bytes;
                 --byteCount;
                 bytes >>= 8;
-                System.Threading.Interlocked.Exchange(ref byteLock, 0);
+                byteLock.Exit();
                 return value;
             }
             else
             {
-                System.Threading.Interlocked.Exchange(ref byteLock, 0);
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextByte);
+                byteLock.Exit();
+                while (byteCount < 0) AutoCSer.Threading.ThreadYield.Yield();
                 goto START;
             }
         }
@@ -217,15 +220,16 @@ namespace AutoCSer
         public ushort NextUShort()
         {
         START:
-            while (System.Threading.Interlocked.CompareExchange(ref ushortLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextUShort);
+            ushortLock.EnterYield();
             if (ushortCount == 0)
             {
-                System.Threading.Interlocked.Exchange(ref ushortLock, 0);
+                ushortCount = -1;
+                ushortLock.Exit();
                 ushort value = (ushort)(ushorts = NextULong());
                 ushorts >>= 16;
-                while (System.Threading.Interlocked.CompareExchange(ref ushortLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextUShort);
+                ushortLock.EnterYield();
                 ushortCount = 3;
-                System.Threading.Interlocked.Exchange(ref ushortLock, 0);
+                ushortLock.Exit();
                 return value;
             }
             else if (ushortCount > 0)
@@ -233,13 +237,13 @@ namespace AutoCSer
                 ushort value = (ushort)ushorts;
                 --ushortCount;
                 ushorts >>= 16;
-                System.Threading.Interlocked.Exchange(ref ushortLock, 0);
+                ushortLock.Exit();
                 return value;
             }
             else
             {
-                System.Threading.Interlocked.Exchange(ref ushortLock, 0);
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNextUShort);
+                ushortLock.Exit();
+                while (ushortCount < 0) AutoCSer.Threading.ThreadYield.Yield();
                 goto START;
             }
         }
@@ -247,13 +251,12 @@ namespace AutoCSer
         /// 获取随机种子位置
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private int nextIndex64()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref currentLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.RandomNext64);
+            currentLock.EnterYield();
             int index = current64;
             if ((current64 -= 2) < 0) current64 = (5 * 11 - 4) - current64;
-            System.Threading.Interlocked.Exchange(ref currentLock, 0);
+            currentLock.Exit();
             return index;
         }
         /// <summary>
@@ -315,7 +318,6 @@ namespace AutoCSer
         /// <summary>
         /// 获取下一个非0随机数
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public ulong SecureNextULongNotZero()
         {
             ulong value = SecureNextULong();
@@ -325,10 +327,20 @@ namespace AutoCSer
         /// <summary>
         /// 默认随机数
         /// </summary>
-        public static Random Default = new Random();
+        public static readonly Random Default;
         /// <summary>
         /// 随机Hash值(用于防构造)
         /// </summary>
-        public static readonly int Hash = Default.Next();
+        public static readonly int Hash;
+
+        static Random()
+        {
+            Default = new Random();
+            do
+            {
+                Hash = Default.Next();
+            }
+            while (Hash == 0);
+        }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpServer
 {
@@ -81,13 +82,10 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.OutputKeepCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputKeepCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputKeepCommand<outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback);
-                    push(command);
-                    callback = null;
-                    return command.KeepCallback;
-                }
+                command.Set(ClientSocket, identityCommand, callback);
+                push(command);
+                callback = null;
+                return command.KeepCallback;
             }
             return null;
         }
@@ -104,12 +102,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback);
-                    push(command);
-                    callback = null;
-                }
+                command.Set(ClientSocket, identityCommand, callback);
+                push(command);
+                callback = null;
             }
         }
         /// <summary>
@@ -125,15 +120,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback);
-                    push(command);
-                    ReturnValue<outputParameterType> value = callback.Get();
-                    callback = null;
-                    return value;
-                }
-                return new ReturnValue<outputParameterType> { Type = ReturnType.ClientException };
+                command.Set(ClientSocket, identityCommand, callback);
+                push(command);
+                ReturnValue<outputParameterType> value = callback.Get();
+                callback = null;
+                return value;
             }
             return new ReturnValue<outputParameterType> { Type = ReturnType.ClientDisposed };
         }
@@ -154,13 +145,10 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputKeepCommand<inputParameterType, outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
-                    push(command);
-                    callback = null;
-                    return command.KeepCallback;
-                }
+                command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
+                push(command);
+                callback = null;
+                return command.KeepCallback;
             }
             return null;
         }
@@ -180,12 +168,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
-                    push(command);
-                    callback = null;
-                }
+                command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
+                push(command);
+                callback = null;
             }
         }
         /// <summary>
@@ -204,15 +189,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
-                    push(command);
-                    ReturnValue<outputParameterType> value = callback.Get();
-                    callback = null;
-                    return value;
-                }
-                return new ReturnValue<outputParameterType> { Type = ReturnType.ClientException };
+                command.Set(ClientSocket, identityCommand, callback, ref inputParameter);
+                push(command);
+                ReturnValue<outputParameterType> value = callback.Get();
+                callback = null;
+                return value;
             }
             return new ReturnValue<outputParameterType> { Type = ReturnType.ClientDisposed };
         }
@@ -231,15 +212,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
-                    push(command);
-                    ReturnType type = callback.Get(out outputParameter);
-                    callback = null;
-                    return type;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
+                push(command);
+                ReturnType type = callback.Get(out outputParameter);
+                callback = null;
+                return type;
             }
             return ReturnType.ClientDisposed;
         }
@@ -262,15 +239,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
-                    push(command);
-                    ReturnType type = callback.Get(out outputParameter);
-                    callback = null;
-                    return type;
-                }
-                return  ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
+                push(command);
+                ReturnType type = callback.Get(out outputParameter);
+                callback = null;
+                return type;
             }
             return ReturnType.ClientDisposed;
         }
@@ -288,11 +261,8 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall ?? NullCallback, ref inputParameter);
-                    push(command);
-                }
+                command.Set(ClientSocket, identityCommand, onCall ?? NullCallback, ref inputParameter);
+                push(command);
             }
         }
         /// <summary>
@@ -311,15 +281,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputKeepCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputKeepCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputKeepCommand<inputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall ?? NullCallback, ref inputParameter);
-                    push(command);
-                    return command.KeepCallback;
-                }
-                returnValue.Type = ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall ?? NullCallback, ref inputParameter);
+                push(command);
+                return command.KeepCallback;
             }
-            else returnValue.Type = ReturnType.ClientDisposed;
+            returnValue.Type = ReturnType.ClientDisposed;
             return null;
         }
         /// <summary>
@@ -333,11 +299,8 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall ?? NullCallback);
-                    push(command);
-                }
+                command.Set(ClientSocket, identityCommand, onCall ?? NullCallback);
+                push(command);
             }
         }
         /// <summary>
@@ -353,15 +316,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.CallKeepCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallKeepCommand>.Default.Pop() ?? new ClientCommand.CallKeepCommand();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall ?? NullCallback);
-                    push(command);
-                    return command.KeepCallback;
-                }
-                returnValue.Type = ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall ?? NullCallback);
+                push(command);
+                return command.KeepCallback;
             }
-            else returnValue.Type = ReturnType.ClientDisposed;
+            returnValue.Type = ReturnType.ClientDisposed;
             return null;
         }
         /// <summary>
@@ -379,15 +338,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall.CallbackHandle, ref inputParameter);
-                    push(command);
-                    AutoCSer.Net.TcpServer.ReturnType value = onCall.Wait();
-                    onCall = null;
-                    return value;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall.CallbackHandle, ref inputParameter);
+                push(command);
+                AutoCSer.Net.TcpServer.ReturnType value = onCall.Wait();
+                onCall = null;
+                return value;
             }
             return ReturnType.ClientDisposed;
         }
@@ -418,15 +373,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall.CallbackHandle);
-                    push(command);
-                    AutoCSer.Net.TcpServer.ReturnType value = onCall.Wait();
-                    onCall = null;
-                    return value;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall.CallbackHandle);
+                push(command);
+                AutoCSer.Net.TcpServer.ReturnType value = onCall.Wait();
+                onCall = null;
+                return value;
             }
             return ReturnType.ClientDisposed;
         }
@@ -443,11 +394,8 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.SendOnlyCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.SendOnlyCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.SendOnlyCommand<inputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, ref inputParameter);
-                    push(command);
-                }
+                command.Set(ClientSocket, identityCommand, ref inputParameter);
+                push(command);
             }
         }
         /// <summary>
@@ -460,11 +408,8 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.SendOnlyCommand command = AutoCSer.Threading.RingPool<ClientCommand.SendOnlyCommand>.Default.Pop() ?? new ClientCommand.SendOnlyCommand();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand);
-                    push(command);
-                }
+                command.Set(ClientSocket, identityCommand);
+                push(command);
             }
         }
         /// <summary>
@@ -485,13 +430,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputOutputCommand<inputParameterType, outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<inputParameterType, outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, callback, ref inputParameter, ref outputParameter);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }
@@ -509,13 +450,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.OutputCommand<outputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.OutputCommand<outputParameterType>>.Default.Pop() ?? new ClientCommand.OutputCommand<outputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, callback, ref outputParameter);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }
@@ -533,13 +470,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputCommand<inputParameterType> command = AutoCSer.Threading.RingPool<ClientCommand.InputCommand<inputParameterType>>.Default.Pop() ?? new ClientCommand.InputCommand<inputParameterType>();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall.Call, ref inputParameter);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall.Call, ref inputParameter);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }
@@ -569,13 +502,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.CallCommand command = AutoCSer.Threading.RingPool<ClientCommand.CallCommand>.Default.Pop() ?? new ClientCommand.CallCommand();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, identityCommand, onCall.Call);
-                    push(command);
-                    return ReturnType.Success;
-                }
-                return ReturnType.ClientException;
+                command.Set(ClientSocket, identityCommand, onCall.Call);
+                push(command);
+                return ReturnType.Success;
             }
             return ReturnType.ClientDisposed;
         }
@@ -586,19 +515,27 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void push(ClientCommand.Command command)
         {
-            if (commandCount - buildCommandCount >= queueCommandSize) Thread.Sleep(1);
+            if (commandCount - buildCommandCount >= queueCommandSize)
+            {
+                AutoCSer.Threading.ThreadYield.YieldOnly();
+                if (commandCount - buildCommandCount >= queueCommandSize)
+                {
+                    Thread.Sleep(0);
+                    if (commandCount - buildCommandCount >= queueCommandSize) Thread.Sleep(1);
+                }
+            }
             Interlocked.Increment(ref commandCount);
             if (Outputs.IsPushHead(command)) OutputWaitHandle.Set();
-            ClientSocket.ResetCheck();
         }
         /// <summary>
         /// 心跳检测
         /// </summary>
-        internal override void Check()
+        /// <returns></returns>
+        internal override bool Check()
         {
             if (IsSocket)
             {
-                if (Outputs.IsEmpty)
+                if (Outputs.IsEmpty && OutputWaitHandle.IsWait != 0)
                 {
                     ClientCommand.CheckCommand command = ClientCommand.CheckCommand.Get(ClientSocket);
                     if (command != null)
@@ -611,8 +548,9 @@ namespace AutoCSer.Net.TcpServer
                         else AutoCSer.Threading.RingPool<ClientCommand.CheckCommand>.Default.PushNotNull(command);
                     }
                 }
-                ClientSocket.CheckTimer.Reset(ClientSocket);
+                return true;
             }
+            return false;
         }
         /// <summary>
         /// 发送自定义数据
@@ -624,14 +562,11 @@ namespace AutoCSer.Net.TcpServer
         {
             if (IsSocket)
             {
-                if (data == null) data = NullValue<byte>.Array;
+                if (data == null) data = EmptyArray<byte>.Array;
                 ClientCommand.CustomDataCommand command = AutoCSer.Threading.RingPool<ClientCommand.CustomDataCommand>.Default.Pop() ?? new ClientCommand.CustomDataCommand(ClientSocket);
-                if (command != null)
-                {
-                    command.Set(ClientSocket, data);
-                    push(command);
-                    return true;
-                }
+                command.Set(ClientSocket, data);
+                push(command);
+                return true;
             }
             return false;
         }
@@ -646,12 +581,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.CustomDataCommand command = AutoCSer.Threading.RingPool<ClientCommand.CustomDataCommand>.Default.Pop() ?? new ClientCommand.CustomDataCommand(ClientSocket);
-                if (command != null)
-                {
-                    command.Set(ClientSocket, ref data);
-                    push(command);
-                    return true;
-                }
+                command.Set(ClientSocket, ref data);
+                push(command);
+                return true;
             }
             return false;
         }
@@ -666,12 +598,9 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.CancelKeepCommand command = AutoCSer.Threading.RingPool<ClientCommand.CancelKeepCommand>.Default.Pop() ?? new ClientCommand.CancelKeepCommand();
-                if (command != null)
-                {
-                    command.Set(ClientSocket, commandIndex);
-                    push(command);
-                    return true;
-                }
+                command.Set(ClientSocket, commandIndex);
+                push(command);
+                return true;
             }
             return false;
         }
@@ -680,7 +609,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="types">表达式服务端节点类型集合</param>
         /// <returns>表达式服务端节点标识集合</returns>
-        internal ReturnValue<int[]> GetRemoteExpressionNodeId(RemoteType[] types)
+        internal ReturnValue<int[]> GetRemoteExpressionNodeId(AutoCSer.Reflection.RemoteType[] types)
         {
             AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output> callback = AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output>.Pop();
             try
@@ -688,24 +617,20 @@ namespace AutoCSer.Net.TcpServer
                 if (IsSocket)
                 {
                     ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ServerNodeIdChecker.Input, RemoteExpression.ServerNodeIdChecker.Output>();
-                    if (command != null)
-                    {
-                        RemoteExpression.ServerNodeIdChecker.Input inputParameter = new RemoteExpression.ServerNodeIdChecker.Input { Types = types };
-                        command.Set(ClientSocket, RemoteExpression.ServerNodeIdChecker.Input.CommandInfo, callback, ref inputParameter);
-                        push(command);
-                        RemoteExpression.ServerNodeIdChecker.Output outputParameter;
-                        ReturnType type = callback.Get(out outputParameter);
-                        callback = null;
-                        return new ReturnValue<int[]> { Type = type, Value = outputParameter.Return };
-                    }
+                    RemoteExpression.ServerNodeIdChecker.Input inputParameter = new RemoteExpression.ServerNodeIdChecker.Input { Types = types };
+                    command.Set(ClientSocket, RemoteExpression.ServerNodeIdChecker.Input.CommandInfo, callback, ref inputParameter);
+                    push(command);
+                    RemoteExpression.ServerNodeIdChecker.Output outputParameter;
+                    ReturnType type = callback.Get(out outputParameter);
+                    callback = null;
+                    return new ReturnValue<int[]> { Type = type, Value = outputParameter.Return };
                 }
-                else return new ReturnValue<int[]> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientDisposed };
+                return new ReturnValue<int[]> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientDisposed };
             }
             finally
             {
                 if (callback != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ServerNodeIdChecker.Output>.PushNotNull(callback);
             }
-            return new ReturnValue<int[]> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
         }
         /// <summary>
         /// 获取客户端远程表达式节点
@@ -756,23 +681,19 @@ namespace AutoCSer.Net.TcpServer
                 if (IsSocket)
                 {
                     ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, RemoteExpression.ReturnValue.Output>();
-                    if (command != null)
-                    {
-                        command.Set(ClientSocket, RemoteExpression.ClientNode.CommandInfo, callback, ref node);
-                        push(command);
-                        RemoteExpression.ReturnValue.Output outputParameter;
-                        ReturnType type = callback.Get(out outputParameter);
-                        callback = null;
-                        return new ReturnValue<RemoteExpression.ReturnValue> { Type = type, Value = outputParameter.Return };
-                    }
+                    command.Set(ClientSocket, RemoteExpression.ClientNode.CommandInfo, callback, ref node);
+                    push(command);
+                    RemoteExpression.ReturnValue.Output outputParameter;
+                    ReturnType type = callback.Get(out outputParameter);
+                    callback = null;
+                    return new ReturnValue<RemoteExpression.ReturnValue> { Type = type, Value = outputParameter.Return };
                 }
-                else return new ReturnValue<RemoteExpression.ReturnValue> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientDisposed };
+                return new ReturnValue<RemoteExpression.ReturnValue> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientDisposed };
             }
             finally
             {
                 if (callback != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<RemoteExpression.ReturnValue.Output>.PushNotNull(callback);
             }
-            return new ReturnValue<RemoteExpression.ReturnValue> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
         }
         /// <summary>
         /// 获取远程表达式数据
@@ -835,14 +756,11 @@ namespace AutoCSer.Net.TcpServer
             if (IsSocket)
             {
                 ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>> command = AutoCSer.Threading.RingPool<ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>>>.Default.Pop() ?? new ClientCommand.InputOutputCommand<RemoteExpression.ClientNode, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>>();
-                if (command != null)
-                {
-                    AutoCSer.Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue> awaiter = new AutoCSer.Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue>();
-                    AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue> outputParameter = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>);
-                    command.Set(ClientSocket, RemoteExpression.ClientNode.CommandInfo, awaiter, ref node, ref outputParameter);
-                    push(command);
-                    return awaiter;
-                }
+                AutoCSer.Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue> awaiter = new AutoCSer.Net.TcpServer.AwaiterBox<RemoteExpression.ReturnValue>();
+                AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue> outputParameter = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<RemoteExpression.ReturnValue>);
+                command.Set(ClientSocket, RemoteExpression.ClientNode.CommandInfo, awaiter, ref node, ref outputParameter);
+                push(command);
+                return awaiter;
             }
             return null;
         }
@@ -878,27 +796,28 @@ namespace AutoCSer.Net.TcpServer
         internal unsafe void BuildOutput()
         {
             ClientCommand.CommandBase head = null, end = null;
-            SubBuffer.PoolBufferFull Buffer = default(SubBuffer.PoolBufferFull), CopyBuffer = default(SubBuffer.PoolBufferFull), CompressBuffer = default(SubBuffer.PoolBufferFull);
+            SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull), copyBuffer = default(SubBuffer.PoolBufferFull), compressBuffer = default(SubBuffer.PoolBufferFull);
             SenderBuildInfo buildInfo = new SenderBuildInfo { SendBufferSize = clientCreator.CommandClient.SendBufferPool.Size };
             try
             {
-                clientCreator.CommandClient.SendBufferPool.Get(ref Buffer);
-                SubArray<byte> sendData = default(SubArray<byte>);
-                int bufferLength = Buffer.Length, outputSleep = clientCreator.CommandClient.OutputSleep, currentOutputSleep, minCompressSize = clientCreator.CommandClient.MinCompressSize, buildCount;
+                clientCreator.CommandClient.SendBufferPool.Get(ref buffer);
+                SubArray<byte> sendData = new SubArray<byte>();
+                int bufferLength = buffer.Length, minCompressSize = clientCreator.CommandClient.MinCompressSize, buildCount;
+                OutputWaitType outputWaitType = clientCreator.CommandClient.OutputWaitType, currentOutputWaitType;
                 SocketError socketError;
-                using (UnmanagedStream outputStream = (ClientSocket.OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer())
+                using (UnmanagedStream outputStream = (ClientSocket.OutputSerializer = BinarySerializer.YieldPool.Default.Pop() ?? new BinarySerializer()).SetTcpServer())
                 {
                     do
                     {
                         buildInfo.IsNewBuffer = 0;
-                        fixed (byte* dataFixed = Buffer.Buffer)
+                        fixed (byte* dataFixed = buffer.GetFixedBuffer())
                         {
-                            byte* start = dataFixed + Buffer.StartIndex;
-                            currentOutputSleep = outputSleep;
-                            RESET:
-                            if (outputStream.Data.Byte != start) outputStream.Reset(start, Buffer.Length);
+                            byte* start = dataFixed + buffer.StartIndex;
+                        RESET:
+                            currentOutputWaitType = outputWaitType;
+                            if (outputStream.Data.Byte != start) outputStream.Reset(start, buffer.Length);
                             buildInfo.Clear();
-                            outputStream.ByteSize = ClientCommand.Command.StreamStartIndex;
+                            outputStream.Data.CurrentIndex = ClientCommand.Command.StreamStartIndex;
                             WAIT:
                             OutputWaitHandle.Wait();
                             if (isClose || (head = Outputs.GetClear(out end)) == null) return;
@@ -919,35 +838,49 @@ namespace AutoCSer.Net.TcpServer
                             addBuildCommandCount(buildCount);
                             buildCount = 0;
                             if (!Outputs.IsEmpty) goto WAIT;
-                            if (currentOutputSleep >= 0)
+                            switch (currentOutputWaitType)
                             {
-                                Thread.Sleep(currentOutputSleep);
-                                if (!Outputs.IsEmpty || buildInfo.Count == 0)
-                                {
-                                    currentOutputSleep = 0;
-                                    goto WAIT;
-                                }
+                                case OutputWaitType.ThreadYield:
+                                    AutoCSer.Threading.ThreadYield.YieldOnly();
+                                    if (!Outputs.IsEmpty)
+                                    {
+                                        currentOutputWaitType = OutputWaitType.DontWait;
+                                        goto WAIT;
+                                    }
+                                    break;
+                                case OutputWaitType.ThreadSleep:
+                                    System.Threading.Thread.Sleep(0);
+                                    if (!Outputs.IsEmpty)
+                                    {
+                                        currentOutputWaitType = OutputWaitType.DontWait;
+                                        goto WAIT;
+                                    }
+                                    break;
                             }
-                            else if (buildInfo.Count == 0) goto WAIT;
-                            SETDATA:
+                            if (buildInfo.Count == 0)
+                            {
+                                currentOutputWaitType = outputWaitType;
+                                goto WAIT;
+                            }
+                        SETDATA:
                             //buildCommandCount += buildInfo.Count;
-                            int outputLength = outputStream.ByteSize, dataLength = outputLength - ClientCommand.Command.StreamStartIndex, compressionDataSize = 0;
+                            int outputLength = outputStream.Data.CurrentIndex, dataLength = outputLength - ClientCommand.Command.StreamStartIndex, compressionDataSize = 0;
                             if (outputLength <= bufferLength)
                             {
                                 if (outputStream.Data.ByteSize != bufferLength)
                                 {
-                                    Memory.CopyNotNull(outputStream.Data.Byte + ClientCommand.Command.StreamStartIndex, start + ClientCommand.Command.StreamStartIndex, dataLength);
+                                    AutoCSer.Memory.Common.CopyNotNull(outputStream.Data.Byte + ClientCommand.Command.StreamStartIndex, start + ClientCommand.Command.StreamStartIndex, dataLength);
                                 }
-                                sendData.Set(Buffer.Buffer, Buffer.StartIndex + ClientCommand.Command.StreamStartIndex, dataLength);
+                                sendData.Set(buffer.Buffer, buffer.StartIndex + ClientCommand.Command.StreamStartIndex, dataLength);
                             }
                             else
                             {
-                                outputStream.GetSubBuffer(ref CopyBuffer, ClientCommand.Command.StreamStartIndex);
-                                sendData.Set(CopyBuffer.Buffer, CopyBuffer.StartIndex + ClientCommand.Command.StreamStartIndex, dataLength);
-                                if (CopyBuffer.Length <= clientCreator.CommandClient.SendBufferMaxSize)
+                                outputStream.Data.GetSubBuffer(ref copyBuffer, ClientCommand.Command.StreamStartIndex);
+                                sendData.Set(copyBuffer.Buffer, copyBuffer.StartIndex + ClientCommand.Command.StreamStartIndex, dataLength);
+                                if (copyBuffer.Length <= clientCreator.CommandClient.SendBufferMaxSize)
                                 {
-                                    Buffer.Free();
-                                    CopyBuffer.CopyToClear(ref Buffer);
+                                    buffer.Free();
+                                    copyBuffer.CopyToClear(ref buffer);
                                     buildInfo.IsNewBuffer = 1;
                                 }
                             }
@@ -956,11 +889,11 @@ namespace AutoCSer.Net.TcpServer
                                 if ((dataLength -= (sizeof(uint) + sizeof(int) * 2)) >= minCompressSize)
                                 {
                                     SubArray<byte> oldSendData = sendData;
-                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
+                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref compressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
                                     {
                                         compressionDataSize = sendData.Length;
                                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 3));
-                                        fixed (byte* sendDataFixed = sendData.Array, oldSendDataFixed = oldSendData.Array)
+                                        fixed (byte* sendDataFixed = sendData.GetFixedBuffer(), oldSendDataFixed = oldSendData.GetFixedBuffer())
                                         {
                                             byte* dataStart = sendDataFixed + sendData.Start, oldDataStart = oldSendDataFixed + oldSendData.Start;
                                             *(int*)dataStart = *(int*)oldDataStart;
@@ -976,7 +909,7 @@ namespace AutoCSer.Net.TcpServer
                                 }
                                 if (compressionDataSize == 0 && SendMarkData != 0)
                                 {
-                                    fixed (byte* sendDataFixed = sendData.Array)
+                                    fixed (byte* sendDataFixed = sendData.GetFixedBuffer())
                                     {
                                         byte* dataStart = sendDataFixed + sendData.Start;
                                         int markSize = sendData.Length - (sizeof(uint) + sizeof(int) * 2 - 3);
@@ -988,11 +921,11 @@ namespace AutoCSer.Net.TcpServer
                             {
                                 if (dataLength >= minCompressSize)
                                 {
-                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
+                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref compressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
                                     {
                                         compressionDataSize = sendData.Length;
                                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
-                                        fixed (byte* sendDataFixed = sendData.Array)
+                                        fixed (byte* sendDataFixed = sendData.GetFixedBuffer())
                                         {
                                             byte* dataStart = sendDataFixed + sendData.Start;
                                             *(int*)dataStart = Server.MergeCommandIndex;
@@ -1006,7 +939,7 @@ namespace AutoCSer.Net.TcpServer
                                 {
                                     dataLength = sendData.Length;
                                     sendData.MoveStart(-ClientCommand.Command.StreamStartIndex);
-                                    fixed (byte* sendDataFixed = sendData.Array)
+                                    fixed (byte* sendDataFixed = sendData.GetFixedBuffer())
                                     {
                                         byte* dataStart = sendDataFixed + sendData.Start;
                                         *(int*)dataStart = Server.MergeCommandIndex;
@@ -1018,8 +951,6 @@ namespace AutoCSer.Net.TcpServer
                         SEND:
                             if (IsSocket)
                             {
-                                //socketError = SocketError.Success;
-                                //int count = Socket.Send(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None);
                                 int count = Socket.Send(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None, out socketError);
                                 sendData.MoveStart(count);
                                 ++OutputWaitHandle.Reserved;
@@ -1027,20 +958,16 @@ namespace AutoCSer.Net.TcpServer
                                 {
                                     if (buildInfo.IsNewBuffer == 0)
                                     {
-                                        CompressBuffer.TryFree();
-                                        CopyBuffer.Free();
-                                        if (head == null)
-                                        {
-                                            currentOutputSleep = int.MinValue;
-                                            goto RESET;
-                                        }
-                                        if (outputStream.Data.Byte != start) outputStream.Reset(start, Buffer.Length);
+                                        compressBuffer.TryFree();
+                                        copyBuffer.Free();
+                                        if (head == null) goto RESET;
+                                        if (outputStream.Data.Byte != start) outputStream.Reset(start, buffer.Length);
                                         buildInfo.Clear();
-                                        outputStream.ByteSize = ClientCommand.Command.StreamStartIndex;
-                                        //currentOutputSleep = outputSleep;
+                                        outputStream.Data.CurrentIndex = ClientCommand.Command.StreamStartIndex;
+                                        currentOutputWaitType = outputWaitType;
                                         goto LOOP;
                                     }
-                                    CompressBuffer.TryFree();
+                                    compressBuffer.TryFree();
                                     if (head != null && Outputs.IsPushHead(ref head, end)) OutputWaitHandle.Set();
                                     goto FIXEDEND;
                                 }
@@ -1056,426 +983,21 @@ namespace AutoCSer.Net.TcpServer
             }
             catch (Exception error)
             {
-                clientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Error, error);
+                clientCreator.CommandClient.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 buildInfo.IsError = true;
             }
             finally
             {
                 if (buildInfo.IsError) ClientSocket.DisposeSocket();
-                Buffer.Free();
-                CopyBuffer.TryFree();
-                CompressBuffer.TryFree();
+                buffer.Free();
+                copyBuffer.TryFree();
+                compressBuffer.TryFree();
                 ClientSocket.FreeOutputSerializer();
                 if (head == null) head = Outputs.GetClear(out end);
                 else Outputs.GetToEndClear(ref end);
-                //if (ClientSocket.CommandPool.Array != null)
-                //{
-                //    Monitor.Enter(ClientSocket.CommandPool.ArrayLock);
-                //    int poolIndex = ClientSocket.CommandPool.PoolIndex;
-                //    if (poolIndex > ClientCommand.KeepCommand.CommandPoolIndex)
-                //    {
-                //        CommandPoolIndex[] pool = ClientSocket.CommandPool.Array;
-                //        do
-                //        {
-                //            ClientCommand.Command command = pool[--poolIndex].Cancel();
-                //            if (command != null)
-                //            {
-                //                if (head == null) head = end = command;
-                //                else
-                //                {
-                //                    end.LinkNext = command;
-                //                    end = command;
-                //                }
-                //            }
-                //        }
-                //        while (poolIndex != ClientCommand.KeepCommand.CommandPoolIndex);
-                //    }
-                //    ClientSocket.CommandPool.ClearIndexExit(ClientCommand.KeepCommand.CommandPoolIndex);
-                //}
                 if (ClientSocket.CommandPool != null) head = ClientSocket.CommandPool.Free(head, end, ClientCommand.KeepCommand.CommandPoolIndex);
                 if (head != null) ClientCommand.CommandBase.CancelLink(head);
             }
         }
-
-        #region 双缓冲没有意义
-        ///// <summary>
-        ///// 等待事件
-        ///// </summary>
-        //internal AutoCSer.Threading.AutoWaitHandle BuildOutputMainWaitHandle;
-        ///// <summary>
-        ///// 等待事件
-        ///// </summary>
-        //internal object SendLock;
-        ///// <summary>
-        ///// 发送数据
-        ///// </summary>
-        //internal unsafe void BuildOutputMain()
-        //{
-        //    ClientCommand.Command head = null, end = null;
-        //    UnmanagedStream outputStream = null;
-        //    SubBuffer.PoolBufferFull Buffer = default(SubBuffer.PoolBufferFull), CopyBuffer = default(SubBuffer.PoolBufferFull), CompressBuffer = default(SubBuffer.PoolBufferFull);
-        //    byte isError = 0, isOther = 0;
-        //    try
-        //    {
-        //        commandClient.SendBufferPool.Get(ref Buffer);
-        //        SenderBuildInfo buildInfo = new SenderBuildInfo();
-        //        SubArray<byte> sendData = default(SubArray<byte>);
-        //        int bufferLength = Buffer.Length, outputSleep = commandClient.OutputSleep, currentOutputSleep, minCompressSize = commandClient.MinCompressSize;
-        //        SocketError socketError;
-        //        outputStream = (ClientSocket.OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
-        //        fixed (byte* dataFixed = Buffer.Buffer)
-        //        {
-        //            byte* start = dataFixed + Buffer.StartIndex;
-        //            RESET:
-        //            if (outputStream.Data.Byte != start) outputStream.Reset(start, Buffer.Length);
-        //            buildInfo.Clear();
-        //            outputStream.ByteSize = sizeof(uint) + sizeof(int);
-        //            currentOutputSleep = outputSleep;
-        //            WAIT:
-        //            OutputWaitHandle.Wait();
-        //            if (isClose || (head = Outputs.GetClear(out end)) == null) return;
-        //            do
-        //            {
-        //                head = head.Build(ref buildInfo);
-        //                if (buildInfo.IsSend != 0)
-        //                {
-        //                    if (head != null && Outputs.IsPushHead(ref head, end)) OutputWaitHandle.Set();
-        //                    goto SETDATA;
-        //                }
-        //            }
-        //            while (head != null);
-        //            if (!Outputs.IsEmpty) goto WAIT;
-        //            Thread.Sleep(currentOutputSleep);
-        //            if (!Outputs.IsEmpty || buildInfo.Count == 0)
-        //            {
-        //                currentOutputSleep = 0;
-        //                goto WAIT;
-        //            }
-        //            SETDATA:
-        //            //buildCommandCount += buildInfo.Count;
-        //            int outputLength = outputStream.ByteSize, dataLength = outputLength - (sizeof(uint) + sizeof(int)), compressionDataSize = 0;
-        //            if (outputLength <= bufferLength)
-        //            {
-        //                if (outputStream.Data.ByteSize != bufferLength)
-        //                {
-        //                    Memory.CopyNotNull(outputStream.Data.Byte + (sizeof(uint) + sizeof(int)), start + (sizeof(uint) + sizeof(int)), dataLength);
-        //                }
-        //                sendData.Set(Buffer.Buffer, Buffer.StartIndex + (sizeof(uint) + sizeof(int)), dataLength);
-        //            }
-        //            else
-        //            {
-        //                outputStream.GetSubBuffer(ref CopyBuffer, (sizeof(uint) + sizeof(int)));
-        //                sendData.Set(CopyBuffer.Buffer, CopyBuffer.StartIndex + (sizeof(uint) + sizeof(int)), dataLength);
-        //            }
-        //            if (buildInfo.Count == 1)
-        //            {
-        //                if ((dataLength -= (sizeof(uint) + sizeof(int) * 2)) >= minCompressSize)
-        //                {
-        //                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
-        //                    {
-        //                        compressionDataSize = sendData.Length;
-        //                        sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 3));
-        //                        fixed (byte* sendDataFixed = sendData.Array)
-        //                        {
-        //                            byte* dataStart = sendDataFixed + sendData.Start;
-        //                            *(int*)dataStart = *(int*)(outputStream.Data.Byte + (sizeof(uint) + sizeof(int)));
-        //                            *(uint*)(dataStart + sizeof(int)) = *(uint*)(outputStream.Data.Byte + (sizeof(uint) + sizeof(int) * 2));
-        //                            *(int*)(dataStart + sizeof(uint) + sizeof(int)) = -compressionDataSize;
-        //                            *(int*)(dataStart + (sizeof(uint) + sizeof(int) * 2)) = dataLength;
-        //                            if (SendMarkData != 0)
-        //                            {
-        //                                CommandBase.Mark64(dataStart + (sizeof(uint) + sizeof(int) * 3), SendMarkData, (compressionDataSize + 3) & (int.MaxValue - 3));
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //                if (compressionDataSize == 0 && SendMarkData != 0)
-        //                {
-        //                    fixed (byte* sendDataFixed = sendData.Array)
-        //                    {
-        //                        byte* dataStart = sendDataFixed + sendData.Start;
-        //                        int markSize = sendData.Length - (sizeof(uint) + sizeof(int) * 2 - 3);
-        //                        if (markSize > 3) CommandBase.Mark32(dataStart + (sizeof(uint) + sizeof(int) * 2), SendMarkData, markSize & (int.MaxValue - 3));
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (dataLength >= minCompressSize)
-        //                {
-        //                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
-        //                    {
-        //                        compressionDataSize = sendData.Length;
-        //                        sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
-        //                        fixed (byte* sendDataFixed = sendData.Array)
-        //                        {
-        //                            byte* dataStart = sendDataFixed + sendData.Start;
-        //                            *(int*)dataStart = Server.MergeCommandIndex;
-        //                            *(uint*)(dataStart + sizeof(int)) = (uint)-compressionDataSize;
-        //                            *(int*)(dataStart + (sizeof(uint) + sizeof(int))) = dataLength;
-        //                            if (SendMarkData != 0) CommandBase.Mark32(dataStart + (sizeof(uint) + sizeof(int) * 2), SendMarkData, (compressionDataSize + 3) & (int.MaxValue - 3));
-        //                        }
-        //                    }
-        //                }
-        //                if (compressionDataSize == 0)
-        //                {
-        //                    dataLength = sendData.Length;
-        //                    sendData.MoveStart(-(sizeof(uint) + sizeof(int)));
-        //                    fixed (byte* sendDataFixed = sendData.Array)
-        //                    {
-        //                        byte* dataStart = sendDataFixed + sendData.Start;
-        //                        *(int*)dataStart = Server.MergeCommandIndex;
-        //                        *(uint*)(dataStart + sizeof(int)) = (uint)dataLength;
-        //                        if (SendMarkData != 0) CommandBase.Mark64(dataStart + (sizeof(uint) + sizeof(int)), SendMarkData, (dataLength + 3) & (int.MaxValue - 3));
-        //                    }
-        //                }
-        //            }
-        //            Monitor.Enter(SendLock);
-        //            isOther = 1;
-        //            BuildOutputOtherWaitHandle.Set();
-        //            SEND:
-        //            if (IsSocket)
-        //            {
-        //                int count = Socket.Send(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None, out socketError);
-        //                sendData.MoveStart(count);
-        //                ++SendCount;
-        //                if (sendData.Length == 0)
-        //                {
-        //                    Monitor.Exit(SendLock);
-        //                    isOther = 0;
-        //                    CompressBuffer.Free();
-        //                    CopyBuffer.Free();
-        //                    BuildOutputMainWaitHandle.Wait();
-        //                    goto RESET;
-        //                }
-        //                if (socketError == SocketError.Success && count > 0) goto SEND;
-        //                isError = 1;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception error)
-        //    {
-        //        commandClient.Log.add(AutoCSer.Log.LogType.Error, error);
-        //        isError = 1;
-        //    }
-        //    finally
-        //    {
-        //        if (isError != 0) (ClientSocket as ClientSocket<attributeType>).DisposeSocket();
-        //        if (isOther != 0) Monitor.Exit(SendLock);
-        //        if (!isBuildOutputOtherFinally)
-        //        {
-        //            if (isOther == 0) BuildOutputOtherWaitHandle.Set();
-        //            while (!isBuildOutputOtherFinally) Thread.Sleep(1);
-        //        }
-        //        if (outputStream != null) outputStream.Dispose();
-        //        Buffer.Free();
-        //        CopyBuffer.Free();
-        //        CompressBuffer.Free();
-        //        ClientSocket.FreeOutputSerializer();
-        //        if (head == null) head = Outputs.GetClear(out end);
-        //        else Outputs.GetToEndClear(ref end);
-        //        if (ClientSocket.CommandPool.Array != null)
-        //        {
-        //            Monitor.Enter(ClientSocket.CommandPool.ArrayLock);
-        //            int poolIndex = ClientSocket.CommandPool.PoolIndex;
-        //            if (poolIndex > ClientCommand.KeepCommand.CommandPoolIndex)
-        //            {
-        //                CommandPoolIndex[] pool = ClientSocket.CommandPool.Array;
-        //                do
-        //                {
-        //                    ClientCommand.Command command = pool[--poolIndex].Cancel();
-        //                    if (command != null)
-        //                    {
-        //                        if (head == null) head = end = command;
-        //                        else
-        //                        {
-        //                            end.LinkNext = command;
-        //                            end = command;
-        //                        }
-        //                    }
-        //                }
-        //                while (poolIndex != ClientCommand.KeepCommand.CommandPoolIndex);
-        //            }
-        //            ClientSocket.CommandPool.ClearIndexExit(ClientCommand.KeepCommand.CommandPoolIndex);
-        //        }
-        //        if (head != null) ClientCommand.Command.CancelLink(head);
-        //    }
-        //}
-        ///// <summary>
-        ///// 等待事件
-        ///// </summary>
-        //internal AutoCSer.Threading.AutoWaitHandle BuildOutputOtherWaitHandle;
-        ///// <summary>
-        ///// 发送数据是否结束
-        ///// </summary>
-        //private bool isBuildOutputOtherFinally;
-        ///// <summary>
-        ///// 发送数据
-        ///// </summary>
-        //internal unsafe void BuildOutputOther()
-        //{
-        //    ClientCommand.Command head = null, end = null;
-        //    SubBuffer.PoolBufferFull Buffer = default(SubBuffer.PoolBufferFull), CopyBuffer = default(SubBuffer.PoolBufferFull), CompressBuffer = default(SubBuffer.PoolBufferFull);
-        //    byte isError = 0, isMain = 0;
-        //    BuildOutputOtherWaitHandle.Wait();
-        //    try
-        //    {
-        //        if (IsSocket)
-        //        {
-        //            commandClient.SendBufferPool.Get(ref Buffer);
-        //            SenderBuildInfo buildInfo = new SenderBuildInfo();
-        //            SubArray<byte> sendData = default(SubArray<byte>);
-        //            int bufferLength = Buffer.Length, outputSleep = commandClient.OutputSleep, currentOutputSleep, minCompressSize = commandClient.MinCompressSize;
-        //            SocketError socketError;
-        //            UnmanagedStream outputStream = ClientSocket.OutputSerializer.Stream;
-        //            fixed (byte* dataFixed = Buffer.Buffer)
-        //            {
-        //                byte* start = dataFixed + Buffer.StartIndex;
-        //                RESET:
-        //                if (outputStream.Data.Byte != start) outputStream.Reset(start, Buffer.Length);
-        //                buildInfo.Clear();
-        //                outputStream.ByteSize = sizeof(uint) + sizeof(int);
-        //                currentOutputSleep = outputSleep;
-        //                WAIT:
-        //                OutputWaitHandle.Wait();
-        //                if (isClose || (head = Outputs.GetClear(out end)) == null) return;
-        //                do
-        //                {
-        //                    head = head.Build(ref buildInfo);
-        //                    if (buildInfo.IsSend != 0)
-        //                    {
-        //                        if (head != null && Outputs.IsPushHead(ref head, end)) OutputWaitHandle.Set();
-        //                        goto SETDATA;
-        //                    }
-        //                }
-        //                while (head != null);
-        //                if (!Outputs.IsEmpty) goto WAIT;
-        //                Thread.Sleep(currentOutputSleep);
-        //                if (!Outputs.IsEmpty || buildInfo.Count == 0)
-        //                {
-        //                    currentOutputSleep = 0;
-        //                    goto WAIT;
-        //                }
-        //                SETDATA:
-        //                //buildCommandCount += buildInfo.Count;
-        //                int outputLength = outputStream.ByteSize, dataLength = outputLength - (sizeof(uint) + sizeof(int)), compressionDataSize = 0;
-        //                if (outputLength <= bufferLength)
-        //                {
-        //                    if (outputStream.Data.ByteSize != bufferLength)
-        //                    {
-        //                        Memory.CopyNotNull(outputStream.Data.Byte + (sizeof(uint) + sizeof(int)), start + (sizeof(uint) + sizeof(int)), dataLength);
-        //                    }
-        //                    sendData.Set(Buffer.Buffer, Buffer.StartIndex + (sizeof(uint) + sizeof(int)), dataLength);
-        //                }
-        //                else
-        //                {
-        //                    outputStream.GetSubBuffer(ref CopyBuffer, (sizeof(uint) + sizeof(int)));
-        //                    sendData.Set(CopyBuffer.Buffer, CopyBuffer.StartIndex + (sizeof(uint) + sizeof(int)), dataLength);
-        //                }
-        //                if (buildInfo.Count == 1)
-        //                {
-        //                    if ((dataLength -= (sizeof(uint) + sizeof(int) * 2)) >= minCompressSize)
-        //                    {
-        //                        if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start + (sizeof(uint) + sizeof(int) * 2), dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 3, sizeof(uint) + sizeof(int) * 3))
-        //                        {
-        //                            compressionDataSize = sendData.Length;
-        //                            sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 3));
-        //                            fixed (byte* sendDataFixed = sendData.Array)
-        //                            {
-        //                                byte* dataStart = sendDataFixed + sendData.Start;
-        //                                *(int*)dataStart = *(int*)(outputStream.Data.Byte + (sizeof(uint) + sizeof(int)));
-        //                                *(uint*)(dataStart + sizeof(int)) = *(uint*)(outputStream.Data.Byte + (sizeof(uint) + sizeof(int) * 2));
-        //                                *(int*)(dataStart + sizeof(uint) + sizeof(int)) = -compressionDataSize;
-        //                                *(int*)(dataStart + (sizeof(uint) + sizeof(int) * 2)) = dataLength;
-        //                                if (SendMarkData != 0)
-        //                                {
-        //                                    CommandBase.Mark64(dataStart + (sizeof(uint) + sizeof(int) * 3), SendMarkData, (compressionDataSize + 3) & (int.MaxValue - 3));
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                    if (compressionDataSize == 0 && SendMarkData != 0)
-        //                    {
-        //                        fixed (byte* sendDataFixed = sendData.Array)
-        //                        {
-        //                            byte* dataStart = sendDataFixed + sendData.Start;
-        //                            int markSize = sendData.Length - (sizeof(uint) + sizeof(int) * 2 - 3);
-        //                            if (markSize > 3) CommandBase.Mark32(dataStart + (sizeof(uint) + sizeof(int) * 2), SendMarkData, markSize & (int.MaxValue - 3));
-        //                        }
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    if (dataLength >= minCompressSize)
-        //                    {
-        //                        if (AutoCSer.IO.Compression.DeflateCompressor.Get(sendData.Array, sendData.Start, dataLength, ref CompressBuffer, ref sendData, sizeof(uint) + sizeof(int) * 2, 0))
-        //                        {
-        //                            compressionDataSize = sendData.Length;
-        //                            sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
-        //                            fixed (byte* sendDataFixed = sendData.Array)
-        //                            {
-        //                                byte* dataStart = sendDataFixed + sendData.Start;
-        //                                *(int*)dataStart = Server.MergeCommandIndex;
-        //                                *(uint*)(dataStart + sizeof(int)) = (uint)-compressionDataSize;
-        //                                *(int*)(dataStart + (sizeof(uint) + sizeof(int))) = dataLength;
-        //                                if (SendMarkData != 0) CommandBase.Mark32(dataStart + (sizeof(uint) + sizeof(int) * 2), SendMarkData, (compressionDataSize + 3) & (int.MaxValue - 3));
-        //                            }
-        //                        }
-        //                    }
-        //                    if (compressionDataSize == 0)
-        //                    {
-        //                        dataLength = sendData.Length;
-        //                        sendData.MoveStart(-(sizeof(uint) + sizeof(int)));
-        //                        fixed (byte* sendDataFixed = sendData.Array)
-        //                        {
-        //                            byte* dataStart = sendDataFixed + sendData.Start;
-        //                            *(int*)dataStart = Server.MergeCommandIndex;
-        //                            *(uint*)(dataStart + sizeof(int)) = (uint)dataLength;
-        //                            if (SendMarkData != 0) CommandBase.Mark64(dataStart + (sizeof(uint) + sizeof(int)), SendMarkData, (dataLength + 3) & (int.MaxValue - 3));
-        //                        }
-        //                    }
-        //                }
-        //                Monitor.Enter(SendLock);
-        //                isMain = 1;
-        //                BuildOutputMainWaitHandle.Set();
-        //                SEND:
-        //                if (IsSocket)
-        //                {
-        //                    int count = Socket.Send(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None, out socketError);
-        //                    sendData.MoveStart(count);
-        //                    ++SendCount;
-        //                    if (sendData.Length == 0)
-        //                    {
-        //                        Monitor.Exit(SendLock);
-        //                        isMain = 0;
-        //                        CompressBuffer.Free();
-        //                        CopyBuffer.Free();
-        //                        BuildOutputOtherWaitHandle.Wait();
-        //                        goto RESET;
-        //                    }
-        //                    if (socketError == SocketError.Success && count > 0) goto SEND;
-        //                    isError = 1;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception error)
-        //    {
-        //        commandClient.Log.add(AutoCSer.Log.LogType.Error, error);
-        //        isError = 1;
-        //    }
-        //    finally
-        //    {
-        //        if (head != null && Outputs.IsPushHead(ref head, end)) OutputWaitHandle.Set();
-        //        if (isError != 0) (ClientSocket as ClientSocket<attributeType>).DisposeSocket();
-        //        if (isMain != 0) Monitor.Exit(SendLock);
-        //        isBuildOutputOtherFinally = true;
-        //        if (isMain == 0) BuildOutputMainWaitHandle.Set();
-        //        Buffer.Free();
-        //        CopyBuffer.Free();
-        //        CompressBuffer.Free();
-        //    }
-        //}
-        #endregion
     }
 }

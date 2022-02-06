@@ -1,7 +1,8 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -32,12 +33,12 @@ namespace AutoCSer.Xml
         /// <param name="type"></param>
         public SerializeMemberMapDynamicMethod(Type type)
         {
-            dynamicMethod = new DynamicMethod("XmlMemberMapSerializer", null, new Type[] { typeof(MemberMap), typeof(Serializer), type }, type, true);
+            dynamicMethod = new DynamicMethod("XmlMemberMapSerializer", null, new Type[] { typeof(MemberMap), typeof(XmlSerializer), type }, type, true);
             generator = dynamicMethod.GetILGenerator();
             generator.DeclareLocal(typeof(CharStream));
 
             generator.Emit(OpCodes.Ldarg_1);
-            generator.Emit(OpCodes.Ldfld, SerializeMemberDynamicMethod.CharStreamField);
+            generator.call(SerializeMemberDynamicMethod.GetCharStreamMethod);
             generator.Emit(OpCodes.Stloc_0);
 
             isValueType = type.IsValueType;
@@ -47,7 +48,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="field">字段信息</param>
         /// <param name="attribute">XML序列化成员配置</param>
-        public void Push(FieldIndex field, MemberAttribute attribute)
+        public void Push(FieldIndex field, XmlSerializeMemberAttribute attribute)
         {
             Label end = generator.DefineLabel();
             generator.memberMapIsMember(OpCodes.Ldarg_0, field.MemberIndex);
@@ -70,7 +71,7 @@ namespace AutoCSer.Xml
             {
                 generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldstr, attribute.ItemName);
-                generator.Emit(OpCodes.Stfld, SerializeMemberDynamicMethod.ItemNameField);
+                generator.call(SerializeMemberDynamicMethod.SetItemNameMethod);
             }
             bool isCustom = false;
             MethodInfo method = SerializeMethodCache.GetMemberMethodInfo(field.Member.FieldType, ref isCustom);
@@ -100,7 +101,7 @@ namespace AutoCSer.Xml
         /// <param name="property">属性信息</param>
         /// <param name="propertyMethod">函数信息</param>
         /// <param name="attribute">XML序列化成员配置</param>
-        public void Push(PropertyIndex property, MethodInfo propertyMethod, MemberAttribute attribute)
+        public void Push(PropertyIndex property, MethodInfo propertyMethod, XmlSerializeMemberAttribute attribute)
         {
             Label end = generator.DefineLabel();
             generator.memberMapIsMember(OpCodes.Ldarg_0, property.MemberIndex);
@@ -122,7 +123,7 @@ namespace AutoCSer.Xml
             {
                 generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldstr, attribute.ItemName);
-                generator.Emit(OpCodes.Stfld, SerializeMemberDynamicMethod.ItemNameField);
+                generator.call(SerializeMemberDynamicMethod.SetItemNameMethod);
             }
             bool isCustom = false;
             MethodInfo method = SerializeMethodCache.GetMemberMethodInfo(property.Member.PropertyType, ref isCustom);

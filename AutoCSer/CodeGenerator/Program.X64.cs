@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CodeGenerator.X64
 {
@@ -13,13 +13,13 @@ namespace AutoCSer.CodeGenerator.X64
             {
                 if (args.Length == 1)
                 {
-                    args = AutoCSer.Json.Parser.Parse<string[]>(File.ReadAllText(args[0]));
+                    args = AutoCSer.JsonDeSerializer.DeSerialize<string[]>(File.ReadAllText(args[0]));
                     if (args.Length >= 4) AutoCSer.CodeGenerator.Program.X64(args);
                 }
             }
             catch (Exception error)
             {
-                Messages.Add(error);
+                Messages.Exception(error);
             }
             finally { Messages.Open(); }
         }

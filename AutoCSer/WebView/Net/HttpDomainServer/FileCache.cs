@@ -132,7 +132,7 @@ namespace AutoCSer.Net.HttpDomainServer
         internal int Set(ref SubArray<byte> data, byte[] contentType, byte[] cacheControl, bool isGZip)
         {
             int size = data.Length;
-            ContentType = contentType ?? NullValue<byte>.Array;
+            ContentType = contentType ?? EmptyArray<byte>.Array;
             try
             {
                 this.data = gZipData = data;

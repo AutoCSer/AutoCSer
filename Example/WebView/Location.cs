@@ -36,7 +36,7 @@ namespace AutoCSer.Example.WebView
             using (WebClient webClient = new WebClient())
             {
                 string json = webClient.DownloadString(WebConfig.HttpDomain+ "Location/Index");
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 1 + 2)
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 1 + 2)
                 {
                     return false;
                 }

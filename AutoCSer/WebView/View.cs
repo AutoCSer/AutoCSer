@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -16,7 +17,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 默认 WEB 视图配置
         /// </summary>
-        internal static readonly ViewAttribute DefaultAttribute = ConfigLoader.GetUnion(typeof(ViewAttribute)).ViewAttribute ?? new ViewAttribute();
+        internal static readonly ViewAttribute DefaultAttribute = (ViewAttribute)AutoCSer.Configuration.Common.Get(typeof(ViewAttribute)) ?? new ViewAttribute();
         /// <summary>
         /// HTTP请求头部处理[TRY+1]
         /// </summary>
@@ -55,7 +56,7 @@ namespace AutoCSer.WebView
             //}
             //catch (Exception error)
             //{
-            //    DomainServer.RegisterServer.TcpServer.Log.add(AutoCSer.Log.LogType.Error, error);
+            //    DomainServer.RegisterServer.TcpServer.Log.add(AutoCSer.LogLevel.Error, error);
             //}
             //serverError500(socket, identity);
         }
@@ -66,19 +67,19 @@ namespace AutoCSer.WebView
         {
             long identity = SocketIdentity;
             AutoCSer.Net.Http.SocketBase socket = Socket;
-            byte* buffer = null, encodeBuffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer), encodeBuffer = default(AutoCSer.Memory.Pointer);
             try
             {
                 if (ResponsePage(ref buffer, ref encodeBuffer) && SocketResponse(ref PageResponse)) return;
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
-                if (encodeBuffer != null) AutoCSer.UnmanagedPool.Default.Push(encodeBuffer);
+                UnmanagedPool.Default.Push(ref buffer);
+                UnmanagedPool.Default.Push(ref encodeBuffer);
             }
             serverError500(socket, identity);
         }
@@ -107,7 +108,7 @@ namespace AutoCSer.WebView
                 }
                 catch (Exception error)
                 {
-                    DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 serverError500(socket, identity);
             }
@@ -134,7 +135,7 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             serverError500(socket, identity);
         }
@@ -145,7 +146,7 @@ namespace AutoCSer.WebView
         {
             long identity = SocketIdentity;
             AutoCSer.Net.Http.SocketBase socket = Socket;
-            byte* buffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
                 ResponseAjax(ref buffer);
@@ -153,11 +154,11 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
             }
             serverError500(socket, identity);
         }
@@ -168,7 +169,7 @@ namespace AutoCSer.WebView
         {
             long identity = SocketIdentity;
             AutoCSer.Net.Http.SocketBase socket = Socket;
-            byte* buffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
                 ResponseLocationPathAjax(ref buffer);
@@ -176,11 +177,11 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
             }
             serverError500(socket, identity);
         }
@@ -271,7 +272,7 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             serverError500();
             return false;
@@ -298,7 +299,7 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             serverError500(socket, identity);
         }
@@ -309,7 +310,7 @@ namespace AutoCSer.WebView
         {
             long identity = SocketIdentity;
             AutoCSer.Net.Http.SocketBase socket = Socket;
-            byte* buffer = null, encodeBuffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer), encodeBuffer = default(AutoCSer.Memory.Pointer);
             try
             {
                 if (ResponsePage(ref buffer, ref encodeBuffer) && SocketResponse(ref PageResponse))
@@ -320,12 +321,12 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
-                if (encodeBuffer != null) AutoCSer.UnmanagedPool.Default.Push(encodeBuffer);
+                UnmanagedPool.Default.Push(ref buffer);
+                UnmanagedPool.Default.Push(ref encodeBuffer);
             }
             serverError500(socket, identity);
         }
@@ -358,7 +359,7 @@ namespace AutoCSer.WebView
                 }
                 catch (Exception error)
                 {
-                    DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 serverError500(socket, identity);
             }
@@ -385,7 +386,7 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             serverError500(socket, identity);
         }
@@ -396,7 +397,7 @@ namespace AutoCSer.WebView
         {
             long identity = SocketIdentity;
             AutoCSer.Net.Http.SocketBase socket = Socket;
-            byte* buffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
                 ResponseAjax(ref buffer);
@@ -408,11 +409,11 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
             }
             serverError500(socket, identity);
         }
@@ -423,7 +424,7 @@ namespace AutoCSer.WebView
         {
             long identity = SocketIdentity;
             AutoCSer.Net.Http.SocketBase socket = Socket;
-            byte* buffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
                 ResponseLocationPathAjax(ref buffer);
@@ -435,11 +436,11 @@ namespace AutoCSer.WebView
             }
             catch (Exception error)
             {
-                DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
             }
             serverError500(socket, identity);
         }
@@ -499,14 +500,14 @@ namespace AutoCSer.WebView
                         htmls = treeBuilder.HtmlArray.getArray(value => DomainServer.ResponseEncoding.GetBytesNotNull(value));
                         return true;
                     }
-                    DomainServer.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, "HTML模版文件不匹配 " + fileName);
+                    DomainServer.RegisterServer.TcpServer.Log.Error("HTML模版文件不匹配 " + fileName, LogLevel.Error | LogLevel.AutoCSer);
                 }
                 catch (Exception error)
                 {
-                    DomainServer.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, error, fileName);
+                    DomainServer.RegisterServer.TcpServer.Log.Exception(error, fileName, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
-            else DomainServer.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, "没有找到HTML模版文件 " + fileName);
+            else DomainServer.RegisterServer.TcpServer.Log.Error("没有找到HTML模版文件 " + fileName, LogLevel.Error | LogLevel.AutoCSer);
             return false;
         }
         /// <summary>
@@ -560,23 +561,23 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static pageType Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            popLock.EnterYield();
             pageType headValue;
             do
             {
                 if ((headValue = poolHead) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     return null;
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref poolHead, headValue.next, headValue) == headValue)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref poolCount);
                     headValue.setPool(headValue);
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -609,7 +610,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(pageType));
+        private readonly static int poolMaxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(pageType));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -617,7 +618,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -648,7 +649,7 @@ namespace AutoCSer.WebView
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -675,7 +676,7 @@ namespace AutoCSer.WebView
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -724,7 +725,7 @@ namespace AutoCSer.WebView
         }
         static View()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(View<pageType>));
         }
     }
 }

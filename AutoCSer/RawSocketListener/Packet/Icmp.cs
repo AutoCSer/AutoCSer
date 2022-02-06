@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.InteropServices;
 
 namespace AutoCSer.Net.Packet
@@ -345,7 +345,7 @@ namespace AutoCSer.Net.Packet
             get
             {
                 int minSize = minTypeSize[data.Array[data.StartIndex]];
-                return data.Length > minSize ? new SubArray<byte>(data.StartIndex + minSize, data.Length - minSize, data.Array) : default(SubArray<byte>);
+                return data.Length > minSize ? new SubArray<byte>(data.StartIndex + minSize, data.Length - minSize, data.Array) : new SubArray<byte>();
             }
         }
         /*
@@ -379,7 +379,7 @@ namespace AutoCSer.Net.Packet
                     }
                 }
             }
-            this.data = default(SubArray<byte>);
+            this.data = new SubArray<byte>();
         }
         static Icmp()
         {

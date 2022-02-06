@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {

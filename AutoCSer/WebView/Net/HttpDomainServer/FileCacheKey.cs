@@ -34,7 +34,7 @@ namespace AutoCSer.Net.HttpDomainServer
             this.pathIdentity = HashCode = pathIdentity;
             if (length != 0)
             {
-                fixed (byte* dataFixed = path) HashCode ^= Memory.GetHashCode(dataFixed + startIndex, length) ^ Random.Hash;
+                fixed (byte* dataFixed = path) HashCode ^= AutoCSer.Memory.Common.GetHashCode(dataFixed + startIndex, length) ^ Random.Hash;
             }
         }
         /// <summary>
@@ -48,9 +48,9 @@ namespace AutoCSer.Net.HttpDomainServer
             if (other.path.Array != null && ((HashCode ^ other.HashCode) | (pathIdentity ^ other.pathIdentity) | (path.Length ^ other.path.Length)) == 0)
             {
                 if (path.Array == other.path.Array && path.Start == other.path.Start) return true;
-                fixed (byte* dataFixed = path.Array, otherDataFixed = other.path.Array)
+                fixed (byte* dataFixed = path.GetFixedBuffer(), otherDataFixed = other.path.GetFixedBuffer())
                 {
-                    return Memory.EqualNotNull(dataFixed + path.Start, otherDataFixed + other.path.Start, path.Length);
+                    return AutoCSer.Memory.Common.EqualNotNull(dataFixed + path.Start, otherDataFixed + other.path.Start, path.Length);
                 }
             }
             return false;

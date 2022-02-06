@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using AutoCSer.Log;
 using System.Diagnostics;
@@ -8,6 +8,7 @@ using AutoCSer.Diagnostics;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.HttpRegister
 {
@@ -28,7 +29,7 @@ namespace AutoCSer.Net.HttpRegister
         /// <summary>
         /// HTTP 服务相关参数
         /// </summary>
-        internal static readonly Config Config = ConfigLoader.GetUnion(typeof(Config)).Config ?? new Config();
+        internal static readonly Config Config = (Config)AutoCSer.Configuration.Common.Get(typeof(Config)) ?? new Config();
         /// <summary>
         /// 程序集信息缓存
         /// </summary>
@@ -92,9 +93,9 @@ namespace AutoCSer.Net.HttpRegister
         public override void SetTcpServer(AutoCSer.Net.TcpInternalServer.Server tcpServer)
         {
             base.SetTcpServer(tcpServer);
-            cacheFileName = AutoCSer.Config.Pub.Default.CachePath + ServerName + (ServerName == tcpServer.ServerAttribute.ServerName ? null : ("_" + tcpServer.ServerAttribute.ServerName)) + ".cache";
+            cacheFileName = AutoCSer.Common.Config.CachePath + ServerName + (ServerName == tcpServer.ServerAttribute.ServerName ? null : ("_" + tcpServer.ServerAttribute.ServerName)) + ".cache";
             FileWatcher = new AutoCSer.IO.CreateFlieTimeoutWatcher(ProcessCopyer.Config.CheckTimeoutSeconds, this, AutoCSer.IO.CreateFlieTimeoutType.HttpServerRegister, tcpServer.Log);
-            if (!AutoCSer.Config.Pub.Default.IsService && ProcessCopyer.Config.WatcherPath != null)
+            if (!AutoCSer.Common.Config.IsService && ProcessCopyer.Config.WatcherPath != null)
             {
                 try
                 {
@@ -102,14 +103,14 @@ namespace AutoCSer.Net.HttpRegister
                 }
                 catch (Exception error)
                 {
-                    tcpServer.Log.Add(AutoCSer.Log.LogType.Error, error, ProcessCopyer.Config.WatcherPath);
+                    tcpServer.Log.Exception(error, ProcessCopyer.Config.WatcherPath, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             try
             {
                 if (System.IO.File.Exists(cacheFileName))
                 {
-                    Cache[] cache = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<Cache[]>(System.IO.File.ReadAllBytes(cacheFileName));
+                    Cache[] cache = AutoCSer.BinaryDeSerializer.DeSerialize<Cache[]>(System.IO.File.ReadAllBytes(cacheFileName));
                     isLoadCache = true;
                     if (OnLoadCacheDomain != null) OnLoadCacheDomain();
                     for (int index = cache.Length; index != 0; )
@@ -120,14 +121,14 @@ namespace AutoCSer.Net.HttpRegister
                         }
                         catch (Exception error)
                         {
-                            tcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                            tcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                     }
                 }
             }
             catch (Exception error)
             {
-                tcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                tcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             if (isLoadCache) isLoadCache = false;
             else if (OnLoadCacheDomain != null) OnLoadCacheDomain();
@@ -244,7 +245,7 @@ namespace AutoCSer.Net.HttpRegister
             FileInfo assemblyFile = new FileInfo(register.AssemblyFile);
             if (!System.IO.File.Exists(register.AssemblyFile))
             {
-                server.Log.Add(AutoCSer.Log.LogType.Error, "未找到程序集 " + register.AssemblyFile);
+                server.Log.Error("未找到程序集 " + register.AssemblyFile, LogLevel.Error | LogLevel.AutoCSer);
                 return RegisterState.NotFoundAssembly;
             }
             RegisterState state = RegisterState.Unknown;
@@ -264,7 +265,7 @@ namespace AutoCSer.Net.HttpRegister
                     {
                         if (!register.IsShareAssembly || !assemblyCache.TryGetValue(pathKey, out assembly))
                         {
-                            string serverPath = Config.WorkPath + ((ulong)AutoCSer.Pub.Identity).toHex() + AutoCSer.Extension.DirectoryExtension.Separator;
+                            string serverPath = Config.WorkPath + ((ulong)AutoCSer.Config.Identity).toHex() + AutoCSer.Extensions.DirectoryInfoExtension.Separator;
                             Directory.CreateDirectory(serverPath);
                             foreach (FileInfo file in directory.GetFiles()) file.CopyTo(serverPath + file.Name);
                             assembly = Assembly.LoadFrom(serverPath + assemblyFile.Name);
@@ -289,20 +290,20 @@ namespace AutoCSer.Net.HttpRegister
                                 try
                                 {
                                     Cache[] registers = domains.GetSaveCache();
-                                    if (registers != null) System.IO.File.WriteAllBytes(cacheFileName, AutoCSer.BinarySerialize.Serializer.Serialize(registers));
+                                    if (registers != null) System.IO.File.WriteAllBytes(cacheFileName, AutoCSer.BinarySerializer.Serialize(registers));
                                 }
                                 finally { Monitor.Exit(domainLock); }
                             }
-                            server.Log.Add(AutoCSer.Log.LogType.Info, @"domain success
+                            server.Log.Info(@"domain success
 " + register.Domains.joinString(@"
-", domain => domain.DomainData.toStringNotNull() + (domain.Host.Host == null ? null : (" [" + domain.Host.Host + ":" + domain.Host.Port.toString() + "]")) + (domain.SslHost.Host == null ? null : (" [" + domain.SslHost.Host + ":" + domain.SslHost.Port.toString() + "]"))), new System.Diagnostics.StackFrame(), false);
+", domain => domain.DomainData.toStringNotNull() + (domain.Host.Host == null ? null : (" [" + domain.Host.Host + ":" + domain.Host.Port.toString() + "]")) + (domain.SslHost.Host == null ? null : (" [" + domain.SslHost.Host + ":" + domain.SslHost.Port.toString() + "]"))), LogLevel.Info | LogLevel.AutoCSer);
                             return RegisterState.Success;
                         }
                     }
                 }
                 catch (Exception error)
                 {
-                    server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             foreach (Domain domain in register.Domains)
@@ -329,7 +330,7 @@ namespace AutoCSer.Net.HttpRegister
                 if (domain.SslHost.Host == null)
                 {
                     if (domainData.length() == 0) return RegisterState.DomainError;
-                    int portIndex = AutoCSer.Memory.indexOfNotNull(domainData, (byte)':');
+                    int portIndex = AutoCSer.Memory.Common.indexOfNotNull(domainData, (byte)':');
                     if (portIndex == -1) domain.Host.Set(domainData.toStringNotNull(), 80);
                     else if (portIndex == 0) return RegisterState.DomainError;
                     else
@@ -348,9 +349,9 @@ namespace AutoCSer.Net.HttpRegister
                         string host = domain.SslHost.Host;
                         if (domain.SslHost.Port != 443) host += ":" + domain.SslHost.Port.toString();
                         domain.DomainData = domainData = host.getBytes();
-                        server.Log.Add(AutoCSer.Log.LogType.Error, domain.SslHost.Host + " 缺少指定域名");
+                        server.Log.Error(domain.SslHost.Host + " 缺少指定域名", LogLevel.Error | LogLevel.AutoCSer);
                     }
-                    else if (domain.SslHost.Port != 443 && AutoCSer.Memory.indexOfNotNull(domainData, (byte)':') == -1)
+                    else if (domain.SslHost.Port != 443 && AutoCSer.Memory.Common.indexOfNotNull(domainData, (byte)':') == -1)
                     {
                         domain.DomainData = domainData = (domainData.toStringNotNull() + ":" + domain.SslHost.Port.toString()).getBytes();
                     }
@@ -367,11 +368,11 @@ namespace AutoCSer.Net.HttpRegister
                     string host = domain.Host.Host;
                     if (domain.Host.Port != 80) host += ":" + domain.Host.Port.toString();
                     domain.DomainData = domainData = host.getBytes();
-                    server.Log.Add(AutoCSer.Log.LogType.Error, domain.Host.Host + " 缺少指定域名");
+                    server.Log.Error(domain.Host.Host + " 缺少指定域名", LogLevel.Error | LogLevel.AutoCSer);
                 }
                 else if (domain.SslHost.Host == null)
                 {
-                    if (domain.Host.Port != 80 && AutoCSer.Memory.indexOfNotNull(domainData, (byte)':') == -1)
+                    if (domain.Host.Port != 80 && AutoCSer.Memory.Common.indexOfNotNull(domainData, (byte)':') == -1)
                     {
                         domain.DomainData = domainData = (domainData.toStringNotNull() + ":" + domain.Host.Port.toString()).getBytes();
                     }
@@ -475,7 +476,7 @@ namespace AutoCSer.Net.HttpRegister
             }
             catch (Exception error)
             {
-                server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally { Monitor.Exit(hostLock); }
             if (httpServer != null) httpServer.Dispose();
@@ -497,7 +498,7 @@ namespace AutoCSer.Net.HttpRegister
                 {
                     if (httpServer.IsSSL)
                     {
-                        if (new AutoCSer.Net.Http.UnionType { Value = httpServer }.SslServer.SetCertificate(domain))
+                        if (new AutoCSer.Net.Http.UnionType.SslServer { Object = httpServer }.Value.SetCertificate(domain))
                         {
                             ++httpServer.DomainCount;
                             return RegisterState.Success;
@@ -525,7 +526,7 @@ namespace AutoCSer.Net.HttpRegister
             }
             catch (Exception error)
             {
-                server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally { Monitor.Exit(hostLock); }
             if (httpServer != null) httpServer.Dispose();
@@ -606,7 +607,7 @@ namespace AutoCSer.Net.HttpRegister
                     {
                         KeyValue<Domain, int> stopDomain = domainServer.Domains[--index];
                         if ((stopDomain.Value | (stopDomain.Key.DomainData.Length ^ domainData.Length)) == 0
-                            && AutoCSer.Memory.SimpleEqualNotNull(stopDomain.Key.DomainData, domainData, domainData.Length)
+                            && AutoCSer.Memory.Common.SimpleEqualNotNull(stopDomain.Key.DomainData, domainData, domainData.Length)
                             && Interlocked.CompareExchange(ref domainServer.Domains[index].Value, 1, 0) == 0)
                         {
                             if (!stopDomain.Key.IsOnlyHost)
@@ -686,18 +687,18 @@ namespace AutoCSer.Net.HttpRegister
 #if NoAutoCSer
             throw new Exception();
 #else
-            TcpInternalServer tcpServer = new TcpInternalServer(null, null, this, null, log);
+            TcpInternalServer tcpServer = new TcpInternalServer(null, null, this, 0, null, log);
             base.SetTcpServer(tcpServer);
             Assembly assembly = typeof(domainType).Assembly;
-            LocalDomainServer = AutoCSer.Emit.Constructor<domainType>.New();
-            LocalDomainServer.LoadCheckPath = getLoadCheckPath(new DirectoryInfo(workPath ?? AutoCSer.PubPath.ApplicationPath)).FullName;
+            LocalDomainServer = AutoCSer.Metadata.DefaultConstructor<domainType>.Constructor();
+            LocalDomainServer.LoadCheckPath = getLoadCheckPath(new DirectoryInfo(workPath ?? AutoCSer.Config.ApplicationPath)).FullName;
             if (LocalDomainServer.Start(this, domains, null))
             {
                 if ((state = start(domains)) == RegisterState.Success)
                 {
-                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Info, @"domain success
+                    AutoCSer.LogHelper.Info(@"domain success
 " + domains.joinString(@"
-", domain => domain.Host.Host + ":" + domain.Host.Port.toString()), new System.Diagnostics.StackFrame(), false);
+", domain => domain.Host.Host + ":" + domain.Host.Port.toString()), LogLevel.Info | LogLevel.AutoCSer);
                     return RegisterState.Success;
                 }
             }
@@ -719,7 +720,7 @@ namespace AutoCSer.Net.HttpRegister
             try
             {
                 if ((state = server.start<domainServerType>(workPath, domains, log)) == RegisterState.Success) return server;
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Debug, "HTTP服务启动失败 " + state.ToString());
+                AutoCSer.LogHelper.Debug("HTTP服务启动失败 " + state.ToString(), LogLevel.Debug | LogLevel.AutoCSer);
             }
             finally
             {
@@ -765,7 +766,7 @@ namespace AutoCSer.Net.HttpRegister
             try
             {
                 if ((state = server.start<domainServerType>(workPath, hosts, log)) == RegisterState.Success) return server;
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Debug, "HTTP服务启动失败 " + state.ToString());
+                AutoCSer.LogHelper.Debug("HTTP服务启动失败 " + state.ToString(), LogLevel.Debug | LogLevel.AutoCSer);
             }
             finally
             {

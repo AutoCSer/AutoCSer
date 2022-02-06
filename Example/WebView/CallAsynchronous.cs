@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Net;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Example.WebView
 {
@@ -25,7 +26,7 @@ namespace AutoCSer.Example.WebView
         /// <param name="right"></param>
         public void AddBuffer(int left, int right)
         {
-            Pointer.Size buffer = AutoCSer.UnmanagedPool.Tiny.GetSize();
+            AutoCSer.Memory.Pointer buffer = UnmanagedPool.Tiny.GetPointer();
             try
             {
                 if (CreateResponse(ref buffer))
@@ -34,7 +35,7 @@ namespace AutoCSer.Example.WebView
                     RepsonseEnd();
                 }
             }
-            finally { AutoCSer.UnmanagedPool.Tiny.Push(ref buffer); }
+            finally { UnmanagedPool.Tiny.Push(ref buffer); }
         }
 
         /// <summary>
@@ -47,15 +48,15 @@ namespace AutoCSer.Example.WebView
             using (WebClient webClient = new WebClient())
             {
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
-                string json = webClient.UploadString(WebConfig.HttpDomain + @"CallAsynchronous/Add", "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 3, right = 5 }));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 3 + 5)
+                string json = webClient.UploadString(WebConfig.HttpDomain + @"CallAsynchronous/Add", "POST", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 3, right = 5 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 3 + 5)
                 {
                     return false;
                 }
 
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
-                json = webClient.UploadString(WebConfig.HttpDomain + @"CallAsynchronous/AddBuffer", "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 2, right = 3 }));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 2 + 3)
+                json = webClient.UploadString(WebConfig.HttpDomain + @"CallAsynchronous/AddBuffer", "POST", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 2, right = 3 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 2 + 3)
                 {
                     return false;
                 }

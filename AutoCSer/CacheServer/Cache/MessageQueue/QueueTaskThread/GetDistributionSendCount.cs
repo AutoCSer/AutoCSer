@@ -35,7 +35,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         {
             try
             {
-                new UnionType { Value = MessageQueue }.Distributor.GetSendCount(this);
+                new UnionType.Distributor { Object = MessageQueue }.Value.GetSendCount(this);
             }
             finally
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +8,7 @@ namespace AutoCSer.CacheServer
     /// <summary>
     /// 附带标识的返回值参数
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     public struct IdentityReturnParameter
     {
@@ -54,9 +55,9 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="serializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             UnmanagedStream stream = serializer.Stream;
             stream.Write(Identity);
@@ -67,9 +68,9 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="deSerializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             Identity = deSerializer.ReadULong();
             Parameter.DeSerializeReturnParameter(deSerializer);

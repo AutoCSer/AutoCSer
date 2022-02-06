@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Reflection;
 #if !NOJIT
 using/**/System.Reflection.Emit;
@@ -40,7 +41,7 @@ namespace AutoCSer.Net.WebClient
                     while (++start != end);
                     if ((length | isSpace) != 0)
                     {
-                        string url = AutoCSer.Extension.StringExtension.FastAllocateString(value.Length + length);
+                        string url = AutoCSer.Extensions.StringExtension.FastAllocateString(value.Length + length);
                         fixed (char* urlFixed = url)
                         {
                             char* write = urlFixed;
@@ -137,7 +138,7 @@ namespace AutoCSer.Net.WebClient
 #endif
         unsafe static UriCreator()
         {
-            urlMap = new MemoryMap(Unmanaged.GetStatic64(256 >> 3, true));
+            urlMap = new MemoryMap(Unmanaged.GetStatic(256 >> 3, true));
             urlMap.Set('0', 10);
             urlMap.Set('A', 26);
             urlMap.Set('a', 26);

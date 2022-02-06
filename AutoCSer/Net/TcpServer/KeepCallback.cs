@@ -14,13 +14,13 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         private readonly ClientCommand.Command command;
         /// <summary>
+        /// 回调保持访问锁
+        /// </summary>
+        private AutoCSer.Threading.SpinLock keepLock;
+        /// <summary>
         /// 命令会话标识
         /// </summary>
         private int commandIndex;
-        /// <summary>
-        /// 回调保持访问锁
-        /// </summary>
-        private int keepLock;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
@@ -41,14 +41,14 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool SetCommandIndex(int commandIndex)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallbackSetCommandIndex);
+            keepLock.EnterYield();
             if (isDisposed == 0)
             {
                 this.commandIndex = commandIndex;
-                System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                keepLock.Exit();
                 return true;
             }
-            System.Threading.Interlocked.Exchange(ref keepLock, 0);
+            keepLock.Exit();
             return false;
         }
         /// <summary>
@@ -65,14 +65,14 @@ namespace AutoCSer.Net.TcpServer
         {
             if (isDisposed == 0)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallbackCancel);
+                keepLock.EnterYield();
                 if (isDisposed == 0)
                 {
                     isDisposed = 1;
-                    System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                    keepLock.Exit();
                     if (commandIndex != 0) command.Socket.CommandPool.CancelKeep(commandIndex, command);
                 }
-                else System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                else keepLock.Exit();
             }
         }
         /// <summary>
@@ -83,14 +83,14 @@ namespace AutoCSer.Net.TcpServer
             //command.CancelKeep(Interlocked.Exchange(ref this.identity, int.MinValue))
             if (isDisposed == 0)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallbackDispose);
+                keepLock.EnterYield();
                 if (isDisposed == 0)
                 {
                     isDisposed = 1;
-                    System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                    keepLock.Exit();
                     if (commandIndex != 0) command.CancelKeep(commandIndex);
                 }
-                else System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                else keepLock.Exit();
             }
         }
     }

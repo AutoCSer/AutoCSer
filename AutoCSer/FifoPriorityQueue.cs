@@ -265,6 +265,22 @@ namespace AutoCSer
         /// <summary>
         /// 弹出一个值
         /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool TryPopValue(out valueType value)
+        {
+            if (header != null)
+            {
+                value = UnsafePopNode().Value;
+                return true;
+            }
+            value = default(valueType);
+            return false;
+        }
+        /// <summary>
+        /// 弹出一个值
+        /// </summary>
         /// <returns>值</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal valueType UnsafePopValue()

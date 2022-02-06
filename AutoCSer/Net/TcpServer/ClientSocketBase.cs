@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer
 {
@@ -20,11 +20,11 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 服务 IP 地址
         /// </summary>
-        protected readonly IPAddress ipAddress;
+        internal readonly IPAddress IpAddress;
         /// <summary>
         /// 服务端口
         /// </summary>
-        protected readonly int port;
+        internal readonly int Port;
         /// <summary>
         /// 最大输入数据字节数
         /// </summary>
@@ -33,6 +33,10 @@ namespace AutoCSer.Net.TcpServer
         /// 日志处理接口
         /// </summary>
         internal readonly ILog Log;
+        /// <summary>
+        /// 客户端延迟日志
+        /// </summary>
+        internal readonly ClientLazyLog LazyLog;
 #if DOTNET2
         /// <summary>
         /// 接收数据异步回调
@@ -51,17 +55,17 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        protected int receiveAsyncLock;
+        protected AutoCSer.Threading.SpinLock receiveAsyncLock;
 #endif
 #endif
         /// <summary>
         /// 输出数据 JSON 序列化
         /// </summary>
-        internal Json.Serializer OutputJsonSerializer;
+        internal AutoCSer.JsonSerializer OutputJsonSerializer;
         /// <summary>
         /// 输出数据二进制序列化
         /// </summary>
-        internal BinarySerialize.Serializer OutputSerializer;
+        internal BinarySerializer OutputSerializer;
         /// <summary>
         /// 客户端心跳检测定时
         /// </summary>
@@ -147,11 +151,11 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 回调数据二进制反序列化
         /// </summary>
-        internal BinarySerialize.DeSerializer ReceiveDeSerializer;
+        internal AutoCSer.BinaryDeSerializer ReceiveDeSerializer;
         /// <summary>
         /// 回调数据 JSON 解析
         /// </summary>
-        internal Json.Parser ReceiveJsonParser;
+        internal AutoCSer.JsonDeSerializer ReceiveJsonDeSerializer;
         /// <summary>
         /// 序列化参数编号
         /// </summary>
@@ -186,10 +190,11 @@ namespace AutoCSer.Net.TcpServer
         internal ClientSocketBase(ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int maxInputSize)
         {
             ClientCreator = clientCreator;
-            this.ipAddress = ipAddress;
-            this.port = port;
+            this.IpAddress = ipAddress;
+            this.Port = port;
             Log = clientCreator.CommandClient.Log;
             MaxInputSize = maxInputSize > 0 ? maxInputSize : int.MaxValue;
+            LazyLog = clientCreator.Attribute.ClientLazyLogSeconds > 0 ? new ClientLazyLog(Math.Max(clientCreator.Attribute.ClientLazyLogSeconds + 1, int.MaxValue), this) : ClientLazyLog.Null;
         }
         /// <summary>
         /// 创建 TCP 服务客户端套接字
@@ -219,12 +224,11 @@ namespace AutoCSer.Net.TcpServer
             {
                 if (client.Attribute.GetCheckSeconds > 0 && CheckTimer == null)
                 {
-                    CheckTimer = ClientCheckTimer.Get(client.Attribute.GetCheckSeconds);
-                    if (client.IsDisposed == 0) CheckTimer.Push(this);
-                    else
+                    ClientCheckTimer checkTimer = new ClientCheckTimer(this, Math.Max(client.Attribute.GetCheckSeconds, 1));
+                    if (Interlocked.CompareExchange(ref CheckTimer, checkTimer, null) == null)
                     {
-                        ClientCheckTimer.Free(ref CheckTimer);
-                        return false;
+                        if (client.IsDisposed == 0) checkTimer.AppendTaskArray();
+                        else return false;
                     }
                 }
                 return true;
@@ -278,15 +282,23 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal void VerifyMethodSleep()
         {
-            if (CreateVersion == ClientCreator.CreateVersion)
+            if (ClientCreator.VerifyCount < ClientCreator.Attribute.VerifyCount && CheckCreateVersion())
             {
-                ClientCreator.CommandClient.SocketWait.PulseReset();
-                Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
+                CreateSleep();
+                CreateNew();
             }
-            if (Socket != null)
+            else
             {
-                AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
-                Socket = null;
+                if (CreateVersion == ClientCreator.CreateVersion)
+                {
+                    ClientCreator.CommandClient.SocketWait.PulseReset();
+                    Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
+                }
+                if (Socket != null)
+                {
+                    AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
+                    Socket = null;
+                }
             }
         }
         /// <summary>
@@ -309,20 +321,13 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         protected abstract void close();
         /// <summary>
-        /// 重置心跳检测
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void ResetCheck()
-        {
-            if (CheckTimer != null) CheckTimer.Reset(this);
-        }
-        /// <summary>
         /// 心跳检测
         /// </summary>
+        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Check()
+        internal bool Check()
         {
-            if (!isClose) Sender.Check();
+            return !isClose && Sender.Check();
         }
         /// <summary>
         /// 弹出节点
@@ -388,7 +393,7 @@ namespace AutoCSer.Net.TcpServer
         {
             if (OutputJsonSerializer == null)
             {
-                OutputJsonSerializer = Json.Serializer.YieldPool.Default.Pop() ?? new Json.Serializer();
+                OutputJsonSerializer = AutoCSer.JsonSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonSerializer();
                 OutputJsonSerializer.SetTcpServer();
             }
             OutputJsonSerializer.SerializeTcpServer(ref value, OutputSerializer.Stream);
@@ -404,11 +409,11 @@ namespace AutoCSer.Net.TcpServer
         internal bool DeSerialize<valueType>(ref SubArray<byte> data, ref valueType value)
             where valueType : struct
         {
-            BinarySerialize.DeSerializer deSerializer = Interlocked.Exchange(ref ReceiveDeSerializer, null);
+            AutoCSer.BinaryDeSerializer deSerializer = Interlocked.Exchange(ref ReceiveDeSerializer, null);
             if (deSerializer == null)
             {
-                deSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                deSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig, null);
+                deSerializer = AutoCSer.BinaryDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.BinaryDeSerializer();
+                deSerializer.SetTcpServer(AutoCSer.BinaryDeSerializer.DefaultConfig, null);
             }
             bool isValue = deSerializer.DeSerializeTcpServer(ref data, ref value);
             if (Interlocked.CompareExchange(ref ReceiveDeSerializer, deSerializer, null) != null) deSerializer.Free();
@@ -422,17 +427,17 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="value">目标对象</param>
         /// <returns>是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool ParseJson<valueType>(ref SubArray<byte> data, ref valueType value)
+        internal bool DeSerializeJson<valueType>(ref SubArray<byte> data, ref valueType value)
             where valueType : struct
         {
-            Json.Parser parser = Interlocked.Exchange(ref ReceiveJsonParser, null);
-            if (parser == null)
+            AutoCSer.JsonDeSerializer jsonDeSerializer = Interlocked.Exchange(ref ReceiveJsonDeSerializer, null);
+            if (jsonDeSerializer == null)
             {
-                parser = Json.Parser.YieldPool.Default.Pop() ?? new Json.Parser();
-                parser.SetTcpServer();
+                jsonDeSerializer = AutoCSer.JsonDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonDeSerializer();
+                jsonDeSerializer.SetTcpServer();
             }
-            bool isValue = parser.ParseTcpServer(ref data, ref value);
-            if (Interlocked.CompareExchange(ref ReceiveJsonParser, parser, null) != null) parser.Free();
+            bool isValue = jsonDeSerializer.DeSerializeTcpServer(ref data, ref value);
+            if (Interlocked.CompareExchange(ref ReceiveJsonDeSerializer, jsonDeSerializer, null) != null) jsonDeSerializer.Free();
             return isValue;
         }
         /// <summary>
@@ -441,10 +446,10 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void FreeReceiveDeSerializer()
         {
-            BinarySerialize.DeSerializer deSerializer = Interlocked.Exchange(ref ReceiveDeSerializer, null);
+            AutoCSer.BinaryDeSerializer deSerializer = Interlocked.Exchange(ref ReceiveDeSerializer, null);
             if (deSerializer != null) deSerializer.Free();
-            Json.Parser parser = Interlocked.Exchange(ref ReceiveJsonParser, null);
-            if (parser != null) parser.Free();
+            AutoCSer.JsonDeSerializer jsonDeSerializer = Interlocked.Exchange(ref ReceiveJsonDeSerializer, null);
+            if (jsonDeSerializer != null) jsonDeSerializer.Free();
         }
         /// <summary>
         /// 释放资源
@@ -454,14 +459,9 @@ namespace AutoCSer.Net.TcpServer
         {
             ReceiveBuffer.Free();
             ReceiveBigBuffer.TryFree();
-            if (CheckTimer != null)
-            {
-                CheckTimer.Free(this);
-                ClientCheckTimer.FreeNotNull(CheckTimer);
-                CheckTimer = null;
-            }
             FreeReceiveDeSerializer();
             if (Sender != null) Sender.Close();
+            if (ClientCreator.CommandClient.IsDisposed != 0) LazyLog.KeepMode = AutoCSer.Threading.SecondTimerKeepMode.Canceled;
         }
     }
 }

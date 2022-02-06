@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Cache.Whole
@@ -107,15 +107,15 @@ namespace AutoCSer.Sql.Cache.Whole
             ListArray<valueType> list = array[index];
             if (list != null)
             {
-                int valueIndex = Array.LastIndexOf(list.Array, value, list.Length - 1);
+                int valueIndex = Array.LastIndexOf(list.Array.Array, value, list.Array.Length - 1);
                 if (valueIndex != -1)
                 {
-                    if (isRemoveEnd) list.RemoveAtEnd(valueIndex);
+                    if (isRemoveEnd) list.Array.TryRemoveAtToEnd(valueIndex);
                     else list.RemoveAt(valueIndex);
                     return;
                 }
             }
-            cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 删除数据
@@ -137,7 +137,7 @@ namespace AutoCSer.Sql.Cache.Whole
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public valueType[] GetPage(int index, int pageSize, int currentPage, out int count)
         {
-            return new LeftArray<valueType>(array[index]).GetPage(pageSize, currentPage, out count);
+            return array[index].Array.GetPage(pageSize, currentPage, out count);
         }
         /// <summary>
         /// 获取逆序分页数据
@@ -150,7 +150,7 @@ namespace AutoCSer.Sql.Cache.Whole
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public valueType[] GetPageDesc(int index, int pageSize, int currentPage, out int count)
         {
-            return new LeftArray<valueType>(array[index]).GetPageDesc(pageSize, currentPage, out count);
+            return array[index].Array.GetPageDesc(pageSize, currentPage, out count);
         }
     }
 }

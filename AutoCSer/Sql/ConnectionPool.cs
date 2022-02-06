@@ -11,17 +11,21 @@ namespace AutoCSer.Sql
     internal sealed class ConnectionPool
     {
         /// <summary>
+        /// 连接池标识
+        /// </summary>
+        private Key poolKey;
+        /// <summary>
         /// 连接数组
         /// </summary>
         private DbConnection[] array;
         /// <summary>
+        /// 连接数组访问锁
+        /// </summary>
+        private AutoCSer.Threading.SpinLock arrayLock;
+        /// <summary>
         /// 当前位置
         /// </summary>
         private int index;
-        /// <summary>
-        /// 连接数组访问锁
-        /// </summary>
-        private int arrayLock;
         /// <summary>
         /// 是否启用连接池
         /// </summary>
@@ -41,14 +45,14 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal DbConnection Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref arrayLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlConnectionPoolPop);
+            arrayLock.EnterYield();
             if (index != 0)
             {
                 DbConnection value = array[--index];
-                System.Threading.Interlocked.Exchange(ref arrayLock, 0);
+                arrayLock.Exit();
                 return value;
             }
-            System.Threading.Interlocked.Exchange(ref arrayLock, 0);
+            arrayLock.Exit();
             return null;
         }
         /// <summary>
@@ -62,15 +66,15 @@ namespace AutoCSer.Sql
             {
                 if (IsPool)
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref arrayLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlConnectionPoolPush);
+                    arrayLock.EnterYield();
                     if (index != array.Length)
                     {
                         array[index++] = connection;
-                        System.Threading.Interlocked.Exchange(ref arrayLock, 0);
+                        arrayLock.Exit();
                     }
                     else
                     {
-                        System.Threading.Interlocked.Exchange(ref arrayLock, 0);
+                        arrayLock.Exit();
                         connection.Dispose();
                     }
                 }
@@ -148,9 +152,18 @@ namespace AutoCSer.Sql
             }
         }
         /// <summary>
+        /// 获取连接池标识
+        /// </summary>
+        /// <param name="connectionPool"></param>
+        /// <returns></returns>
+        private static Key getPoolKey(ConnectionPool connectionPool)
+        {
+            return connectionPool.poolKey;
+        }
+        /// <summary>
         /// 连接池集合访问锁
         /// </summary>
-        private static AutoCSer.Threading.LockEquatableLastDictionary<Key, ConnectionPool> poolLock = new AutoCSer.Threading.LockEquatableLastDictionary<Key, ConnectionPool>();
+        private static AutoCSer.Threading.LockLastDictionary<Key, ConnectionPool> poolLock = new AutoCSer.Threading.LockLastDictionary<Key, ConnectionPool>(getPoolKey);
         /// <summary>
         /// 获取连接池
         /// </summary>
@@ -164,12 +177,16 @@ namespace AutoCSer.Sql
             {
                 ConnectionPool pool;
                 Key key = new Key(type, connection);
-                if (poolLock.TryGetValueEnter(ref key, out pool)) return pool;
-                try
+                if (!poolLock.TryGetValue(key, out pool))
                 {
-                    poolLock.SetOnly(ref key, pool = new ConnectionPool(true));
+                    try
+                    {
+                        pool = new ConnectionPool(true);
+                        pool.poolKey = key;
+                        poolLock.Set(key, pool);
+                    }
+                    finally { poolLock.Exit(); }
                 }
-                finally { Monitor.Exit(poolLock.Lock); }
                 return pool;
             }
             else return new ConnectionPool(false);
@@ -180,16 +197,16 @@ namespace AutoCSer.Sql
         /// <param name="count">保留缓存数据数量</param>
         private static void clearCache(int count)
         {
-            Monitor.Enter(poolLock.Lock);
+            poolLock.DictionaryLock.EnterSleepFlag();
             try
             {
                 foreach (ConnectionPool pool in poolLock.Dictionary.Values) pool.clear(count);
             }
-            finally { Monitor.Exit(poolLock.Lock); }
+            finally { poolLock.DictionaryLock.ExitSleepFlag(); }
         }
         static ConnectionPool()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(ConnectionPool));
         }
     }
 }

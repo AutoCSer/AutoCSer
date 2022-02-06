@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.InteropServices;
 
 namespace AutoCSer.Net.Packet
@@ -132,7 +132,7 @@ namespace AutoCSer.Net.Packet
             get
             {
                 int headerSize = HeaderSize;
-                return headerSize > DefaultHeaderSize ? new SubArray<byte>(data.StartIndex + DefaultHeaderSize, DefaultHeaderSize - headerSize, data.Array) : default(SubArray<byte>);
+                return headerSize > DefaultHeaderSize ? new SubArray<byte>(data.StartIndex + DefaultHeaderSize, DefaultHeaderSize - headerSize, data.Array) : new SubArray<byte>();
             }
         }
         /// <summary>
@@ -160,7 +160,7 @@ namespace AutoCSer.Net.Packet
             {
                 this.data = data;
             }
-            else this.data = default(SubArray<byte>);
+            else this.data = new SubArray<byte>();
         }
     }
 }

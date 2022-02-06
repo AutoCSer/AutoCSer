@@ -37,7 +37,7 @@ namespace AutoCSer.Xml
         /// 名称查找器
         /// </summary>
         /// <param name="data">数据起始位置</param>
-        internal StateSearcher(Pointer data)
+        internal StateSearcher(ref AutoCSer.Memory.Pointer data)
         {
             if (data.Data == null)
             {
@@ -74,25 +74,25 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 根据字符串查找目标索引
         /// </summary>
-        /// <param name="parser">XML解析器</param>
+        /// <param name="xmlDeSerializer">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
-        internal int SearchEnum(Parser parser)
+        internal int SearchEnum(XmlDeSerializer xmlDeSerializer)
         {
             if (State != null)
             {
-                if (parser.IsCData == 0)
+                if (xmlDeSerializer.IsCData == 0)
                 {
-                    int index = searchEnumOnly(parser);
-                    if (parser.State == ParseState.Success)
+                    int index = searchEnumOnly(xmlDeSerializer);
+                    if (xmlDeSerializer.State == DeSerializeState.Success)
                     {
-                        parser.SearchValueEnd();
+                        xmlDeSerializer.SearchValueEnd();
                         return index;
                     }
                 }
                 else
                 {
-                    parser.SearchCDataValue();
-                    if (parser.State == ParseState.Success) return searchCDataEnum(parser);
+                    xmlDeSerializer.SearchCDataValue();
+                    if (xmlDeSerializer.State == DeSerializeState.Success) return searchCDataEnum(xmlDeSerializer);
                 }
             }
             return -1;
@@ -100,9 +100,9 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 根据字符串查找目标索引
         /// </summary>
-        /// <param name="parser">XML解析器</param>
+        /// <param name="xmlDeSerializer">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
-        internal int searchEnumOnly(Parser parser)
+        internal int searchEnumOnly(XmlDeSerializer xmlDeSerializer)
         {
             byte* currentState = State;
             do
@@ -110,14 +110,14 @@ namespace AutoCSer.Xml
                 char* prefix = (char*)(currentState + *(int*)currentState);
                 if (*prefix != 0)
                 {
-                    if (parser.NextEnumChar() != *prefix) return -1;
+                    if (xmlDeSerializer.NextEnumChar() != *prefix) return -1;
                     while (*++prefix != 0)
                     {
-                        if (parser.NextEnumChar() != *prefix) return -1;
+                        if (xmlDeSerializer.NextEnumChar() != *prefix) return -1;
                     }
                 }
-                char value = parser.NextEnumChar();
-                if (value == 0) return parser.State == ParseState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
+                char value = xmlDeSerializer.NextEnumChar();
+                if (value == 0) return xmlDeSerializer.State == DeSerializeState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
                 if (*(int*)(currentState + sizeof(int)) == 0) return -1;
                 int index = value < 128 ? (int)*(ushort*)(charsAscii + (value << 1)) : getCharIndex(value);
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
@@ -142,9 +142,9 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 根据字符串查找目标索引
         /// </summary>
-        /// <param name="parser">XML解析器</param>
+        /// <param name="xmlDeSerializer">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
-        internal int searchCDataEnum(Parser parser)
+        internal int searchCDataEnum(XmlDeSerializer xmlDeSerializer)
         {
             byte* currentState = State;
             do
@@ -152,14 +152,14 @@ namespace AutoCSer.Xml
                 char* prefix = (char*)(currentState + *(int*)currentState);
                 if (*prefix != 0)
                 {
-                    if (parser.NextCDataEnumChar() != *prefix) return -1;
+                    if (xmlDeSerializer.NextCDataEnumChar() != *prefix) return -1;
                     while (*++prefix != 0)
                     {
-                        if (parser.NextCDataEnumChar() != *prefix) return -1;
+                        if (xmlDeSerializer.NextCDataEnumChar() != *prefix) return -1;
                     }
                 }
-                char value = parser.NextCDataEnumChar();
-                if (value == 0) return parser.State == ParseState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
+                char value = xmlDeSerializer.NextCDataEnumChar();
+                if (value == 0) return xmlDeSerializer.State == DeSerializeState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
                 if (*(int*)(currentState + sizeof(int)) == 0) return -1;
                 int index = value < 128 ? (int)*(ushort*)(charsAscii + (value << 1)) : getCharIndex(value);
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
@@ -184,21 +184,21 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 根据枚举字符串查找目标索引
         /// </summary>
-        /// <param name="parser">XML解析器</param>
+        /// <param name="xmlDeSerializer">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal int SearchFlagEnum(Parser parser)
+        internal int SearchFlagEnum(XmlDeSerializer xmlDeSerializer)
         {
-            if (parser.IsCData == 0) return searchFlagEnum(parser);
-            parser.SearchCDataValue();
-            return parser.State == ParseState.Success ? searchCDataFlagEnum(parser) : -1;
+            if (xmlDeSerializer.IsCData == 0) return searchFlagEnum(xmlDeSerializer);
+            xmlDeSerializer.SearchCDataValue();
+            return xmlDeSerializer.State == DeSerializeState.Success ? searchCDataFlagEnum(xmlDeSerializer) : -1;
         }
         /// <summary>
         /// 根据枚举字符串查找目标索引
         /// </summary>
-        /// <param name="parser">XML解析器</param>
+        /// <param name="xmlDeSerializer">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
-        private int searchFlagEnum(Parser parser)
+        private int searchFlagEnum(XmlDeSerializer xmlDeSerializer)
         {
             byte* currentState = State;
             do
@@ -206,14 +206,14 @@ namespace AutoCSer.Xml
                 char* prefix = (char*)(currentState + *(int*)currentState);
                 if (*prefix != 0)
                 {
-                    if (parser.NextEnumChar() != *prefix) return -1;
+                    if (xmlDeSerializer.NextEnumChar() != *prefix) return -1;
                     while (*++prefix != 0)
                     {
-                        if (parser.NextEnumChar() != *prefix) return -1;
+                        if (xmlDeSerializer.NextEnumChar() != *prefix) return -1;
                     }
                 }
-                char value = parser.NextEnumChar();
-                if (value == 0 || value == ',') return parser.State == ParseState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
+                char value = xmlDeSerializer.NextEnumChar();
+                if (value == 0 || value == ',') return xmlDeSerializer.State == DeSerializeState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
                 if (*(int*)(currentState + sizeof(int)) == 0) return -1;
                 int index = value < 128 ? (int)*(ushort*)(charsAscii + (value << 1)) : getCharIndex(value);
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
@@ -238,9 +238,9 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 根据枚举字符串查找目标索引
         /// </summary>
-        /// <param name="parser">XML解析器</param>
+        /// <param name="xmlDeSerializer">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
-        private int searchCDataFlagEnum(Parser parser)
+        private int searchCDataFlagEnum(XmlDeSerializer xmlDeSerializer)
         {
             byte* currentState = State;
             do
@@ -248,14 +248,14 @@ namespace AutoCSer.Xml
                 char* prefix = (char*)(currentState + *(int*)currentState);
                 if (*prefix != 0)
                 {
-                    if (parser.NextCDataEnumChar() != *prefix) return -1;
+                    if (xmlDeSerializer.NextCDataEnumChar() != *prefix) return -1;
                     while (*++prefix != 0)
                     {
-                        if (parser.NextCDataEnumChar() != *prefix) return -1;
+                        if (xmlDeSerializer.NextCDataEnumChar() != *prefix) return -1;
                     }
                 }
-                char value = parser.NextCDataEnumChar();
-                if (value == 0 || value == ',') return parser.State == ParseState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
+                char value = xmlDeSerializer.NextCDataEnumChar();
+                if (value == 0 || value == ',') return xmlDeSerializer.State == DeSerializeState.Success ? *(int*)(currentState + sizeof(int) * 2) : -1;
                 if (*(int*)(currentState + sizeof(int)) == 0) return -1;
                 int index = value < 128 ? (int)*(ushort*)(charsAscii + (value << 1)) : getCharIndex(value);
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
@@ -280,12 +280,12 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 根据枚举字符串查找目标索引
         /// </summary>
-        /// <param name="parser">XML解析器</param>
+        /// <param name="xmlDeSerializer">XML解析器</param>
         /// <returns>目标索引,null返回-1</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal int NextFlagEnum(Parser parser)
+        internal int NextFlagEnum(XmlDeSerializer xmlDeSerializer)
         {
-            return parser.IsCData == 0 ? searchFlagEnum(parser) : searchCDataFlagEnum(parser);
+            return xmlDeSerializer.IsCData == 0 ? searchFlagEnum(xmlDeSerializer) : searchCDataFlagEnum(xmlDeSerializer);
         }
     }
 }

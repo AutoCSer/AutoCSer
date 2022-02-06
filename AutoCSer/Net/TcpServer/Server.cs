@@ -3,7 +3,7 @@ using AutoCSer.Log;
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer
@@ -127,7 +127,7 @@ namespace AutoCSer.Net.TcpServer
         }
         static Server()
         {
-            JsonConfig = AutoCSer.Json.ConfigLoader.GetUnion(typeof(AutoCSer.Json.SerializeConfig)).SerializeConfig;
+            JsonConfig = (AutoCSer.Json.SerializeConfig)AutoCSer.Configuration.Common.Get(typeof(AutoCSer.Json.SerializeConfig));
             if (JsonConfig == null) JsonConfig = AutoCSer.Json.SerializeConfig.CreateInternal();
             else JsonConfig = AutoCSer.MemberCopy.Copyer<AutoCSer.Json.SerializeConfig>.MemberwiseClone(JsonConfig);
             JsonConfig.IsInfinityToNaN = false;
@@ -144,7 +144,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 获取客户端请求线程调用类型
         /// </summary>
-        private readonly AutoCSer.Threading.Thread.CallType getSocketThreadCallType;
+        private readonly AutoCSer.Threading.ThreadTaskType getSocketThreadCallType;
 
         /// <summary>
         /// TCP 服务客户端
@@ -152,14 +152,15 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="serverCallQueue">自定义队列</param>
+        /// <param name="extendCommandBits">扩展服务命令二进制位数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
-            : base(attribute, verify, log, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
+        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, byte extendCommandBits, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.ThreadTaskType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, extendCommandBits, log, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
             this.serverCallQueue = serverCallQueue;
             this.onCustomData = onCustomData;
@@ -203,7 +204,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CustomData(ref SubArray<byte> data)
         {
-            if (onCustomData == null) Log.Add(AutoCSer.Log.LogType.Info, "客户端自定义数据包被丢弃");
+            if (onCustomData == null) Log.Debug("客户端自定义数据包被丢弃", LogLevel.Debug | LogLevel.AutoCSer);
             else
             {
                 try
@@ -212,7 +213,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
         }
@@ -255,14 +256,15 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="serverCallQueue">自定义队列</param>
+        /// <param name="extendCommandBits">扩展服务命令二进制位数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
-            : base(attribute, verify, serverCallQueue, onCustomData, log, getSocketThreadCallType, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
+        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, byte extendCommandBits, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.ThreadTaskType getSocketThreadCallType, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, serverCallQueue, extendCommandBits, onCustomData, log, getSocketThreadCallType, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
         }
         /// <summary>

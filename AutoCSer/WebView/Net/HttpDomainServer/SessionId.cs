@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.HttpDomainServer
 {
@@ -152,20 +153,20 @@ namespace AutoCSer.Net.HttpDomainServer
         {
             if (data.Length == 64)
             {
-                fixed (byte* dataFixed = data.Array)
+                fixed (byte* dataFixed = data.GetFixedBuffer())
                 {
                     byte* start = dataFixed + data.StartIndex;
-                    bit32 = AutoCSer.Extension.Number.ParseHex32(start);
-                    bit0 = AutoCSer.Extension.Number.ParseHex32(start + 8);
+                    bit32 = AutoCSer.Extensions.NumberExtension.ParseHex32(start);
+                    bit0 = AutoCSer.Extensions.NumberExtension.ParseHex32(start + 8);
 
-                    bit96 = AutoCSer.Extension.Number.ParseHex32(start + 16);
-                    bit64 = AutoCSer.Extension.Number.ParseHex32(start + 24);
+                    bit96 = AutoCSer.Extensions.NumberExtension.ParseHex32(start + 16);
+                    bit64 = AutoCSer.Extensions.NumberExtension.ParseHex32(start + 24);
 
-                    bit160 = AutoCSer.Extension.Number.ParseHex32(start + 32);
-                    bit128 = AutoCSer.Extension.Number.ParseHex32(start + 40);
+                    bit160 = AutoCSer.Extensions.NumberExtension.ParseHex32(start + 32);
+                    bit128 = AutoCSer.Extensions.NumberExtension.ParseHex32(start + 40);
 
-                    bit224 = AutoCSer.Extension.Number.ParseHex32(start + 48);
-                    bit192 = AutoCSer.Extension.Number.ParseHex32(start + 56);
+                    bit224 = AutoCSer.Extensions.NumberExtension.ParseHex32(start + 48);
+                    bit192 = AutoCSer.Extensions.NumberExtension.ParseHex32(start + 56);
                 }
                 return;
             }
@@ -181,10 +182,10 @@ namespace AutoCSer.Net.HttpDomainServer
             byte[] data = new byte[64];
             fixed (byte* dataFixed = data)
             {
-                AutoCSer.Extension.Number.ToHex(Ticks, dataFixed);
-                AutoCSer.Extension.Number.ToHex(Identity, dataFixed + 16);
-                AutoCSer.Extension.Number.ToHex(Low, dataFixed + 32);
-                AutoCSer.Extension.Number.ToHex(High, dataFixed + 48);
+                AutoCSer.Extensions.NumberExtension.ToHex(Ticks, dataFixed);
+                AutoCSer.Extensions.NumberExtension.ToHex(Identity, dataFixed + 16);
+                AutoCSer.Extensions.NumberExtension.ToHex(Low, dataFixed + 32);
+                AutoCSer.Extensions.NumberExtension.ToHex(High, dataFixed + 48);
             }
             return data;
         }
@@ -193,25 +194,23 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         /// <param name="serializer">对象序列化器</param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
-        private unsafe void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        [AutoCSer.BinarySerializeCustom]
+        private unsafe void serialize(AutoCSer.BinarySerializer serializer)
         {
             UnmanagedStream stream = serializer.Stream;
-            stream.PrepLength(sizeof(ulong) * 4);
-            byte* write = stream.CurrentData;
+            byte* write = stream.GetBeforeMove(sizeof(ulong) * 4);
             *(ulong*)write = Ticks;
             *(ulong*)(write + sizeof(ulong)) = Identity;
             *(ulong*)(write + sizeof(ulong) * 2) = Low;
             *(ulong*)(write + sizeof(ulong) * 3) = High;
-            stream.ByteSize += sizeof(ulong) * 4;
         }
         /// <summary>
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer">对象反序列化器</param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
-        private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        [AutoCSer.BinarySerializeCustom]
+        private unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             if (deSerializer.MoveReadAny(sizeof(ulong) * 4))
             {
@@ -253,7 +252,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <returns></returns>
         internal unsafe string ToHex()
         {
-            string hex = AutoCSer.Extension.StringExtension.FastAllocateString(64);
+            string hex = AutoCSer.Extensions.StringExtension.FastAllocateString(64);
             fixed (char* hexFixed = hex)
             {
                 Ticks.toHex(hexFixed);

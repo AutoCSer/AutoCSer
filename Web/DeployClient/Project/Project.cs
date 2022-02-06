@@ -27,7 +27,7 @@ namespace AutoCSer.Web.DeployClient.Project
         {
             get
             {
-                return AutoCSer.Xml.Parser.Parse<Config>(System.IO.File.ReadAllText(File, Encoding.UTF8), Config.XmlConfig).PropertyGroup;
+                return AutoCSer.XmlDeSerializer.DeSerialize<Config>(System.IO.File.ReadAllText(File, Encoding.UTF8), Config.XmlConfig).PropertyGroup;
             }
         }
         /// <summary>

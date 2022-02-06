@@ -34,16 +34,14 @@
   <ItemGroup>
     <Compile Include="HeaderName.cs" />
     <Compile Include="HttpClient.cs" />
-    <Compile Include="ConfigLoader.cs" />
     <Compile Include="DomainIPAddress.cs" />
     <Compile Include="DomainIPAddressConfig.cs" />
-    <Compile Include="Extension\HashBytes.cs" />
-    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extensions\HashBytesExtension.HtmlTitle.cs" />
+    <Compile Include="Extensions\MemoryExtension.HtmlTitle.cs" />
     <Compile Include="IO\Compression\GzipDeCompressor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HttpTask.cs" />
     <Compile Include="SocketAsyncType.cs" />
-    <Compile Include="UnionType.cs" />
     <Compile Include="Uri.cs" />
   </ItemGroup>
 

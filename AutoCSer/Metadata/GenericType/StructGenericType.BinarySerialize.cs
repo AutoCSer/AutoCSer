@@ -28,12 +28,12 @@ namespace AutoCSer.Metadata
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinaryDeSerializeNullableMethod { get; }
+        internal abstract Delegate BinaryDeSerializeNullableMethod { get; }
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinaryDeSerializeNullableArrayMethod { get; }
+        internal abstract Delegate BinaryDeSerializeNullableArrayMethod { get; }
 
         /// <summary>
         /// 获取二进制序列化函数信息
@@ -54,7 +54,7 @@ namespace AutoCSer.Metadata
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeNullableArrayMethod { get; }
+        internal abstract Delegate BinarySerializeNullableArrayMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
@@ -64,7 +64,7 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    internal sealed partial class StructGenericType<Type> : StructGenericType where Type : struct
+    internal sealed partial class StructGenericType<T> : StructGenericType where T : struct
     {
         /// <summary>
         /// 获取二进制反序列化函数信息
@@ -72,7 +72,7 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override MethodInfo BinaryDeSerializeStructMethod
         {
-            get { return ((deSerialize)GenericType.BinaryDeSerializer.structDeSerialize<Type>).Method; }
+            get { return ((AutoCSer.BinaryDeSerializer.DeSerializeDelegate<T>)BinaryDeSerializer.StructDeSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取二进制反序列化函数信息
@@ -80,36 +80,31 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override MethodInfo BinaryDeSerializeNullableMemberMethod
         {
-            get { return ((deSerializeNullable)GenericType.BinaryDeSerializer.nullableMemberDeSerialize<Type>).Method; }
+            get { return ((AutoCSer.BinaryDeSerializer.DeSerializeDelegate<T?>)BinaryDeSerializer.NullableMemberDeSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinaryDeSerializeNullableMethod
+        internal override Delegate BinaryDeSerializeNullableMethod
         {
-            get { return ((deSerializeNullable)GenericType.BinaryDeSerializer.nullableDeSerialize<Type>).Method; }
+            get { return (AutoCSer.BinaryDeSerializer.DeSerializeDelegate<T?>)BinaryDeSerializer.NullableDeSerialize<T>; }
         }
-        /// <summary>
-        /// 反序列化委托
-        /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerializeNullableArray(ref Nullable<Type>[] value);
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
         internal override MethodInfo BinaryDeSerializeNullableArrayMemberMethod
         {
-            get { return ((deSerializeNullableArray)GenericType.BinaryDeSerializer.nullableArrayMember<Type>).Method; }
+            get { return ((AutoCSer.BinaryDeSerializer.DeSerializeDelegate<T?[]>)BinaryDeSerializer.NullableArrayMember<T>).Method; }
         }
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinaryDeSerializeNullableArrayMethod
+        internal override Delegate BinaryDeSerializeNullableArrayMethod
         {
-            get { return ((deSerializeNullableArray)GenericType.BinaryDeSerializer.nullableArray<Type>).Method; }
+            get { return (AutoCSer.BinaryDeSerializer.DeSerializeDelegate<T?[]>)BinaryDeSerializer.NullableArray<T>; }
         }
 
         /// <summary>
@@ -118,7 +113,7 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override MethodInfo BinarySerializeNullableArrayMemberMethod
         {
-            get { return ((Action<Nullable<Type>[]>)GenericType.BinarySerializer.nullableArrayMember<Type>).Method; }
+            get { return ((Action<BinarySerializer, Nullable<T>[]>)BinarySerializer.NullableArrayMember<T>).Method; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
@@ -126,7 +121,7 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override MethodInfo BinarySerializeNullableMemberMethod
         {
-            get { return ((Action<Nullable<Type>>)GenericType.BinarySerializer.nullableMemberSerialize<Type>).Method; }
+            get { return ((Action<BinarySerializer, Nullable<T>>)BinarySerializer.NullableMemberSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
@@ -134,15 +129,15 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override MethodInfo BinarySerializeStructMethod
         {
-            get { return ((Action<Type>)GenericType.BinarySerializer.structSerialize<Type>).Method; }
+            get { return ((Action<BinarySerializer, T>)BinarySerializer.StructSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeNullableArrayMethod
+        internal override Delegate BinarySerializeNullableArrayMethod
         {
-            get { return ((Action<Nullable<Type>[]>)GenericType.BinarySerializer.nullableArray<Type>).Method; }
+            get { return (Action<BinarySerializer, Nullable<T>[]>)BinarySerializer.NullableArray<T>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
@@ -150,7 +145,7 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override Delegate BinarySerializeNullableDelegate
         {
-            get { return (Action<AutoCSer.BinarySerialize.Serializer, Nullable<Type>>)AutoCSer.BinarySerialize.Serializer.nullableSerialize<Type>; }
+            get { return (Action<BinarySerializer, Nullable<T>>)BinarySerializer.NullableSerialize<T>; }
         }
     }
 }

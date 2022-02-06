@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Threading;
 
 namespace AutoCSer.CacheServer.ValueData
@@ -11,7 +12,7 @@ namespace AutoCSer.CacheServer.ValueData
         /// <summary>
         /// 输出数据 JSON 序列化
         /// </summary>
-        internal static Json.Serializer Serializer;
+        internal static AutoCSer.JsonSerializer Serializer;
     }
     /// <summary>
     /// 数据序列化
@@ -39,15 +40,14 @@ namespace AutoCSer.CacheServer.ValueData
         {
             if (Value == null)
             {
-                *(long*)stream.GetPrepSizeCurrent(8) = 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48);
-                stream.ByteSize += 4 * sizeof(char);
+                *(long*)stream.GetBeforeMove(4 * sizeof(char)) = 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48);
             }
             else
             {
-                AutoCSer.Json.Serializer jsonSerializer = Interlocked.Exchange(ref JsonSerializer.Serializer, null);
+                AutoCSer.JsonSerializer jsonSerializer = Interlocked.Exchange(ref JsonSerializer.Serializer, null);
                 if (jsonSerializer == null)
                 {
-                    jsonSerializer = AutoCSer.Json.Serializer.YieldPool.Default.Pop() ?? new AutoCSer.Json.Serializer();
+                    jsonSerializer = AutoCSer.JsonSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonSerializer();
                     jsonSerializer.SetTcpServer();
                 }
                 jsonSerializer.SerializeTcpServer(ref Value, stream);

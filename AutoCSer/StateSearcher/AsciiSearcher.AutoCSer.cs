@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.StateSearcher
 {
@@ -86,7 +87,7 @@ namespace AutoCSer.StateSearcher
         {
             if (value.Length != 0)
             {
-                fixed (char* valueFixed = value.String)
+                fixed (char* valueFixed = value.GetFixedBuffer())
                 {
                     char* start = valueFixed + value.Start;
                     return SearchLower(start, start + value.Length);
@@ -157,7 +158,7 @@ namespace AutoCSer.StateSearcher
         {
             if (data.Length != 0)
             {
-                fixed (byte* dataFixed = data.Array)
+                fixed (byte* dataFixed = data.GetFixedBuffer())
                 {
                     byte* start = dataFixed + data.Start;
                     return Search(start, start + data.Length);
@@ -224,7 +225,7 @@ namespace AutoCSer.StateSearcher
         {
             if (data.Length != 0)
             {
-                fixed (byte* dataFixed = data.Array)
+                fixed (byte* dataFixed = data.GetFixedBuffer())
                 {
                     byte* start = dataFixed + data.Start;
                     return SearchLower(start, start + data.Length);
@@ -293,7 +294,7 @@ namespace AutoCSer.StateSearcher
         /// <summary>
         /// 状态搜索数据
         /// </summary>
-        private Pointer.Size data;
+        private AutoCSer.Memory.Pointer data;
         /// <summary>
         /// 是否固定内存申请
         /// </summary>
@@ -308,7 +309,7 @@ namespace AutoCSer.StateSearcher
         {
             this.Array = values;
             data = AsciiBuilder.Create(states, this.isStaticUnmanaged = isStaticUnmanaged);
-            Searcher = new AsciiSearcher(data.Pointer);
+            Searcher = new AsciiSearcher(ref data);
         }
         ///// <summary>
         ///// ASCII字节状态搜索
@@ -416,7 +417,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         ~AsciiSearcher()
         {
-            if (isStaticUnmanaged) Unmanaged.Free(ref data, isStaticUnmanaged);
+            if (isStaticUnmanaged) Unmanaged.FreeStatic(ref data);
             else Unmanaged.Free(ref data);
         }
         /// <summary>
@@ -425,7 +426,7 @@ namespace AutoCSer.StateSearcher
         public unsafe void Dispose()
         {
             Searcher.State = null;
-            if (isStaticUnmanaged) Unmanaged.Free(ref data, isStaticUnmanaged);
+            if (isStaticUnmanaged) Unmanaged.FreeStatic(ref data);
             else Unmanaged.Free(ref data);
         }
     }

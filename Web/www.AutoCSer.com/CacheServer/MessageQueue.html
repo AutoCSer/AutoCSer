@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=050E3FBC"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=09053A49"></script>
     <title>消息队列组件 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -11,14 +11,14 @@
 </head>
 <body>
     <p>
-        AutoCSer 包含一个高性能的基于<a href="/CacheServer/Index.html?v=50E3FBC">内存数据库缓存服务</a>的消息队列组件，采用独立于缓存服务的持久化方案保证数据的写入确认，支持若干<a href="/Config/Index.html?v=50E3FBC">全局默认配置</a>，需要引用 <a href="/Index.html?v=50E3FBC" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.Sort.dll + AutoCSer.CacheServer.dll 。
+        AutoCSer 包含一个高性能的基于<a href="/CacheServer/Index.html?v=9053A49">内存数据库缓存服务</a>的消息队列组件，采用独立于缓存服务的持久化方案保证数据的写入确认，支持若干<a href="/Config/Index.html?v=9053A49">全局默认配置</a>，需要引用 <a href="/Index.html?v=9053A49" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.Sort.dll + AutoCSer.CacheServer.dll 。
     </p>
     <div><h1>单消费者队列</h1></div>
     <div>
         <p>
             . <b>AutoCSer.CacheServer.DataStructure.MessageQueue.QueueConsumer</b>&lt;valueType&gt;
             <br />只允许一个消费者，当有新的消费者产生时将抛弃旧的消费者。
-            <div> 参考示例 <a href="/Index.html?v=50E3FBC" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">CacheServer\MesssageQueueConsumer.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=9053A49" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">CacheServer\MesssageQueueConsumer.cs</a></div>
         </p>
     </div>
     <div><h1>多消费者队列</h1></div>
@@ -27,7 +27,7 @@
             . <b>AutoCSer.CacheServer.DataStructure.MessageQueue.QueueConsumers</b>&lt;valueType&gt;
             <br />允许最多 65536 个消费者，使用数字编号 0 - 65535，实际应用中最好使用 enum 来避免魔鬼数字问题，每个编号的消费者都将顺序处理所有消息。
             <br />对于同一个编号，当有新的消费者产生时将抛弃旧的消费者。
-            <div> 参考示例 <a href="/Index.html?v=50E3FBC" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">CacheServer\MesssageQueueConsumers.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=9053A49" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">CacheServer\MesssageQueueConsumers.cs</a></div>
         </p>
     </div>
 </body>

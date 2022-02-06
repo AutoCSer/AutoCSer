@@ -1,5 +1,6 @@
-﻿using System;
-using AutoCSer.Extension;
+﻿using AutoCSer.Extensions;
+using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.StateSearcher
 {
@@ -16,7 +17,7 @@ namespace AutoCSer.StateSearcher
         /// <summary>
         /// 状态数据
         /// </summary>
-        public Pointer.Size Data;
+        internal Pointer Data;
         /// <summary>
         /// 状态集合
         /// </summary>
@@ -66,19 +67,19 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         /// <param name="names">名称集合</param>
         /// <param name="isStaticUnmanaged">是否固定内存申请</param>
-        public CharBuilder(KeyValue<string, int>[] names, bool isStaticUnmanaged)
+        internal CharBuilder(KeyValue<string, int>[] names, bool isStaticUnmanaged)
         {
             this.names = names;
             prefixSize = tableCount = stateCount = tableType = 0;
             state = charsAscii = charStart = charEnd = prefix = table = null;
-            chars = default(LeftArray<char>);
+            chars = new LeftArray<char>(0);
             if (names.Length > 1)
             {
-                Data = new Pointer.Size();
+                Data = new Pointer();
                 count(0, names.Length, 0);
                 int charCount, asciiCount;
                 System.Array.Sort(chars.Array, 0, chars.Length);
-                fixed (char* charFixed = chars.Array)
+                fixed (char* charFixed = chars.GetFixedBuffer())
                 {
                     char* start = charFixed + 1, end = charFixed + chars.Length, write = start;
                     char value = *charFixed;
@@ -120,7 +121,7 @@ namespace AutoCSer.StateSearcher
                         size += tableCount * (chars.Length + 1) * sizeof(int);
                         tableType = 2;
                     }
-                    Data = Unmanaged.Get(size, true, isStaticUnmanaged);
+                    Data = isStaticUnmanaged ? Unmanaged.GetStaticPointer(size, true) : Unmanaged.GetPointer(size, true);
                     *Data.Int = stateCount;//状态数量[int]
                     state = Data.Byte + sizeof(int);//状态集合[stateCount*(前缀位置[int]+状态位置[int]+名称索引[int])]
                     charsAscii = state + (stateCount * 3) * sizeof(int);//ascii字符查找表[128*ushort]
@@ -136,8 +137,9 @@ namespace AutoCSer.StateSearcher
                     charEnd = charStart;
                     if (charCount != 0)
                     {//特殊字符二分查找表[charCount*char]
-                        AutoCSer.Memory.CopyNotNull((byte*)start, charStart, charCount << 1);
-                        charEnd += charCount << 1;
+                        int charSize = charCount << 1;
+                        new Span<byte>(start, charSize).CopyTo(new Span<byte>(charStart, charSize));
+                        charEnd += charSize;
                     }
                     prefix = charStart + charCount * sizeof(ushort);//前缀集合
                     table = prefix + prefixSize * sizeof(ushort);//状态矩阵[tableCount*(chars.Count+1)*[byte/ushort/int]]
@@ -145,33 +147,37 @@ namespace AutoCSer.StateSearcher
                 stateCount = 0;
                 create(0, names.Length, 0);
             }
-            else
+            else if (names.Length != 0)
             {
-                if (names.Length == 0) Data = new Pointer.Size();
-                else if (names[0].Key.Length <= 128)
+                string name = names[0].Key;
+                if (name.Length <= 128)
                 {
-                    Data = Unmanaged.Get(sizeof(int) + sizeof(int) * 3 + 128 * sizeof(ushort) + 2 * sizeof(ushort), false, isStaticUnmanaged);
+                    Data = isStaticUnmanaged
+                        ? Unmanaged.GetStaticPointer(sizeof(int) + sizeof(int) * 3 + 128 * sizeof(ushort) + 2 * sizeof(ushort), false)
+                        : Unmanaged.GetPointer(sizeof(int) + sizeof(int) * 3 + 128 * sizeof(ushort) + 2 * sizeof(ushort), false);
                     *Data.Int = 1;//状态数量
                     state = Data.Byte + sizeof(int);
                     *(int*)state = sizeof(int) * 3;//前缀位置
                     *(int*)(state + sizeof(int)) = 0;//状态位置
                     *(int*)(state + sizeof(int) * 2) = names[0].Value;//名称索引
                     prefix = Data.Byte + sizeof(int) * 4;
-                    AutoCSer.Extension.StringExtension.SimpleCopyNotNull(names[0].Key, prefix);
-                    *(char*)(prefix + (names[0].Key.Length << 1)) = (char)0;
+                    name.AsSpan().CopyTo(new Span<char>(prefix, name.Length));
+                    *(char*)(prefix + (name.Length << 1)) = (char)0;
                     *(int*)(Data.Byte + sizeof(int) * 4 + 128 * sizeof(ushort)) = 0;
                 }
                 else
                 {
-                    Data = Unmanaged.Get(sizeof(int) + sizeof(int) * 3 + 128 * sizeof(ushort) + 2 * sizeof(ushort) + names[0].Key.Length * sizeof(char) + sizeof(char), true, isStaticUnmanaged);
+                    int dataSize = sizeof(int) + sizeof(int) * 3 + 128 * sizeof(ushort) + 2 * sizeof(ushort) + name.Length * sizeof(char) + sizeof(char);
+                    Data = isStaticUnmanaged ? Unmanaged.GetStaticPointer(dataSize, true) : Unmanaged.GetPointer(dataSize, true);
                     *Data.Int = 1;//状态数量
                     state = Data.Byte + sizeof(int);
                     *(int*)state = sizeof(int) * 3 + 128 * sizeof(ushort) + 2 * sizeof(ushort);//前缀位置
                     *(int*)(state + sizeof(int)) = 0;//状态位置
                     *(int*)(state + sizeof(int) * 2) = names[0].Value;//名称索引
-                    AutoCSer.Extension.StringExtension.SimpleCopyNotNull(names[0].Key, state + *(int*)state);
+                    name.AsSpan().CopyTo(new Span<char>(state + *(int*)state, name.Length));
                 }
             }
+            else Data = new Pointer();
         }
         /// <summary>
         /// 计算状态数量
@@ -293,7 +299,8 @@ namespace AutoCSer.StateSearcher
                             *(int*)state = (int)(this.prefix - state);
                             fixed (char* charFixed = names[start].Key)
                             {
-                                AutoCSer.Memory.SimpleCopyNotNull((byte*)(charFixed + current + 1), this.prefix, prefixSize <<= 1);
+                                prefixSize <<= 1;
+                                new Span<byte>(charFixed + current + 1, prefixSize).CopyTo(new Span<byte>(this.prefix, prefixSize));
                                 *(char*)(this.prefix += prefixSize) = (char)0;
                                 this.prefix += sizeof(char);
                             }
@@ -332,15 +339,17 @@ namespace AutoCSer.StateSearcher
         /// <returns></returns>
         internal static bool Check(KeyValue<string, int>[] values)
         {
-            if (values.Length > 1)
+            int index = values.Length - 1;
+            if (index > 0)
             {
-                string value = null;
-                for (int index = values.Length; index != 0; )
+                string value = values[index].Key;
+                do
                 {
                     string newValue = values[--index].Key;
-                    if (newValue == value) return false;
+                    if (value == newValue) return false;
                     value = newValue;
                 }
+                while (index != 0);
             }
             return true;
         }
@@ -350,7 +359,7 @@ namespace AutoCSer.StateSearcher
         /// <param name="names">名称集合</param>
         /// <param name="isStaticUnmanaged">是否固定内存申请</param>
         /// <returns>名称查找数据</returns>
-        public static Pointer.Size Create(string[] names, bool isStaticUnmanaged)
+        internal static Pointer Create(string[] names, bool isStaticUnmanaged)
         {
             int index = 0;
             KeyValue<string, int>[] strings = new KeyValue<string, int>[names.Length];
@@ -360,7 +369,7 @@ namespace AutoCSer.StateSearcher
                 ++index;
             }
             strings = strings.sort(StringCompare);
-            return new CharBuilder(Check(strings) ? strings : NullValue<KeyValue<string, int>>.Array, isStaticUnmanaged).Data;
+            return new CharBuilder(Check(strings) ? strings : EmptyArray<KeyValue<string, int>>.Array, isStaticUnmanaged).Data;
         }
     }
 }

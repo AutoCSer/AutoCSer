@@ -19,7 +19,7 @@ namespace AutoCSer.Example.Xml
         /// <param name="value"></param>
         [AutoCSer.Xml.Custom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal static void Serialize(AutoCSer.Xml.Serializer serializer, CustomClass value)
+        internal static void Serialize(AutoCSer.XmlSerializer serializer, CustomClass value)
         {
             serializer.CharStream.Write(value.Value == null ? '1' : '2');
         }
@@ -30,7 +30,7 @@ namespace AutoCSer.Example.Xml
         /// <param name="value">目标数据，可能为 null</param>
         [AutoCSer.Xml.Custom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static unsafe void deSerialize(AutoCSer.Xml.Parser parser, ref CustomClass value)
+        private static unsafe void deSerialize(AutoCSer.XmlDeSerializer parser, ref CustomClass value)
         {
             char* read = parser.CustomRead;
             if (parser.VerifyRead(1))
@@ -51,15 +51,15 @@ namespace AutoCSer.Example.Xml
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            string xml = AutoCSer.Xml.Serializer.Serialize(new CustomClass { Value = null });
-            CustomClass newValue = AutoCSer.Xml.Parser.Parse<CustomClass>(xml);
+            string xml = AutoCSer.XmlSerializer.Serialize(new CustomClass { Value = null });
+            CustomClass newValue = AutoCSer.XmlDeSerializer.DeSerialize<CustomClass>(xml);
             if (newValue == null || newValue.Value != null)
             {
                 return false;
             }
 
-            xml = AutoCSer.Xml.Serializer.Serialize(new CustomClass { Value = string.Empty });
-            newValue = AutoCSer.Xml.Parser.Parse<CustomClass>(xml);
+            xml = AutoCSer.XmlSerializer.Serialize(new CustomClass { Value = string.Empty });
+            newValue = AutoCSer.XmlDeSerializer.DeSerialize<CustomClass>(xml);
             return newValue != null && newValue.Value == string.Empty;
         }
     }

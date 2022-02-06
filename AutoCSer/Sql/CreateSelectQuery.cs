@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Linq.Expressions;
 
 namespace AutoCSer.Sql
@@ -80,11 +81,10 @@ namespace AutoCSer.Sql
         {
             if (!Where.IsWhereTrue)
             {
-                sqlStream.PrepLength(6);
-                sqlStream.ByteSize += 6 * sizeof(char);
+                sqlStream.AddSize(6 * sizeof(char));
                 int length = sqlStream.Length;
                 sqlTable.Client.GetSql(Where.Expression, sqlStream, ref query);
-                if (length == sqlStream.Length) sqlStream.ByteSize -= 6 * sizeof(char);
+                if (length == sqlStream.Length) sqlStream.Data.CurrentIndex -= 6 * sizeof(char);
                 else
                 {
                     byte* where = (byte*)(sqlStream.Char + length);
@@ -106,20 +106,20 @@ namespace AutoCSer.Sql
             if (Orders != null)
             {
                 int isNext = 0;
-                sqlStream.SimpleWriteNotNull(" order by ");
+                sqlStream.SimpleWrite(" order by ");
                 foreach (KeyValue<LambdaExpression, bool> order in Orders)
                 {
                     if (isNext == 0) isNext = 1;
                     else sqlStream.Write(',');
                     if (order.Key == null) throw new ArgumentNullException();
                     sqlTable.Client.GetSql(order.Key, sqlStream, ref query);
-                    if (order.Value) sqlStream.SimpleWriteNotNull(" desc");
+                    if (order.Value) sqlStream.SimpleWrite(" desc");
                 }
             }
             else if (SqlFieldOrders != null)
             {
                 int isNext = 0;
-                sqlStream.SimpleWriteNotNull(" order by ");
+                sqlStream.SimpleWrite(" order by ");
                 foreach (KeyValue<Field, bool> order in SqlFieldOrders)
                 {
                     if (isNext == 0)
@@ -129,7 +129,7 @@ namespace AutoCSer.Sql
                     }
                     else sqlStream.Write(',');
                     constantConverter.ConvertNameToSqlStream(sqlStream, order.Key.FieldInfo.Name);
-                    if (order.Value) sqlStream.SimpleWriteNotNull(" desc");
+                    if (order.Value) sqlStream.SimpleWrite(" desc");
                 }
             }
         }

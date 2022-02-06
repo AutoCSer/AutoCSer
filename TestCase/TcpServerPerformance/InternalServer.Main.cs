@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 
 namespace AutoCSer.TestCase.TcpInternalServerPerformance
@@ -49,7 +49,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
 #else
  ".exe";
 #endif
-            FileInfo fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, (
+            FileInfo fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, (
 #if !DOTNET45
 @"..\" +
 #endif
@@ -74,7 +74,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
             ).pathSeparator()));
 #if DotNetStandard
             Console.WriteLine(fileInfo.FullName);
-            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (fileInfo.Exists)
             {
                 ProcessStartInfo process = new ProcessStartInfo("dotnet", fileInfo.FullName);
@@ -83,7 +83,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 return true;
             }
 #else
-            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (fileInfo.Exists)
             {
                 Process.Start(fileInfo.FullName);

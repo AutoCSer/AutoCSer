@@ -10,86 +10,80 @@ namespace AutoCSer.Threading
     /// </summary>
     /// <typeparam name="keyType"></typeparam>
     /// <typeparam name="valueType"></typeparam>
-    internal sealed class LockLastDictionary<keyType, valueType> where keyType : class
+    internal sealed class LockLastDictionary<keyType, valueType>
+        where keyType : IEquatable<keyType>
+        where valueType : class
     {
         /// <summary>
-        /// 访问锁
+        /// 获取关键字
         /// </summary>
-        private readonly object dictionaryLock = new object();
+        private readonly Func<valueType, keyType> getKey;
         /// <summary>
         /// 字典
         /// </summary>
-        private Dictionary<keyType, valueType> dictionary = DictionaryCreator.CreateOnly<keyType, valueType>();
+        internal Dictionary<keyType, valueType> Dictionary = DictionaryCreator<keyType>.Create<valueType>();
         /// <summary>
         /// 最后一次访问数据锁
         /// </summary>
-        private int lastLock;
-        /// <summary>
-        /// 最后一次访问的关键字
-        /// </summary>
-        private keyType lastKey;
+        internal SleepFlagSpinLock DictionaryLock;
         /// <summary>
         /// 最后一次访问的数据
         /// </summary>
         private valueType lastValue;
+        /// <summary>
+        /// 最后关键字缓存字典
+        /// </summary>
+        /// <param name="getKey">获取关键字</param>
+        internal LockLastDictionary(Func<valueType, keyType> getKey)
+        {
+            this.getKey = getKey;
+        }
         /// <summary>
         /// 清除数据
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Clear()
         {
-            Monitor.Enter(dictionaryLock);
-            try
+            if (Dictionary.Count != 0)
             {
-                if (dictionary.Count != 0) dictionary = DictionaryCreator.CreateOnly<keyType, valueType>();
-                while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
-                lastKey = default(keyType);
-                lastValue = default(valueType);
-                System.Threading.Interlocked.Exchange(ref lastLock, 0);
+                DictionaryLock.EnterSleepFlag();
+                try
+                {
+                    if (Dictionary.Count != 0) Dictionary = DictionaryCreator<keyType>.Create<valueType>();
+                }
+                finally { DictionaryLock.ExitSleepFlag(); }
             }
-            finally { Monitor.Exit(dictionaryLock); }
+            lastValue = null;
         }
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <returns>是否存在数据</returns>
+        /// <returns>是否存在数据，如果不存在则进入锁申请状态</returns>
         internal bool TryGetValue(keyType key, out valueType value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionaryGet);
-            if (lastKey == key)
-            {
-                value = lastValue;
-                System.Threading.Interlocked.Exchange(ref lastLock, 0);
-                return true;
-            }
-            System.Threading.Interlocked.Exchange(ref lastLock, 0);
-            Monitor.Enter(dictionaryLock);
-            if (dictionary.TryGetValue(key, out value))
-            {
-                while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
-                lastKey = key;
-                lastValue = value;
-                System.Threading.Interlocked.Exchange(ref lastLock, 0);
-                Monitor.Exit(dictionaryLock);
-                return true;
-            }
-            return false;
+            value = lastValue;
+            if (value != null && key.Equals(getKey(value))) return true;
+#if DEBUG
+            if (key == null) throw new Exception("key == null");
+#endif
+            DictionaryLock.Enter();
+            if (!Dictionary.TryGetValue(key, out value)) return false;
+            DictionaryLock.SleepFlag = 1;
+            DictionaryLock.Exit();
+            return true;
         }
         /// <summary>
-        /// 设置数据
+        /// 锁申请状态中设置数据
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void Set(keyType key, valueType value)
+        internal void Set(keyType key, valueType value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
-            lastKey = key;
             lastValue = value;
-            System.Threading.Interlocked.Exchange(ref lastLock, 0);
-            dictionary[key] = value;
+            Dictionary[key] = value;
         }
         /// <summary>
         /// 释放目标
@@ -97,7 +91,7 @@ namespace AutoCSer.Threading
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Exit()
         {
-            Monitor.Exit(dictionaryLock);
+            DictionaryLock.ExitSleepFlag();
         }
     }
 }

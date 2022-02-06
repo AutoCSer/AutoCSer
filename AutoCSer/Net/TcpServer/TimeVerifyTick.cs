@@ -14,14 +14,14 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 最后一次验证时间访问锁
         /// </summary>
-        private int lastVerifyTickLock;
+        private AutoCSer.Threading.SpinLock lastVerifyTickLock;
         /// <summary>
         /// 验证时间戳
         /// </summary>
         /// <param name="ticks"></param>
         public TimeVerifyTick(long ticks)
         {
-            lastVerifyTickLock = 0;
+            lastVerifyTickLock = default(AutoCSer.Threading.SpinLock);
             lastVerifyTicks = ticks;
         }
         /// <summary>
@@ -36,9 +36,9 @@ namespace AutoCSer.Net.TcpServer
             {
                 if (senderTimeVerifyTicks == 0)
                 {
-                    while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
+                    lastVerifyTickLock.EnterYield();
                     senderTimeVerifyTicks = ++lastVerifyTicks;
-                    System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
+                    lastVerifyTickLock.Exit();
                 }
                 ticks = senderTimeVerifyTicks;
                 return false;
@@ -53,9 +53,9 @@ namespace AutoCSer.Net.TcpServer
         {
             if (ticks > lastVerifyTicks)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
+                lastVerifyTickLock.EnterYield();
                 if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
-                System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
+                lastVerifyTickLock.Exit();
             }
         }
     }

@@ -8,7 +8,7 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal abstract partial class GenericType
+    internal abstract partial class GenericType : GenericTypeBase
     {
         /// <summary>
         /// 数组复制
@@ -20,18 +20,24 @@ namespace AutoCSer.Metadata
         internal abstract Delegate MemberMapCopyArrayDelegate { get; }
 
         /// <summary>
+        /// 获取默认空值
+        /// </summary>
+        /// <returns></returns>
+        internal abstract object GetDefaultObject();
+
+        /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, GenericType> cache = new LockLastDictionary<Type, GenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, GenericType> cache = new LockLastDictionary<HashType, GenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
-        /// <typeparam name="Type"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static GenericType create<Type>()
+        private static GenericType create<T>()
         {
-            return new GenericType<Type>();
+            return new GenericType<T>();
         }
         /// <summary>
         /// 创建泛型类型元数据 函数信息
@@ -49,7 +55,7 @@ namespace AutoCSer.Metadata
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(type).Invoke(null, null) }.GenericType;
+                    value = new UnionType.GenericType { Object = createMethod.MakeGenericMethod(type).Invoke(null, null) }.Value;
                     cache.Set(type, value);
                 }
                 finally { cache.Exit(); }
@@ -60,33 +66,36 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    /// <typeparam name="Type">泛型类型</typeparam>
-    internal sealed partial class GenericType<Type> : GenericType
+    /// <typeparam name="T">泛型类型</typeparam>
+    internal sealed partial class GenericType<T> : GenericType
     {
         /// <summary>
-        /// 反序列化委托
+        /// 获取当前泛型类型
         /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerialize(ref Type value);
-        /// <summary>
-        /// 反序列化委托
-        /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerializeArray(ref Type[] value);
+        internal override Type CurrentType { get { return typeof(T); } }
 
         /// <summary>
         /// 数组复制
         /// </summary>
         internal override Delegate MemberCopyArrayDelegate
         {
-            get { return (AutoCSer.MemberCopy.Copyer<Type[]>.copyer)AutoCSer.MemberCopy.Copyer<Type>.copyArray; }
+            get { return (AutoCSer.MemberCopy.Copyer<T[]>.copyer)AutoCSer.MemberCopy.Copyer<T>.copyArray; }
         }
         /// <summary>
         /// 数组复制
         /// </summary>
         internal override Delegate MemberMapCopyArrayDelegate
         {
-            get { return (AutoCSer.MemberCopy.Copyer<Type[]>.memberMapCopyer)AutoCSer.MemberCopy.Copyer<Type>.copyArray; }
+            get { return (AutoCSer.MemberCopy.Copyer<T[]>.memberMapCopyer)AutoCSer.MemberCopy.Copyer<T>.copyArray; }
+        }
+
+        /// <summary>
+        /// 获取默认空值
+        /// </summary>
+        /// <returns></returns>
+        internal override object GetDefaultObject()
+        {
+            return DefaultConstructor<T>.Default();
         }
     }
 }

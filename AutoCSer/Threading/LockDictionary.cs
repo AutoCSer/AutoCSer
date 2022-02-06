@@ -83,12 +83,15 @@ namespace AutoCSer.Threading
         /// </summary>
         internal void Clear()
         {
-            Monitor.Enter(dictionaryLock);
-            try
+            if (dictionary.Count != 0)
             {
-                if (dictionary.Count != 0) dictionary = DictionaryCreator.CreateAny<keyType, valueType>();
+                Monitor.Enter(dictionaryLock);
+                try
+                {
+                    if (dictionary.Count != 0) dictionary = DictionaryCreator.CreateAny<keyType, valueType>();
+                }
+                finally { Monitor.Exit(dictionaryLock); }
             }
-            finally { Monitor.Exit(dictionaryLock); }
         }
     }
 }

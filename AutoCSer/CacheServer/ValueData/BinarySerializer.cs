@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Threading;
 
 namespace AutoCSer.CacheServer.ValueData
@@ -16,7 +17,7 @@ namespace AutoCSer.CacheServer.ValueData
         /// <summary>
         /// 二进制数据序列化
         /// </summary>
-        internal static AutoCSer.BinarySerialize.Serializer Serializer;
+        internal static AutoCSer.BinarySerializer Serializer;
     }
     /// <summary>
     /// 数据序列化
@@ -42,13 +43,13 @@ namespace AutoCSer.CacheServer.ValueData
         /// <param name="stream"></param>
         internal override void Serialize(UnmanagedStream stream)
         {
-            if (Value == null) stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
+            if (Value == null) stream.Write(AutoCSer.BinarySerializer.NullValue);
             else
             {
-                AutoCSer.BinarySerialize.Serializer binarySerializer = Interlocked.Exchange(ref Serializer, null);
+                AutoCSer.BinarySerializer binarySerializer = Interlocked.Exchange(ref Serializer, null);
                 if (binarySerializer == null)
                 {
-                    binarySerializer = AutoCSer.BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new AutoCSer.BinarySerialize.Serializer();
+                    binarySerializer = AutoCSer.BinarySerializer.YieldPool.Default.Pop() ?? new AutoCSer.BinarySerializer();
                     binarySerializer.SetTcpServer();
                 }
                 binarySerializer.SerializeTcpServer(ref Value, stream);

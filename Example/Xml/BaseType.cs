@@ -5,7 +5,7 @@ namespace AutoCSer.Example.Xml
     /// <summary>
     /// 入侵派生类型 示例
     /// </summary>
-    [AutoCSer.Xml.Serialize(IsBaseType = true)]
+    [AutoCSer.XmlSerialize(IsBaseType = true)]
     class BaseType
     {
         /// <summary>
@@ -21,15 +21,15 @@ namespace AutoCSer.Example.Xml
         internal static bool TestCase()
         {
             SonType value = new SonType { Value = 1, SonValue = 2 };
-            string xml = AutoCSer.Xml.Serializer.Serialize(value);
+            string xml = AutoCSer.XmlSerializer.Serialize(value);
 
-            SonType newValue = AutoCSer.Xml.Parser.Parse<SonType>(xml);
+            SonType newValue = AutoCSer.XmlDeSerializer.DeSerialize<SonType>(xml);
             if (newValue == null || newValue.Value != 1 || newValue.SonValue != 0)
             {
                 return false;
             }
 
-            SonType2 newValue2 = AutoCSer.Xml.Parser.Parse<SonType2>(xml);
+            SonType2 newValue2 = AutoCSer.XmlDeSerializer.DeSerialize<SonType2>(xml);
             return newValue2 != null && newValue2.Value == 1 && newValue2.SonValue == 0;
         }
     }

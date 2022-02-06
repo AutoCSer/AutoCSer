@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
 {
@@ -15,11 +15,11 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 输出参数集合
         /// </summary>
-        private LeftArray<ReturnValue<outputParameterType>> outputParameters;
+        private LeftArray<ReturnValue<outputParameterType>> outputParameters = new LeftArray<ReturnValue<outputParameterType>>(0);
         /// <summary>
         /// 输出参数访问锁
         /// </summary>
-        internal object OutputLock;
+        internal AutoCSer.Threading.SleepFlagSpinLock OutputLock;
         /// <summary>
         /// 输出参数
         /// </summary>
@@ -35,7 +35,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 当前输出参数集合
         /// </summary>
-        private LeftArray<ReturnValue<outputParameterType>> currentOutputParameters;
+        private LeftArray<ReturnValue<outputParameterType>> currentOutputParameters = new LeftArray<ReturnValue<outputParameterType>>(0);
         ///// <summary>
         ///// 终止保持回调
         ///// </summary>
@@ -77,7 +77,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                     }
                     else
                     {
-                        fixed (byte* dataFixed = data.Array)
+                        fixed (byte* dataFixed = data.GetFixedBuffer())
                         {
                             byte* start = dataFixed + data.Start, end = start + data.Length;
                             if (SimpleSerialize.TypeDeSerializer<outputParameterType>.DeSerialize(start, ref outputParameter.Value, end) == end) outputParameter.Type = ReturnType.Success;
@@ -86,7 +86,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                 }
                 else
                 {
-                    if (Socket.ParseJson(ref data, ref outputParameter.Value)) outputParameter.Type = ReturnType.Success;
+                    if (Socket.DeSerializeJson(ref data, ref outputParameter.Value)) outputParameter.Type = ReturnType.Success;
                 }
             }
             else if ((byte)outputParameter.Type < (byte)ReturnType.Success) KeepCallback.Cancel();
@@ -109,7 +109,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                     }
                     catch (Exception error)
                     {
-                        Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        Socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                     finally { callback.Call(ref outputParameter); }
                 }
@@ -123,28 +123,31 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                     {
                         outputParameter.Type = ReturnType.ClientException;
                         outputParameter.Value = default(outputParameterType);
-                        Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        Socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                     int isOutput = 1;
-                    Monitor.Enter(OutputLock);
+                    Exception exception = null;
+                    OutputLock.Enter();
                     try
                     {
+                        if (outputParameters.FreeCount == 0) OutputLock.SleepFlag = 1;
                         outputParameters.Add(outputParameter);
                         isOutput = this.isOutput;
                         this.isOutput = 1;
                     }
-                    catch (Exception error)
+                    catch (Exception error) { exception = error; }
+                    finally
                     {
-                        Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        OutputLock.ExitSleepFlag();
+                        if (exception != null) Socket.Log.Exception(exception, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
-                    finally { Monitor.Exit(OutputLock); }
                     if (isOutput == 0)
                     {
                         switch (CommandInfo.TaskType)
                         {
-                            case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                            case ClientTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                            case ClientTaskType.TcpTask: ClientCallTask.Task.Add(this); return;
+                            case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                            case ClientTaskType.Timeout: AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                            case ClientTaskType.TcpTask: ClientCallThreadArray.Default.CurrentThread.Add(this); return;
                             case ClientTaskType.TcpQueue: ClientCallQueue.Default.Add(this); return;
                         }
                     }
@@ -159,11 +162,11 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             Callback<ReturnValue<outputParameterType>> callback = Callback;
             if (callback != null)
             {
-                Monitor.Enter(OutputLock);
+                OutputLock.Enter();
                 do
                 {
                     currentOutputParameters.Exchange(ref outputParameters);
-                    Monitor.Exit(OutputLock);
+                    OutputLock.Exit();
                     ReturnValue<outputParameterType>[] outputParameterArray = currentOutputParameters.Array;
                     int index = 0, count = currentOutputParameters.Length;
                     do
@@ -179,18 +182,18 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                         }
                         catch (Exception error)
                         {
-                            Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                            Socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                     }
                     while (++index != count);
                     if(AutoCSer.DynamicArray<outputParameterType>.IsClearArray) System.Array.Clear(outputParameterArray, 0, count);
                     currentOutputParameters.Length = 0;
 
-                    Monitor.Enter(OutputLock);
+                    OutputLock.Enter();
                     if (outputParameters.Length == 0)
                     {
                         isOutput = 0;
-                        Monitor.Exit(OutputLock);
+                        OutputLock.Exit();
                         return;
                     }
                 }
@@ -216,7 +219,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             }
             catch (Exception error)
             {
-                Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                Socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
     }
@@ -264,7 +267,6 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback, ref outputParameterType outputParameter)
         {
-            if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();
             KeepCallback = new KeepCallback(this);
             Socket = socket;
             Callback = callback;
@@ -306,7 +308,6 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Set(ClientSocket socket, CommandInfo command, Callback<ReturnValue<outputParameterType>> callback)
         {
-            if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();
             KeepCallback = new KeepCallback(this);
             Socket = socket;
             Callback = callback;

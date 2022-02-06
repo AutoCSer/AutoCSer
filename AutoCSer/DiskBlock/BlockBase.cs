@@ -17,7 +17,7 @@ namespace AutoCSer.DiskBlock
         /// <summary>
         /// 默认缓冲区池
         /// </summary>
-        internal static readonly SubBuffer.Pool DefaultBufferPool = SubBuffer.Pool.GetPool(SubBuffer.Size.Kilobyte4);
+        internal static readonly SubBuffer.Pool DefaultBufferPool = SubBuffer.Pool.GetPool(AutoCSer.Memory.BufferSize.Kilobyte4);
         /// <summary>
         /// 磁盘块编号
         /// </summary>

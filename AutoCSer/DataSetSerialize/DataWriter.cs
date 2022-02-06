@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.DataSetSerialize
 {
@@ -16,11 +17,11 @@ namespace AutoCSer.DataSetSerialize
         /// <summary>
         /// 字符串集合
         /// </summary>
-        private LeftArray<string> strings;
+        private LeftArray<string> strings = new LeftArray<string>(0);
         /// <summary>
         /// 字节数组集合
         /// </summary>
-        private LeftArray<byte[]> bytes;
+        private LeftArray<byte[]> bytes = new LeftArray<byte[]>(0);
         /// <summary>
         /// 添加数据
         /// </summary>
@@ -128,7 +129,7 @@ namespace AutoCSer.DataSetSerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Get(ref DataSource dataSource)
         {
-            dataSource.Set(stream.GetArray(), strings.ToArray(), bytes.ToArray());
+            dataSource.Set(stream.Data.GetArray(), strings.ToArray(), bytes.ToArray());
         }
         /// <summary>
         /// 释放数据流

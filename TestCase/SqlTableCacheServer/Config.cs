@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.TestCase.SqlTableCacheServer
 {
     /// <summary>
     /// 配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal static class Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
+        /// <summary>
+        /// 主配置类型集合
+        /// </summary>
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// 数据库连接配置名称
         /// </summary>
@@ -24,7 +29,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// SQL 配置
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.Sql.Config SqlConfig
         {
             get
@@ -39,7 +44,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// 数据库连接信息配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = SqlConnectionName)]
+        [AutoCSer.Configuration.Member(Name = SqlConnectionName)]
         public static AutoCSer.Sql.Connection SqlConnection
         {
             get

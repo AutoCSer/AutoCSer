@@ -29,7 +29,7 @@ namespace AutoCSer.Net.HtmlTitle
         internal static readonly DomainIPAddressConfig Default;
         static DomainIPAddressConfig()
         {
-            (Default = ConfigLoader.GetUnion(typeof(DomainIPAddressConfig)).DomainIPAddressConfig ?? new DomainIPAddressConfig()).set();
+            (Default = (DomainIPAddressConfig)AutoCSer.Configuration.Common.Get(typeof(DomainIPAddressConfig)) ?? new DomainIPAddressConfig()).set();
         }
     }
 }

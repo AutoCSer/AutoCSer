@@ -1,8 +1,9 @@
 ﻿using System;
 using AutoCSer.Metadata;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -32,7 +33,7 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 默认顺序成员名称数据
         /// </summary>
-        private static Pointer memberNames;
+        private static AutoCSer.Memory.Pointer memberNames;
         //internal static int x(HeaderQueryParser parser, ref valueType value, byte* names)
         //{
         //    int index = 0;
@@ -68,16 +69,16 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 预编译
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void Compile() { }
 
         static HeaderQueryTypeParser()
         {
             Type type = typeof(valueType);
-            AutoCSer.Json.ParseAttribute attribute = TypeAttribute.GetAttribute<AutoCSer.Json.ParseAttribute>(type, true) ?? AutoCSer.Json.Parser.AllMemberAttribute;
+            AutoCSer.JsonDeSerializeAttribute attribute = TypeAttribute.GetAttribute<AutoCSer.JsonDeSerializeAttribute>(type, true) ?? AutoCSer.JsonDeSerializer.AllMemberAttribute;
             FieldIndex defaultMember = null;
-            LeftArray<FieldIndex> fields = AutoCSer.Json.ParseMethodCache.GetFields(MemberIndexGroup<valueType>.GetFields(attribute.MemberFilters), attribute, ref defaultMember);
-            LeftArray<KeyValue<PropertyIndex, MethodInfo>> properties = AutoCSer.Json.ParseMethodCache.GetProperties(MemberIndexGroup<valueType>.GetProperties(attribute.MemberFilters), attribute);
+            LeftArray<FieldIndex> fields = AutoCSer.Json.DeSerializeMethodCache.GetFields(MemberIndexGroup<valueType>.GetFields(attribute.MemberFilters), attribute, ref defaultMember);
+            LeftArray<KeyValue<PropertyIndex, MethodInfo>> properties = AutoCSer.Json.DeSerializeMethodCache.GetProperties(MemberIndexGroup<valueType>.GetProperties(attribute.MemberFilters), attribute);
             memberParsers = new TryParse[fields.Length + properties.Length + (defaultMember == null ? 0 : 1)];
             string[] names = new string[memberParsers.Length];
             int index = 0, nameLength = 0, maxNameLength = 0;
@@ -118,14 +119,14 @@ namespace AutoCSer.Net.Http
             if (maxNameLength > short.MaxValue || nameLength == 0) memberNames = Unmanaged.NullByte8;
             else
             {
-                memberNames = new Pointer { Data = Unmanaged.GetStatic(nameLength + (names.Length - (defaultMember == null ? 0 : 1)) * sizeof(short) + sizeof(short), false) };
+                memberNames = Unmanaged.GetStaticPointer(nameLength + (names.Length - (defaultMember == null ? 0 : 1)) * sizeof(short) + sizeof(short), false);
                 byte* write = memberNames.Byte;
                 foreach (string name in names)
                 {
                     if (name.Length != 0)
                     {
                         *(short*)write = (short)name.Length;
-                        fixed (char* nameFixed = name) StringExtension.WriteBytesNotNull(nameFixed, name.Length, write + sizeof(short));
+                        fixed (char* nameFixed = name) StringExtension.WriteBytes(nameFixed, name.Length, write + sizeof(short));
                         write += sizeof(short) + name.Length;
                     }
                 }

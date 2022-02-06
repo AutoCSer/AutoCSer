@@ -2,15 +2,16 @@
 using System.Threading;
 using System.Text;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.Http
 {
     /// <summary>
     /// HTTP 套接字
     /// </summary>
-    public abstract unsafe class SocketBase : SocketTimeoutLink
+    public abstract unsafe class SocketBase : SocketTimeoutNode
     {
         /// <summary>
         /// 会话标识
@@ -146,7 +147,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, error);
+                Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             ResponseError(identity, ResponseState.ServerError500);
         }
@@ -179,9 +180,9 @@ namespace AutoCSer.Net.Http
         {
             if ((HttpHeader.Flag & HeaderFlag.IsSetIfModifiedSince) != 0 && (response.Flag & ResponseFlag.LastModified) != 0 && HttpHeader.IfModifiedSinceIndex.Length == response.LastModifiedData.Length)
             {
-                fixed (byte* bufferFixed = HttpHeader.Buffer.Buffer, responseFixed = response.LastModifiedData)
+                fixed (byte* bufferFixed = HttpHeader.Buffer.GetFixedBuffer(), responseFixed = response.LastModifiedData)
                 {
-                    if (Memory.EqualNotNull(responseFixed, bufferFixed + (HttpHeader.Buffer.StartIndex + HttpHeader.IfModifiedSinceIndex.StartIndex), HttpHeader.IfModifiedSinceIndex.Length))
+                    if (AutoCSer.Memory.Common.EqualNotNull(responseFixed, bufferFixed + (HttpHeader.Buffer.StartIndex + HttpHeader.IfModifiedSinceIndex.StartIndex), HttpHeader.IfModifiedSinceIndex.Length))
                     {
                         response.Push();
                         response = Http.Response.NotChanged304;
@@ -239,49 +240,49 @@ namespace AutoCSer.Net.Http
             if ((responseFlag & ResponseFlag.Location) != 0)
             {
                 writeLocation(write);
-                fixed (byte* locationFixed = response.Location.Array) Memory.SimpleCopyNotNull64(locationFixed + response.Location.Start, write += locationSize, index = response.Location.Length);
+                fixed (byte* locationFixed = response.Location.GetFixedBuffer()) AutoCSer.Memory.Common.SimpleCopyNotNull64(locationFixed + response.Location.Start, write += locationSize, index = response.Location.Length);
                 *(short*)(write += index) = 0x0a0d;
                 write += sizeof(short);
             }
             if ((responseFlag & ResponseFlag.CacheControl) != 0)
             {
                 writeCacheControl(write);
-                Memory.SimpleCopyNotNull64(response.CacheControlData, write += cacheControlSize, index = response.CacheControlData.Length);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(response.CacheControlData, write += cacheControlSize, index = response.CacheControlData.Length);
                 *(short*)(write += index) = 0x0a0d;
                 write += sizeof(short);
             }
             if ((responseFlag & ResponseFlag.ContentType) != 0)
             {
                 writeContentType(write);
-                Memory.SimpleCopyNotNull64(response.ContentTypeData, write += contentTypeSize, index = response.ContentTypeData.Length);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(response.ContentTypeData, write += contentTypeSize, index = response.ContentTypeData.Length);
                 *(short*)(write += index) = 0x0a0d;
                 write += sizeof(short);
             }
             if ((responseFlag & ResponseFlag.ContentEncoding) != 0)
             {
                 writeContentEncoding(write);
-                Memory.SimpleCopyNotNull64(response.ContentEncoding, write += contentEncodingSize, index = response.ContentEncoding.Length);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(response.ContentEncoding, write += contentEncodingSize, index = response.ContentEncoding.Length);
                 *(short*)(write += index) = 0x0a0d;
                 write += sizeof(short);
             }
             if ((responseFlag & ResponseFlag.ETag) != 0)
             {
                 writeETag(write);
-                Memory.SimpleCopyNotNull64(response.ETagData, write += eTagSize, index = response.ETagData.Length);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(response.ETagData, write += eTagSize, index = response.ETagData.Length);
                 *(int*)(write += index) = '"' + 0x0a0d00;
                 write += 3;
             }
             if ((responseFlag & ResponseFlag.ContentDisposition) != 0)
             {
                 writeContentDisposition(write);
-                Memory.SimpleCopyNotNull64(response.ContentDispositionData, write += contentDispositionSize, index = response.ContentDispositionData.Length);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(response.ContentDispositionData, write += contentDispositionSize, index = response.ContentDispositionData.Length);
                 *(short*)(write += index) = 0x0a0d;
                 write += sizeof(short);
             }
             if ((responseFlag & ResponseFlag.AccessControlAllowOrigin) != 0)
             {
                 writeAccessControlAllowOrigin(write);
-                fixed (byte* requestBufferFixed = HttpHeader.Buffer.Buffer) Memory.SimpleCopyNotNull64(requestBufferFixed + HttpHeader.Buffer.StartIndex + response.AccessControlAllowOrigin.StartIndex, write += accessControlAllowOriginSize, index = response.AccessControlAllowOrigin.Length);
+                fixed (byte* requestBufferFixed = HttpHeader.Buffer.GetFixedBuffer()) AutoCSer.Memory.Common.SimpleCopyNotNull64(requestBufferFixed + HttpHeader.Buffer.StartIndex + response.AccessControlAllowOrigin.StartIndex, write += accessControlAllowOriginSize, index = response.AccessControlAllowOrigin.Length);
                 *(short*)(write += index) = 0x0a0d;
                 write += sizeof(short);
             }
@@ -295,7 +296,7 @@ namespace AutoCSer.Net.Http
                     ++cookieCount;
                     if (nextCookie == null)
                     {
-                        if (cookieCount == 1) Cookie.YieldPool.Default.PushNotNull(cookie);
+                        if (cookieCount == 1) Cookie.YieldPool.Default.Push(cookie);
                         else Cookie.YieldPool.Default.PushLink(cookie, writeCookie, cookieCount);
                         break;
                     }
@@ -306,7 +307,7 @@ namespace AutoCSer.Net.Http
             if ((responseFlag & ResponseFlag.LastModified) != 0)
             {
                 writeLastModified(write);
-                Memory.SimpleCopyNotNull64(response.LastModifiedData, write += lastModifiedSize, index = response.LastModifiedData.Length);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(response.LastModifiedData, write += lastModifiedSize, index = response.LastModifiedData.Length);
                 *(short*)(write += index) = 0x0a0d;
                 write += sizeof(short);
             }
@@ -317,7 +318,7 @@ namespace AutoCSer.Net.Http
             }
             if (isResponseServer)
             {
-                Memory.SimpleCopyNotNull64(responseServer.Byte, write, AutoCSerServer.Length);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(responseServer.Byte, write, AutoCSerServer.Length);
                 write += AutoCSerServer.Length;
             }
             if (isResponseDate)
@@ -400,16 +401,16 @@ namespace AutoCSer.Net.Http
             switch (GetFormType)
             {
                 case Http.GetFormType.Call:
-                    if (page.DomainServer.Call(new AutoCSer.WebView.UnionType { Value = page }.CallSynchronize)) return true;
+                    if (page.DomainServer.Call(new AutoCSer.WebView.UnionType.CallSynchronize { Object = page }.Value)) return true;
                     break;
                 case Http.GetFormType.CallAsynchronous:
-                    if (page.DomainServer.Call(new AutoCSer.WebView.UnionType { Value = page }.CallAsynchronousBase)) return true;
+                    if (page.DomainServer.Call(new AutoCSer.WebView.UnionType.CallAsynchronousBase { Object = page }.Value)) return true;
                     break;
                 case Http.GetFormType.Ajax:
-                    if (new AutoCSer.WebView.UnionType { Value = page }.AjaxBase.CallAjax()) return true;
+                    if (new AutoCSer.WebView.UnionType.AjaxBase { Object = page }.Value.CallAjax()) return true;
                     break;
                 case Http.GetFormType.PubAjax:
-                    if (new AutoCSer.WebView.UnionType { Value = page }.PubAjax.Call()) return true;
+                    if (new AutoCSer.WebView.UnionType.PubAjax { Object = page }.Value.Call()) return true;
                     break;
             }
             page.CancelGetForm();
@@ -469,7 +470,7 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// HTTP 配置
         /// </summary>
-        internal static readonly Config Config = ConfigLoader.GetUnion(typeof(Config)).Config ?? new Config();
+        internal static readonly Config Config = (Config)AutoCSer.Configuration.Common.Get(typeof(Config)) ?? new Config();
         /// <summary>
         /// HTTP 头部缓冲区池
         /// </summary>
@@ -505,7 +506,7 @@ namespace AutoCSer.Net.Http
         /// <param name="data">输出数据起始位置</param>
         protected static unsafe void getDate(byte* data)
         {
-            DateTime now = Date.NowTime.Now;
+            DateTime now = AutoCSer.Threading.SecondTimer.Now;
             if (Monitor.TryEnter(dateCacheLock))
             {
                 try
@@ -771,9 +772,9 @@ namespace AutoCSer.Net.Http
             BufferPool = SubBuffer.Pool.GetPool((int)Config.BufferSize >= (int)Config.HeadSize ? Config.BufferSize : Config.HeadSize);
 
             int dateCacheSize = (Date.ToByteLength + 7) & (int.MaxValue - 7), AutoCSerServerSize = (AutoCSerServer.Length + 7) & (int.MaxValue - 7);
-            dateCache = new Pointer { Data = Unmanaged.GetStatic64(dateCacheSize + AutoCSerServerSize, false) };
+            dateCache = Unmanaged.GetStaticPointer(dateCacheSize + AutoCSerServerSize, false);
             responseServer = new Pointer { Data = dateCache.Byte + dateCacheSize };
-            fixed (char* AutoCSerServerFixed = AutoCSerServer) StringExtension.WriteBytesNotNull(AutoCSerServerFixed, AutoCSerServer.Length, responseServer.Byte);
+            fixed (char* AutoCSerServerFixed = AutoCSerServer) StringExtension.WriteBytes(AutoCSerServerFixed, AutoCSerServer.Length, responseServer.Byte);
 
             byte[] responseServerEnd = (AutoCSerServer + @"Content-Length: 0
 
@@ -837,7 +838,7 @@ namespace AutoCSer.Net.Http
             /// <summary>
             /// 缓存数量
             /// </summary>
-            private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
+            private readonly static int maxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(valueType));
             /// <summary>
             /// 链表头部
             /// </summary>
@@ -845,7 +846,7 @@ namespace AutoCSer.Net.Http
             /// <summary>
             /// 弹出节点访问锁
             /// </summary>
-            private int popLock;
+            private AutoCSer.Threading.SpinLock popLock;
             /// <summary>
             /// 缓存数量
             /// </summary>
@@ -877,7 +878,7 @@ namespace AutoCSer.Net.Http
                         value.NextTask = headValue;
                         if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return 1;
                     }
-                    AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }
@@ -888,23 +889,23 @@ namespace AutoCSer.Net.Http
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             public valueType Pop()
             {
-                while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                popLock.EnterYield();
                 valueType headValue;
                 do
                 {
                     if ((headValue = head) == null)
                     {
-                        System.Threading.Interlocked.Exchange(ref popLock, 0);
+                        popLock.Exit();
                         return null;
                     }
                     if (System.Threading.Interlocked.CompareExchange(ref head, headValue.NextTask, headValue) == headValue)
                     {
-                        System.Threading.Interlocked.Exchange(ref popLock, 0);
+                        popLock.Exit();
                         System.Threading.Interlocked.Decrement(ref count);
                         headValue.NextTask = null;
                         return headValue;
                     }
-                    AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }
@@ -974,7 +975,7 @@ namespace AutoCSer.Net.Http
                         end.NextTask = headValue;
                         if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
                     }
-                    AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }

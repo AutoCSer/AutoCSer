@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpInternalServer
     /// <summary>
     /// 获取远程表达式服务端节点标识同步调用
     /// </summary>
-    internal sealed class GetRemoteExpressionNodeIdServerCall : AutoCSer.Net.TcpStaticServer.ServerCall<GetRemoteExpressionNodeIdServerCall, RemoteType[]>
+    internal sealed class GetRemoteExpressionNodeIdServerCall : AutoCSer.Net.TcpStaticServer.ServerCall<GetRemoteExpressionNodeIdServerCall, AutoCSer.Reflection.RemoteType[]>
     {
         /// <summary>
         /// 调用处理

@@ -15,7 +15,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// <summary>
         /// 用户登录时间
         /// </summary>
-        public DateTime LoginTime = Date.Now;
+        public DateTime LoginTime = AutoCSer.Threading.SecondTimer.Now;
         /// <summary>
         /// 用户信息推送回调委托
         /// </summary>

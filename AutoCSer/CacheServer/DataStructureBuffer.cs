@@ -28,11 +28,11 @@ namespace AutoCSer.CacheServer
         internal unsafe DataStructureBuffer(Buffer buffer)
         {
             Data = buffer.Array;
-            fixed (byte* dataFixed = Data.Array)
+            fixed (byte* dataFixed = Data.GetFixedBuffer())
             {
                 byte* start = dataFixed + Data.Start, read = start + (OperationParameter.Serializer.HeaderSize + IndexIdentity.SerializeSize);
                 Identity = new IndexIdentity(start + OperationParameter.Serializer.HeaderSize);
-                CacheName = AutoCSer.BinarySerialize.DeSerializer.DeSerializeString(ref read, start + *(int*)start);
+                CacheName = AutoCSer.BinaryDeSerializer.DeSerializeString(ref read, start + *(int*)start);
                 Data.MoveStart((int)(read - start));
             }
         }

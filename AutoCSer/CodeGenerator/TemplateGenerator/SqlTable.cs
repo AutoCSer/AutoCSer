@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
@@ -59,7 +59,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     AutoCSer.Net.TcpStaticServer.ServerAttribute serverAttribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpStaticServer.ServerAttribute>(Type, false);
                     if (serverAttribute != null && serverAttribute.ServerName != null && !serverAttribute.IsRemoteLinkType && serverAttribute.IsRemoteLink && (RemoteLinkType = TcpStaticServer.Generator.GetRemoteLinkType(Type)) != null)
                     {
-                        LeftArray<TcpStaticServer.Generator.RemoteMethod> remoteMethods = new LeftArray<TcpStaticServer.Generator.RemoteMethod>();
+                        LeftArray<TcpStaticServer.Generator.RemoteMethod> remoteMethods = new LeftArray<TcpStaticServer.Generator.RemoteMethod>(0);
                         foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, serverAttribute.GetMemberFilters, false, serverAttribute.IsAttribute, serverAttribute.IsBaseTypeAttribute))
                         {
                             if (!method.Method.IsGenericMethodDefinition)
@@ -73,7 +73,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             }
                         }
 
-                        LeftArray<SqlModel.Generator.LogMember> logMembers = new LeftArray<SqlModel.Generator.LogMember>();
+                        LeftArray<SqlModel.Generator.LogMember> logMembers = new LeftArray<SqlModel.Generator.LogMember>(0);
                         foreach (MemberIndex member in MemberIndex.GetMembers(modelType, modelAttribute.MemberFilters))
                         {
                             if (!member.IsIgnore)
@@ -102,7 +102,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             }
                         }
                         RemoteMethods = remoteMethods.GetFindArray(value => value.Member != null);
-                        LogMembers = logMembers.Length != 0 && (modelAttribute.CacheType != AutoCSer.Sql.Cache.Whole.Event.Type.Unknown && modelAttribute.CacheType != AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey) ? logMembers.ToArray() : NullValue<SqlModel.Generator.LogMember>.Array;
+                        LogMembers = logMembers.Length != 0 && (modelAttribute.CacheType != AutoCSer.Sql.Cache.Whole.Event.Type.Unknown && modelAttribute.CacheType != AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey) ? logMembers.ToArray() : EmptyArray<SqlModel.Generator.LogMember>.Array;
                         if ((LogMembers.Length | RemoteMethods.Length) != 0)
                         {
                             //create(true);

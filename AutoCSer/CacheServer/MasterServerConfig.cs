@@ -54,11 +54,11 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 文件缓冲区大小默认为 128KB
         /// </summary>
-        public SubBuffer.Size BufferSize = SubBuffer.Size.Kilobyte128;
+        public AutoCSer.Memory.BufferSize BufferSize = AutoCSer.Memory.BufferSize.Kilobyte128;
         /// <summary>
         /// 文件读取缓冲区大小默认为 16KB
         /// </summary>
-        public SubBuffer.Size ReaderBufferSize = SubBuffer.Size.Kilobyte16;
+        public AutoCSer.Memory.BufferSize ReaderBufferSize = AutoCSer.Memory.BufferSize.Kilobyte16;
 
         /// <summary>
         /// 消息队列路径

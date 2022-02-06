@@ -5,7 +5,7 @@ namespace AutoCSer.OpenAPI.Weixin
     /// <summary>
     /// 查询退款，请求需要双向证书 https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_4
     /// </summary>
-    [AutoCSer.Xml.Serialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
+    [AutoCSer.XmlSerialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
     internal sealed class RefundQuery : SignQuery
     {
         /// <summary>

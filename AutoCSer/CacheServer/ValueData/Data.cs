@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CacheServer.ValueData
 {
@@ -129,7 +130,7 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         /// <param name="deSerializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void DeSerializeReturnParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        internal void DeSerializeReturnParameter(AutoCSer.BinaryDeSerializer deSerializer)
         {
             uint type = (uint)deSerializer.ReadInt();
             ReturnType = (ReturnType)(byte)type;
@@ -154,9 +155,9 @@ namespace AutoCSer.CacheServer.ValueData
             {
                 if (IsBuffer)
                 {
-                    fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) return *(System.Guid*)(dataFixed + Int64.Index);
+                    fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) return *(System.Guid*)(dataFixed + Int64.Index);
                 }
-                return new UnionType { Value = Value }.Guid.Value;
+                return new UnionType.Guid { Object = Value }.Value.Value;
             }
         }
         /// <summary>
@@ -168,9 +169,9 @@ namespace AutoCSer.CacheServer.ValueData
             {
                 if (IsBuffer)
                 {
-                    fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) return *(decimal*)(dataFixed + Int64.Index);
+                    fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) return *(decimal*)(dataFixed + Int64.Index);
                 }
-                return new UnionType { Value = Value }.Decimal.Value;
+                return new UnionType.Decimal { Object = Value }.Value.Value;
             }
         }
         /// <summary>
@@ -180,8 +181,8 @@ namespace AutoCSer.CacheServer.ValueData
         {
             get
             {
-                if (IsBuffer) return new SubArray<byte>(Int64.Index, Int64.Length, new UnionType { Value = Value }.ByteArray).GetArray();
-                return new UnionType { Value = Value }.ByteArray;
+                if (IsBuffer) return new SubArray<byte>(Int64.Index, Int64.Length, new UnionType.ByteArray { Object = Value }.Value).GetArray();
+                return new UnionType.ByteArray { Object = Value }.Value;
             }
         }
         /// <summary>
@@ -192,7 +193,7 @@ namespace AutoCSer.CacheServer.ValueData
             get
             {
                 if (IsBuffer) deSerializeString();
-                return new UnionType { Value = Value }.String;
+                return new UnionType.String { Object = Value }.Value;
             }
         }
         /// <summary>
@@ -202,8 +203,8 @@ namespace AutoCSer.CacheServer.ValueData
         {
             get
             {
-                if (IsBuffer) return new SubArray<byte>(Int64.Index, Int64.Length, new UnionType { Value = Value }.ByteArray);
-                return new SubArray<byte>(new UnionType { Value = Value }.ByteArray);
+                if (IsBuffer) return new SubArray<byte>(Int64.Index, Int64.Length, new UnionType.ByteArray { Object = Value }.Value);
+                return new SubArray<byte>(new UnionType.ByteArray { Object = Value }.Value);
             }
         }
         /// <summary>
@@ -216,10 +217,10 @@ namespace AutoCSer.CacheServer.ValueData
         {
             if (IsBuffer)
             {
-                fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray)
+                fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value)
                 {
                     byte* start = dataFixed + Int64.Index;
-                    return AutoCSer.Json.Parser.UnsafeParse<valueType>((char*)start, Int64.Length >> 1, ref value).State == Json.ParseState.Success;
+                    return AutoCSer.JsonDeSerializer.UnsafeDeSerialize<valueType>((char*)start, Int64.Length >> 1, ref value).State == Json.DeSerializeState.Success;
                 }
             }
             if (Value != null)
@@ -229,7 +230,7 @@ namespace AutoCSer.CacheServer.ValueData
                 {
                     fixed (byte* dataFixed = data)
                     {
-                        return AutoCSer.Json.Parser.UnsafeParse<valueType>((char*)dataFixed, data.Length >> 1, ref value).State == Json.ParseState.Success;
+                        return AutoCSer.JsonDeSerializer.UnsafeDeSerialize<valueType>((char*)dataFixed, data.Length >> 1, ref value).State == Json.DeSerializeState.Success;
                     }
                 }
                 return false;
@@ -248,12 +249,12 @@ namespace AutoCSer.CacheServer.ValueData
         {
             if (IsBuffer)
             {
-                return AutoCSer.BinarySerialize.DeSerializer.DeSerialize(new SubArray<byte>(Int64.Index, Int64.Length, new UnionType { Value = Value }.ByteArray), ref value).State == AutoCSer.BinarySerialize.DeSerializeState.Success;
+                return AutoCSer.BinaryDeSerializer.DeSerialize(new SubArray<byte>(Int64.Index, Int64.Length, new UnionType.ByteArray { Object = Value }.Value), ref value).State == AutoCSer.BinarySerialize.DeSerializeState.Success;
             }
             if (Value != null)
             {
                 byte[] data = Value as byte[];
-                return data != null && AutoCSer.BinarySerialize.DeSerializer.DeSerialize(data, ref value).State == AutoCSer.BinarySerialize.DeSerializeState.Success;
+                return data != null && AutoCSer.BinaryDeSerializer.DeSerialize(data, ref value).State == AutoCSer.BinarySerialize.DeSerializeState.Success;
             }
             value = default(valueType);
             return true;
@@ -710,18 +711,16 @@ namespace AutoCSer.CacheServer.ValueData
                 case DataType.Long:
                 case DataType.Double:
                 case DataType.DateTime:
-                    write = stream.GetPrepSizeCurrent(sizeof(uint) + sizeof(ulong));
+                    write = stream.GetBeforeMove(sizeof(uint) + sizeof(ulong));
                     *(uint*)write = (byte)Type;
                     *(ulong*)(write + sizeof(uint)) = Int64.ULong;
-                    stream.ByteSize += sizeof(uint) + sizeof(ulong);
                     return;
                 case DataType.UInt:
                 case DataType.Int:
                 case DataType.Float:
-                    write = stream.GetPrepSizeCurrent(sizeof(uint) + sizeof(uint));
+                    write = stream.GetBeforeMove(sizeof(uint) + sizeof(uint));
                     *(uint*)write = (byte)Type;
                     *(uint*)(write + sizeof(uint)) = Int64.UInt;
-                    stream.ByteSize += sizeof(uint) + sizeof(uint);
                     return;
                 case DataType.UShort:
                 case DataType.Short:
@@ -734,24 +733,22 @@ namespace AutoCSer.CacheServer.ValueData
                     stream.Write((byte)Type + ((uint)Int64.Byte << 16));
                     return;
                 case DataType.Decimal:
-                    write = stream.GetPrepSizeCurrent(sizeof(uint) + sizeof(decimal));
+                    write = stream.GetBeforeMove(sizeof(uint) + sizeof(decimal));
                     *(uint*)write = (byte)Type;
                     if (IsBuffer)
                     {
-                        fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) *(decimal*)(write + sizeof(uint)) = *(decimal*)(dataFixed + Int64.Index);
+                        fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) *(decimal*)(write + sizeof(uint)) = *(decimal*)(dataFixed + Int64.Index);
                     }
-                    else *(decimal*)(write + sizeof(uint)) = new UnionType { Value = Value }.Decimal.Value;
-                    stream.ByteSize += sizeof(uint) + sizeof(decimal);
+                    else *(decimal*)(write + sizeof(uint)) = new UnionType.Decimal { Object = Value }.Value.Value;
                     return;
                 case DataType.Guid:
-                    write = stream.GetPrepSizeCurrent(sizeof(uint) + sizeof(System.Guid));
+                    write = stream.GetBeforeMove(sizeof(uint) + sizeof(System.Guid));
                     *(uint*)write = (byte)Type;
                     if (IsBuffer) 
                     {
-                        fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) *(System.Guid*)(write + sizeof(uint)) = *(System.Guid*)(dataFixed + Int64.Index);
+                        fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) *(System.Guid*)(write + sizeof(uint)) = *(System.Guid*)(dataFixed + Int64.Index);
                     }
-                    else *(System.Guid*)(write + sizeof(uint)) = new UnionType { Value = Value }.Guid.Value;
-                    stream.ByteSize += sizeof(uint) + sizeof(System.Guid);
+                    else *(System.Guid*)(write + sizeof(uint)) = new UnionType.Guid { Object = Value }.Value.Value;
                     return;
                 case DataType.String:
                     if (Value != null)
@@ -759,11 +756,11 @@ namespace AutoCSer.CacheServer.ValueData
                         if (IsBuffer) serializeBuffer(stream);
                         else
                         {
-                            string value = new UnionType { Value = Value }.String;
+                            string value = new UnionType.String { Object = Value }.Value;
                             int length = stream.AddSize((sizeof(uint) + sizeof(int)));
-                            fixed (char* valueFixed = value) AutoCSer.BinarySerialize.Serializer.Serialize(valueFixed, stream, value.Length);
+                            fixed (char* valueFixed = value) AutoCSer.BinarySerializer.Serialize(valueFixed, stream, value.Length);
                             write = stream.Data.Byte + length;
-                            *(int*)(write - sizeof(int)) = stream.ByteSize - length;
+                            *(int*)(write - sizeof(int)) = stream.Data.CurrentIndex - length;
                             *(uint*)(write - (sizeof(uint) + sizeof(int))) = (byte)Type;
                         }
                     }
@@ -775,21 +772,19 @@ namespace AutoCSer.CacheServer.ValueData
                         if (IsBuffer)
                         {
                             int length = Int64.Length, size = (length + (3 + (sizeof(uint) + sizeof(int)))) & (int.MaxValue - 3);
-                            write = stream.GetPrepSizeCurrent(size);
+                            write = stream.GetBeforeMove(size);
                             *(uint*)write = (byte)Type;
                             *(int*)(write + sizeof(uint)) = length;
-                            fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) AutoCSer.Memory.CopyNotNull(dataFixed + Int64.Index, write + (sizeof(uint) + sizeof(int)), length);
-                            stream.ByteSize += size;
+                            fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) AutoCSer.Memory.Common.CopyNotNull(dataFixed + Int64.Index, write + (sizeof(uint) + sizeof(int)), length);
                         }
                         else
                         {
-                            byte[] value = new UnionType { Value = Value }.ByteArray;
+                            byte[] value = new UnionType.ByteArray { Object = Value }.Value;
                             int size = (value.Length + (3 + (sizeof(uint) + sizeof(int)))) & (int.MaxValue - 3);
-                            write = stream.GetPrepSizeCurrent(size);
+                            write = stream.GetBeforeMove(size);
                             *(uint*)write = (byte)Type;
                             *(int*)(write + sizeof(uint)) = value.Length;
-                            fixed (byte* dataFixed = value) AutoCSer.Memory.CopyNotNull(dataFixed, write + (sizeof(uint) + sizeof(int)), value.Length);
-                            stream.ByteSize += size;
+                            fixed (byte* dataFixed = value) AutoCSer.Memory.Common.CopyNotNull(dataFixed, write + (sizeof(uint) + sizeof(int)), value.Length);
                         }
                     }
                     else stream.Write((byte)Type + nullValue);
@@ -802,9 +797,9 @@ namespace AutoCSer.CacheServer.ValueData
                         else
                         {
                             int length = stream.AddSize((sizeof(uint) + sizeof(int)));
-                            new UnionType { Value = Value }.BinarySerializer.Serialize(stream);
+                            new UnionType.BinarySerializer { Object = Value }.Value.Serialize(stream);
                             write = stream.Data.Byte + length;
-                            *(int*)(write - sizeof(int)) = stream.ByteSize - length;
+                            *(int*)(write - sizeof(int)) = stream.Data.CurrentIndex - length;
                             *(uint*)(write - (sizeof(uint) + sizeof(int))) = (byte)Type;
                         }
                     }
@@ -820,11 +815,10 @@ namespace AutoCSer.CacheServer.ValueData
         private void serializeBuffer(UnmanagedStream stream)
         {
             int length = Int64.Length;
-            byte* write = stream.GetPrepSizeCurrent(length + (sizeof(uint) + sizeof(int)));
+            byte* write = stream.GetBeforeMove(length + (sizeof(uint) + sizeof(int)));
             *(uint*)write = (byte)Type;
             *(int*)(write + sizeof(uint)) = length;
-            fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) Memory.CopyNotNull(dataFixed + Int64.Index, write + (sizeof(uint) + sizeof(int)), length);
-            stream.ByteSize += length + (sizeof(uint) + sizeof(int));
+            fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) AutoCSer.Memory.Common.CopyNotNull(dataFixed + Int64.Index, write + (sizeof(uint) + sizeof(int)), length);
         }
 
         /// <summary>
@@ -832,10 +826,10 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         private void deSerializeString()
         {
-            fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray)
+            fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value)
             {
                 byte* start = dataFixed + Int64.Index;
-                Value = AutoCSer.BinarySerialize.DeSerializer.DeSerializeString(ref start, start + Int64.Length);
+                Value = AutoCSer.BinaryDeSerializer.DeSerializeString(ref start, start + Int64.Length);
             }
             IsBuffer = false;
         }
@@ -844,7 +838,7 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <returns></returns>
-        internal bool DeSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        internal bool DeSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             uint type = (uint)deSerializer.ReadInt();
             switch (Type = (DataType)(byte)type)
@@ -883,7 +877,7 @@ namespace AutoCSer.CacheServer.ValueData
                     {
                         int length = deSerializer.ReadInt();
                         if (length != 0) return deSerializeByteArray(deSerializer, length);
-                        Value = NullValue<byte>.Array;
+                        Value = EmptyArray<byte>.Array;
                     }
                     return true;
                 case DataType.BinarySerialize:
@@ -899,7 +893,7 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <returns></returns>
-        private bool deSerializeString(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private bool deSerializeString(AutoCSer.BinaryDeSerializer deSerializer)
         {
             deSerializer.Read += sizeof(int);
             string value = null;
@@ -916,13 +910,13 @@ namespace AutoCSer.CacheServer.ValueData
         /// <param name="deSerializer"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        private bool deSerializeByteArray(AutoCSer.BinarySerialize.DeSerializer deSerializer, int length)
+        private bool deSerializeByteArray(AutoCSer.BinaryDeSerializer deSerializer, int length)
         {
             byte* read = deSerializer.Read;
             if (deSerializer.MoveRead((length + 3) & (int.MaxValue - 3)))
             {
                 byte[] value = new byte[length];
-                AutoCSer.Memory.CopyNotNull(read, value, length);
+                AutoCSer.Memory.Common.CopyNotNull(read, value, length);
                 Value = value;
                 return true;
             }
@@ -933,7 +927,7 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <returns></returns>
-        internal bool DeSerializeSynchronous(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        internal bool DeSerializeSynchronous(AutoCSer.BinaryDeSerializer deSerializer)
         {
             uint type = (uint)deSerializer.ReadInt();
             switch (Type = (DataType)(byte)type)
@@ -970,7 +964,7 @@ namespace AutoCSer.CacheServer.ValueData
                     {
                         int length = deSerializer.ReadInt();
                         if (length != 0) return deSerializeSynchronous(deSerializer, length);
-                        Value = NullValue<byte>.Array;
+                        Value = EmptyArray<byte>.Array;
                     }
                     return true;
                 case DataType.BinarySerialize:
@@ -986,13 +980,13 @@ namespace AutoCSer.CacheServer.ValueData
         /// <param name="deSerializer"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        private bool deSerializeSynchronous(AutoCSer.BinarySerialize.DeSerializer deSerializer, int size)
+        private bool deSerializeSynchronous(AutoCSer.BinaryDeSerializer deSerializer, int size)
         {
             byte* read = deSerializer.Read;
             if (deSerializer.MoveRead((size + 3) & (int.MaxValue - 3)))
             {
                 IsBuffer = true;
-                SubArray<byte> data = default(SubArray<byte>);
+                SubArray<byte> data = new SubArray<byte>();
                 deSerializer.DeSerializeTcpServer(ref data, read, size);
                 Value = data.Array;
                 Int64.Set(data.Start, size);
@@ -1088,11 +1082,11 @@ namespace AutoCSer.CacheServer.ValueData
                 case DataType.Bool:
                     return null;
                 case DataType.Decimal:
-                    fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) Value = new Decimal(*(decimal*)(dataFixed + Int64.Index));
+                    fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) Value = new Decimal(*(decimal*)(dataFixed + Int64.Index));
                     IsBuffer = false;
                     return null;
                 case DataType.Guid:
-                    fixed (byte* dataFixed = new UnionType { Value = Value }.ByteArray) Value = new Guid(*(System.Guid*)(dataFixed + Int64.Index));
+                    fixed (byte* dataFixed = new UnionType.ByteArray { Object = Value }.Value) Value = new Guid(*(System.Guid*)(dataFixed + Int64.Index));
                     IsBuffer = false;
                     return null;
                 case DataType.ByteArray:
@@ -1102,7 +1096,7 @@ namespace AutoCSer.CacheServer.ValueData
                         {
                             SubArray<byte> buffer = new SubArray<byte>(0, (Int64.Length + 3) & (int.MaxValue - 3), null);
                             BufferCount bufferCount = Cache.MessageQueue.BufferCount.GetBufferCount(ref buffer);
-                            System.Buffer.BlockCopy(new UnionType { Value = Value }.ByteArray, Int64.Index, buffer.Array, buffer.Start, buffer.Length);
+                            System.Buffer.BlockCopy(new UnionType.ByteArray { Object = Value }.Value, Int64.Index, buffer.Array, buffer.Start, buffer.Length);
                             Value = buffer.Array;
                             Int64.Index = buffer.Start;
                             return bufferCount;
@@ -1116,7 +1110,7 @@ namespace AutoCSer.CacheServer.ValueData
                     {
                         SubArray<byte> buffer = new SubArray<byte>(0, Int64.Length, null);
                         BufferCount bufferCount = Cache.MessageQueue.BufferCount.GetBufferCount(ref buffer);
-                        System.Buffer.BlockCopy(new UnionType { Value = Value }.ByteArray, Int64.Index, buffer.Array, buffer.Start, Int64.Length);
+                        System.Buffer.BlockCopy(new UnionType.ByteArray { Object = Value }.Value, Int64.Index, buffer.Array, buffer.Start, Int64.Length);
                         Value = buffer.Array;
                         Int64.Index = buffer.Start;
                         return bufferCount;
@@ -1202,11 +1196,11 @@ namespace AutoCSer.CacheServer.ValueData
                     return;
                 case DataType.Decimal:
                     *(uint*)write = (byte)Type;
-                    *(decimal*)(write + sizeof(uint)) = new UnionType { Value = Value }.Decimal.Value;
+                    *(decimal*)(write + sizeof(uint)) = new UnionType.Decimal { Object = Value }.Value.Value;
                     return;
                 case DataType.Guid:
                     *(uint*)write = (byte)Type;
-                    *(System.Guid*)(write + sizeof(uint)) = new UnionType { Value = Value }.Guid.Value;
+                    *(System.Guid*)(write + sizeof(uint)) = new UnionType.Guid { Object = Value }.Value.Value;
                     return;
                 case DataType.String:
                 case DataType.ByteArray:
@@ -1235,7 +1229,7 @@ namespace AutoCSer.CacheServer.ValueData
                 case DataType.String:
                 case DataType.BinarySerialize:
                 case DataType.Json:
-                    System.Buffer.BlockCopy(new UnionType { Value = Value }.ByteArray, Int64.Index, buffer.Buffer, buffer.StartIndex + index + sizeof(int) * 2, Int64.Length);
+                    System.Buffer.BlockCopy(new UnionType.ByteArray { Object = Value }.Value, Int64.Index, buffer.Buffer, buffer.StartIndex + index + sizeof(int) * 2, Int64.Length);
                     return;
             }
         }
@@ -1253,7 +1247,7 @@ namespace AutoCSer.CacheServer.ValueData
                 case DataType.String:
                 case DataType.BinarySerialize:
                 case DataType.Json:
-                    System.Buffer.BlockCopy(new UnionType { Value = Value }.ByteArray, Int64.Index, bigBuffer, Cache.MessageQueue.FileWriter.PacketHeaderSize + sizeof(int) * 2, Int64.Length);
+                    System.Buffer.BlockCopy(new UnionType.ByteArray { Object = Value }.Value, Int64.Index, bigBuffer, Cache.MessageQueue.FileWriter.PacketHeaderSize + sizeof(int) * 2, Int64.Length);
                     return;
             }
         }
@@ -1967,14 +1961,12 @@ namespace AutoCSer.CacheServer.ValueData
                 if (genericType == typeof(DataStructure.Value.Json<>))
                 {
                     DataType = DataType.Json;
-                    //GetData = (GetData<valueType>)Delegate.CreateDelegate(typeof(GetData<valueType>), typeof(Data<>).MakeGenericType(type.GetGenericArguments()).GetMethod("getJson", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { Data.RefType }, null));
                     GetData = (GetData<valueType>)AutoCSer.CacheServer.Metadata.GenericType.Get(type.GetGenericArguments()[0]).ValueDataGetJsonDelegate;
                     return;
                 }
                 if (genericType == typeof(DataStructure.Value.Binary<>))
                 {
                     DataType = DataType.BinarySerialize;
-                    //GetData = (GetData<valueType>)Delegate.CreateDelegate(typeof(GetData<valueType>), typeof(Data<>).MakeGenericType(type.GetGenericArguments()).GetMethod("getBinary", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { Data.RefType }, null));
                     GetData = (GetData<valueType>)AutoCSer.CacheServer.Metadata.GenericType.Get(type.GetGenericArguments()[0]).ValueDataGetBinaryDelegate;
                     return;
                 }

@@ -48,6 +48,7 @@
     <Compile Include="CsvFile\ReaderItem.cs" />
     <Compile Include="CsvFile\ReaderStep.cs" />
     <Compile Include="Diagnostics\ProcessEventWaitHandle.cs" />
+    <Compile Include="Diagnostics\ProcessTimeCheck.cs" />
     <Compile Include="DynamicDomain.cs" />
     <Compile Include="Email\Content.cs" />
     <Compile Include="Email\EventSender.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\EmitGenerator.cs" />
     <Compile Include="Extension\String.cs" />
-    <Compile Include="Extension\SynchronizationContext.cs" />
     <Compile Include="NumberToCharStream\Join.cs" />
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
     <Compile Include="NumberToCharStream\JoinMethod.cs" />

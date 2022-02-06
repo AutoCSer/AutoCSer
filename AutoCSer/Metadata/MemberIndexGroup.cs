@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Metadata
@@ -103,13 +103,13 @@ namespace AutoCSer.Metadata
                         if (!members.TryGetValue(nameKey, out oldMember) || member.Depth < oldMember.Depth) members[nameKey] = member;
                     }
                 }
-                PublicFields = members.Values.getFindArray(value => value.PublicField, value => value != null);
-                NonPublicFields = members.Values.getFindArray(value => value.NonPublicField, value => value != null);
-                PublicProperties = members.Values.getFindArray(value => value.PublicProperty, value => value != null);
-                NonPublicProperties = members.Values.getFindArray(value => value.NonPublicProperty, value => value != null);
+                PublicFields = members.Values.getFindArrayNotNull(value => value.PublicField);
+                NonPublicFields = members.Values.getFindArrayNotNull(value => value.NonPublicField);
+                PublicProperties = members.Values.getFindArrayNotNull(value => value.PublicProperty);
+                NonPublicProperties = members.Values.getFindArrayNotNull(value => value.NonPublicProperty);
                 if (anonymousCount != 0)
                 {
-                    LeftArray<FieldInfo> anonymousFields = new LeftArray<FieldInfo>();
+                    LeftArray<FieldInfo> anonymousFields = new LeftArray<FieldInfo>(0);
                     foreach (FieldInfo field in type.GetFields(BindingFlags.NonPublic | staticFlags))
                     {
                         if (field.Name[0] == '<')
@@ -124,7 +124,7 @@ namespace AutoCSer.Metadata
                     }
                     AnonymousFields = anonymousFields.ToArray();
                 }
-                else AnonymousFields = NullValue<FieldInfo>.Array;
+                else AnonymousFields = EmptyArray<FieldInfo>.Array;
             }
         }
         /// <summary>
@@ -219,14 +219,6 @@ namespace AutoCSer.Metadata
             }
         }
         /// <summary>
-        /// 成员索引分组集合
-        /// </summary>
-        private static Dictionary<Type, MemberIndexGroup> cache = AutoCSer.DictionaryCreator.CreateOnly<Type, MemberIndexGroup>();
-        /// <summary>
-        /// 成员索引分组集合访问锁
-        /// </summary>
-        private static readonly object cacheLock = new object();
-        /// <summary>
         /// 公有字段
         /// </summary>
         internal readonly FieldIndex[] PublicFields;
@@ -234,6 +226,10 @@ namespace AutoCSer.Metadata
         /// 非公有字段
         /// </summary>
         internal readonly FieldIndex[] NonPublicFields;
+        /// <summary>
+        /// 字段成员数量
+        /// </summary>
+        internal int FieldCount { get { return PublicFields.Length + NonPublicFields.Length; } }
         /// <summary>
         /// 公有属性
         /// </summary>
@@ -250,6 +246,46 @@ namespace AutoCSer.Metadata
         /// 所有成员数量
         /// </summary>
         public readonly int MemberCount;
+        /// <summary>
+        /// 成员索引分组
+        /// </summary>
+        /// <param name="type">对象类型</param>
+        /// <param name="isStatic">是否静态成员</param>
+        internal MemberIndexGroup(Type type, bool isStatic)
+        {
+            int index = 0;
+            if (type.IsEnum)
+            {
+                PublicFields = type.GetFields(BindingFlags.Public | BindingFlags.Static).getArray(member => new FieldIndex(member, MemberFilters.PublicStaticField, index++));
+                NonPublicFields = AnonymousFields = EmptyArray<FieldIndex>.Array;
+                PublicProperties = NonPublicProperties = EmptyArray<PropertyIndex>.Array;
+            }
+            else if (type.IsPrimitive || type == typeof(decimal) || type == typeof(object))// || type.IsArray || type == typeof(string)
+            {
+                PublicFields = NonPublicFields = AnonymousFields = EmptyArray<FieldIndex>.Array;
+                PublicProperties = NonPublicProperties = EmptyArray<PropertyIndex>.Array;
+            }
+            else if (isStatic)
+            {
+                group group = new group(type, true);
+                PublicFields = group.PublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.PublicStaticField, index++));
+                NonPublicFields = group.NonPublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.NonPublicStaticField, index++));
+                PublicProperties = group.PublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.PublicStaticProperty, index++));
+                NonPublicProperties = group.NonPublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.NonPublicStaticProperty, index++));
+                AnonymousFields = EmptyArray<FieldIndex>.Array;
+            }
+            else
+            {
+                group group = new group(type, false);
+                PublicFields = group.PublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.PublicInstanceField, index++));
+                NonPublicFields = group.NonPublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.NonPublicInstanceField, index++));
+                PublicProperties = group.PublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.PublicInstanceProperty, index++));
+                NonPublicProperties = group.NonPublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.NonPublicInstanceProperty, index++));
+                AnonymousFields = group.AnonymousFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.NonPublicInstanceField, index++));
+            }
+            MemberCount = index;
+        }
+
         /// <summary>
         /// 字符串比较大小
         /// </summary>
@@ -278,45 +314,15 @@ namespace AutoCSer.Metadata
         {
             return string.CompareOrdinal(left.Name, right.Name);
         }
+
         /// <summary>
-        /// 成员索引分组
+        /// 成员索引分组集合
         /// </summary>
-        /// <param name="type">对象类型</param>
-        /// <param name="isStatic">是否静态成员</param>
-        internal MemberIndexGroup(Type type, bool isStatic)
-        {
-            int index = 0;
-            if (type.IsEnum)
-            {
-                PublicFields = type.GetFields(BindingFlags.Public | BindingFlags.Static).getArray(member => new FieldIndex(member, MemberFilters.PublicStaticField, index++));
-                NonPublicFields = AnonymousFields = NullValue<FieldIndex>.Array;
-                PublicProperties = NonPublicProperties = NullValue<PropertyIndex>.Array;
-            }
-            else if (type.IsPrimitive || type == typeof(decimal) || type == typeof(object))// || type.IsArray || type == typeof(string)
-            {
-                PublicFields = NonPublicFields = AnonymousFields = NullValue<FieldIndex>.Array;
-                PublicProperties = NonPublicProperties = NullValue<PropertyIndex>.Array;
-            }
-            else if (isStatic)
-            {
-                group group = new group(type, true);
-                PublicFields = group.PublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.PublicStaticField, index++));
-                NonPublicFields = group.NonPublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.NonPublicStaticField, index++));
-                PublicProperties = group.PublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.PublicStaticProperty, index++));
-                NonPublicProperties = group.NonPublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.NonPublicStaticProperty, index++));
-                AnonymousFields = NullValue<FieldIndex>.Array;
-            }
-            else
-            {
-                group group = new group(type, false);
-                PublicFields = group.PublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.PublicInstanceField, index++));
-                NonPublicFields = group.NonPublicFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.NonPublicInstanceField, index++));
-                PublicProperties = group.PublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.PublicInstanceProperty, index++));
-                NonPublicProperties = group.NonPublicProperties.sort(propertyCompare).getArray(value => new PropertyIndex(value, MemberFilters.NonPublicInstanceProperty, index++));
-                AnonymousFields = group.AnonymousFields.sort(fieldCompare).getArray(value => new FieldIndex(value, MemberFilters.NonPublicInstanceField, index++));
-            }
-            MemberCount = index;
-        }
+        private static Dictionary<HashType, MemberIndexGroup> cache = AutoCSer.DictionaryCreator<HashType>.Create<MemberIndexGroup>();
+        /// <summary>
+        /// 成员索引分组集合访问锁
+        /// </summary>
+        private static AutoCSer.Threading.SleepFlagSpinLock cacheLock;
         /// <summary>
         /// 根据类型获取成员索引分组
         /// </summary>
@@ -325,26 +331,39 @@ namespace AutoCSer.Metadata
         public static MemberIndexGroup Get(Type type)
         {
             MemberIndexGroup value;
-            Monitor.Enter(cacheLock);
+            cacheLock.Enter();
             try
             {
-                if (!cache.TryGetValue(type, out value)) cache.Add(type, value = new MemberIndexGroup(type, false));
+                if (!cache.TryGetValue(type, out value))
+                {
+                    cacheLock.SleepFlag = 1;
+                    cache.Add(type, value = new MemberIndexGroup(type, false));
+                }
             }
-            finally { Monitor.Exit(cacheLock); }
+            finally { cacheLock.ExitSleepFlag(); }
             return value;
         }
         /// <summary>
         /// 清除缓存数据
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void ClearCache()
+        private static void clearCache()
         {
-            Monitor.Enter(cacheLock);
+            cacheLock.Enter();
             try
             {
-                if (cache.Count != 0) cache = AutoCSer.DictionaryCreator.CreateOnly<Type, MemberIndexGroup>();
+                if (cache.Count != 0)
+                {
+                    cacheLock.SleepFlag = 1;
+                    cache = AutoCSer.DictionaryCreator<HashType>.Create<MemberIndexGroup>();
+                }
             }
-            finally { Monitor.Exit(cacheLock); }
+            finally { cacheLock.ExitSleepFlag(); }
+        }
+
+        static MemberIndexGroup()
+        {
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(MemberIndexGroup), 60 * 60);
         }
     }
     /// <summary>
@@ -358,19 +377,11 @@ namespace AutoCSer.Metadata
         /// </summary>
         public static readonly MemberIndexGroup Group = MemberIndexGroup.Get(typeof(valueType));
         /// <summary>
-        /// 所有成员数量
-        /// </summary>
-        public static readonly int MemberCount = Group.MemberCount;
-        /// <summary>
-        /// 字段成员数量
-        /// </summary>
-        public static readonly int FieldCount = Group.PublicFields.Length + Group.NonPublicFields.Length;
-        /// <summary>
         /// 成员集合
         /// </summary>
         public static MemberIndexInfo[] GetAllMembers()
         {
-            LeftArray<MemberIndexInfo> members = new LeftArray<MemberIndexInfo>(MemberCount);
+            LeftArray<MemberIndexInfo> members = new LeftArray<MemberIndexInfo>(Group.MemberCount);
             members.Add(Group.PublicFields.toGeneric<MemberIndexInfo>());
             members.Add(Group.NonPublicFields.toGeneric<MemberIndexInfo>());
             members.Add(Group.PublicProperties.toGeneric<MemberIndexInfo>());
@@ -386,7 +397,7 @@ namespace AutoCSer.Metadata
         {
             if ((memberFilter & MemberFilters.PublicInstanceField) == 0)
             {
-                if ((memberFilter & MemberFilters.NonPublicInstanceField) == 0) return NullValue<FieldIndex>.Array;
+                if ((memberFilter & MemberFilters.NonPublicInstanceField) == 0) return EmptyArray<FieldIndex>.Array;
                 return Group.NonPublicFields;
             }
             else if ((memberFilter & MemberFilters.NonPublicInstanceField) == 0) return Group.PublicFields;
@@ -401,7 +412,7 @@ namespace AutoCSer.Metadata
         {
             if ((memberFilter & MemberFilters.PublicInstanceProperty) == 0)
             {
-                if ((memberFilter & MemberFilters.NonPublicInstanceProperty) == 0) return NullValue<PropertyIndex>.Array;
+                if ((memberFilter & MemberFilters.NonPublicInstanceProperty) == 0) return EmptyArray<PropertyIndex>.Array;
                 return Group.NonPublicProperties;
             }
             else if ((memberFilter & MemberFilters.NonPublicInstanceProperty) == 0) return Group.PublicProperties;
@@ -421,7 +432,7 @@ namespace AutoCSer.Metadata
                 return Group.NonPublicFields.concat(Group.AnonymousFields);
             }
             else if ((memberFilter & MemberFilters.NonPublicInstanceField) == 0) return Group.PublicFields.concat(Group.AnonymousFields);
-            return AutoCSer.Extension.ArrayExtension.concat(Group.PublicFields, Group.NonPublicFields, Group.AnonymousFields);
+            return AutoCSer.Extensions.ArrayExtension.concat(Group.PublicFields, Group.NonPublicFields, Group.AnonymousFields);
         }
     }
 }

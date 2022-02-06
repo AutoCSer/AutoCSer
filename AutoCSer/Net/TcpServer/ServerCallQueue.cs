@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using AutoCSer.Threading;
@@ -10,7 +10,7 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务器端同步调用队列处理
     /// </summary>
-    public class ServerCallQueue : AutoCSer.Threading.QueueTaskLinkThread<ServerCallBase>
+    public class ServerCallQueue : AutoCSer.Threading.TaskQueueThread<ServerCallBase>
     {
         /// <summary>
         /// TCP 服务器端同步调用队列处理

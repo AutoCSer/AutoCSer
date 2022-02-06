@@ -12,7 +12,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <summary>
         /// 获取缓存数据
         /// </summary>
-        private sealed class GetByKeyAwaiter : Threading.Awaiter<valueType>
+        private sealed class GetByKeyAwaiter : Threading.Awaiter<ReturnValue<valueType>>
         {
             /// <summary>
             /// 先进先出优先队列缓存
@@ -42,9 +42,17 @@ namespace AutoCSer.Sql.Cache.Counter
                 {
                     Value = queue.get(ref connection, key);
                 }
+                catch (Exception error)
+                {
+                    Value = error;
+                }
                 finally
                 {
-                    if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) new Task(continuation).Start();
+                    IsCompleted = true;
+                    if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null)
+                    {
+                        continuation();
+                    }
                 }
             }
         }
@@ -53,7 +61,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// </summary>
         /// <param name="key">关键字</param>
         /// <returns>缓存数据</returns>
-        public Threading.Awaiter<valueType> GetAwaiter(keyType key)
+        public Threading.Awaiter<ReturnValue<valueType>> GetAwaiter(keyType key)
         {
             GetByKeyAwaiter task = new GetByKeyAwaiter(this, key);
             counter.SqlTable.AddQueue(task);

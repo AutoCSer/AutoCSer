@@ -59,25 +59,25 @@ namespace AutoCSer.Net.TcpInternalServer
                 {
                     if (returnValue.Type == TcpServer.ReturnType.Success)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
-                        if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                        keepLock.EnterYield();
+                        if (socket == null) keepLock.Exit();
                         else
                         {
                             bool isHead = sender.Outputs.IsPushHead(output);
-                            System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                            keepLock.Exit();
                             if (isHead) sender.TryBuildOutput(isBuildOutputThread);
                             return true;
                         }
                     }
                     else
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
-                        if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                        keepLock.EnterYield();
+                        if (socket == null) keepLock.Exit();
                         else
                         {
                             bool isHead = sender.Outputs.IsPushHead(output);
                             socket = null;
-                            System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                            keepLock.Exit();
                             if (isHead) sender.TryBuildOutput(isBuildOutputThread);
                             return true;
                         }
@@ -202,12 +202,12 @@ namespace AutoCSer.Net.TcpInternalServer
                     TcpServer.ServerOutput.Output<outputParameterType> output = sender.TryGetOutput<outputParameterType>(commandIndex, outputInfo, ref outputParameter);
                     if (output != null)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
-                        if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                        keepLock.EnterYield();
+                        if (socket == null) keepLock.Exit();
                         else
                         {
                             bool isHead = sender.Outputs.IsPushHead(output);
-                            System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                            keepLock.Exit();
                             if (isHead) sender.TryBuildOutput(outputInfo.IsBuildOutputThread);
                             return true;
                         }
@@ -218,13 +218,13 @@ namespace AutoCSer.Net.TcpInternalServer
                     TcpServer.ServerOutput.ReturnTypeOutput output = sender.TryGetOutput(TcpServer.Server.GetCommandIndex(commandIndex, returnValue.Type));
                     if (output != null)
                     {
-                        while (System.Threading.Interlocked.CompareExchange(ref keepLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TcpServerKeepCallback);
-                        if (socket == null) System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                        keepLock.EnterYield();
+                        if (socket == null) keepLock.Exit();
                         else
                         {
                             bool isHead = sender.Outputs.IsPushHead(output);
                             socket = null;
-                            System.Threading.Interlocked.Exchange(ref keepLock, 0);
+                            keepLock.Exit();
                             if (isHead) sender.TryBuildOutput(outputInfo.IsBuildOutputThread);
                             return true;
                         }

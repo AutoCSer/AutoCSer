@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net.Sockets;
 using System.Text;
@@ -269,17 +269,17 @@ namespace AutoCSer.TestCase.WebPerformance
                 recieveAsyncEventArgs.SetBuffer(0, bufferSize);
                 pipelineReceiveSize = receiveKeepAliveSize;
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterYield();
 #endif
                 if (socket.ReceiveAsync(recieveAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                receiveAsyncLock.Exit();
 #endif
                 return checkReceive();
             }
@@ -327,17 +327,17 @@ namespace AutoCSer.TestCase.WebPerformance
                         return true;
                     }
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    receiveAsyncLock.EnterYield();
 #endif
                     if (socket.ReceiveAsync(recieveAsyncEventArgs))
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
                         return true;
                     }
 #if !DotNetStandard
-                    receiveAsyncLock = 0;
+                    receiveAsyncLock.Exit();
 #endif
                     goto CHECK;
                 }
@@ -419,7 +419,7 @@ Date: Mon, 15 May 2017 12:16:35 GMT
 
 {""message"":""Hello, World!""}".Length;
 
-            int cpuCount = AutoCSer.Threading.Pub.CpuCount, maxSocketCount = Math.Min(cpuCount * clientCountPerCpu, maxClientCount);
+            int cpuCount = AutoCSer.Common.ProcessorCount, maxSocketCount = Math.Min(cpuCount * clientCountPerCpu, maxClientCount);
             using (Task task = new Task(maxSocketCount, 1))
             {
                 do

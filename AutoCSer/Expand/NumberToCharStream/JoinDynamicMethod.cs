@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -83,17 +84,18 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="type"></param>
         public void JoinCharNull(MethodInfo method, Type type)
         {
+            AutoCSer.Metadata.StructGenericType StructGenericType = AutoCSer.Metadata.StructGenericType.Get(type);
             Label writeNull = generator.DefineLabel(), end = generator.DefineLabel();
             generator.Emit(OpCodes.Ldarg_1);
             generator.Emit(OpCodes.Ldloc_0);
             generator.Emit(OpCodes.Ldelem, type);
-            generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableHasValue(type));
+            generator.Emit(OpCodes.Call, StructGenericType.GetNullableHasValueMethod);
             generator.Emit(OpCodes.Brfalse_S, writeNull);
 
             generator.Emit(OpCodes.Ldarg_1);
             generator.Emit(OpCodes.Ldloc_0);
             generator.Emit(OpCodes.Ldelema, type);
-            generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableValue(type));
+            generator.Emit(OpCodes.Call, StructGenericType.GetNullableValueMethod);
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Call, method);
             generator.Emit(OpCodes.Br_S, end);

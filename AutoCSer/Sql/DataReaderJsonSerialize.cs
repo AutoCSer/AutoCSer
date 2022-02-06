@@ -13,11 +13,11 @@ namespace AutoCSer.Sql
         /// <summary>
         /// JSON 序列化
         /// </summary>
-        private AutoCSer.Json.Serializer serializer;
+        private AutoCSer.JsonSerializer serializer;
         /// <summary>
         /// 数据值序列化委托数组
         /// </summary>
-        private Action<AutoCSer.Json.Serializer, object>[] serializers;
+        private Action<AutoCSer.JsonSerializer, object>[] serializers;
         /// <summary>
         /// 是否忽略 null
         /// </summary>
@@ -35,14 +35,14 @@ namespace AutoCSer.Sql
         public DataReaderJsonSerialize(bool isSignle, SerializeConfig serializeConfig = null, bool isIgnoreNull = true)
         {
             this.isIgnoreNull = isIgnoreNull;
-            serializer = Json.Serializer.YieldPool.Default.Pop() ?? new Json.Serializer();
+            serializer = AutoCSer.JsonSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonSerializer();
             serializer.SetTcpServer();
-            serializer.Config = serializeConfig ?? Json.Serializer.DefaultConfig;
+            serializer.Config = serializeConfig ?? AutoCSer.JsonSerializer.DefaultConfig;
             serializer.CharStream.Reset();
             if (!isSignle)
             {
                 serializer.CustomArrayStart();
-                serializers = NullValue<Action<AutoCSer.Json.Serializer, object>>.Array;
+                serializers = EmptyArray<Action<AutoCSer.JsonSerializer, object>>.Array;
             }
         }
         /// <summary>
@@ -82,11 +82,11 @@ namespace AutoCSer.Sql
                         }
                         object value = reader.GetValue(index);
 
-                        Action<AutoCSer.Json.Serializer, object> typeSerializer;
+                        Action<AutoCSer.JsonSerializer, object> typeSerializer;
                         if (serializers == null) typeSerializer = typeSerializers[value.GetType()];
                         else
                         {
-                            if (serializers.Length == 0) serializers = new Action<Json.Serializer, object>[reader.FieldCount];
+                            if (serializers.Length == 0) serializers = new Action<AutoCSer.JsonSerializer, object>[reader.FieldCount];
                             if ((typeSerializer = serializers[index]) == null) serializers[index] = typeSerializer = typeSerializers[value.GetType()];
                         }
                         typeSerializer(serializer, value);
@@ -127,13 +127,13 @@ namespace AutoCSer.Sql
         /// <summary>
         /// JSON 序列化委托集合
         /// </summary>
-        private static readonly Dictionary<Type, Action<AutoCSer.Json.Serializer, object>> typeSerializers;
+        private static readonly Dictionary<Type, Action<AutoCSer.JsonSerializer, object>> typeSerializers;
         /// <summary>
         /// 序列化数据值
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeInt(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeInt(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((int)value);
         }
@@ -142,7 +142,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeString(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeString(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((string)value);
         }
@@ -151,7 +151,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeDateTime(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeDateTime(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((DateTime)value);
         }
@@ -160,7 +160,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeDouble(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeDouble(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((double)value);
         }
@@ -169,7 +169,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeFloat(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeFloat(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((float)value);
         }
@@ -178,7 +178,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeDecimal(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeDecimal(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((decimal)value);
         }
@@ -187,7 +187,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeGuid(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeGuid(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((Guid)value);
         }
@@ -196,7 +196,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeBool(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeBool(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((bool)value);
         }
@@ -205,7 +205,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeByte(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeByte(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((byte)value);
         }
@@ -214,7 +214,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeByteArray(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeByteArray(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((byte[])value);
         }
@@ -223,7 +223,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeSByte(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeSByte(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((sbyte)value);
         }
@@ -232,7 +232,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeShort(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeShort(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((short)value);
         }
@@ -241,7 +241,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeUShort(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeUShort(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((ushort)value);
         }
@@ -250,7 +250,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeUInt(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeUInt(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((uint)value);
         }
@@ -259,7 +259,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeLong(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeLong(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((long)value);
         }
@@ -268,13 +268,13 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        private static void serializeULong(AutoCSer.Json.Serializer serializer, object value)
+        private static void serializeULong(AutoCSer.JsonSerializer serializer, object value)
         {
             serializer.CallSerialize((ulong)value);
         }
         static DataReaderJsonSerialize()
         {
-            typeSerializers = DictionaryCreator.CreateOnly<Type, Action<AutoCSer.Json.Serializer, object>>();
+            typeSerializers = DictionaryCreator.CreateOnly<Type, Action<AutoCSer.JsonSerializer, object>>();
             typeSerializers.Add(typeof(int), serializeInt);
             typeSerializers.Add(typeof(string), serializeString);
             typeSerializers.Add(typeof(DateTime), serializeDateTime);

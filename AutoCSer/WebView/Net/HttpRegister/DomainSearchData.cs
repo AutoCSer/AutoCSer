@@ -1,7 +1,8 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.HttpRegister
 {
@@ -21,7 +22,7 @@ namespace AutoCSer.Net.HttpRegister
         /// <summary>
         /// 域名搜索数据
         /// </summary>
-        private Pointer.Size data;
+        private AutoCSer.Memory.Pointer data;
         /// <summary>
         /// 字节数组搜索器
         /// </summary>
@@ -29,7 +30,7 @@ namespace AutoCSer.Net.HttpRegister
         /// <summary>
         /// 最后一次查询域名
         /// </summary>
-        private Pointer.Size lastDomain;
+        private AutoCSer.Memory.Pointer lastDomain;
         /// <summary>
         /// 最后一次查询域名服务信息
         /// </summary>
@@ -41,13 +42,13 @@ namespace AutoCSer.Net.HttpRegister
         /// <summary>
         /// 最后一次查询访问锁
         /// </summary>
-        private readonly object lastLock = new object();
+        private AutoCSer.Threading.SleepFlagSpinLock lastLock;
         /// <summary>
         /// 域名搜索
         /// </summary>
         internal DomainSearchData()
         {
-            servers = NullValue<DomainServer>.Array;
+            servers = EmptyArray<DomainServer>.Array;
         }
         /// <summary>
         /// 域名搜索
@@ -77,9 +78,9 @@ namespace AutoCSer.Net.HttpRegister
         {
             searcher.State = null;
             Unmanaged.Free(ref data);
-            Monitor.Enter(lastLock);
+            lastLock.Enter();
             Unmanaged.Free(ref lastDomain);
-            Monitor.Exit(lastLock);
+            lastLock.Exit();
         }
         /// <summary>
         /// 关闭所有域名服务
@@ -102,15 +103,15 @@ namespace AutoCSer.Net.HttpRegister
         {
             if (searcher.State != null)
             {
-                if (lastDomainSize == size && Monitor.TryEnter(lastLock))
+                if (lastDomainSize == size && lastLock.TryEnter())
                 {
-                    if (lastDomainSize == size && Memory.SimpleEqualNotNull(lastDomain.Byte, domain, lastDomainSize))
+                    if (lastDomainSize == size && AutoCSer.Memory.Common.SimpleEqualNotNull(lastDomain.Byte, domain, lastDomainSize))
                     {
                         DomainServer server = lastServer;
-                        Monitor.Exit(lastLock);
+                        lastLock.Exit();
                         return server;
                     }
-                    Monitor.Exit(lastLock);
+                    lastLock.Exit();
                 }
                 int index = searcher.Search(domain, domain + size);
                 if (index >= 0)
@@ -118,24 +119,25 @@ namespace AutoCSer.Net.HttpRegister
                     DomainServer server = servers[index];
                     if (server != null)
                     {
-                        if (Monitor.TryEnter(lastLock))
+                        if (lastLock.TryEnter())
                         {
                             if (lastDomain.Byte == null)
                             {
+                                lastLock.SleepFlag = 1;
                                 try
                                 {
-                                    lastDomain = Unmanaged.Get(Server.MaxDomainSize, false, false);
-                                    Memory.SimpleCopyNotNull(domain, lastDomain.Byte, lastDomainSize = size);
+                                    lastDomain = Unmanaged.GetPointer(Server.MaxDomainSize, false);
+                                    AutoCSer.Memory.Common.SimpleCopyNotNull(domain, lastDomain.Byte, lastDomainSize = size);
                                     lastServer = server;
                                 }
-                                finally { Monitor.Exit(lastLock); }
+                                finally { lastLock.ExitSleepFlag(); }
 
                             }
                             else
                             {
-                                Memory.SimpleCopyNotNull(domain, lastDomain.Byte, lastDomainSize = size);
+                                AutoCSer.Memory.Common.SimpleCopyNotNull(domain, lastDomain.Byte, lastDomainSize = size);
                                 lastServer = server;
-                                Monitor.Exit(lastLock);
+                                lastLock.Exit();
                             }
                         }
                         return server;

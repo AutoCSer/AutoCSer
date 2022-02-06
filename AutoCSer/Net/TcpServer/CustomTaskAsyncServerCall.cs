@@ -24,7 +24,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 完成状态
         /// </summary>
-        public bool IsCompleted { get { return false; } }
+        public bool IsCompleted { get; private set; }
         /// <summary>
         /// 自定义 TCP 服务器端同步调用任务
         /// </summary>
@@ -43,10 +43,11 @@ namespace AutoCSer.Net.TcpServer
             try
             {
                 task();
+                IsCompleted = true;
             }
             finally
             {
-                if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();
+                if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null) continuation();
             }
         }
         /// <summary>

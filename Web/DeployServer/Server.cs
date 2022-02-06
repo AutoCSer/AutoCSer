@@ -44,7 +44,7 @@ namespace AutoCSer.Web.DeployServer
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public override Deploy.DeployState CallCustomTask(Deploy.ClientTask.Custom task)
+        public override Deploy.DeployResultData CallCustomTask(Deploy.ClientTask.Custom task)
         {
             return customTask.Call(this, task);
         }

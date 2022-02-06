@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.SimpleSerialize
 {
@@ -56,7 +57,7 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <summary>
         /// 预编译
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void Compile() { }
 
         static TypeSerializer()

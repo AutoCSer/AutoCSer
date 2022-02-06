@@ -24,9 +24,9 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal int MaxInputSize;
         /// <summary>
-        /// 服务端批量处理休眠毫秒数
+        /// 服务端批量处理等待类型
         /// </summary>
-        internal int OutputSleep;
+        internal OutputWaitType OutputWaitType;
         /// <summary>
         /// 服务端创建输出是否开启线程
         /// </summary>
@@ -49,7 +49,7 @@ namespace AutoCSer.Net.TcpServer
             VerifyHashCode = attribute.VerifyHashCode;
             ReceiveVerifyCommandSeconds = attribute.GetReceiveVerifyCommandSeconds;
             if ((MaxInputSize = attribute.GetMaxInputSize) <= 0) MaxInputSize = int.MaxValue;
-            OutputSleep = attribute.GetServerOutputSleep;
+            OutputWaitType = attribute.GetServerOutputWaitType;
             IsBuildOutputThread = attribute.GetIsServerBuildOutputThread;
             RemoteExpressionTask = attribute.GetRemoteExpressionServerTask;
             RemoteExpressionCallQueueIndex = attribute.GetRemoteExpressionCallQueueIndex;

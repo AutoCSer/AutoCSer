@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace AutoCSer.Net.Http
     /// <summary>
     /// HTTP 套接字数据接收器
     /// </summary>
-    internal sealed unsafe class SocketBoundaryReceiver : BoundaryReceiver<Socket>, AutoCSer.Threading.ILinkTask
+    internal sealed unsafe class SocketBoundaryReceiver : BoundaryReceiver<Socket>, AutoCSer.Threading.ISwitchTaskNode
     {
 #if DOTNET2
         /// <summary>
@@ -71,7 +71,7 @@ namespace AutoCSer.Net.Http
         {
             try
             {
-                SubBuffer.Size size = httpSocket.GetFormPage.MaxMemoryStreamSize;
+                AutoCSer.Memory.BufferSize size = httpSocket.GetFormPage.MaxMemoryStreamSize;
                 if ((contentLength = header.ContentLength) + sizeof(int) > (int)size >> 1) SubBuffer.Pool.GetPool(size).Get(ref buffer);
                 else SubBuffer.Pool.GetBuffer(ref buffer, contentLength + sizeof(int));
                 contentLength -= (receiveEndIndex = header.CopyToFormData(ref buffer));
@@ -86,7 +86,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             this.error();
         }
@@ -108,15 +108,16 @@ namespace AutoCSer.Net.Http
                     return true;
                 }
 #else
-                while (Interlocked.CompareExchange(ref httpSocket.ReceiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                httpSocket.ReceiveAsyncLock.EnterSleepFlag();
                 socketAsyncEventArgs.SetBuffer(buffer.StartIndex + receiveEndIndex, Math.Min(bufferSize - receiveEndIndex, contentLength));
                 if (socket.ReceiveAsync(socketAsyncEventArgs))
                 {
+                    httpSocket.ReceiveAsyncLock.SleepFlag = 0;
                     Header.ReceiveTimeout.Push(this.httpSocket, socket);
-                    Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                    httpSocket.ReceiveAsyncLock.Exit();
                     return true;
                 }
-                Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                httpSocket.ReceiveAsyncLock.ExitSleepFlag();
 #endif
 #if !DOTNET2
                 if (socketAsyncEventArgs.SocketError == SocketError.Success)
@@ -152,7 +153,7 @@ namespace AutoCSer.Net.Http
             try
             {
                 if (!async.CompletedSynchronously) Header.ReceiveTimeout.Cancel(httpSocket);
-                System.Net.Sockets.Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
+                System.Net.Sockets.Socket socket = (System.Net.Sockets.Socket)async.AsyncState;
                 if (socket == httpSocket.Socket)
                 {
                     SocketError socketError;
@@ -167,7 +168,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
 #else
             try
@@ -186,7 +187,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
 #endif
             this.error();
@@ -224,10 +225,10 @@ namespace AutoCSer.Net.Http
         private bool checkFirstBoundary()
         {
             int boundaryLength4 = boundary.Length + 4;
-            fixed (byte* bufferFixed = buffer.Buffer, boundaryFixed = header.Buffer.Buffer)
+            fixed (byte* bufferFixed = buffer.GetFixedBuffer(), boundaryFixed = header.Buffer.GetFixedBuffer())
             {
                 byte* bufferStart = bufferFixed + buffer.StartIndex;
-                if (*(short*)bufferStart == '-' + ('-' << 8) && Memory.EqualNotNull(boundaryFixed + (header.Buffer.StartIndex + boundary.StartIndex), bufferStart + 2, boundary.Length))
+                if (*(short*)bufferStart == '-' + ('-' << 8) && AutoCSer.Memory.Common.EqualNotNull(boundaryFixed + (header.Buffer.StartIndex + boundary.StartIndex), bufferStart + 2, boundary.Length))
                 {
                     int endValue = (int)*(short*)(bufferStart + 2 + boundary.Length);
                     if (endValue == 0x0a0d)
@@ -260,10 +261,10 @@ namespace AutoCSer.Net.Http
             {
                 if (receiveEndIndex == bufferSize)
                 {
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                     {
                         byte* bufferStart = bufferFixed + buffer.StartIndex;
-                        Memory.CopyNotNull(bufferStart + startIndex, bufferStart, length);
+                        AutoCSer.Memory.Common.CopyNotNull(bufferStart + startIndex, bufferStart, length);
                     }
                     currentIndex -= startIndex;
                     receiveEndIndex = length;
@@ -281,7 +282,7 @@ namespace AutoCSer.Net.Http
         private bool checkEnter()
         {
             int searchEndIndex = receiveEndIndex - sizeof(int);
-            fixed (byte* dataFixed = buffer.Buffer)
+            fixed (byte* dataFixed = buffer.GetFixedBuffer())
             {
                 byte* dataStart = dataFixed + buffer.StartIndex, start = dataStart + currentIndex, searchEnd = dataStart + searchEndIndex, end = dataStart + receiveEndIndex;
                 *end = 13;
@@ -314,7 +315,7 @@ namespace AutoCSer.Net.Http
         {
             currentName = currentValue = currentFileName = null;
             saveFileName = null;
-            fixed (byte* dataFixed = buffer.Buffer)
+            fixed (byte* dataFixed = buffer.GetFixedBuffer())
             {
                 byte* dataStart = dataFixed + buffer.StartIndex, start = dataStart + startIndex, end = dataStart + currentIndex;
                 *end = (byte)';';
@@ -368,14 +369,14 @@ namespace AutoCSer.Net.Http
                 if (startIndex == 0)
                 {
                     linkTaskType = BoundaryReceiveLinkTaskType.WriteFile;
-                    AutoCSer.Threading.LinkTask.Task.Add(this);
+                    AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this);
                     return true;
                 }
                 int length = receiveEndIndex - startIndex;
-                fixed (byte* bufferFixed = buffer.Buffer)
+                fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                 {
                     byte* bufferStart = bufferFixed + buffer.StartIndex;
-                    Memory.CopyNotNull(bufferStart + startIndex, bufferStart, length);
+                    AutoCSer.Memory.Common.CopyNotNull(bufferStart + startIndex, bufferStart, length);
                 }
                 currentIndex -= startIndex;
                 valueEnterIndex -= startIndex;
@@ -392,7 +393,7 @@ namespace AutoCSer.Net.Http
         private bool checkValue()
         {
             int boundaryLength2 = boundary.Length + 2;
-            fixed (byte* bufferFixed = buffer.Buffer, boundaryFixed = header.Buffer.Buffer)
+            fixed (byte* bufferFixed = buffer.GetFixedBuffer(), boundaryFixed = header.Buffer.GetFixedBuffer())
             {
                 byte* bufferStart = bufferFixed + buffer.StartIndex, boundaryStart = boundaryFixed + (header.Buffer.StartIndex + boundary.StartIndex);
                 byte* start = bufferStart + currentIndex, end = bufferStart + receiveEndIndex, last = bufferStart + valueEnterIndex;
@@ -402,7 +403,7 @@ namespace AutoCSer.Net.Http
                     while (*start != 13) ++start;
                     if (start >= end) break;
                     if ((int)(start - last) == boundaryLength2 && *(short*)last == ('-') + ('-' << 8)
-                        && Memory.EqualNotNull(boundaryStart, last + 2, boundary.Length) && *(start + 1) == 10)
+                        && AutoCSer.Memory.Common.EqualNotNull(boundaryStart, last + 2, boundary.Length) && *(start + 1) == 10)
                     {
                         currentIndex = (int)(last - bufferStart) - 2;
                         if (fileStream == null)
@@ -413,7 +414,7 @@ namespace AutoCSer.Net.Http
                         }
                         valueEnterIndex = (int)(start - bufferStart) + 2;
                         linkTaskType = BoundaryReceiveLinkTaskType.GetFile;
-                        AutoCSer.Threading.LinkTask.Task.Add(this);
+                        AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this);
                         return true;
                     }
                     last = *++start == 10 ? ++start : (bufferStart - buffer.Length);
@@ -421,7 +422,7 @@ namespace AutoCSer.Net.Http
                 while (true);
                 int hash = (*(int*)(end -= 3) ^ ('-') + ('-' << 8) + 0x0a0d0000);
                 if ((hash | (*(int*)(end -= boundary.Length + sizeof(int)) ^ 0x0a0d + ('-' << 16) + ('-' << 24))) == 0
-                     && Memory.EqualNotNull(boundaryStart, end + sizeof(int), boundary.Length))
+                     && AutoCSer.Memory.Common.EqualNotNull(boundaryStart, end + sizeof(int), boundary.Length))
                 {
                     currentIndex = (int)(end - bufferStart);
                     if (fileStream == null)
@@ -430,7 +431,7 @@ namespace AutoCSer.Net.Http
                         return boundaryReceiverFinally();
                     }
                     linkTaskType = BoundaryReceiveLinkTaskType.GetFileFinally;
-                    AutoCSer.Threading.LinkTask.Task.Add(this);
+                    AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this);
                     return true;
                 }
                 valueEnterIndex = (int)(last - bufferStart);
@@ -459,7 +460,7 @@ namespace AutoCSer.Net.Http
                 }
                 catch (Exception error)
                 {
-                    httpSocket.DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                    httpSocket.DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 httpSocket.ResponseError(identity, ResponseState.ServerError500);
                 return true;
@@ -470,10 +471,12 @@ namespace AutoCSer.Net.Http
         /// 执行任务
         /// </summary>
         /// <param name="next"></param>
-        public void RunTask(ref AutoCSer.Threading.ILinkTask next)
+        /// <param name="currentTaskTimestamp"></param>
+        public void RunTask(ref AutoCSer.Threading.ISwitchTaskNode next, ref long currentTaskTimestamp)
         {
-            next = NextLinkTask;
-            NextLinkTask = null;
+            next = NextSwitchTask;
+            currentTaskTimestamp = SwitchTimestamp;
+            NextSwitchTask = null;
             try
             {
                 switch (linkTaskType)
@@ -491,7 +494,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                httpSocket.DomainServer.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             this.error();
         }
@@ -503,15 +506,15 @@ namespace AutoCSer.Net.Http
         {
             if (fileStream == null)
             {
-                fileStream = new FileStream(saveFileName = httpSocket.GetFormPage.GetSaveFileName(currentName) ?? (cacheFileName + ((ulong)AutoCSer.Pub.Identity).toHex()), FileMode.CreateNew, FileAccess.Write, FileShare.None);
+                fileStream = new FileStream(saveFileName = httpSocket.GetFormPage.GetSaveFileName(currentName) ?? (cacheFileName + ((ulong)AutoCSer.Config.Identity).toHex()), FileMode.CreateNew, FileAccess.Write, FileShare.None);
             }
             if (valueEnterIndex > 0)
             {
                 fileStream.Write(buffer.Buffer, buffer.StartIndex, valueEnterIndex);
-                fixed (byte* bufferFixed = buffer.Buffer)
+                fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                 {
                     byte* bufferStart = bufferFixed + buffer.StartIndex;
-                    Memory.CopyNotNull(bufferStart + valueEnterIndex, bufferStart, receiveEndIndex -= valueEnterIndex);
+                    AutoCSer.Memory.Common.CopyNotNull(bufferStart + valueEnterIndex, bufferStart, receiveEndIndex -= valueEnterIndex);
                 }
                 valueEnterIndex = 0;
             }

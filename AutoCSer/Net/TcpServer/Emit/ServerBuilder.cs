@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer.Emit
 {
@@ -66,13 +66,14 @@ namespace AutoCSer.Net.TcpServer.Emit
                         }
                     }
                 }
-                #region base(attribute, verify, serverCallQueue, onCustomData, log, isCallQueue, isSynchronousVerifyMethod)
+                #region base(attribute, verify, serverCallQueue, extendCommandBits, onCustomData, log, callQueueCount, isCallQueue, isSynchronousVerifyMethod)
                 constructorGenerator.Emit(OpCodes.Ldarg_0);
                 constructorGenerator.Emit(OpCodes.Ldarg_1);
                 constructorGenerator.Emit(OpCodes.Ldarg_2);
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 4);
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 5);
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 6);
+                constructorGenerator.Emit(OpCodes.Ldarg_S, 7);
                 constructorGenerator.int32(callQueueCount);
                 constructorGenerator.int32(isCallQueueLink ? 1 : 0);
                 constructorGenerator.int32(isSynchronousVerifyMethod ? 1 : 0);
@@ -406,7 +407,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                                     callGenerator.Emit(OpCodes.Ldarg_0);
                                     callGenerator.Emit(OpCodes.Ldfld, Metadata.ServerCallSenderField);
                                     callGenerator.Emit(OpCodes.Ldarg_0);
-                                    callGenerator.Emit(OpCodes.Ldfld, ServerMetadata.ServerCallCommandIndexField);
+                                    callGenerator.call(ServerMetadata.ServerCallGetCommandIndexMethod);
                                     if (method.OutputParameterType == null)
                                     {
                                         callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder);
@@ -489,7 +490,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                                 methodGenerator.Emit(OpCodes.Ldarg_2);
                                 methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
                                 methodGenerator.int32(method.ParameterType.IsSimpleSerialize ? 1 : 0);
-                                methodGenerator.call(ServerMetadata.ServerSocketSenderDeSerializeMethod.MakeGenericMethod(method.ParameterType.Type));
+                                methodGenerator.call(Metadata.GetParameterGenericType(method.ParameterType.Type).ServerSocketSenderDeSerializeMethod);
                                 methodGenerator.Emit(OpCodes.Brfalse, serverDeSerializeErrorLabel = methodGenerator.DefineLabel());
                                 #endregion
                             }

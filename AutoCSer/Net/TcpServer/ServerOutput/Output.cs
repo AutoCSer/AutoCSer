@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer.ServerOutput
@@ -26,15 +27,15 @@ namespace AutoCSer.Net.TcpServer.ServerOutput
         internal override OutputLink Build(ServerSocketSenderBase sender, ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = sender.OutputSerializer.Stream;
-            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.ByteSize) >= outputInfo.MaxDataSize)
+            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= outputInfo.MaxDataSize)
             {
-                int streamLength = stream.ByteSize;
+                int streamLength = stream.Data.CurrentIndex;
                 OutputLink nextBuild = LinkNext;
-                stream.PrepLength(sizeof(uint) + sizeof(int) * 2);
-                stream.ByteSize += sizeof(uint) + sizeof(int);
+                stream.PrepSize(sizeof(uint) + sizeof(int) * 2);
+                stream.Data.CurrentIndex += sizeof(uint) + sizeof(int);
                 if ((Server.GetCommandFlags(ref CommandIndex) & CommandFlags.JsonSerialize) == 0) sender.Serialize(outputInfo, ref outputParameter);
                 else sender.JsonSerialize(ref outputParameter);
-                int dataLength = stream.ByteSize - streamLength - (sizeof(uint) + sizeof(int));
+                int dataLength = stream.Data.CurrentIndex - streamLength - (sizeof(uint) + sizeof(int));
                 byte* dataFixed = stream.Data.Byte + streamLength;
                 *(uint*)dataFixed = CommandIndex;
                 *(int*)(dataFixed + sizeof(uint)) = dataLength;

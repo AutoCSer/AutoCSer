@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.TcpInternalSimpleClientPerformance
 {

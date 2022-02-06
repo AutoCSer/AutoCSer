@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using AutoCSer.IO;
 
 namespace AutoCSer.Web.Ajax
 {
@@ -41,7 +42,7 @@ namespace AutoCSer.Web.Ajax
                         if (fileInfo.Exists)
                         {
                             string fileName = fileInfo.FullName;
-                            if (path.PathCompare(fileName) == 0) codes.Add(file, code = File.ReadAllText(fileName));
+                            if (path.PathCompare(fileName) == 0) codes.Add(file, code = System.IO.File.ReadAllText(fileName));
                         }
                     }
                     finally { Monitor.Exit(codeLock); }

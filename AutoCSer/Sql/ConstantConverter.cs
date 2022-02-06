@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,10 @@ namespace AutoCSer.Sql
         /// </summary>
         protected readonly Dictionary<Type, Action<CharStream, object>> converters;
         /// <summary>
+        /// 宽字符前缀
+        /// </summary>
+        protected readonly char widePrefix;
+        /// <summary>
         /// 获取常量转换处理函数
         /// </summary>
         /// <param name="type">数据类型</param>
@@ -30,8 +35,10 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 常量转换
         /// </summary>
-        protected ConstantConverter()
+        /// <param name="widePrefix"></param>
+        protected ConstantConverter(char widePrefix = default(char))
         {
+            this.widePrefix = widePrefix;
             converters = DictionaryCreator.CreateOnly<Type, Action<CharStream, object>>();
             converters.Add(typeof(bool), convertConstantBoolTo01);
             converters.Add(typeof(bool?), convertConstantBoolNullable);
@@ -65,19 +72,15 @@ namespace AutoCSer.Sql
         /// 常量转换字符串
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
+        /// <param name="converter"></param>
         /// <param name="sqlStream">SQL字符流</param>
         /// <param name="value">常量</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void convertConstantToString<valueType>(CharStream sqlStream, valueType value)
+        internal static void ConvertConstantToString<valueType>(ConstantConverter converter, CharStream sqlStream, valueType value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else convertString(sqlStream, value.ToString());
+            else converter.convertString(sqlStream, value.ToString());
         }
-        /// <summary>
-        /// 常量转换字符串函数信息
-        /// </summary>
-        private static readonly MethodInfo convertConstantToStringMethod = typeof(ConstantConverter).GetMethod("convertConstantToString", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 常量转换字符串
         /// </summary>
@@ -128,7 +131,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, byte value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -137,7 +140,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantByte(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((byte)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((byte)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -149,7 +152,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, byte? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((byte)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((byte)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -169,7 +172,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, sbyte value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -178,7 +181,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantSByte(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((sbyte)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((sbyte)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -190,7 +193,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, sbyte? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((sbyte)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((sbyte)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -210,7 +213,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, short value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -219,7 +222,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantShort(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((short)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((short)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -231,7 +234,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, short? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((short)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((short)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -251,7 +254,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, ushort value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -260,7 +263,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantUShort(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((ushort)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((ushort)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -272,7 +275,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, ushort? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((ushort)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((ushort)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -292,7 +295,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, int value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -301,7 +304,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantInt(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((int)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((int)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -313,7 +316,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, int? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((int)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((int)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -333,7 +336,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, uint value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -342,7 +345,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantUInt(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((uint)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((uint)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -354,7 +357,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, uint? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((uint)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((uint)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -374,7 +377,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, long value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -383,7 +386,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantLong(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((long)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((long)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -395,7 +398,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, long? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((long)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((long)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -415,7 +418,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, ulong value)
         {
-            AutoCSer.Extension.Number.ToString(value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString(value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -424,7 +427,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantULong(CharStream sqlStream, object value)
         {
-            AutoCSer.Extension.Number.ToString((ulong)value, sqlStream);
+            AutoCSer.Extensions.NumberExtension.ToString((ulong)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -436,7 +439,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, ulong? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else AutoCSer.Extension.Number.ToString((ulong)value, sqlStream);
+            else AutoCSer.Extensions.NumberExtension.ToString((ulong)value, sqlStream);
         }
         /// <summary>
         /// 常量转换字符串
@@ -456,7 +459,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, float value)
         {
-            sqlStream.SimpleWriteNotNull(value.ToString());
+            sqlStream.SimpleWrite(value.ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -465,7 +468,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantFloat(CharStream sqlStream, object value)
         {
-            sqlStream.SimpleWriteNotNull(((float)value).ToString());
+            sqlStream.SimpleWrite(((float)value).ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -477,7 +480,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, float? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else sqlStream.SimpleWriteNotNull(((float)value).ToString());
+            else sqlStream.SimpleWrite(((float)value).ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -497,7 +500,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, double value)
         {
-            sqlStream.SimpleWriteNotNull(value.ToString());
+            sqlStream.SimpleWrite(value.ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -506,7 +509,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantDouble(CharStream sqlStream, object value)
         {
-            sqlStream.SimpleWriteNotNull(((double)value).ToString());
+            sqlStream.SimpleWrite(((double)value).ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -518,7 +521,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, double? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else sqlStream.SimpleWriteNotNull(((double)value).ToString());
+            else sqlStream.SimpleWrite(((double)value).ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -538,7 +541,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void convertConstant(CharStream sqlStream, decimal value)
         {
-            sqlStream.SimpleWriteNotNull(value.ToString());
+            sqlStream.SimpleWrite(value.ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -547,7 +550,7 @@ namespace AutoCSer.Sql
         /// <param name="value">常量</param>
         private void convertConstantDecimal(CharStream sqlStream, object value)
         {
-            sqlStream.SimpleWriteNotNull(((decimal)value).ToString());
+            sqlStream.SimpleWrite(((decimal)value).ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -559,7 +562,7 @@ namespace AutoCSer.Sql
         private void convertConstant(CharStream sqlStream, decimal? value)
         {
             if (value == null) sqlStream.WriteJsonNull();
-            else sqlStream.SimpleWriteNotNull(((decimal)value).ToString());
+            else sqlStream.SimpleWrite(((decimal)value).ToString());
         }
         /// <summary>
         /// 常量转换字符串
@@ -578,10 +581,10 @@ namespace AutoCSer.Sql
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         protected virtual void convertConstant(CharStream sqlStream, DateTime value)
         {
-            sqlStream.PrepLength(AutoCSer.Date.MillisecondStringSize + 2);
-            sqlStream.UnsafeWrite('\'');
+            sqlStream.PrepCharSize(AutoCSer.Date.MillisecondStringSize + 2);
+            sqlStream.Data.Write('\'');
             AutoCSer.Date.ToMillisecondString((DateTime)value, sqlStream);
-            sqlStream.UnsafeWrite('\'');
+            sqlStream.Data.Write('\'');
         }
         /// <summary>
         /// 常量转换字符串
@@ -723,21 +726,24 @@ namespace AutoCSer.Sql
         {
             fixed (char* valueFixed = value)
             {
-                int length = 0;
+                int length = 0, wideSize = 0;
                 for (char* start = valueFixed, end = valueFixed + value.Length; start != end; ++start)
                 {
                     if (*start == '\'') ++length;
+                    else if (wideSize == 0 && * start >= 256) wideSize = 1;
                 }
                 if (length == 0)
                 {
-                    sqlStream.PrepLength(value.Length + 2);
-                    sqlStream.UnsafeWrite('\'');
-                    sqlStream.WriteNotNull(value);
-                    sqlStream.UnsafeWrite('\'');
+                    if (widePrefix == 0) wideSize = 0;
+                    sqlStream.PrepCharSize(value.Length + wideSize + 2);
+                    if (wideSize != 0) sqlStream.Data.Write('N');
+                    sqlStream.Data.Write('\'');
+                    sqlStream.Data.Write(value);
+                    sqlStream.Data.Write('\'');
                     return;
                 }
-                sqlStream.PrepLength((length += value.Length) + 2);
-                sqlStream.UnsafeWrite('\'');
+                sqlStream.PrepCharSize((length += value.Length) + 2);
+                sqlStream.Data.Write('\'');
                 byte* write = (byte*)sqlStream.CurrentChar;
                 for (char* start = valueFixed, end = valueFixed + value.Length; start != end; ++start)
                 {
@@ -752,8 +758,8 @@ namespace AutoCSer.Sql
                         write += sizeof(int);
                     }
                 }
-                sqlStream.ByteSize += length * sizeof(char);
-                sqlStream.UnsafeWrite('\'');
+                sqlStream.Data.CurrentIndex += length * sizeof(char);
+                sqlStream.Data.Write('\'');
             }
         }
         /// <summary>
@@ -793,7 +799,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// SQL 关键字搜索器
         /// </summary>
-        private static AutoCSer.StateSearcher.AsciiSearcher keywordSearcher = new AutoCSer.StateSearcher.AsciiSearcher(AutoCSer.StateSearcher.AsciiBuilder.Create(new string[] { "add", "all", "alter", "and", "any", "as", "asc", "authorization", "backup", "begin", "between", "break", "browse", "bulk", "by", "cascade", "case", "check", "checkpoint", "close", "clustered", "coalesce", "collate", "column", "commit", "compute", "constraint", "contains", "containstable", "continue", "convert", "create", "cross", "current", "current_date", "current_time", "current_timestamp", "current_user", "cursor", "database", "dbcc", "deallocate", "declare", "default", "delete", "deny", "desc", "disk", "distinct", "distributed", "double", "drop", "dump", "else", "end", "errlvl", "escape", "except", "exec", "execute", "exists", "exit", "external", "fetch", "file", "fillfactor", "for", "foreign", "freetext", "freetexttable", "full", "function", "goto", "grant", "group", "having", "holdlock", "identity", "identity_insert", "identitycol", "if", "in", "index", "inner", "insert", "intersect", "into", "is", "join", "key", "kill", "left", "like", "lineno", "load", "merge", "national", "nocheck", "nonclustered", "not", "null", "nullif", "of", "off", "offsets", "on", "open", "opendatasource", "openquery", "openrowset", "openxml", "option", "or", "order", "outer", "over", "percent", "pivot", "plan", "precision", "primary", "print", "proc", "procedure", "public", "raiserror", "read", "readtext", "reconfigure", "references", "replication", "restore", "restrict", "return", "revert", "revoke", "right", "rollback", "rowcount", "rowguidcol", "rule", "save", "schema", "securityaudit", "select", "semantickeyphrasetable", "semanticsimilaritydetailstable", "semanticsimilaritytable", "session_user", "set", "setuser", "shutdown", "some", "statistics", "system_user", "table", "tablesample", "textsize", "then", "top", "tran", "transaction", "trigger", "truncate", "try_convert", "tsequal", "union", "unique", "unpivot", "update", "updatetext", "use", "user", "values", "varying", "view", "waitfor", "when", "where", "while", "with", "within", "writetext" }, true).Pointer);
+        private static AutoCSer.StateSearcher.AsciiSearcher keywordSearcher = new AutoCSer.StateSearcher.AsciiSearcher(AutoCSer.StateSearcher.AsciiBuilder.Create(new string[] { "add", "all", "alter", "and", "any", "as", "asc", "authorization", "backup", "begin", "between", "break", "browse", "bulk", "by", "cascade", "case", "check", "checkpoint", "close", "clustered", "coalesce", "collate", "column", "commit", "compute", "constraint", "contains", "containstable", "continue", "convert", "create", "cross", "current", "current_date", "current_time", "current_timestamp", "current_user", "cursor", "database", "dbcc", "deallocate", "declare", "default", "delete", "deny", "desc", "disk", "distinct", "distributed", "double", "drop", "dump", "else", "end", "errlvl", "escape", "except", "exec", "execute", "exists", "exit", "external", "fetch", "file", "fillfactor", "for", "foreign", "freetext", "freetexttable", "full", "function", "goto", "grant", "group", "having", "holdlock", "identity", "identity_insert", "identitycol", "if", "in", "index", "inner", "insert", "intersect", "into", "is", "join", "key", "kill", "left", "like", "lineno", "load", "merge", "national", "nocheck", "nonclustered", "not", "null", "nullif", "of", "off", "offsets", "on", "open", "opendatasource", "openquery", "openrowset", "openxml", "option", "or", "order", "outer", "over", "percent", "pivot", "plan", "precision", "primary", "print", "proc", "procedure", "public", "raiserror", "read", "readtext", "reconfigure", "references", "replication", "restore", "restrict", "return", "revert", "revoke", "right", "rollback", "rowcount", "rowguidcol", "rule", "save", "schema", "securityaudit", "select", "semantickeyphrasetable", "semanticsimilaritydetailstable", "semanticsimilaritytable", "session_user", "set", "setuser", "shutdown", "some", "statistics", "system_user", "table", "tablesample", "textsize", "then", "top", "tran", "transaction", "trigger", "truncate", "try_convert", "tsequal", "union", "unique", "unpivot", "update", "updatetext", "use", "user", "values", "varying", "view", "waitfor", "when", "where", "while", "with", "within", "writetext" }, true));
         /// <summary>
         /// SQL名称关键字处理
         /// </summary>
@@ -812,18 +818,22 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal virtual void ConvertNameToSqlStream(CharStream sqlStream, string name)
         {
-            if (keywordSearcher.SearchLower(name) < 0) sqlStream.SimpleWriteNotNull(name);
+            if (keywordSearcher.SearchLower(name) < 0) sqlStream.SimpleWrite(name);
             else
             {
                 sqlStream.Write('[');
-                sqlStream.SimpleWriteNotNull(name);
+                sqlStream.SimpleWrite(name);
                 sqlStream.Write(']');
             }
         }
         /// <summary>
-        /// 常量转换
+        /// 默认常量转换
         /// </summary>
         internal static readonly ConstantConverter Default = new ConstantConverter();
+        /// <summary>
+        /// SQL Server 常量转换
+        /// </summary>
+        internal static readonly ConstantConverter SqlServer = new ConstantConverter('N');
 
         /// <summary>
         /// SQL常量转换函数信息集合
@@ -839,22 +849,13 @@ namespace AutoCSer.Sql
             MethodInfo method;
             if (converterMethods.TryGetValue(type, out method)) return method;
             method = typeof(ConstantConverter).GetMethod("convertConstant", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(CharStream), type }, null)
-                ?? convertConstantToStringMethod.MakeGenericMethod(type);
+                ?? AutoCSer.Sql.Metadata.GenericType.Get(type).ConvertConstantToStringMethod;
             converterMethods.Set(type, method);
             return method;
         }
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            converterMethods.Clear();
-        }
         static ConstantConverter()
         {
-            AutoCSer.Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(converterMethods.Clear, typeof(ConstantConverter), 60 * 60);
         }
     }
 }

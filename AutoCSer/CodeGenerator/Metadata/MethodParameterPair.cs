@@ -80,7 +80,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <returns></returns>
         private static MethodParameterPair[] get(MethodParameter[] methodParameters, MethodParameter[] parameters)
         {
-            if (methodParameters.Length == 0) return NullValue<MethodParameterPair>.Array;
+            if (methodParameters.Length == 0) return EmptyArray<MethodParameterPair>.Array;
             MethodParameterPair[] methodParameterPairs = new MethodParameterPair[methodParameters.Length];
             int index = 0;
             foreach (MethodParameter methodParameter in methodParameters)

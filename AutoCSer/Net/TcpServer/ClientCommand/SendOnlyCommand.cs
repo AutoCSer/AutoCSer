@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
@@ -28,15 +29,11 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         internal unsafe override CommandBase Build(ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
-            if ((buildInfo.SendBufferSize - stream.ByteSize) >= sizeof(int) + sizeof(uint))
+            if ((buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= sizeof(int) + sizeof(uint))
             {
-                byte* write = stream.CurrentData;
                 CommandBase nextBuild = LinkNext;
-                *(int*)write = CommandInfo.Command;
-                //*(uint*)(write + sizeof(int)) = (CommandIndex & Server.CommandIndexAnd) | (uint)(CommandInfo.CommandFlags | CommandFlags.NullData);
-                *(uint*)(write + sizeof(int)) = (uint)(CommandInfo.CommandFlags | CommandFlags.NullData);
+                stream.Data.Write(CommandInfo.Command, (uint)(CommandInfo.CommandFlags | CommandFlags.NullData));
                 ++buildInfo.Count;
-                stream.ByteSize += sizeof(int) + sizeof(uint);
 
                 Socket = null;
                 LinkNext = null;
@@ -80,15 +77,15 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         internal unsafe override CommandBase Build(ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
-            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.ByteSize) >= CommandInfo.MaxDataSize)
+            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= CommandInfo.MaxDataSize)
             {
-                int streamLength = stream.ByteSize;
-                stream.PrepLength(sizeof(uint) + sizeof(int) * 3);
+                int streamLength = stream.Data.CurrentIndex;
+                stream.PrepSize(sizeof(uint) + sizeof(int) * 3);
                 CommandBase nextBuild = LinkNext;
-                stream.ByteSize += sizeof(uint) + sizeof(int) * 2;
+                stream.Data.CurrentIndex += sizeof(uint) + sizeof(int) * 2;
                 if ((CommandInfo.CommandFlags & CommandFlags.JsonSerialize) == 0) Socket.Serialize(CommandInfo, ref InputParameter);
                 else Socket.JsonSerialize(ref InputParameter);
-                int dataLength = stream.ByteSize - streamLength - (sizeof(int) * 2 + sizeof(uint));
+                int dataLength = stream.Data.CurrentIndex - streamLength - (sizeof(int) * 2 + sizeof(uint));
                 if (dataLength <= Socket.MaxInputSize)
                 {
                     byte* write = stream.Data.Byte + streamLength;
@@ -100,7 +97,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                     *(int*)(write + (sizeof(uint) + sizeof(int))) = dataLength;
                     CommandInfo.CheckMaxDataSize(Math.Max(dataLength + (sizeof(int) * 2 + sizeof(uint)), stream.LastPrepSize - streamLength));
                 }
-                else stream.ByteSize = streamLength;
+                else stream.Data.CurrentIndex = streamLength;
 
                 InputParameter = default(inputParameterType);
                 Socket = null;

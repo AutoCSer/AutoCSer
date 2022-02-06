@@ -84,6 +84,7 @@
     <Compile Include="CsvFile\ReaderItem.cs" />
     <Compile Include="CsvFile\ReaderStep.cs" />
     <Compile Include="Diagnostics\ProcessEventWaitHandle.cs" />
+    <Compile Include="Diagnostics\ProcessTimeCheck.cs" />
     <Compile Include="DynamicDomain.cs" />
     <Compile Include="Email\Content.cs" />
     <Compile Include="Email\EventSender.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="Emit\BuildParameterType.cs" />
     <Compile Include="Extension\Memory.cs" />
     <Compile Include="Extension\String.cs" />
-    <Compile Include="Extension\SynchronizationContext.cs" />
     <Compile Include="JsonFile.cs" />
     <Compile Include="IO\Compression\Deflate.cs" />
     <Compile Include="IO\FileInfo.cs" />

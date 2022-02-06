@@ -5,7 +5,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
     /// <summary>
     /// 程序集环境检测结果
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class CheckResult
     {
         /// <summary>

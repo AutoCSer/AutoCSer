@@ -7,9 +7,15 @@ namespace AutoCSer.Threading
     /// </summary>
     public static class Pub
     {
+#if !Serialize
         /// <summary>
-        /// CPU核心数量
+        /// 未结束定时器线程数量
         /// </summary>
-        public static readonly int CpuCount = Math.Max(Environment.ProcessorCount, 1);
+        internal static long TimerThread;
+        /// <summary>
+        /// 未结束定时器线程数量
+        /// </summary>
+        public static long TimerThreadCount { get { return TimerThread + AutoCSer.Threading.SecondTimer.RefreshTimeThreadCount; } }
+#endif
     }
 }

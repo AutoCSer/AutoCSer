@@ -11,7 +11,7 @@ namespace AutoCSer.Emit
     /// <summary>
     /// 默认构造函数
     /// </summary>
-    public sealed class ConstructorAttribute : Attribute
+    //public sealed class ConstructorAttribute : Attribute
     {
 #if NOJIT
         /// <summary>
@@ -54,7 +54,7 @@ namespace AutoCSer.Emit
     /// 默认构造函数
     /// </summary>
     /// <typeparam name="valueType">数据类型</typeparam>
-    public static class Constructor<valueType>
+    //public static class DefaultConstructor<valueType>
     {
 #if NOJIT
         /// <summary>
@@ -100,7 +100,7 @@ namespace AutoCSer.Emit
         /// <summary>
         /// 默认构造函数
         /// </summary>
-        public static readonly Func<valueType> New;
+        public static readonly Func<valueType> Constructor;
         /// <summary>
         /// 默认空值
         /// </summary>
@@ -111,12 +111,12 @@ namespace AutoCSer.Emit
             return default(valueType);
         }
 
-        static Constructor()
+        static DefaultConstructor()
         {
             Type type = typeof(valueType);
             if (type.IsValueType || type.IsArray || type == typeof(string))
             {
-                New = Default;
+                Constructor = Default;
                 return;
             }
             if (type.IsDefined(typeof(ConstructorAttribute), false))
@@ -125,7 +125,7 @@ namespace AutoCSer.Emit
                 {
                     if (methodInfo.Method.ReflectedType == type && methodInfo.Method.GetParameters().Length == 0 && methodInfo.GetAttribute<ConstructorAttribute>() != null)
                     {
-                        New = (Func<valueType>)Delegate.CreateDelegate(typeof(Func<valueType>), methodInfo.Method);
+                        Constructor = (Func<valueType>)Delegate.CreateDelegate(typeof(Func<valueType>), methodInfo.Method);
                         return;
                     }
                 }
@@ -135,7 +135,7 @@ namespace AutoCSer.Emit
 #if NOJIT
                 constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null);
 #else
-                ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null);
+                ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, EmptyArray<Type>.Array, null);
 #endif
                 if (constructorInfo == null)
                 {
@@ -143,17 +143,16 @@ namespace AutoCSer.Emit
                     if (uninitializedObject != null)
                     {
 #if NOJIT
-                        //cloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic);
                         cloneMethod = AutoCSer.MemberCopy.Copyer.MemberwiseCloneMethod;
                         New = clone;
 #else
-                        DynamicMethod dynamicMethod = new DynamicMethod("UninitializedObjectClone", type, NullValue<Type>.Array, type, true);
+                        DynamicMethod dynamicMethod = new DynamicMethod("UninitializedObjectClone", type, EmptyArray<Type>.Array, type, true);
                         ILGenerator generator = dynamicMethod.GetILGenerator();
-                        generator.Emit(OpCodes.Ldsfld, typeof(Constructor<valueType>).GetField("uninitializedObject", BindingFlags.Static | BindingFlags.NonPublic));
+                        generator.Emit(OpCodes.Ldsfld, typeof(DefaultConstructor<valueType>).GetField("uninitializedObject", BindingFlags.Static | BindingFlags.NonPublic));
                         //generator.Emit(OpCodes.Callvirt, typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
-                        generator.Emit(OpCodes.Callvirt, AutoCSer.MemberCopy.Copyer.MemberwiseCloneMethod);
+                        generator.Emit(OpCodes.Callvirt, AutoCSer.MemberCopy.Common.CallMemberwiseClone.Method);
                         generator.Emit(OpCodes.Ret);
-                        New = (Func<valueType>)dynamicMethod.CreateDelegate(typeof(Func<valueType>));
+                        Constructor = (Func<valueType>)dynamicMethod.CreateDelegate(typeof(Func<valueType>));
 #endif
                     }
                 }
@@ -162,11 +161,11 @@ namespace AutoCSer.Emit
 #if NOJIT
                     New = invoke;
 #else
-                    DynamicMethod dynamicMethod = new DynamicMethod("Constructor", type, NullValue<Type>.Array, type, true);
+                    DynamicMethod dynamicMethod = new DynamicMethod("Constructor", type, EmptyArray<Type>.Array, type, true);
                     ILGenerator generator = dynamicMethod.GetILGenerator();
                     generator.Emit(OpCodes.Newobj, constructorInfo);
                     generator.Emit(OpCodes.Ret);
-                    New = (Func<valueType>)dynamicMethod.CreateDelegate(typeof(Func<valueType>));
+                    Constructor = (Func<valueType>)dynamicMethod.CreateDelegate(typeof(Func<valueType>));
 #endif
                 }
             }

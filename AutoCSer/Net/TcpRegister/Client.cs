@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Net;
 
@@ -16,7 +16,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// TCP注册服务名称
         /// </summary>
-        private string serviceName;
+        private readonly HashString serviceName;
 #if !NoAutoCSer
         /// <summary>
         /// TCP 注册服务客户端
@@ -55,7 +55,7 @@ namespace AutoCSer.Net.TcpRegister
         /// TCP 注册服务客户端
         /// </summary>
         /// <param name="serviceName">TCP 注册服务服务名称</param>
-        private Client(string serviceName)
+        private Client(ref HashString serviceName)
         {
 #if NoAutoCSer
             throw new Exception(); 
@@ -94,11 +94,11 @@ namespace AutoCSer.Net.TcpRegister
                         }
                         finally { Monitor.Exit(registerLock); }
                     }
-                    else registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, "TCP 注册服务客户端 " + serviceName + " 获取日志失败");
+                    else registerClient._TcpClient_.Log.Error("TCP 注册服务客户端 " + serviceName.String.String + " 获取日志失败", LogLevel.Error | LogLevel.AutoCSer);
                 }
                 catch (Exception error)
                 {
-                    registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, error, null, true);
+                    registerClient._TcpClient_.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
 #endif
@@ -116,7 +116,7 @@ namespace AutoCSer.Net.TcpRegister
                     case LogType.RegisterServer: registerServer(result.Value); return;
                     case LogType.RemoveServer: removeServer(result.Value); return;
                     default:
-                        registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, "未知的 TCP 内部注册服务更新日志类型 " + result.Value.toJson());
+                        registerClient._TcpClient_.Log.Error("未知的 TCP 内部注册服务更新日志类型 " + result.Value.toJson(), LogLevel.Error | LogLevel.AutoCSer);
                         return;
                 }
             }
@@ -238,9 +238,18 @@ namespace AutoCSer.Net.TcpRegister
         }
 
         /// <summary>
+        /// 获取TCP注册服务名称
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        private static HashString getServiceName(Client client)
+        {
+            return client.serviceName;
+        }
+        /// <summary>
         /// TCP注册服务客户端缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<HashString, Client> clients = new AutoCSer.Threading.LockEquatableLastDictionary<HashString, Client>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashString, Client> clients = new AutoCSer.Threading.LockLastDictionary<HashString, Client>(getServiceName);
         /// <summary>
         /// 获取 TCP 注册服务客户端
         /// </summary>
@@ -253,16 +262,18 @@ namespace AutoCSer.Net.TcpRegister
             {
                 Client client;
                 HashString nameKey = serviceName;
-                if (clients.TryGetValueEnter(ref nameKey, out client)) return client;
-                try
+                if (!clients.TryGetValue(nameKey, out client))
                 {
-                    clients.SetOnly(ref nameKey, client = new Client(serviceName));
+                    try
+                    {
+                        clients.Set(nameKey, client = new Client(ref nameKey));
+                    }
+                    catch (Exception error)
+                    {
+                        Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                    }
+                    finally { clients.Exit(); }
                 }
-                catch (Exception error)
-                {
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
-                }
-                finally { clients.Exit(); }
                 return client;
             }
             return null;

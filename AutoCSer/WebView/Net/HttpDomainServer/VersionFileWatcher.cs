@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 
 namespace AutoCSer.Net.HttpDomainServer
@@ -72,11 +72,11 @@ namespace AutoCSer.Net.HttpDomainServer
         {
             try
             {
-                AutoCSer.Threading.TimerTask.Default.Add(getVersion, Date.NowTime.Set().AddSeconds(2), Threading.TimerTaskThreadType.Queue);
+                AutoCSer.Threading.SecondTimer.InternalTaskArray.Append(getVersion, 2, Threading.SecondTimerThreadMode.TinyBackgroundThreadPool);
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>

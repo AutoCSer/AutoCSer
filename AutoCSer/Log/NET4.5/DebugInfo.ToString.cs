@@ -7,7 +7,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 日志信息
     /// </summary>
-    internal sealed partial class DebugInfo
+    //internal sealed partial class DebugInfo
     {
         /// <summary>
         /// 字符串
@@ -37,7 +37,7 @@ namespace AutoCSer.Log
                             if (CallerLineNumber != 0)
                             {
                                 toStringStream.SimpleWriteNotNull(" line ");
-                                AutoCSer.Extension.Number.ToString(CallerLineNumber, toStringStream);
+                                AutoCSer.Extensions.NumberExtension.ToString(CallerLineNumber, toStringStream);
                             }
                         }
                     }

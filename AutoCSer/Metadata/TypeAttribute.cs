@@ -14,14 +14,6 @@ namespace AutoCSer.Metadata
         /// </summary>
         private static readonly AutoCSer.Threading.LockDictionary<Type, object[]> attributes = new AutoCSer.Threading.LockDictionary<Type, object[]>();
         /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void ClearCache()
-        {
-            attributes.Clear();
-        }
-        /// <summary>
         /// 根据类型获取自定义属性信息集合
         /// </summary>
         /// <param name="type">对象类型</param>
@@ -77,6 +69,10 @@ namespace AutoCSer.Metadata
             if (isBaseType) return GetAttribute<attributeType>(type);
             foreach (attributeType attribute in type.GetCustomAttributes(typeof(attributeType), false)) return attribute;
             return null;
+        }
+        static TypeAttribute()
+        {
+            AutoCSer.Memory.Common.AddClearCache(attributes.Clear, typeof(TypeAttribute), 60 * 60);
         }
     }
 }

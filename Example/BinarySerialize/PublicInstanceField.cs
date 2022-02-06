@@ -5,7 +5,7 @@ namespace AutoCSer.Example.BinarySerialize
     /// <summary>
     /// 仅选择公共字段成员 示例
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
+    [AutoCSer.BinarySerialize(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
     class PublicInstanceField
     {
         /// <summary>
@@ -34,8 +34,8 @@ namespace AutoCSer.Example.BinarySerialize
         {
             PublicInstanceField value = new PublicInstanceField { Public = 1, Private = 2, Protected = 3, Internal = 4 };
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value);
-            PublicInstanceField newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<PublicInstanceField>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value);
+            PublicInstanceField newValue = AutoCSer.BinaryDeSerializer.DeSerialize<PublicInstanceField>(data);
 
             return newValue != null && newValue.Public == 1 && newValue.Private == 0 && newValue.Protected == 0 && newValue.Internal == 0;
         }

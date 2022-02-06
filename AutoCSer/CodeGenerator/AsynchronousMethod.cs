@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CodeGenerator.Metadata;
 
 namespace AutoCSer.CodeGenerator
@@ -145,7 +145,7 @@ namespace AutoCSer.CodeGenerator
                             }
                             if (isAsynchronousCallback)
                             {
-                                methodParameters = MethodParameter.Get(methodParameters.getSub(0, methodParameters.Length - 1));
+                                methodParameters = MethodParameter.Get(methodParameters.AsSpan(0, methodParameters.Length - 1).GetArray());
                             }
                         }
                     }

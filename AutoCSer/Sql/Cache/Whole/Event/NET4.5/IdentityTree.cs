@@ -40,10 +40,14 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 try
                 {
                     Value.Key = isDesc ? tree.getPageDesc(pageSize, currentPage, out Value.Value) : tree.getPage(pageSize, currentPage, out Value.Value);
+                    IsCompleted = true;
                 }
                 finally
                 {
-                    if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) new Task(continuation).Start();
+                    if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null)
+                    {
+                        continuation();
+                    }
                 }
             }
         }

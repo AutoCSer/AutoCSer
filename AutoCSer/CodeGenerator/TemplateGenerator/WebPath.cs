@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
@@ -64,7 +64,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// Path 成员
             /// </summary>
-            internal LeftArray<PathMember> PathMembers;
+            internal LeftArray<PathMember> PathMembers = new LeftArray<PathMember>(0);
             /// <summary>
             /// 输出文件扩展名称
             /// </summary>
@@ -75,7 +75,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             protected override void nextCreate()
             {
                 PathMembers.Length = 0;
-                object pathValue = typeof(AutoCSer.Emit.Constructor<>).MakeGenericType(Type).GetMethod("Default", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, NullValue<Type>.Array, null).Invoke(null, null);
+                object pathValue = AutoCSer.Metadata.GenericType.Get(Type).GetDefaultObject();
                 string queryName = (Attribute.QueryName ?? (Type.Type.Name + "Id")), query;
                 FieldInfo idField = Type.Type.GetField("Id", BindingFlags.Instance | BindingFlags.Public);
                 if (idField == null || idField.FieldType != typeof(int)) query = queryName + "=0";
@@ -139,7 +139,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 else if (exportWebPath.Flag == 0) Messages.Message("缺少导出二进制位标识 " + exportPathType.fullName());
                 else
                 {
-                    LeftArray<KeyValue<Type, AutoCSer.WebView.PathAttribute>> types = new LeftArray<KeyValue<Type, AutoCSer.WebView.PathAttribute>>();
+                    LeftArray<KeyValue<Type, AutoCSer.WebView.PathAttribute>> types = new LeftArray<KeyValue<Type, AutoCSer.WebView.PathAttribute>>(0);
                     foreach (Type type in exportPathType.Assembly.GetTypes())
                     {
                         AutoCSer.WebView.PathAttribute webPath = type.customAttribute<AutoCSer.WebView.PathAttribute>();

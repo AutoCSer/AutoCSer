@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Deploy
 {
@@ -22,6 +22,7 @@ namespace AutoCSer.Deploy
 #else
             if (TcpClient.IsClient)
             {
+                //需要加锁
                 AutoCSer.Net.TcpServer.ReturnValue<int> indexReuslt = await TcpClient.TcpInternalClient.createAwaiter();
                 if (indexReuslt.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
                 {
@@ -35,6 +36,7 @@ namespace AutoCSer.Deploy
                     AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.Directory> getFileDifferentReuslt;
                     for (int taskIndex = 0; taskIndex != Tasks.Length; ++taskIndex)
                     {
+                        tasks[taskIndex].FileIndexs = new LeftArray<KeyValue<string, int>>(0);
                         switch (Tasks[taskIndex].Type)
                         {
                             case TaskType.AssemblyFile:
@@ -69,7 +71,7 @@ namespace AutoCSer.Deploy
 
                     if (fileSources.Count != 0)
                     {
-                        AutoCSer.Net.TcpServer.ReturnValue<bool> result = await TcpClient.TcpInternalClient.setFileSourceAwaiter(fileSources.getArray(value => value.Value.Data));
+                        AutoCSer.Net.TcpServer.ReturnValue<bool> result = await TcpClient.TcpInternalClient.setFileSourceAwaiter(indexReuslt.Value, fileSources.getArray(value => value.Value.Data));
                         if (!result.Value) return new DeployResult { Index = -1, State = DeployState.SetFileSourceError, ReturnType = result.Type };
                     }
                     for (int taskIndex = 0; taskIndex != Tasks.Length; ++taskIndex)
@@ -78,28 +80,28 @@ namespace AutoCSer.Deploy
                         switch (Tasks[taskIndex].Type)
                         {
                             case TaskType.Run:
-                                result = await TcpClient.TcpInternalClient.addRunAwaiter((ClientTask.Run)Tasks[taskIndex]);
+                                result = await TcpClient.TcpInternalClient.addRunAwaiter(indexReuslt.Value, (ClientTask.Run)Tasks[taskIndex]);
                                 if (result.Type == AutoCSer.Net.TcpServer.ReturnType.Success) tasks[taskIndex].TaskIndex = result.Value;
                                 break;
                             case TaskType.WebFile:
                             case TaskType.File:
                                 ClientTask.WebFile webFile = (ClientTask.WebFile)Tasks[taskIndex];
                                 webFile.Directory = tasks[taskIndex].Directory;
-                                result = await TcpClient.TcpInternalClient.addFilesAwaiter(webFile);
+                                result = await TcpClient.TcpInternalClient.addFilesAwaiter(indexReuslt.Value, webFile);
                                 break;
                             case TaskType.AssemblyFile:
                                 ClientTask.AssemblyFile assemblyFile = (ClientTask.AssemblyFile)Tasks[taskIndex];
                                 assemblyFile.FileIndexs = tasks[taskIndex].FileIndexs.ToArray();
-                                result = await TcpClient.TcpInternalClient.addAssemblyFilesAwaiter(assemblyFile);
+                                result = await TcpClient.TcpInternalClient.addAssemblyFilesAwaiter(indexReuslt.Value, assemblyFile);
                                 break;
                             case TaskType.WaitRunSwitch:
-                                result = await TcpClient.TcpInternalClient.addWaitRunSwitchAwaiter(tasks[((ClientTask.WaitRunSwitch)Tasks[taskIndex]).TaskIndex].TaskIndex);
+                                result = await TcpClient.TcpInternalClient.addWaitRunSwitchAwaiter(indexReuslt.Value, tasks[((ClientTask.WaitRunSwitch)Tasks[taskIndex]).TaskIndex].TaskIndex);
                                 break;
                             case TaskType.UpdateSwitchFile:
-                                result = await TcpClient.TcpInternalClient.addUpdateSwitchFileAwaiter((ClientTask.UpdateSwitchFile)Tasks[taskIndex]);
+                                result = await TcpClient.TcpInternalClient.addUpdateSwitchFileAwaiter(indexReuslt.Value, (ClientTask.UpdateSwitchFile)Tasks[taskIndex]);
                                 break;
                             case TaskType.Custom:
-                                result = await TcpClient.TcpInternalClient.addCustomAwaiter((ClientTask.Custom)Tasks[taskIndex]);
+                                result = await TcpClient.TcpInternalClient.addCustomAwaiter(indexReuslt.Value, (ClientTask.Custom)Tasks[taskIndex]);
                                 break;
                             default: return new DeployResult { Index = -1, State = DeployState.UnknownTaskType, ReturnType = AutoCSer.Net.TcpServer.ReturnType.Unknown };
                         }
@@ -108,16 +110,16 @@ namespace AutoCSer.Deploy
                             return new DeployResult { Index = -1, State = getErrorState(Tasks[taskIndex].Type), ReturnType = result.Type };
                         }
                     }
-                    AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.DeployState> startResult = await TcpClient.TcpInternalClient.startAwaiter(DateTime.MinValue);
+                    AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.DeployResultData> startResult = await TcpClient.TcpInternalClient.startAwaiter(indexReuslt.Value, DateTime.MinValue);
                     if (startResult.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
                     {
-                        return new DeployResult { Index = indexReuslt.Value, State = startResult.Value, ReturnType = AutoCSer.Net.TcpServer.ReturnType.Success };
+                        return new DeployResult { Index = indexReuslt.Value, State = startResult.Value.State, Data = startResult.Value.Data, ReturnType = AutoCSer.Net.TcpServer.ReturnType.Success };
                     }
                     return new DeployResult { Index = -1, State = DeployState.StartError, ReturnType = startResult.Type };
                 }
                 finally
                 {
-                    await TcpClient.TcpInternalClient.cancelAwaiter();// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
+                    await TcpClient.TcpInternalClient.cancelAwaiter(indexReuslt.Value);// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
                 }
             }
 #endif

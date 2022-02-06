@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer.Cache.MessageQueue
@@ -93,7 +93,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 大数据缓冲区
         /// </summary>
-        private byte[] bigBuffer = NullValue<byte>.Array;
+        private byte[] bigBuffer = EmptyArray<byte>.Array;
         /// <summary>
         /// 数据文件
         /// </summary>
@@ -135,7 +135,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 当前数据文件数据包索引信息
         /// </summary>
-        private LeftArray<PacketIndex> indexs;
+        private LeftArray<PacketIndex> indexs = new LeftArray<PacketIndex>(0);
         /// <summary>
         /// 已保存状态的数据包索引信息
         /// </summary>
@@ -270,12 +270,12 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                         FileInfo dataFileInfo = new FileInfo(dataFileName);
                         if (!dataFileInfo.Exists)
                         {
-                            Node.Cache.TcpServer.Log.Add(Log.LogType.Error, "没有找到消息队列数据文件 " + dataFileInfo.FullName);
+                            Node.Cache.TcpServer.Log.Error("没有找到消息队列数据文件 " + dataFileInfo.FullName, LogLevel.Error | LogLevel.AutoCSer);
                             return;
                         }
                         if (dataFileInfo.Length < dataFileLength)
                         {
-                            Node.Cache.TcpServer.Log.Add(Log.LogType.Error, "消息队列数据文件 " + dataFileInfo.FullName + " 大小错误 " + dataFileInfo.Length.toString() + " < " + dataFileLength.toString());
+                            Node.Cache.TcpServer.Log.Error("消息队列数据文件 " + dataFileInfo.FullName + " 大小错误 " + dataFileInfo.Length.toString() + " < " + dataFileLength.toString(), LogLevel.Error | LogLevel.AutoCSer);
                             return;
                         }
                         dataFileStream = new FileStream(dataFileInfo.FullName, FileMode.Open, FileAccess.Write, FileShare.Read, bufferPool.Size, FileOptions.None);
@@ -288,7 +288,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
 
                         FileInfo indexFileInfo = new FileInfo(getIndexFileName(identity));
                         bufferPool.Get(ref buffer);
-                        fixed (byte* bufferFixed = buffer.Buffer)
+                        fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                         {
                             byte* bufferStart = bufferFixed + buffer.StartIndex, end = bufferStart + buffer.Length;
                             ulong baseIdentity = this.baseIdentity;
@@ -328,7 +328,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                             if (indexs.Length == 0)
                             {
                                 #region 重建数据文件数据包索引信息
-                                if (indexs.Array == null) indexs = new LeftArray<PacketIndex>(1 << 10);
+                                if (indexs.Array.Length == 0) indexs = new LeftArray<PacketIndex>(1 << 10);
                                 indexs.Array[0].Set(baseIdentity);
                                 indexs.Length = 1;
                                 int bufferIndex = 0, readBufferSize = Math.Min(buffer.Length, createIndexBufferSize), bufferEndIndex, dataSize;
@@ -411,7 +411,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                     }
                     dataFileStream = new FileStream(dataFileName, FileMode.CreateNew, FileAccess.Write, FileShare.Read, bufferPool.Size, FileOptions.None);
                 }
-                if (indexs.Array == null) indexs = new LeftArray<PacketIndex>(1 << 10);
+                if (indexs.Array.Length == 0) indexs = new LeftArray<PacketIndex>(1 << 10);
                 if (indexs.Length == 0)
                 {
                     indexs.Array[0].Set(baseIdentity);
@@ -443,10 +443,11 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// </summary>
         private void onStart()
         {
-            QueueTaskThread.Node end, head;
+            AutoCSer.Threading.TaskLinkNode end, head;
+            //QueueTaskThread.Node end, head;
             Monitor.Enter(onStartQueueLock);
             head = onStartQueue.GetClear(out end);
-            if (head != null) head.AddQueueTaskLinkThread(end);
+            if (head != null) QueueTaskThread.Node.QueueTaskLinkThread.Add(head, end);
             isStartQueue = true;
             Monitor.Exit(onStartQueueLock);
         }
@@ -531,8 +532,8 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             try
             {
                 bufferPool.Get(ref buffer.Buffer);
-                DateTime callbackTime = Date.NowTime.Now;
-                fixed (byte* bufferFixed = buffer.Buffer.Buffer)
+                DateTime callbackTime = AutoCSer.Threading.SecondTimer.Now;
+                fixed (byte* bufferFixed = buffer.Buffer.GetFixedBuffer())
                 {
                     byte* bufferStart = bufferFixed + buffer.Buffer.StartIndex;
                     GETQUEUE:
@@ -629,7 +630,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
 
                             if (data.LinkNext == null)
                             {
-                                if (bufferQueue.IsEmpty || callbackTime != Date.NowTime.Now) break;
+                                if (bufferQueue.IsEmpty || callbackTime != AutoCSer.Threading.SecondTimer.Now) break;
                                 data.LinkNext = bufferQueue.GetClear();
                             }
                             data = data.LinkNext;
@@ -653,7 +654,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                             while (head != null);
                         }
                         else new QueueTaskThread.Append(head).AddQueueTaskLinkThread();
-                        callbackTime = Date.NowTime.Now;
+                        callbackTime = AutoCSer.Threading.SecondTimer.Now;
                     }
                     if (this.isNeedDispose != 0)
                     {
@@ -668,7 +669,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             catch (Exception error)
             {
                 isNeedDispose = true;
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Fatal, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Fatal | LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {
@@ -685,7 +686,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         {
             int compressionDataSize = -compressionData.Length;
             compressionData.MoveStart(-(PacketHeaderSize + sizeof(int)));
-            fixed (byte* dataFixed = compressionData.Array)
+            fixed (byte* dataFixed = compressionData.GetFixedBuffer())
             {
                 byte* write = dataFixed + compressionData.Start;
                 *(int*)write = compressionDataSize;
@@ -723,7 +724,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <param name="buffer"></param>
         private void writeState(ref SubBuffer.PoolBufferFull buffer)
         {
-            fixed (byte* stateBufferFixed = buffer.Buffer)
+            fixed (byte* stateBufferFixed = buffer.GetFixedBuffer())
             {
                 byte* start = stateBufferFixed + buffer.StartIndex;
                 *(ulong*)start = identity;
@@ -775,7 +776,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 using (FileStream indexFileStream = new FileStream(indexFileInfo.FullName, FileMode.CreateNew, FileAccess.Write, FileShare.Read, bufferPool.Size, FileOptions.None))
                 {
                     int count = indexs.Length;
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                     {
                         byte* bufferStart = bufferFixed + buffer.StartIndex, write = bufferStart, end = bufferStart + buffer.Length;
                         long fileIndex = 0;
@@ -843,7 +844,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 SubBuffer.Pool.GetBuffer(ref buffer, createIndexBufferSize + sizeof(int));
                 try
                 {
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                     {
                         byte* bufferStart = bufferFixed + buffer.StartIndex;
                         #region 从索引数据文件获取数据包索引信息

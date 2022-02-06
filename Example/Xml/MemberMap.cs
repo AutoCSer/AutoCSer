@@ -40,8 +40,8 @@ namespace AutoCSer.Example.Xml
 #endif
             AutoCSer.Xml.SerializeConfig serializeMemberMapConfig = new AutoCSer.Xml.SerializeConfig { MemberMap = serializeMemberMap };
 
-            string xml = AutoCSer.Xml.Serializer.Serialize(value, serializeMemberMapConfig);
-            MemberMap newValue = AutoCSer.Xml.Parser.Parse<MemberMap>(xml);
+            string xml = AutoCSer.XmlSerializer.Serialize(value, serializeMemberMapConfig);
+            MemberMap newValue = AutoCSer.XmlDeSerializer.DeSerialize<MemberMap>(xml);
 
             return newValue != null && newValue.Value1 == 1 && newValue.Value2 == 2 && newValue.Value3 == 0;
         }

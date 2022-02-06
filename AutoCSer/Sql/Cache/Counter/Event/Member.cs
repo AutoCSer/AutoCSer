@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Cache.Counter.Event
@@ -148,7 +148,7 @@ namespace AutoCSer.Sql.Cache.Counter.Event
             }
             else
             {
-                valueType copyValue = AutoCSer.Emit.Constructor<valueType>.New();
+                valueType copyValue = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
                 AutoCSer.MemberCopy.Copyer<modelType>.Copy(copyValue, value, MemberMap);
                 setMember(cache, new KeyValue<valueType, int>(copyValue, 0));
                 ++Count;
@@ -175,7 +175,7 @@ namespace AutoCSer.Sql.Cache.Counter.Event
                     setMember(cache, valueCount);
                 }
             }
-            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
     }
 }

@@ -3,11 +3,13 @@ using AutoCSer.Metadata;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Data.Common;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data;
 using System.Runtime.CompilerServices;
 using AutoCSer.Log;
 using System.Data.SqlClient;
+using AutoCSer.Memory;
+using System.Threading;
 
 namespace AutoCSer.Sql
 {
@@ -36,6 +38,10 @@ namespace AutoCSer.Sql
             get { return MsSql.Sql2000.DefaultNowTimeMilliseconds; }
         }
         /// <summary>
+        /// 最小时间
+        /// </summary>
+        public virtual DateTime MinDateTime { get { return DateTime.MinValue; } }
+        /// <summary>
         /// 常量转换
         /// </summary>
         protected ConstantConverter constantConverter;
@@ -43,9 +49,10 @@ namespace AutoCSer.Sql
         /// SQL客户端操作
         /// </summary>
         /// <param name="connection">SQL连接信息</param>
-        protected Client(Connection connection)
+        /// <param name="constantConverter">常量转换</param>
+        protected Client(Connection connection, ConstantConverter constantConverter = null)
         {
-            constantConverter = ConstantConverter.Default;
+            this.constantConverter = constantConverter ?? ConstantConverter.Default;
             Connection = connection;
             ConnectionPool = ConnectionPool.Get(connection.Attribute.ClientType, connection.ConnectionString, connection.IsPool);
         }
@@ -59,23 +66,19 @@ namespace AutoCSer.Sql
             DbConnection connection = ConnectionPool.Pop();
             if (connection == null)
             {
-                Exception exception = null;
+                bool isOpen = false;
                 try
                 {
                     createConnection(ref connection);
+                    isOpen = true;
                 }
-                catch (Exception error)
+                finally
                 {
-                    exception = error;
-                }
-                if (exception != null)
-                {
-                    if (connection != null)
+                    if (!isOpen && connection != null)
                     {
                         connection.Dispose();
                         connection = null;
                     }
-                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, exception);
                 }
             }
             return connection;
@@ -95,11 +98,23 @@ namespace AutoCSer.Sql
             ConnectionPool.Push(ref connection);
         }
         /// <summary>
-        /// 关闭错误连接并重新获取连接
+        /// 关闭错误连接
         /// </summary>
         /// <param name="connection"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CloseErrorConnection(ref DbConnection connection)
+        {
+            if (connection != null)
+            {
+                connection.Dispose();
+                connection = null;
+            }
+        }
+        /// <summary>
+        /// 关闭错误连接并重新获取连接
+        /// </summary>
+        /// <param name="connection"></param>
+        internal void ResetErrorConnection(ref DbConnection connection)
         {
             if (connection != null)
             {
@@ -147,12 +162,12 @@ namespace AutoCSer.Sql
         /// <param name="sql">SQL语句</param>
         /// <param name="timeoutSeconds"></param>
         /// <returns>受影响的行数</returns>
-        protected int executeNonQuery(ref DbConnection connection, string sql, int timeoutSeconds = 0)
+        protected ReturnValue<int> executeNonQuery(ref DbConnection connection, string sql, int timeoutSeconds = 0)
         {
             if (connection == null)
             {
                 connection = GetConnection();
-                if (connection == null) return int.MinValue;
+                if (connection == null) return ReturnType.ConnectionFailed;
             }
             using (DbCommand command = getCommand(connection, sql, CommandType.Text, timeoutSeconds)) return command.ExecuteNonQuery();
         }
@@ -187,22 +202,21 @@ namespace AutoCSer.Sql
         /// <param name="sql">SQL 语句</param>
         /// <param name="timeoutSeconds">命令超时时间秒数，0 表示默认不设置</param>
         /// <returns>是否成功</returns>
-        public int ExecuteNonQuery(string sql, int timeoutSeconds = 0)
+        public ReturnValue<int> ExecuteNonQuery(string sql, int timeoutSeconds = 0)
         {
             DbConnection connection = null;
             bool isFreeConnection = false;
-            int result;
             try
             {
-                result = executeNonQuery(ref connection, sql, timeoutSeconds);
+                ReturnValue<int> returnValue = executeNonQuery(ref connection, sql, timeoutSeconds);
                 FreeConnection(ref connection);
                 isFreeConnection = true;
+                return returnValue;
             }
             finally
             {
                 if (!isFreeConnection) CloseErrorConnection(ref connection);
             }
-            return result;
         }
         /// <summary>
         /// 获取数据集并关闭SQL命令
@@ -231,6 +245,15 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <returns></returns>
         public abstract LeftArray<string> GetTableNames();
+        /// <summary>
+        /// 获取指定表格名称，如果表格不存在返回第一个表格名称（仅用于 Excel）
+        /// </summary>
+        /// <param name="TableName"></param>
+        /// <returns></returns>
+        public virtual string GetFirstTableName(string TableName)
+        {
+            throw new InvalidOperationException();
+        }
         /// <summary>
         /// 判断表格是否存在
         /// </summary>
@@ -282,7 +305,7 @@ namespace AutoCSer.Sql
         {
             if (columns.any(column => column.SqlColumnType != null))
             {
-                ColumnBuilder sqlColumn = new ColumnBuilder { Client = this };
+                ColumnBuilder sqlColumn = new ColumnBuilder { Client = this, Columns = new LeftArray<Column>(0) };
                 sqlColumn.Columns.PrepLength(columns.Length << 1);
                 foreach (Column column in columns) sqlColumn.Append(column);
                 return sqlColumn.Columns.ToArray();
@@ -341,15 +364,15 @@ namespace AutoCSer.Sql
         {
             if (string.IsNullOrEmpty(columnCollection.Name))
             {
-                sqlStream.SimpleWriteNotNull("ix_");
-                sqlStream.SimpleWriteNotNull(tableName);
+                sqlStream.SimpleWrite("ix_");
+                sqlStream.SimpleWrite(tableName);
                 foreach (Column column in columnCollection.Columns)
                 {
                     sqlStream.Write('_');
-                    sqlStream.SimpleWriteNotNull(column.Name);
+                    sqlStream.SimpleWrite(column.Name);
                 }
             }
-            else sqlStream.SimpleWriteNotNull(columnCollection.Name);
+            else sqlStream.SimpleWrite(columnCollection.Name);
         }
         /// <summary>
         /// 删除列集合
@@ -384,6 +407,31 @@ namespace AutoCSer.Sql
             if (query.IndexFieldName == null) query.SetIndex(expressionConverter.FirstMemberName, expressionConverter.FirstMemberSqlName);
         }
         /// <summary>
+        /// 条件表达式转换为 SQL 字符串
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        internal string GetWhere(Expression expression)
+        {
+            CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
+            try
+            {
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
+                AutoCSer.Sql.MsSql.ExpressionConverter expressionConverter = new AutoCSer.Sql.MsSql.ExpressionConverter { SqlStream = sqlStream, ConstantConverter = constantConverter };
+                expressionConverter.Convert(expression);
+                return sqlStream.ToString();
+            }
+            finally
+            {
+                UnmanagedPool.Default.Push(ref buffer);
+                sqlStream.Dispose();
+                Interlocked.Exchange(ref this.sqlStream, sqlStream);
+            }
+        }
+        /// <summary>
         /// 获取查询信息
         /// </summary>
         /// <typeparam name="valueType">对象类型</typeparam>
@@ -399,8 +447,21 @@ namespace AutoCSer.Sql
             where modelType : class
         {
             query.MemberMap = DataModel.Model<modelType>.CopyMemberMap;
+            SetRealMemberMap(sqlTool, query.MemberMap);
             if (memberMap != null && !memberMap.IsDefault) query.MemberMap.And(memberMap);
             GetSelectQuery(sqlTool, ref createQuery, ref query);
+        }
+        /// <summary>
+        /// 设置真实成员位图（用于 Excel）
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <typeparam name="modelType"></typeparam>
+        /// <param name="sqlTool"></param>
+        /// <param name="memberMap"></param>
+        internal virtual void SetRealMemberMap<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, MemberMap<modelType> memberMap)
+            where valueType : class, modelType
+            where modelType : class
+        {
         }
         /// <summary>
         /// 获取查询信息
@@ -427,7 +488,7 @@ namespace AutoCSer.Sql
         /// <param name="connection"></param>
         /// <param name="query">查询信息</param>
         /// <returns>对象集合</returns>
-        internal virtual LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query)
+        internal virtual ReturnValue<LeftArray<valueType>> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query)
             where valueType : class, modelType
             where modelType : class
         {
@@ -443,7 +504,7 @@ namespace AutoCSer.Sql
                             sqlTool.CreateIndex(connection, query.IndexFieldName, false);
                             query.IndexFieldName = null;
                         }
-                        bool isFinally = false;
+                        ReturnType returnType = ReturnType.Unknown;
                         try
                         {
                             using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
@@ -453,28 +514,30 @@ namespace AutoCSer.Sql
                                 while (skipCount != 0 && reader.Read()) --skipCount;
                                 if (skipCount == 0)
                                 {
-                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    LeftArray<valueType> array = new LeftArray<valueType>(0);
                                     while (reader.Read())
                                     {
-                                        valueType value = AutoCSer.Emit.Constructor<valueType>.New();
-                                        DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
+                                        valueType value = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
+                                        DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap, Connection.Type);
                                         array.Add(value);
                                     }
-                                    isFinally = true;
-                                    return array.NotNull();
+                                    returnType = ReturnType.Success;
+                                    return array;
                                 }
                             }
-                            isFinally = true;
+                            returnType = ReturnType.Success;
+                            return new LeftArray<valueType>(0);
                         }
                         finally
                         {
-                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
+                            if (returnType == ReturnType.Unknown) sqlTool.Log.Error(query.Sql, LogLevel.Error | LogLevel.AutoCSer);
                         }
                     }
+                    return ReturnType.ConnectionFailed;
                 }
             }
             finally { query.Free(); }
-            return default(LeftArray<valueType>);
+            return ReturnType.NotFoundSql;
         }
         /// <summary>
         /// 获取查询信息
@@ -486,7 +549,7 @@ namespace AutoCSer.Sql
         /// <param name="query">查询信息</param>
         /// <param name="readValue"></param>
         /// <returns>对象集合</returns>
-        internal virtual LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query, Func<DbDataReader, valueType> readValue)
+        internal virtual ReturnValue<LeftArray<valueType>> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query, Func<DbDataReader, valueType> readValue)
             where valueType : class, modelType
             where modelType : class
         {
@@ -502,7 +565,7 @@ namespace AutoCSer.Sql
                             sqlTool.CreateIndex(connection, query.IndexFieldName, false);
                             query.IndexFieldName = null;
                         }
-                        bool isFinally = false;
+                        ReturnType returnType = ReturnType.Unknown;
                         try
                         {
                             using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
@@ -512,27 +575,29 @@ namespace AutoCSer.Sql
                                 while (skipCount != 0 && reader.Read()) --skipCount;
                                 if (skipCount == 0)
                                 {
-                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    LeftArray<valueType> array = new LeftArray<valueType>(0);
                                     while (reader.Read())
                                     {
                                         valueType value = readValue(reader);
                                         if (value != null) array.Add(value);
                                     }
-                                    isFinally = true;
-                                    return array.NotNull();
+                                    returnType = ReturnType.Success;
+                                    return array;
                                 }
                             }
-                            isFinally = true;
+                            returnType = ReturnType.Success;
+                            return new LeftArray<valueType>(0);
                         }
                         finally
                         {
-                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
+                            if (returnType == ReturnType.Unknown) sqlTool.Log.Error(query.Sql, LogLevel.Error | LogLevel.AutoCSer);
                         }
                     }
+                    return ReturnType.ConnectionFailed;
                 }
             }
             finally { query.Free(); }
-            return default(LeftArray<valueType>);
+            return ReturnType.NotFoundSql;
         }
 
         /// <summary>
@@ -543,22 +608,21 @@ namespace AutoCSer.Sql
         /// <param name="readValue">读取数据委托</param>
         /// <param name="log">日志处理</param>
         /// <returns>数据库记录集合</returns>
-        public LeftArray<valueType> Select<valueType>(string sql, Func<DbDataReader, valueType> readValue, ILog log = null)
+        public ReturnValue<LeftArray<valueType>> Select<valueType>(string sql, Func<DbDataReader, valueType> readValue, ILog log = null)
             where valueType : class
         {
             DbConnection connection = null;
             try
             {
-                LeftArray<valueType> array = Select(ref connection, sql, readValue, log ?? Connection.Log);
+                ReturnValue<LeftArray<valueType>> array = Select(ref connection, sql, readValue, log ?? Connection.Log);
                 FreeConnection(ref connection);
                 return array;
             }
             catch (Exception error)
             {
                 CloseErrorConnection(ref connection);
-                (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, error);
+                return error;
             }
-            return default(LeftArray<valueType>);
         }
         /// <summary>
         /// 获取查询信息
@@ -569,34 +633,34 @@ namespace AutoCSer.Sql
         /// <param name="readValue"></param>
         /// <param name="log"></param>
         /// <returns>对象集合</returns>
-        internal virtual LeftArray<valueType> Select<valueType>(ref DbConnection connection, string sql, Func<DbDataReader, valueType> readValue, ILog log)
+        internal virtual ReturnValue<LeftArray<valueType>> Select<valueType>(ref DbConnection connection, string sql, Func<DbDataReader, valueType> readValue, ILog log)
             where valueType : class
         {
             if (connection == null) connection = GetConnection();
             if (connection != null)
             {
-                bool isFinally = false;
+                ReturnType returnType = ReturnType.Unknown;
                 try
                 {
                     using (DbCommand command = getCommand(connection, sql, CommandType.Text))
                     using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
-                        LeftArray<valueType> array = new LeftArray<valueType>();
+                        LeftArray<valueType> array = new LeftArray<valueType>(0);
                         while (reader.Read())
                         {
                             valueType value = readValue(reader);
                             if (value != null) array.Add(value);
                         }
-                        isFinally = true;
-                        return array.NotNull();
+                        returnType = ReturnType.Success;
+                        return array;
                     }
                 }
                 finally
                 {
-                    if (!isFinally) (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, sql);
+                    if (returnType == ReturnType.Success) (log ?? AutoCSer.LogHelper.Default).Error(sql, LogLevel.Error | LogLevel.AutoCSer);
                 }
             }
-            return default(LeftArray<valueType>);
+            return ReturnType.ConnectionFailed;
         }
 
         /// <summary>
@@ -645,7 +709,7 @@ namespace AutoCSer.Sql
                 }
                 finally
                 {
-                    if (!isFinally) (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, sql);
+                    if (!isFinally) (log ?? AutoCSer.LogHelper.Default).Error(sql, LogLevel.Error | LogLevel.AutoCSer);
                 }
             }
             return null;
@@ -658,21 +722,21 @@ namespace AutoCSer.Sql
         /// <param name="log">日志处理</param>
         /// <param name="timeoutSeconds">命令超时时间秒数，0 表示默认不设置</param>
         /// <returns>是否成功</returns>
-        public bool CustomReader(string sql, Action<DbDataReader> reader, ILog log = null, int timeoutSeconds = 0)
+        public ReturnType CustomReader(string sql, Action<DbDataReader> reader, ILog log = null, int timeoutSeconds = 0)
         {
             DbConnection connection = null;
-            bool isFreeConnection = false, isCustomReader;
+            bool isFreeConnection = false;
             try
             {
-                isCustomReader = CustomReader(ref connection, sql, reader, log ?? Connection.Log, timeoutSeconds);
+                ReturnType returnType = CustomReader(ref connection, sql, reader, log ?? Connection.Log, timeoutSeconds);
                 FreeConnection(ref connection);
                 isFreeConnection = true;
+                return returnType;
             }
             finally
             {
                 if (!isFreeConnection) CloseErrorConnection(ref connection);
             }
-            return isCustomReader;
         }
         /// <summary>
         /// 获取查询信息
@@ -683,30 +747,27 @@ namespace AutoCSer.Sql
         /// <param name="log"></param>
         /// <param name="timeoutSeconds"></param>
         /// <returns>是否成功</returns>
-        internal bool CustomReader(ref DbConnection connection, string sql, Action<DbDataReader> readValue, ILog log, int timeoutSeconds)
+        internal ReturnType CustomReader(ref DbConnection connection, string sql, Action<DbDataReader> readValue, ILog log, int timeoutSeconds)
         {
             if (connection == null) connection = GetConnection();
             if (connection != null)
             {
-                bool isFinally = false;
+                ReturnType returnType = ReturnType.Unknown;
                 try
                 {
                     using (DbCommand command = getCommand(connection, sql, CommandType.Text, timeoutSeconds))
                     using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
-                        using (reader)
-                        {
-                            while (reader.Read()) readValue(reader);
-                        }
-                        return isFinally = true;
+                        while (reader.Read()) readValue(reader);
+                        return returnType = ReturnType.Success;
                     }
                 }
                 finally
                 {
-                    if (!isFinally) (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, sql);
+                    if (returnType == ReturnType.Unknown) (log ?? AutoCSer.LogHelper.Default).Error(sql, LogLevel.Error | LogLevel.AutoCSer);
                 }
             }
-            return false;
+            return ReturnType.ConnectionFailed;
         }
         /// <summary>
         /// 创建参数
@@ -823,7 +884,7 @@ namespace AutoCSer.Sql
         /// <param name="value">目标对象</param>
         /// <param name="query">查询信息</param>
         /// <returns>更新是否成功</returns>
-        internal bool Get<valueType, modelType>
+        internal ReturnType Get<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref GetQuery<modelType> query)
             where valueType : class, modelType
             where modelType : class
@@ -831,7 +892,7 @@ namespace AutoCSer.Sql
             if (connection == null) connection = GetConnection();
             if (connection != null)
             {
-                bool isFinally = false;
+                ReturnType returnType = ReturnType.Unknown;
                 try
                 {
                     using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
@@ -839,18 +900,18 @@ namespace AutoCSer.Sql
                     {
                         if (reader.Read())
                         {
-                            DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
-                            return isFinally = true;
+                            DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap, Connection.Type);
+                            return returnType = ReturnType.Success;
                         }
                     }
-                    isFinally = true;
+                    return returnType = ReturnType.NotFoundData;
                 }
                 finally
                 {
-                    if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
+                    if (returnType == ReturnType.Unknown) sqlTool.Log.Error(query.Sql, LogLevel.Error | LogLevel.AutoCSer);
                 }
             }
-            return false;
+            return ReturnType.ConnectionFailed;
         }
         /// <summary>
         /// 更新数据
@@ -862,7 +923,7 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns></returns>
-        internal abstract bool Update<valueType, modelType>
+        internal abstract ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
             where valueType : class, modelType
             where modelType : class;
@@ -878,7 +939,7 @@ namespace AutoCSer.Sql
         /// <param name="query">查询信息</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
         /// <returns>更新是否成功</returns>
-        internal bool Update<valueType, modelType>
+        internal ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query, bool isIgnoreTransaction)
             where valueType : class, modelType
             where modelType : class
@@ -894,8 +955,9 @@ namespace AutoCSer.Sql
                     }
                     finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
                 }
+                return ReturnType.TransactionCancel;
             }
-            return false;
+            return ReturnType.EventCancel;
         }
         /// <summary>
         /// 更新数据
@@ -908,7 +970,7 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns>更新是否成功</returns>
-        internal abstract bool Update<valueType, modelType>
+        internal abstract ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
             where valueType : class, modelType
             where modelType : class;
@@ -923,7 +985,7 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns>更新是否成功</returns>
-        internal abstract bool Update<valueType, modelType>
+        internal abstract ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
             where valueType : class, modelType
             where modelType : class;
@@ -939,7 +1001,7 @@ namespace AutoCSer.Sql
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, MemberMap<modelType> memberMap, ref InsertQuery query)
+        internal ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, MemberMap<modelType> memberMap, ref InsertQuery query)
             where valueType : class, modelType
             where modelType : class
         {
@@ -947,9 +1009,9 @@ namespace AutoCSer.Sql
             if (DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, sqlTool))
             {
                 insert(sqlTool, value, memberMap, ref query);
-                return true;
+                return ReturnType.Success;
             }
-            return false;
+            return ReturnType.VerifyError;
         }
         /// <summary>
         /// 获取添加数据 SQL 语句
@@ -974,7 +1036,7 @@ namespace AutoCSer.Sql
         /// <param name="query">添加数据查询信息</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
         /// <returns></returns>
-        internal bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query, bool isIgnoreTransaction)
+        internal ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query, bool isIgnoreTransaction)
             where valueType : class, modelType
             where modelType : class
         {
@@ -989,8 +1051,9 @@ namespace AutoCSer.Sql
                     }
                     finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
                 }
+                return ReturnType.TransactionCancel;
             }
-            return false;
+            return ReturnType.EventCancel;
         }
         /// <summary>
         /// 添加数据
@@ -1002,7 +1065,7 @@ namespace AutoCSer.Sql
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal abstract bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+        internal abstract ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
             where valueType : class, modelType
             where modelType : class;
         /// <summary>
@@ -1015,7 +1078,7 @@ namespace AutoCSer.Sql
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal abstract bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        internal abstract ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
             where valueType : class, modelType
             where modelType : class;
 
@@ -1027,7 +1090,7 @@ namespace AutoCSer.Sql
         /// <param name="sqlTool">SQL操作工具</param>
         /// <param name="array">添加数据数组</param>
         /// <returns></returns>
-        internal bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref SubArray<valueType> array)
+        internal ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref SubArray<valueType> array)
             where valueType : class, modelType
             where modelType : class
         {
@@ -1038,7 +1101,7 @@ namespace AutoCSer.Sql
                 {
                     if (!DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, sqlTool))
                     {
-                        return false;
+                        return ReturnType.VerifyError;
                     }
                 }
             }
@@ -1050,7 +1113,7 @@ namespace AutoCSer.Sql
                     else sqlTool.Identity64 = DataModel.Model<modelType>.GetIdentity(value);
                 }
             }
-            return true;
+            return ReturnType.Success;
         }
         /// <summary>
         /// 添加数据
@@ -1062,7 +1125,7 @@ namespace AutoCSer.Sql
         /// <param name="array">数据数组</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
         /// <returns></returns>
-        internal SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array, bool isIgnoreTransaction)
+        internal ReturnValue<SubArray<valueType>> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array, bool isIgnoreTransaction)
             where valueType : class, modelType
             where modelType : class
         {
@@ -1077,8 +1140,9 @@ namespace AutoCSer.Sql
                     }
                     finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
                 }
+                return ReturnType.TransactionCancel;
             }
-            return default(SubArray<valueType>);
+            return ReturnType.EventCancel;
         }
         /// <summary>
         /// 添加数据
@@ -1089,7 +1153,7 @@ namespace AutoCSer.Sql
         /// <param name="connection">SQL连接</param>
         /// <param name="array">数据数组</param>
         /// <returns>成功添加的数据</returns>
-        internal abstract SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
+        internal abstract ReturnValue<SubArray<valueType>> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
             where valueType : class, modelType
             where modelType : class;
         /// <summary>
@@ -1101,7 +1165,7 @@ namespace AutoCSer.Sql
         /// <param name="transaction">事务操作</param>
         /// <param name="array">数据数组</param>
         /// <returns>成功添加的数据</returns>
-        internal abstract SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
+        internal abstract ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
             where valueType : class, modelType
             where modelType : class;
 
@@ -1114,7 +1178,7 @@ namespace AutoCSer.Sql
         /// <param name="value">删除数据</param>
         /// <param name="query">删除数据查询信息</param>
         /// <returns></returns>
-        internal abstract bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, ref InsertQuery query)
+        internal abstract ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, ref InsertQuery query)
             where valueType : class, modelType
             where modelType : class;
         /// <summary>
@@ -1128,7 +1192,7 @@ namespace AutoCSer.Sql
         /// <param name="query">添加数据查询信息</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
         /// <returns></returns>
-        internal bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query, bool isIgnoreTransaction)
+        internal ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query, bool isIgnoreTransaction)
             where valueType : class, modelType
             where modelType : class
         {
@@ -1143,8 +1207,9 @@ namespace AutoCSer.Sql
                     }
                     finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
                 }
+                return ReturnType.TransactionCancel;
             }
-            return false;
+            return ReturnType.EventCancel;
         }
         /// <summary>
         /// 删除数据
@@ -1156,7 +1221,7 @@ namespace AutoCSer.Sql
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal abstract bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+        internal abstract ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
             where valueType : class, modelType
             where modelType : class;
         /// <summary>
@@ -1169,7 +1234,7 @@ namespace AutoCSer.Sql
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal abstract bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        internal abstract ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
             where valueType : class, modelType
             where modelType : class;
     }

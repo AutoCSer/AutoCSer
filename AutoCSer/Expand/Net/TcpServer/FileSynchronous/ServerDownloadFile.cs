@@ -128,7 +128,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             {
                 if (fileIdentity != null && fileIdentity.Tick != 0)
                 {
-                    checkTimeoutSeconds = AutoCSer.Date.NowTime.CurrentSeconds;
+                    checkTimeoutSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
                     onCreated(fileIdentity);
                 }
                 else removeCreate(fileIdentity);
@@ -154,7 +154,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             try
             {
                 this.onDownload = onDownload;
-                checkTimeoutSeconds = AutoCSer.Date.NowTime.CurrentSeconds;
+                checkTimeoutSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
                 onDownload = null;
 
                 if (onReadHandle == null) onReadHandle = onRead;
@@ -188,7 +188,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             {
                 if (downloadData.State == SynchronousState.Success && nextSize != 0)
                 {
-                    checkTimeoutSeconds = AutoCSer.Date.NowTime.CurrentSeconds;
+                    checkTimeoutSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
                     onDownload(downloadData);
                 }
                 else remove(downloadData);

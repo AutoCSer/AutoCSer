@@ -68,19 +68,20 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="verify">套接字验证委托</param>
         /// <param name="serverCallQueue">自定义队列</param>
+        /// <param name="extendCommandBits">扩展服务命令二进制位数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 服务</returns>
-        public static TcpOpenServer.Server Create(interfaceType value, TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+        public static TcpOpenServer.Server Create(interfaceType value, TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue = null, byte extendCommandBits = 0, Action<SubArray<byte>> onCustomData = null, AutoCSer.ILog log = null)
         {
             if (serverConstructorInfo == null) throw new InvalidOperationException();
             if (errorString != null) throw new Exception(errorString);
             if (value == null) throw new ArgumentNullException();
             if (serverCallQueue == null && serverCallQueueConstructorInfo != null)
             {
-                serverCallQueue = (AutoCSer.Net.TcpServer.IServerCallQueueSet)serverCallQueueConstructorInfo.Invoke(NullValue<object>.Array);
+                serverCallQueue = (AutoCSer.Net.TcpServer.IServerCallQueueSet)serverCallQueueConstructorInfo.Invoke(EmptyArray<object>.Array);
             }
-            TcpOpenServer.Server server = (TcpOpenServer.Server)serverConstructorInfo.Invoke(new object[] { attribute = attribute ?? defaultServerAttribute, verify, value, serverCallQueue, onCustomData, log });
+            TcpOpenServer.Server server = (TcpOpenServer.Server)serverConstructorInfo.Invoke(new object[] { attribute = attribute ?? defaultServerAttribute, verify, value, serverCallQueue, extendCommandBits, onCustomData, log });
             server.setCommandData(methods.Length);
             foreach (Method<ServerAttribute, MethodAttribute, ServerSocketSender> method in methods)
             {
@@ -108,10 +109,10 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
                 methods = builder.Methods;
                 if (defaultServerAttribute.ServerCallQueueType != null)
                 {
-                    serverCallQueueConstructorInfo = defaultServerAttribute.ServerCallQueueType.GetConstructor(NullValue<Type>.Array);
+                    serverCallQueueConstructorInfo = defaultServerAttribute.ServerCallQueueType.GetConstructor(EmptyArray<Type>.Array);
                 }
 
-                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog) };
+                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(byte), typeof(Action<SubArray<byte>>), typeof(AutoCSer.ILog) };
                 Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ServerBuilder serverBuilder = new Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ServerBuilder { Metadata = Server.Metadata };
                 serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), typeof(ServerCall<>), constructorParameterTypes, methods, builder.Queues);
                 Outputs = serverBuilder.Outputs;

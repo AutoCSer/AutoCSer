@@ -12,15 +12,15 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlParseStructMethod { get; }
+        internal abstract MethodInfo XmlDeSerializeStructMethod { get; }
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlParseNullableMethod { get; }
+        internal abstract Delegate XmlDeSerializeNullableMethod { get; }
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlParseNullableEnumMethod { get; }
+        internal abstract Delegate XmlDeSerializeNullableEnumMethod { get; }
         
         /// <summary>
         /// 获取 XML 序列化函数信息
@@ -29,33 +29,33 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlSerializeNullableMethod { get; }
+        internal abstract Delegate XmlSerializeNullableMethod { get; }
     }
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    internal sealed partial class StructGenericType<Type> : StructGenericType where Type : struct
+    internal sealed partial class StructGenericType<T> : StructGenericType where T : struct
     {
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlParseStructMethod
+        internal override MethodInfo XmlDeSerializeStructMethod
         {
-            get { return ((deSerialize)GenericType.XmlParser.structParse<Type>).Method; }
+            get { return ((AutoCSer.XmlDeSerializer.DeSerializeDelegate<T>)XmlDeSerializer.Struct<T>).Method; }
         }
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlParseNullableMethod
+        internal override Delegate XmlDeSerializeNullableMethod
         {
-            get { return ((deSerializeNullable)GenericType.XmlParser.nullableParse<Type>).Method; }
+            get { return (AutoCSer.XmlDeSerializer.DeSerializeDelegate<Nullable<T>>)XmlDeSerializer.Nullable<T>; }
         }
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlParseNullableEnumMethod
+        internal override Delegate XmlDeSerializeNullableEnumMethod
         {
-            get { return ((deSerializeNullable)GenericType.XmlParser.nullableEnumParse<Type>).Method; }
+            get { return (AutoCSer.XmlDeSerializer.DeSerializeDelegate<Nullable<T>>)XmlDeSerializer.NullableEnum<T>; }
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace AutoCSer.Metadata
         /// </summary>
         internal override MethodInfo XmlSerializeIsOutputNullableMethod
         {
-            get { return ((Func<Nullable<Type>, bool>)GenericType.XmlSerializer.isOutputNullable<Type>).Method; }
+            get { return ((Func<XmlSerializer, Nullable<T>, bool>)XmlSerializer.IsOutputNullable<T>).Method; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlSerializeNullableMethod
+        internal override Delegate XmlSerializeNullableMethod
         {
-            get { return ((Action<Nullable<Type>>)GenericType.XmlSerializer.nullableSerialize<Type>).Method; }
+            get { return (Action<XmlSerializer, Nullable<T>>)XmlSerializer.NullableSerialize<T>; }
         }
     }
 }

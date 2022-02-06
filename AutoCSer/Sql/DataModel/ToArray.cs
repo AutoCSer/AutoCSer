@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -48,7 +48,7 @@ namespace AutoCSer.Sql.DataModel
                 generator.Emit(OpCodes.Ldfld, field.FieldInfo);
                 generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldarg_2);
-                generator.Emit(OpCodes.Call, ColumnGroup.ToArray.GetTypeToArray(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).ToArrayMethod);
             }
             else
             {
@@ -63,7 +63,7 @@ namespace AutoCSer.Sql.DataModel
                     if (field.NowTimeType != NowTimeType.None)
                     {
                         generator.int32(field.MemberMapIndex);
-                        generator.call(AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod);
+                        generator.call(AutoCSer.Extensions.EmitGeneratorSql.TableGetNowTimeMethod);
                     }
                     if (field.ToSqlCastMethod != null) generator.Emit(OpCodes.Call, field.ToSqlCastMethod);
                     if (!field.IsUnknownJson && field.DataType.IsValueType) generator.Emit(OpCodes.Box, field.DataType);
@@ -72,17 +72,18 @@ namespace AutoCSer.Sql.DataModel
                 }
                 else
                 {
+                    AutoCSer.Metadata.StructGenericType StructGenericType = AutoCSer.Metadata.StructGenericType.Get(field.NullableDataType);
                     Label end = generator.DefineLabel();
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldflda, field.FieldInfo);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableHasValue(field.NullableDataType));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableHasValueMethod);
                     generator.Emit(OpCodes.Brtrue_S, end);
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldind_I4);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldflda, field.FieldInfo);
-                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableValue(field.NullableDataType));
+                    generator.Emit(OpCodes.Call, StructGenericType.GetNullableValueMethod);
                     generator.Emit(OpCodes.Box, field.DataType);
                     generator.Emit(OpCodes.Stelem_Ref);
                     generator.MarkLabel(end);
@@ -131,7 +132,8 @@ namespace AutoCSer.Sql.DataModel
                         LeftArray<KeyValue<string, Type>> columns = new LeftArray<KeyValue<string, Type>>(Fields.Length);
                         foreach (Field field in Fields)
                         {
-                            if (field.IsSqlColumn) columns.Add(ColumnGroup.ToArray.GetDataColumns(field.DataType)(field.FieldInfo.Name));
+                            
+                            if (field.IsSqlColumn) columns.Add(((Func<string, KeyValue<string, Type>[]>)AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).GetDataColumnsMethod)(field.FieldInfo.Name));
                             else columns.Add(new KeyValue<string, Type>(field.FieldInfo.Name, field.DataType));
                         }
                         dataColumns = columns.ToArray();
@@ -213,14 +215,14 @@ namespace AutoCSer.Sql.DataModel
 
             static ToArray()
             {
-                if (attribute != null)
+                if (Attribute != null)
                 {
 #if NOJIT
                     fields = new sqlModel.toArrayField[Fields.Length];
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.ToArray dynamicMethod = new DataModel.ToArray(typeof(modelType), attribute);
+                    DataModel.ToArray dynamicMethod = new DataModel.ToArray(typeof(modelType), Attribute);
                     foreach (Field member in Fields) dynamicMethod.Push(member);
                     defaultWriter = (Writer)dynamicMethod.Create<Writer>();
 #endif

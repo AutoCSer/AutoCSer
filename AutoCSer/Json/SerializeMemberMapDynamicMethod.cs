@@ -1,7 +1,8 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -32,7 +33,7 @@ namespace AutoCSer.Json
         /// <param name="type"></param>
         public SerializeMemberMapDynamicMethod(Type type)
         {
-            dynamicMethod = new DynamicMethod("JsonMemberMapSerializer", null, new Type[] { typeof(MemberMap), typeof(Serializer), type, typeof(CharStream) }, type, true);
+            dynamicMethod = new DynamicMethod("JsonMemberMapSerializer", null, new Type[] { typeof(MemberMap), typeof(JsonSerializer), type, typeof(CharStream) }, type, true);
             generator = dynamicMethod.GetILGenerator();
 
             generator.DeclareLocal(typeof(int));

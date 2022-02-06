@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.IO;

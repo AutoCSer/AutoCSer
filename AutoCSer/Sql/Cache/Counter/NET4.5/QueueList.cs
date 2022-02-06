@@ -12,7 +12,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <summary>
         /// 获取缓存数据
         /// </summary>
-        private sealed class ArrayAwaiter : Threading.Awaiter<valueType[]>
+        private sealed class ArrayAwaiter : Threading.Awaiter<ReturnValue<valueType[]>>
         {
             /// <summary>
             /// 先进先出优先队列缓存
@@ -40,11 +40,21 @@ namespace AutoCSer.Sql.Cache.Counter
             {
                 try
                 {
-                    Value = new LeftArray<valueType>(queue.getList(ref connection, key)).GetArray();
+                    ReturnValue<ListArray<valueType>> listArray = queue.getList(ref connection, key);
+                    if (listArray.ReturnType == ReturnType.Success) Value = listArray.Value.Array.GetArray();
+                    else Value = listArray.ReturnType;
+                }
+                catch (Exception error)
+                {
+                    Value = error;
                 }
                 finally
                 {
-                    if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) new Task(continuation).Start();
+                    IsCompleted = true;
+                    if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null)
+                    {
+                        continuation();
+                    }
                 }
             }
         }
@@ -53,7 +63,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// </summary>
         /// <param name="key">关键字</param>
         /// <returns>缓存数据</returns>
-        public Threading.Awaiter<valueType[]> GetArrayAwaiter(keyType key)
+        public Threading.Awaiter<ReturnValue<valueType[]>> GetArrayAwaiter(keyType key)
         {
             ArrayAwaiter task = new ArrayAwaiter(this, key);
             counter.SqlTable.AddQueue(task);
@@ -65,20 +75,25 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="key">关键字</param>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>数据集合</returns>
-        public async Task<LeftArray<valueType>> GetFindArrayTask(keyType key, Func<valueType, bool> isValue)
+        public async Task<ReturnValue<LeftArray<valueType>>> GetFindArrayTask(keyType key, Func<valueType, bool> isValue)
         {
-            valueType[] array = await GetArrayAwaiter(key);
-            int index = 0;
-            foreach (valueType value in array)
+            ReturnValue<valueType[]> valueArry = await GetArrayAwaiter(key);
+            if (valueArry.ReturnType == ReturnType.Success)
             {
-                if (isValue(value)) array[index++] = value;
+                int index = 0;
+                valueType[] array = valueArry.Value;
+                foreach (valueType value in array)
+                {
+                    if (isValue(value)) array[index++] = value;
+                }
+                return new LeftArray<valueType>(index, array);
             }
-            return new LeftArray<valueType>(index, array);
+            return valueArry.ReturnType;
         }
         /// <summary>
         /// 获取数据
         /// </summary>
-        private sealed class FindAwaiter : Threading.Awaiter<valueType>
+        private sealed class FindAwaiter : Threading.Awaiter<ReturnValue<valueType>>
         {
             /// <summary>
             /// 先进先出优先队列缓存
@@ -112,11 +127,21 @@ namespace AutoCSer.Sql.Cache.Counter
             {
                 try
                 {
-                    Value = new LeftArray<valueType>(queue.getList(ref connection, key)).FirstOrDefault(isValue);
+                    ReturnValue<ListArray<valueType>> listArray = queue.getList(ref connection, key);
+                    if (listArray.ReturnType == ReturnType.Success) Value = listArray.Value.Array.FirstOrDefault(isValue);
+                    else Value = listArray.ReturnType;
+                }
+                catch (Exception error)
+                {
+                    Value = error;
                 }
                 finally
                 {
-                    if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) new Task(continuation).Start();
+                    IsCompleted = true;
+                    if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null)
+                    {
+                        continuation();
+                    }
                 }
             }
         }
@@ -126,7 +151,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="key">关键字</param>
         /// <param name="isValue">数据匹配器,禁止数据库与锁操作</param>
         /// <returns>匹配数据,失败返回null</returns>
-        public Threading.Awaiter<valueType> FirstOrDefaultAwaiter(keyType key, Func<valueType, bool> isValue)
+        public Threading.Awaiter<ReturnValue<valueType>> FirstOrDefaultAwaiter(keyType key, Func<valueType, bool> isValue)
         {
             if (isValue == null) throw new ArgumentNullException();
             FindAwaiter task = new FindAwaiter(this, key, isValue);

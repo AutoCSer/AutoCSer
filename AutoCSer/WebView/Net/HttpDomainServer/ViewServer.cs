@@ -1,8 +1,9 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Log;
 using System.Runtime.CompilerServices;
 using System.IO;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.HttpDomainServer
 {
@@ -16,7 +17,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         protected virtual KeyValue<string[], string[]> rewrites
         {
-            get { return new KeyValue<string[], string[]>(NullValue<string>.Array, NullValue<string>.Array); }
+            get { return new KeyValue<string[], string[]>(EmptyArray<string>.Array, EmptyArray<string>.Array); }
         }
         /// <summary>
         /// WEB视图URL重写路径集合
@@ -27,12 +28,12 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         protected virtual string[] views
         {
-            get { return NullValue<string>.Array; }
+            get { return EmptyArray<string>.Array; }
         }
         /// <summary>
         /// WEB 视图页面索引集合
         /// </summary>
-        private Pointer.Size viewIndexs;
+        private AutoCSer.Memory.Pointer viewIndexs;
         /// <summary>
         /// WEB 视图页面搜索器
         /// </summary>
@@ -42,12 +43,12 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         protected virtual string[] calls
         {
-            get { return NullValue<string>.Array; }
+            get { return EmptyArray<string>.Array; }
         }
         /// <summary>
         /// WEB 调用处理索引集合
         /// </summary>
-        private Pointer.Size callIndexs;
+        private AutoCSer.Memory.Pointer callIndexs;
         /// <summary>
         /// WEB 调用处理搜索器
         /// </summary>
@@ -57,12 +58,12 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         protected virtual string[] viewRewrites
         {
-            get { return NullValue<string>.Array; }
+            get { return EmptyArray<string>.Array; }
         }
         /// <summary>
         /// WEB 视图 URL 重写索引集合
         /// </summary>
-        private Pointer.Size rewriteIndexs;
+        private AutoCSer.Memory.Pointer rewriteIndexs;
         /// <summary>
         /// WEB 视图 URL 重写搜索器
         /// </summary>
@@ -72,12 +73,12 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         protected virtual string[] webSockets
         {
-            get { return NullValue<string>.Array; }
+            get { return EmptyArray<string>.Array; }
         }
         /// <summary>
         /// WebSocket 调用处理委托集合
         /// </summary>
-        private Pointer.Size webSocketIndexs;
+        private AutoCSer.Memory.Pointer webSocketIndexs;
         /// <summary>
         /// WebSocket 调用处理搜索器
         /// </summary>
@@ -113,7 +114,7 @@ namespace AutoCSer.Net.HttpDomainServer
             (NullAjaxResponseStaticFile = AutoCSer.Net.Http.Response.New()).SetJsContentType(this);
             NullAjaxResponseStaticFile.CacheControl = AutoCSer.Net.Http.Response.StaticFileCacheControl;
             NullAjaxResponseStaticFile.SetBody();
-            WebClientLog = webClientLog ?? AutoCSer.Log.Pub.Log;
+            WebClientLog = webClientLog ?? AutoCSer.LogHelper.Default;
         }
         /// <summary>
         /// 启动HTTP服务
@@ -127,13 +128,13 @@ namespace AutoCSer.Net.HttpDomainServer
             KeyValue<string[], string[]> rewrites = this.rewrites;
             rewritePaths = new StateSearcher.AsciiSearcher<byte[]>(rewrites.Key, rewrites.Value.getArray(value => value.getBytes()), false);
             viewIndexs = StateSearcher.AsciiBuilder.Create(views, false);
-            viewSearcher = new StateSearcher.AsciiSearcher(viewIndexs.Pointer);
+            viewSearcher = new StateSearcher.AsciiSearcher(ref viewIndexs);
             callIndexs = StateSearcher.AsciiBuilder.Create(calls, false);
-            callSearcher = new StateSearcher.AsciiSearcher(callIndexs.Pointer);
+            callSearcher = new StateSearcher.AsciiSearcher(ref callIndexs);
             rewriteIndexs = StateSearcher.AsciiBuilder.Create(viewRewrites, false);
-            rewriteSearcher = new StateSearcher.AsciiSearcher(rewriteIndexs.Pointer);
+            rewriteSearcher = new StateSearcher.AsciiSearcher(ref rewriteIndexs);
             webSocketIndexs = StateSearcher.AsciiBuilder.Create(webSockets, false);
-            webSocketSearcher = new StateSearcher.AsciiSearcher(webSocketIndexs.Pointer);
+            webSocketSearcher = new StateSearcher.AsciiSearcher(ref webSocketIndexs);
             if (base.Start(registerServer, domains, onStop))
             {
                 if (WebConfig.IsHtmlLinkVersion) VersionFileWatcher.Add(this);
@@ -217,7 +218,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 if (rewritePath != null)
                 {
                     Http.Response response = null;
-                    file(header, file(rewritePath, (header.Flag & Http.HeaderFlag.IsSetIfModifiedSince) == 0 ? default(SubArray<byte>) : header.IfModifiedSince, ref response, false), ref response);
+                    file(header, file(rewritePath, (header.Flag & Http.HeaderFlag.IsSetIfModifiedSince) == 0 ? new SubArray<byte>() : header.IfModifiedSince, ref response, false), ref response);
                     if (response != null)
                     {
                         socket.ResponseIdentity(ref response);
@@ -322,7 +323,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 catch (Exception error)
                 {
                     socket.ResponseError(socketIdentity, Http.ResponseState.ServerError500);
-                    RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             else socket.ResponseErrorIdentity(Http.ResponseState.NotFound404);
@@ -585,15 +586,15 @@ namespace AutoCSer.Net.HttpDomainServer
             //if (call.IsAsynchronous) return this.call(callInfo.MethodIndex, call);
             UnmanagedStream responseStream = null;
             long identity = call.SocketIdentity;
-            byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
+            AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
             try
             {
-                responseStream = call.GetResponseStream(buffer, AutoCSer.UnmanagedPool.DefaultSize);
+                responseStream = call.GetResponseStream(ref buffer);
                 return this.call(call, ref responseStream);
             }
             finally
             {
-                AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.PushOnly(ref buffer);
                 if (responseStream != null)
                 {
                     responseStream.Dispose();

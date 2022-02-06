@@ -2,7 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Web.TcpRegister
 {

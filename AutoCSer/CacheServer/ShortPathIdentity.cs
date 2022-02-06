@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +8,7 @@ namespace AutoCSer.CacheServer
     /// <summary>
     /// 短路径索引标识
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     internal unsafe struct ShortPathIdentity
     {
@@ -49,8 +50,8 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void UnsafeSerialize(UnmanagedStream stream)
         {
-            UnsafeSerialize(stream.CurrentData);
-            stream.ByteSize += SerializeSize;
+            UnsafeSerialize(stream.Data.Current);
+            stream.Data.CurrentIndex += SerializeSize;
         }
         /// <summary>
         /// 序列化

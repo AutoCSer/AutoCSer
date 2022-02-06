@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpSimpleServer
 {
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    public abstract unsafe class ServerSocket : SocketTimeoutLink
+    public abstract unsafe class ServerSocket : SocketTimeoutNode
     {
         /// <summary>
         /// 二进制反序列化配置参数
@@ -17,7 +18,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 命令位图
         /// </summary>
-        protected Pointer.Size commandData;
+        protected AutoCSer.Memory.Pointer commandData;
         /// <summary>
         /// 命令位图
         /// </summary>
@@ -44,7 +45,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        protected int asyncLock;
+        protected AutoCSer.Threading.SleepFlagSpinLock asyncLock;
 #endif
 #endif
         /// <summary>
@@ -54,11 +55,11 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 接收数据二进制反序列化
         /// </summary>
-        internal BinarySerialize.DeSerializer ReceiveDeSerializer;
+        internal AutoCSer.BinaryDeSerializer ReceiveDeSerializer;
         /// <summary>
         /// 接收数据 JSON 解析
         /// </summary>
-        internal Json.Parser ReceiveJsonParser;
+        internal AutoCSer.JsonDeSerializer ReceiveJsonParser;
         /// <summary>
         /// 临时接收数据缓冲区
         /// </summary>
@@ -73,6 +74,10 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         protected int bufferSize;
 
+        /// <summary>
+        /// 套接字最后接收数据时间
+        /// </summary>
+        internal DateTime LastReceiveTime;
         /// <summary>
         /// 接收数据超时
         /// </summary>
@@ -140,11 +145,11 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 输出数据 JSON 序列化
         /// </summary>
-        internal Json.Serializer OutputJsonSerializer;
+        internal AutoCSer.JsonSerializer OutputJsonSerializer;
         /// <summary>
         /// 输出数据二进制序列化
         /// </summary>
-        internal BinarySerialize.Serializer OutputSerializer;
+        internal BinarySerializer OutputSerializer;
         /// <summary>
         /// 输出信息
         /// </summary>
@@ -187,10 +192,18 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 通过函数验证处理
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         public virtual void SetVerifyMethod()
         {
             IsVerifyMethod = true;
+        }
+        /// <summary>
+        /// 通过函数验证处理
+        /// </summary>
+        /// <param name="socket"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static void SetVerifyMethod(ServerSocket socket)
+        {
+            socket.SetVerifyMethod();
         }
         /// <summary>
         /// 反序列化
@@ -200,8 +213,6 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="value">目标对象</param>
         /// <param name="isSimpleSerialize"></param>
         /// <returns>是否成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe bool DeSerialize<valueType>(ref SubArray<byte> data, ref valueType value, bool isSimpleSerialize = false)
             where valueType : struct
         {
@@ -209,7 +220,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             {
                 if (isSimpleSerialize)
                 {
-                    fixed (byte* dataFixed = data.Array)
+                    fixed (byte* dataFixed = data.GetFixedBuffer())
                     {
                         byte* start = dataFixed + data.Start, end = start + data.Length;
                         return SimpleSerialize.TypeDeSerializer<valueType>.DeSerialize(start, ref value, end) == end;
@@ -217,7 +228,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 }
                 if (ReceiveDeSerializer == null)
                 {
-                    ReceiveDeSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
+                    ReceiveDeSerializer = AutoCSer.BinaryDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.BinaryDeSerializer();
                     ReceiveDeSerializer.SetTcpServer(binaryDeSerializeConfig, this);
                 }
                 return ReceiveDeSerializer.DeSerializeTcpServer(ref data, ref value);
@@ -227,10 +238,25 @@ namespace AutoCSer.Net.TcpSimpleServer
             }
             if (ReceiveJsonParser == null)
             {
-                ReceiveJsonParser = Json.Parser.YieldPool.Default.Pop() ?? new Json.Parser();
+                ReceiveJsonParser = AutoCSer.JsonDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonDeSerializer();
                 ReceiveJsonParser.SetTcpServer();
             }
-            return ReceiveJsonParser.ParseTcpServer(ref data, ref value);
+            return ReceiveJsonParser.DeSerializeTcpServer(ref data, ref value);
+        }
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <param name="socket"></param>
+        /// <param name="data">数据</param>
+        /// <param name="value">目标对象</param>
+        /// <param name="isSimpleSerialize"></param>
+        /// <returns>是否成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static bool DeSerialize<valueType>(ServerSocket socket, ref SubArray<byte> data, ref valueType value, bool isSimpleSerialize)
+            where valueType : struct
+        {
+            return socket.DeSerialize(ref data, ref value, isSimpleSerialize);
         }
         /// <summary>
         /// 释放数据序列化
@@ -336,10 +362,19 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         /// <param name="error"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void Log(Exception error)
         {
-            Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+            Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+        }
+        /// <summary>
+        /// 错误日志处理
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="error"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static void Log(ServerSocket<serverType, socketType> socket, Exception error)
+        {
+            socket.Log(error);
         }
         /// <summary>
         /// 创建输出数据
@@ -351,11 +386,11 @@ namespace AutoCSer.Net.TcpSimpleServer
             where outputParameterType : struct
         {
             int dataLength;
-            fixed (byte* dataFixed = Buffer.Buffer)
+            fixed (byte* dataFixed = Buffer.GetFixedBuffer())
             {
                 byte* start = dataFixed + Buffer.StartIndex;
                 OutputStream.Reset(start, Buffer.Length);
-                OutputStream.ByteSize = sizeof(int);
+                OutputStream.Data.CurrentIndex = sizeof(int);
                 using (OutputStream)
                 {
                     if (((uint)command & (uint)TcpServer.CommandFlags.JsonSerialize) == 0)
@@ -376,23 +411,23 @@ namespace AutoCSer.Net.TcpSimpleServer
                     {
                         if (OutputJsonSerializer == null)
                         {
-                            OutputJsonSerializer = Json.Serializer.YieldPool.Default.Pop() ?? new Json.Serializer();
+                            OutputJsonSerializer = AutoCSer.JsonSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonSerializer();
                             OutputJsonSerializer.SetTcpServer();
                         }
                         OutputJsonSerializer.SerializeTcpServer(ref outputParameter, OutputSerializer.Stream);
                     }
                     byte* write = OutputStream.Data.Byte;
-                    dataLength = OutputStream.ByteSize - sizeof(int);
+                    dataLength = OutputStream.Data.CurrentIndex - sizeof(int);
                     *(int*)write = dataLength;
-                    if (OutputStream.ByteSize <= Buffer.Length)
+                    if (OutputStream.Data.CurrentIndex <= Buffer.Length)
                     {
-                        if (start != write) Memory.CopyNotNull(write, start, OutputStream.ByteSize);
-                        OutputBuffer.Data.Set(Buffer.Buffer, Buffer.StartIndex, OutputStream.ByteSize);
+                        if (start != write) AutoCSer.Memory.Common.CopyNotNull(write, start, OutputStream.Data.CurrentIndex);
+                        OutputBuffer.Data.Set(Buffer.Buffer, Buffer.StartIndex, OutputStream.Data.CurrentIndex);
                     }
                     else
                     {
-                        OutputStream.GetSubBuffer(ref OutputBuffer.CopyBuffer);
-                        OutputBuffer.SetSendDataCopyBuffer(OutputStream.ByteSize);
+                        OutputStream.Data.GetSubBuffer(ref OutputBuffer.CopyBuffer);
+                        OutputBuffer.SetSendDataCopyBuffer(OutputStream.Data.CurrentIndex);
                         if (OutputBuffer.CopyBuffer.Length <= Server.SendBufferMaxSize)
                         {
                             Buffer.Free();

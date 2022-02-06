@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 using AutoCSer.Net.TcpInternalServer;
 using System.Text.RegularExpressions;
@@ -151,30 +151,30 @@ namespace AutoCSer.Deploy
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         protected virtual int create(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
         {
-            ClientObject client = (ClientObject)sender.ClientObject;
-            client.CurrentDeploy = new DeployInfo(client, deployIndex);
-            return deployIndex++;
+            return new DeployInfo((ClientObject)sender.ClientObject, ++deployIndex).Index;
         }
         /// <summary>
         /// 取消部署信息
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected virtual void cancel(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
+        protected virtual void cancel(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex)
         {
-            ((ClientObject)sender.ClientObject).CurrentDeploy = null;
+            ((ClientObject)sender.ClientObject).Deploys.Remove(deployIndex);
         }
         /// <summary>
         /// 启动部署
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="time">启动时间</param>
         /// <returns></returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual DeployState start(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, DateTime time)
+        protected virtual DeployResultData start(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, DateTime time)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo == null) return DeployState.StartError;
             return deployInfo.Start(time, new Timer { Server = this });
         }
@@ -182,12 +182,13 @@ namespace AutoCSer.Deploy
         /// 设置文件数据源
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="files">文件数据源</param>
         /// <returns></returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual bool setFileSource(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, byte[][] files)
+        protected virtual bool setFileSource(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, byte[][] files)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo != null)
             {
                 deployInfo.Files = files;
@@ -211,12 +212,13 @@ namespace AutoCSer.Deploy
         /// 写文件
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="webFile">写文件任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.WebFile webFile)
+        protected virtual int addFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, ClientTask.WebFile webFile)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo != null) return deployInfo.AddTask(webFile);
             return -1;
         }
@@ -224,12 +226,13 @@ namespace AutoCSer.Deploy
         /// 写文件
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="assemblyFile">写文件 exe/dll/pdb 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addAssemblyFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.AssemblyFile assemblyFile)
+        protected virtual int addAssemblyFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, ClientTask.AssemblyFile assemblyFile)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo != null) return deployInfo.AddTask(assemblyFile);
             return -1;
         }
@@ -237,12 +240,13 @@ namespace AutoCSer.Deploy
         /// 写文件并运行程序
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="run">写文件并运行程序 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addRun(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.Run run)
+        protected virtual int addRun(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, ClientTask.Run run)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo != null) return deployInfo.AddTask(run);
             return -1;
         }
@@ -250,12 +254,13 @@ namespace AutoCSer.Deploy
         /// 等待运行程序切换结束
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="taskIndex">任务索引位置</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addWaitRunSwitch(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int taskIndex)
+        protected virtual int addWaitRunSwitch(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, int taskIndex)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo != null)
             {
                 return deployInfo.AddTask(new ClientTask.WaitRunSwitch { TaskIndex = taskIndex });
@@ -266,12 +271,13 @@ namespace AutoCSer.Deploy
         /// 发布切换更新
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="updateSwitchFile">发布切换更新</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addUpdateSwitchFile(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.UpdateSwitchFile updateSwitchFile)
+        protected virtual int addUpdateSwitchFile(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, ClientTask.UpdateSwitchFile updateSwitchFile)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo != null) return deployInfo.AddTask(updateSwitchFile);
             return -1;
         }
@@ -279,12 +285,13 @@ namespace AutoCSer.Deploy
         /// 添加自定义任务
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="deployIndex">发布编号</param>
         /// <param name="custom">自定义任务处理 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addCustom(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.Custom custom)
+        protected virtual int addCustom(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int deployIndex, ClientTask.Custom custom)
         {
-            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
+            DeployInfo deployInfo = ((ClientObject)sender.ClientObject).GetDeploy(deployIndex);
             if (deployInfo != null)
             {
                 custom.Sender = sender;
@@ -307,7 +314,7 @@ namespace AutoCSer.Deploy
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public virtual DeployState CallCustomTask(ClientTask.Custom task)
+        public virtual DeployResultData CallCustomTask(ClientTask.Custom task)
         {
             return DeployState.CustomError;
         }
@@ -371,7 +378,7 @@ namespace AutoCSer.Deploy
         /// <returns>切换服务文件</returns>
         public static FileInfo GetSwitchFile(string deployServerFileName = null, string switchDirectoryName = DefaultSwitchDirectoryName)
         {
-            DirectoryInfo CurrentDirectory = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath), SwitchDirectory;
+            DirectoryInfo CurrentDirectory = new DirectoryInfo(AutoCSer.Config.ApplicationPath), SwitchDirectory;
             if (CurrentDirectory.Name == switchDirectoryName)
             {
                 SwitchDirectory = CurrentDirectory.Parent;
@@ -450,29 +457,43 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 检测日志输出
         /// </summary>
-        public static void CheckThreadLog()
+        /// <param name="isCheckRun">是否检测运行状态，false 表示输出所有线程信息</param>
+        public static void CheckThreadLog(bool isCheckRun = true)
         {
-            LeftArray<Thread> threads = AutoCSer.Threading.Thread.GetThreads();
-            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Debug, "活动线程数量 " + threads.Length.toString(), new StackFrame());
+            LeftArray<AutoCSer.Threading.Thread> threads = AutoCSer.Threading.Thread.GetThreads(isCheckRun).getLeftArray();
+            AutoCSer.LogHelper.Debug("线程数量 " + threads.Length.toString());
             int currentId = Thread.CurrentThread.ManagedThreadId;
-            foreach (Thread thread in threads)
+            foreach (AutoCSer.Threading.Thread threadInfo in threads)
             {
+                Thread thread = threadInfo.Handle;
                 if (thread.ManagedThreadId != currentId)
                 {
                     StackTrace stack = null;
                     Exception exception = null;
+                    System.Threading.ThreadState threadState = default(System.Threading.ThreadState);
                     bool isSuspend = false;
                     try
                     {
+                        threadState = thread.ThreadState;
 #pragma warning disable 618
-                        if ((thread.ThreadState & (System.Threading.ThreadState.StopRequested | System.Threading.ThreadState.Unstarted | System.Threading.ThreadState.Stopped | System.Threading.ThreadState.WaitSleepJoin | System.Threading.ThreadState.Suspended | System.Threading.ThreadState.AbortRequested | System.Threading.ThreadState.Aborted)) == 0)
+                        if ((threadState & (System.Threading.ThreadState.StopRequested | System.Threading.ThreadState.SuspendRequested | System.Threading.ThreadState.Stopped | System.Threading.ThreadState.AbortRequested | System.Threading.ThreadState.Aborted)) == 0)
                         {
-                            thread.Suspend();
-                            isSuspend = true;
+                            if ((threadState & (System.Threading.ThreadState.Unstarted | System.Threading.ThreadState.WaitSleepJoin | System.Threading.ThreadState.Suspended)) == 0)
+                            {
+                                thread.Suspend();
+                                isSuspend = true;
+                            }
+                            stack = new StackTrace(thread, true);
                         }
-                        stack = new StackTrace(thread, true);
 #pragma warning restore 618
                         //if (stack.FrameCount == AutoCSer.Threading.Thread.DefaultFrameCount) stack = null;
+                    }
+                    catch (ThreadStateException)
+                    {
+                        if ((threadState & System.Threading.ThreadState.WaitSleepJoin) == 0)
+                        {
+                            AutoCSer.LogHelper.Debug(threadState.ToString());
+                        }
                     }
                     catch (Exception error)
                     {
@@ -488,7 +509,7 @@ namespace AutoCSer.Deploy
                     {
                         try
                         {
-                            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Debug, exception);
+                            AutoCSer.LogHelper.Exception(exception);
                         }
                         catch { }
                     }
@@ -496,7 +517,7 @@ namespace AutoCSer.Deploy
                     {
                         try
                         {
-                            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Debug, stack.ToString(), new StackFrame());
+                            AutoCSer.LogHelper.Debug(stack.ToString(),  LogLevel.Debug | LogLevel.AutoCSer);
                         }
                         catch { }
                     }
@@ -544,7 +565,7 @@ namespace AutoCSer.Deploy
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static string GetBakDirectoryName(int index)
         {
-            return Date.NowTime.Set().ToString("yyyyMMddHHmmss_" + index.toString());
+            return AutoCSer.Threading.SecondTimer.Now.ToString("yyyyMMddHHmmss_" + index.toString());
         }
         /// <summary>
         /// 备份文件夹名称正则表达式

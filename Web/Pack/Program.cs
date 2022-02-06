@@ -13,6 +13,10 @@ namespace AutoCSer.Tool.OpenPack
         /// </summary>
         private const string zipFileName = "AutoCSer.zip";
         /// <summary>
+        /// ZIP 文件名称
+        /// </summary>
+        private const string zip2FileName = "AutoCSer2.Example.zip";
+        /// <summary>
         /// 第三方 dll 文件名称集合
         /// </summary>
         private static readonly HashSet<string> thirdPartyFileNames = new HashSet<string>();
@@ -34,6 +38,15 @@ namespace AutoCSer.Tool.OpenPack
                     boot(new DirectoryInfo(@"..\..\..\..\"), githubDirectory.FullName);
                 }
                 Console.WriteLine(zipPath + zipFileName);
+
+                githubDirectory = new DirectoryInfo(@"..\..\..\..\..\AutoCSer2\Github\");
+                if (!githubDirectory.Exists) githubDirectory.Create();
+                using (FileStream stream = new FileStream(zipPath + zip2FileName, FileMode.Create))
+                using (zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
+                {
+                    boot2(new DirectoryInfo(@"..\..\..\..\..\AutoCSer2\"), githubDirectory.FullName);
+                }
+                Console.WriteLine(zipPath + zip2FileName);
             }
             else
             {
@@ -55,7 +68,7 @@ namespace AutoCSer.Tool.OpenPack
         }
 
         private const string newPackZipFileName = @"C:\AutoCSer2\temp.zip";
-        private readonly static DateTime newOutputTime = new DateTime(2018, 9, 1);
+        private readonly static DateTime newOutputTime = new DateTime(2020, 1, 28);
         private static bool newOutput;
         private static void newPack(DirectoryInfo directory, string path)
         {
@@ -178,6 +191,7 @@ namespace AutoCSer.Tool.OpenPack
         /// <returns></returns>
         private static string checkGithubPath(DirectoryInfo directory, string githubPath)
         {
+            if (githubPath == null) return githubPath;
             if (!Directory.Exists(githubPath += directory.Name + @"\")) Directory.CreateDirectory(githubPath);
             return githubPath;
         }
@@ -314,10 +328,63 @@ namespace AutoCSer.Tool.OpenPack
                         case "remotecontrol":
                         case "remotecontrolclient":
                         case "remotecontrolserver":
+
+                        case "memorycache":
                             break;
                         default: copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath); break;
                     }
                 }
+            }
+        }
+        /// <summary>
+        /// 根目录处理
+        /// </summary>
+        /// <param name="directory"></param>
+        private static void boot2(DirectoryInfo directory, string githubPath)
+        {
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                string fileName = file.Name;
+                if (fileName.IndexOf(".example", StringComparison.OrdinalIgnoreCase) > 0)
+                {
+                    using (Stream entryStream = zipArchive.CreateEntry(fileName).Open()) githubFile(file, entryStream, githubPath);
+                }
+            }
+            foreach (DirectoryInfo nextDircectory in directory.GetDirectories())
+            {
+                switch (nextDircectory.Name.ToLower())
+                {
+                    case "autocser": AutoCSer2(nextDircectory, githubPath); break;
+                    case ".vs":
+                    case "application":
+                    case "example":
+                    case "testcase":
+                        copy(nextDircectory, nextDircectory.Name + @"\", githubPath);
+                        break;
+                }
+            }
+        }
+        /// <summary>
+        /// AutoCSer2 项目目录处理
+        /// </summary>
+        /// <param name="directory"></param>
+        private static void AutoCSer2(DirectoryInfo directory, string githubPath)
+        {
+            string path = directory.Name + @"\";
+            githubPath = checkGithubPath(directory, githubPath);
+            foreach (DirectoryInfo nextDircectory in directory.GetDirectories())
+            {
+                int isDircectory;
+                switch (nextDircectory.Name.Length)
+                {
+                    case 3: isDircectory = string.Compare(nextDircectory.Name, "bin", true); break;
+                    case 10: isDircectory = string.Compare(nextDircectory.Name, "Extensions", true); break;
+                    case 11: isDircectory = string.Compare(nextDircectory.Name, "FieldEquals", true); break;
+                    case 12: isDircectory = string.Compare(nextDircectory.Name, "RandomObject", true); break;
+                    //case 13: isDircectory = string.Compare(nextDircectory.Name, "CodeGenerator", true); break;
+                    default: isDircectory = 1; break;
+                }
+                if (isDircectory == 0) copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath);
             }
         }
     }

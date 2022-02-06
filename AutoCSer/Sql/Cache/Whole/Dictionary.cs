@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Cache.Whole
@@ -103,7 +103,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             if (!dictionary.Remove(key))
             {
-                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
             }
         }
         /// <summary>

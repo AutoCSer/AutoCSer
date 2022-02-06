@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 释放资源

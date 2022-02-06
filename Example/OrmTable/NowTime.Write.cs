@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Example.OrmTable
 {
@@ -13,7 +13,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="value">待添加数据</param>
         /// <returns>添加是否成功</returns>
-        internal static bool Insert(NowTime value)
+        internal static AutoCSer.Sql.ReturnValue Insert(NowTime value)
         {
             //value.AppendTime = NowTimes.AppendTime.Next;
             return sqlTable.InsertQueue(value);
@@ -23,7 +23,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="value">待添加数据</param>
         /// <param name="onInserted">添加数据回调</param>
-        internal static void Insert(NowTime value, Action<NowTime> onInserted)
+        internal static void Insert(NowTime value, Action<AutoCSer.Sql.ReturnValue<NowTime>> onInserted)
         {
             //value.AppendTime = NowTimes.AppendTime.Next;
             sqlTable.InsertQueue(value, onInserted);
@@ -38,7 +38,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="id">自增 Id</param>
         /// <returns>更新是否成功</returns>
-        internal static bool UpdateAppendTime(int id)
+        internal static AutoCSer.Sql.ReturnValue UpdateAppendTime(int id)
         {
             //return sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap);
             return sqlTable.UpdateQueue(new NowTime { Id = id }, updateAppendTimeMemberMap);
@@ -48,7 +48,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="id">自增 Id</param>
         /// <param name="onUpdated">更新数据回调</param>
-        internal static void UpdateAppendTime(int id, Action<NowTime> onUpdated)
+        internal static void UpdateAppendTime(int id, Action<AutoCSer.Sql.ReturnValue<NowTime>> onUpdated)
         {
             sqlTable.UpdateQueue(new NowTime { Id = id }, updateAppendTimeMemberMap, onUpdated);
             //sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap, onUpdated);
@@ -59,7 +59,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="value">待删除数据</param>
         /// <returns>是否删除成功</returns>
-        internal static bool Delete(NowTime value)
+        internal static AutoCSer.Sql.ReturnValue Delete(NowTime value)
         {
             return sqlTable.DeleteQueue(value);
         }
@@ -68,7 +68,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="value">待删除数据</param>
         /// <param name="onDeleted">删除数据回调</param>
-        internal static void Delete(NowTime value, Action<NowTime> onDeleted)
+        internal static void Delete(NowTime value, Action<AutoCSer.Sql.ReturnValue<NowTime>> onDeleted)
         {
             sqlTable.DeleteQueue(value, onDeleted);
         }
@@ -77,7 +77,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="id">待删除数据自增 Id</param>
         /// <returns>是否删除成功</returns>
-        internal static bool Delete(int id)
+        internal static AutoCSer.Sql.ReturnValue Delete(int id)
         {
             return sqlTable.DeleteQueue(id);
         }
@@ -86,7 +86,7 @@ namespace AutoCSer.Example.OrmTable
         /// </summary>
         /// <param name="id">待删除数据自增 Id</param>
         /// <param name="onDeleted">删除数据回调</param>
-        internal static void Delete(int id, Action<NowTime> onDeleted)
+        internal static void Delete(int id, Action<AutoCSer.Sql.ReturnValue<NowTime>> onDeleted)
         {
             sqlTable.DeleteQueue(id, onDeleted);
         }

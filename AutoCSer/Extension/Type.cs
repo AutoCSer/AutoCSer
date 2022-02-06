@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Extension
 {
     /// <summary>
     /// 类型扩展操作
     /// </summary>
-    public static partial class TypeExtension
+    //public static partial class TypeExtension
     {
-        /// <summary>
-        /// 类型名称泛型分隔符
-        /// </summary>
-        internal const char GenericSplit = '`';
         /// <summary>
         /// 类型名称生成器
         /// </summary>
@@ -325,96 +322,6 @@ namespace AutoCSer.Extension
                 TypeNames.Add(typeof(object), "object");
                 TypeNames.Add(typeof(void), "void");
             }
-        }
-        /// <summary>
-        /// 根据类型获取可用名称
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns>类型名称</returns>
-        public static string fullName(this Type type)
-        {
-            if (type == null) return null;
-            string value;
-            if (NameBuilder.TypeNames.TryGetValue(type, out value)) return value;
-            if (type.IsGenericParameter) return type.Name;
-            return new NameBuilder().GetFullName(type);
-        }
-        /// <summary>
-        /// 获取可空类型的值类型
-        /// </summary>
-        /// <param name="type">可空类型</param>
-        /// <returns>值类型,失败返回null</returns>
-        internal static Type nullableType(this Type type)
-        {
-            if (type != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                return type.GetGenericArguments()[0];
-            }
-            return null;
-        }
-        /// <summary>
-        /// 不需要需要初始化的类型集合
-        /// </summary>
-        private static readonly HashSet<Type> noInitobjTypes = new HashSet<Type>(new Type[]
-        {
-            typeof(bool), typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal), typeof(char),
-            typeof(bool?), typeof(byte?), typeof(sbyte?), typeof(short?), typeof(ushort?), typeof(int?), typeof(uint?), typeof(long?), typeof(ulong?), typeof(float?), typeof(double?), typeof(decimal?), typeof(char?)
-        });//, typeof(string)
-        /// <summary>
-        /// 是否需要初始化
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static bool isInitobj(this Type type)
-        {
-            if (type.IsEnum || noInitobjTypes.Contains(type)) return false;
-            return true;
-        }
-        /// <summary>
-        /// 根据成员属性获取自定义属性
-        /// </summary>
-        /// <typeparam name="attributeType">自定义属性类型</typeparam>
-        /// <param name="type">类型</param>
-        /// <param name="declaringType">自定义属性申明类型</param>
-        /// <returns>自定义属性</returns>
-        internal static attributeType customAttribute<attributeType>(this Type type, out Type declaringType)
-            where attributeType : Attribute
-        {
-            while (type != null && type != typeof(object))
-            {
-                foreach (attributeType attribute in type.GetCustomAttributes(typeof(attributeType), false))
-                {
-                    declaringType = type;
-                    return (attributeType)attribute;
-                }
-                type = type.BaseType;
-            }
-            declaringType = null;
-            return null;
-        }
-        /// <summary>
-        /// 根据成员属性获取自定义属性
-        /// </summary>
-        /// <typeparam name="attributeType">自定义属性类型</typeparam>
-        /// <param name="type">类型</param>
-        /// <returns>自定义属性</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static attributeType customAttribute<attributeType>(this Type type)
-            where attributeType : Attribute
-        {
-            foreach (attributeType attribute in type.GetCustomAttributes(typeof(attributeType), false)) return attribute;
-            return null;
-        }
-        /// <summary>
-        /// 判断类型是否可空类型
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns>是否可空类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static bool isNull(this Type type)
-        {
-            return type != null && (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)));
         }
     }
 }

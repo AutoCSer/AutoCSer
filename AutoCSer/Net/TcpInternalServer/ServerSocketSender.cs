@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpInternalServer
 {
@@ -59,7 +60,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="socket">TCP 内部服务套接字</param>
         internal ServerSocketSender(ServerSocket socket)
-            : base(socket, Threading.Thread.CallType.TcpInternalServerSocketSenderBuildOutput)
+            : base(socket, Threading.ThreadTaskType.TcpInternalServerSocketSenderBuildOutput)
         {
         }
         /// <summary>
@@ -143,32 +144,25 @@ namespace AutoCSer.Net.TcpInternalServer
                 try
                 {
                     if (Buffer.Buffer == null) Server.SendBufferPool.Get(ref Buffer);
-                    if (OutputSerializer == null) outputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
+                    if (OutputSerializer == null) outputStream = (OutputSerializer = BinarySerializer.YieldPool.Default.Pop() ?? new BinarySerializer()).SetTcpServer();
                     else outputStream = OutputSerializer.Stream;
-                    int outputSleep = Server.ServerAttribute.OutputSleep, currentOutputSleep;
+                    TcpServer.OutputWaitType outputWaitType = Server.ServerAttribute.OutputWaitType, currentOutputWaitType;
                     do
                     {
                         buildInfo.IsNewBuffer = 0;
-                        fixed (byte* dataFixed = Buffer.Buffer)
+                        fixed (byte* dataFixed = Buffer.GetFixedBuffer())
                         {
                             byte* start = dataFixed + Buffer.StartIndex;
-                            currentOutputSleep = outputSleep;
                         STREAM:
                             using (outputStream)
                             {
                             RESET:
+                                currentOutputWaitType = outputWaitType;
                                 if (outputStream.Data.Byte != start) outputStream.Reset(start, Buffer.Length);
                                 buildInfo.Clear();
-                                outputStream.ByteSize = TcpServer.ServerOutput.OutputLink.StreamStartIndex;
-                                if ((head = Outputs.GetClear(out end)) == null)
-                                {
-                                    if (currentOutputSleep < 0) goto CHECK;
-                                    Thread.Sleep(currentOutputSleep);
-                                    if (Outputs.IsEmpty) goto CHECK;
-                                    head = Outputs.GetClear(out end);
-                                    currentOutputSleep = 0;
-                                }
-                                LOOP:
+                                outputStream.Data.CurrentIndex = TcpServer.ServerOutput.OutputLink.StreamStartIndex;
+                                if ((head = Outputs.GetClear(out end)) == null) goto CHECK;
+                            LOOP:
                                 do
                                 {
                                     head = head.Build(this, ref buildInfo);
@@ -180,17 +174,28 @@ namespace AutoCSer.Net.TcpInternalServer
                                     head = Outputs.GetClear(out end);
                                     goto LOOP;
                                 }
-                                if (currentOutputSleep >= 0)
-                                {
-                                    Thread.Sleep(currentOutputSleep);
-                                    if (!Outputs.IsEmpty)
-                                    {
-                                        head = Outputs.GetClear(out end);
-                                        currentOutputSleep = 0;
-                                        goto LOOP;
-                                    }
-                                }
                             CHECK:
+                                switch (currentOutputWaitType)
+                                {
+                                    case TcpServer.OutputWaitType.ThreadYield:
+                                        AutoCSer.Threading.ThreadYield.YieldOnly();
+                                        if (!Outputs.IsEmpty)
+                                        {
+                                            head = Outputs.GetClear(out end);
+                                            currentOutputWaitType = TcpServer.OutputWaitType.DontWait;
+                                            goto LOOP;
+                                        }
+                                        break;
+                                    case TcpServer.OutputWaitType.ThreadSleep:
+                                        System.Threading.Thread.Sleep(0);
+                                        if (!Outputs.IsEmpty)
+                                        {
+                                            head = Outputs.GetClear(out end);
+                                            currentOutputWaitType = TcpServer.OutputWaitType.DontWait;
+                                            goto LOOP;
+                                        }
+                                        break;
+                                }
                                 if (buildInfo.Count == 0) goto DISPOSE;
                             SETDATA:
                                 buildInfo.IsNewBuffer = setSendData(start, buildInfo.Count);
@@ -205,15 +210,11 @@ namespace AutoCSer.Net.TcpInternalServer
                                         if (buildInfo.IsNewBuffer == 0)
                                         {
                                             freeCopyBuffer();
-                                            if (head == null)
-                                            {
-                                                currentOutputSleep = int.MinValue;
-                                                goto RESET;
-                                            }
+                                            if (head == null) goto RESET;
                                             if (outputStream.Data.Byte != start) outputStream.Reset(start, Buffer.Length);
                                             buildInfo.Clear();
-                                            outputStream.ByteSize = TcpServer.ServerOutput.OutputLink.StreamStartIndex;
-                                            //currentOutputSleep = outputSleep;
+                                            outputStream.Data.CurrentIndex = TcpServer.ServerOutput.OutputLink.StreamStartIndex;
+                                            currentOutputWaitType = outputWaitType;
                                             goto LOOP;
                                         }
                                         CompressBuffer.TryFree();
@@ -251,7 +252,7 @@ namespace AutoCSer.Net.TcpInternalServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     buildInfo.IsError = true;
                 }
                 finally

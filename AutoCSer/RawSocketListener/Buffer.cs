@@ -34,6 +34,10 @@ namespace AutoCSer.Net.RawSocketListener
             get { return new Packet.Ip6(ref array); }
         }
         /// <summary>
+        /// 字节数
+        /// </summary>
+        public int Length { get { return array.Length; } }
+        /// <summary>
         /// 数据缓冲区
         /// </summary>
         /// <param name="bufferCount">数据缓冲区计数</param>

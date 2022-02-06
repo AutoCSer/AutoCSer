@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.HttpDomainServer
@@ -121,7 +121,7 @@ namespace AutoCSer.Net.HttpDomainServer
                     }
                     catch (Exception error)
                     {
-                        RegisterServer.TcpServer.Log.Add(Log.LogType.Error, error);
+                        RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 return true;
@@ -171,8 +171,8 @@ namespace AutoCSer.Net.HttpDomainServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal protected static void CompileQueryParse(Type[] jsonTypes, Type[] queryTypes)
         {
-            if (jsonTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(jsonTypes, AutoCSer.Threading.Thread.CallType.CompileJsonDeSerialize);
-            if (queryTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart((Action)(() => AutoCSer.Net.Http.HeaderQueryParser.Compile(queryTypes)), AutoCSer.Threading.Thread.CallType.Action);
+            if (jsonTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(jsonTypes, AutoCSer.Threading.ThreadTaskType.CompileJsonDeSerialize);
+            if (queryTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart((Action)(() => AutoCSer.Net.Http.HeaderQueryParser.Compile(queryTypes)), AutoCSer.Threading.ThreadTaskType.Action);
         }
     }
 }

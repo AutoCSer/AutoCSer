@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
 {
@@ -32,12 +33,8 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             {
                 UnmanagedStream stream = Socket.OutputSerializer.Stream;
                 buildInfo.Count = 1;
-                byte* write = stream.CurrentData;
+                stream.Data.Write(Server.CheckCommandIndex, (uint)CommandFlags.NullData);
                 Socket = null;
-                *(int*)write = Server.CheckCommandIndex;
-                //*(uint*)(write + sizeof(int)) |= (uint)(CommandFlags.NullData | CommandFlags.NullIndex);
-                *(uint*)(write + sizeof(int)) |= (uint)CommandFlags.NullData;
-                stream.ByteSize += sizeof(int) + sizeof(uint);
                 AutoCSer.Threading.RingPool<CheckCommand>.Default.PushNotNull(this);
             }
             else LinkNext = null;
@@ -60,7 +57,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                 }
                 catch (Exception error)
                 {
-                    socket.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                    socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     return null;
                 }
             }

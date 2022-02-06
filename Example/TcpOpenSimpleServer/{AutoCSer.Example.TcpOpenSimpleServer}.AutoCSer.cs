@@ -67,19 +67,19 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -153,19 +153,19 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -225,19 +225,19 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -318,19 +318,19 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -390,19 +390,19 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -450,7 +450,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenSimpleServer.Asynchronous", typeof(AutoCSer.Example.TcpOpenSimpleServer.Asynchronous))), verify, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenSimpleServer.Asynchronous();
@@ -504,7 +504,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         , new System.Type[] { typeof(_p2), null });
                 }
 
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
@@ -512,7 +512,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     public int left;
                     public int right;
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2
@@ -567,7 +567,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenSimpleServer.Field", typeof(AutoCSer.Example.TcpOpenSimpleServer.Field))), verify, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenSimpleServer.Field();
@@ -662,7 +662,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         , new System.Type[] { typeof(_p1), null });
                 }
 
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
@@ -689,7 +689,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     }
 #endif
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2
@@ -722,7 +722,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenSimpleServer.NoAttribute", typeof(AutoCSer.Example.TcpOpenSimpleServer.NoAttribute))), verify, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenSimpleServer.NoAttribute();
@@ -779,7 +779,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         , new System.Type[] { typeof(_p2), null });
                 }
 
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
@@ -787,7 +787,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     public int left;
                     public int right;
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2
@@ -844,7 +844,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenSimpleServer.Property", typeof(AutoCSer.Example.TcpOpenSimpleServer.Property))), verify, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenSimpleServer.Property();
@@ -984,7 +984,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         , new System.Type[] { typeof(_p1), null });
                 }
 
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
@@ -1011,14 +1011,14 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     }
 #endif
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2
                 {
                     public int index;
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p3
@@ -1026,7 +1026,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     public int index;
                     public int value;
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p4
@@ -1059,7 +1059,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenSimpleServer.RefOut", typeof(AutoCSer.Example.TcpOpenSimpleServer.RefOut))), verify, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenSimpleServer.RefOut();
@@ -1118,7 +1118,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         , new System.Type[] { typeof(_p2), null });
                 }
 
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
@@ -1127,7 +1127,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     public int product;
                     public int right;
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2
@@ -1182,7 +1182,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenSimpleServer.Static", typeof(AutoCSer.Example.TcpOpenSimpleServer.Static))), verify, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenSimpleServer.Static();
@@ -1239,7 +1239,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                         , new System.Type[] { typeof(_p2), null });
                 }
 
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
@@ -1247,7 +1247,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     public int left;
                     public int right;
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2

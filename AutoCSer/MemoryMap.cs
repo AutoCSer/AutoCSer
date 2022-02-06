@@ -29,7 +29,7 @@ namespace AutoCSer
         internal MemoryMap(ulong* map, int count)
         {
             Map = (byte*)map;
-            Memory.ClearUnsafe(map, count);
+            AutoCSer.Memory.Common.Clear(map, count);
         }
         /// <summary>
         /// 获取占位状态

@@ -8,7 +8,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 日志信息
     /// </summary>
-    internal sealed partial class DebugInfo : AutoCSer.Threading.Link<DebugInfo>
+    //internal sealed partial class DebugInfo : AutoCSer.Threading.Link<DebugInfo>
     {
         /// <summary>
         /// 字符串转换流

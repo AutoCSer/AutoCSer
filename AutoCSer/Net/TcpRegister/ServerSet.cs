@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpRegister
 {
@@ -17,7 +17,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// TCP 服务注册信息集合
         /// </summary>
-        internal LeftArray<ServerLog> Servers;
+        internal LeftArray<ServerLog> Servers = new LeftArray<ServerLog>(0);
         /// <summary>
         /// 服务信息数量
         /// </summary>
@@ -71,7 +71,7 @@ namespace AutoCSer.Net.TcpRegister
             server.Name = Server.Name;
             if (server.IsSingle ^ Server.IsSingle)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Warn, "TCP 服务 " + server.Name + " 单实例定义冲突 " + server.IsSingle.ToString());
+                AutoCSer.LogHelper.Warn("TCP 服务 " + server.Name + " 单实例定义冲突 " + server.IsSingle.ToString(), LogLevel.Warn | LogLevel.AutoCSer);
             }
             if (server.HostPortEquals(Server))
             {

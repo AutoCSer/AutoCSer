@@ -3,7 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Authentication;
 using System.Net.Sockets;
 using System.Net;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +29,7 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 套接字等待事件
         /// </summary>
-        protected AutoCSer.Threading.Thread.AutoWaitHandle socketHandle;
+        protected AutoCSer.Threading.OnceAutoWaitHandle socketHandle;
         /// <summary>
         /// 套接字链表头部
         /// </summary>
@@ -88,12 +88,12 @@ namespace AutoCSer.Net.Http
                 socket.Listen(int.MaxValue);
                 socketHandle.Set(0);
                 AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(GetSocket);
-                if (host.Port == 0) RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Warn, "HTTP 服务端口为 0");
+                if (host.Port == 0) RegisterServer.TcpServer.Log.Warn("HTTP 服务端口为 0", LogLevel.Warn | LogLevel.AutoCSer);
             }
             catch (Exception error)
             {
                 Dispose();
-                RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error, "HTTP 服务器端口 " + host.Host + ":" + host.Port.toString() + " TCP连接失败)");
+                RegisterServer.TcpServer.Log.Exception(error, "HTTP 服务器端口 " + host.Host + ":" + host.Port.toString() + " TCP连接失败)", LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -105,7 +105,7 @@ namespace AutoCSer.Net.Http
             //ThreadPriority priority = Thread.CurrentThread.Priority;
             if (IsSSL)
             {
-                AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(new AutoCSer.Net.Http.UnionType { Value = this }.SslServer.OnSocket);
+                AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(new AutoCSer.Net.Http.UnionType.SslServer { Object = this }.Value.OnSocket);
             }
             else AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(OnSocket);
             //Thread.CurrentThread.Priority = ThreadPriority.Highest;
@@ -149,14 +149,14 @@ namespace AutoCSer.Net.Http
                                 goto NEXT;
                             }
                         }
-                        AutoCSer.Threading.ThreadYield.YieldOnly();
+                        AutoCSer.Threading.ThreadYield.Yield();
                     }
                     while (true);
                 }
                 catch (Exception error)
                 {
                     if (socket == null) break;
-                    RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     Thread.Sleep(1);
                 }
             }
@@ -179,7 +179,7 @@ namespace AutoCSer.Net.Http
                     }
                     catch (Exception error)
                     {
-                        RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                        RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                     socket = socket.Cancel();
                 }

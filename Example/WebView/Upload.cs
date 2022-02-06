@@ -19,7 +19,7 @@ namespace AutoCSer.Example.WebView
             {
                 if (file.SaveFileName == null)
                 {
-                    if (AutoCSer.Memory.equal(file.Value.ToArray(), data))
+                    if (AutoCSer.Memory.Common.equal(file.Value.ToArray(), data))
                     {
                         Response(1);
                         return;
@@ -27,7 +27,7 @@ namespace AutoCSer.Example.WebView
                 }
                 else
                 {
-                    if (AutoCSer.Memory.equal(System.IO.File.ReadAllBytes(file.SaveFileName), data))
+                    if (AutoCSer.Memory.Common.equal(System.IO.File.ReadAllBytes(file.SaveFileName), data))
                     {
                         Response(2);
                         return;
@@ -55,7 +55,7 @@ namespace AutoCSer.Example.WebView
             using (WebClient webClient = new WebClient())
             {
                 string json = Encoding.UTF8.GetString(webClient.UploadFile(WebConfig.HttpDomain + "Upload/File", fileName));
-                if (AutoCSer.Json.Parser.Parse<int>(json) <= 0)
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) <= 0)
                 {
                     return false;
                 }

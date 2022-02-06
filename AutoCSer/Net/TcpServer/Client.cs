@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Log;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Net;
 using System.Runtime.CompilerServices;
 

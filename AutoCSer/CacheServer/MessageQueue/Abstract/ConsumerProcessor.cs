@@ -99,7 +99,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
                 if (isIdentity == 0 && consumer.IsProcessor(this))
                 {
                     messages = null;
-                    AutoCSer.Threading.TimerTask.Default.Add(Start, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
+                    AutoCSer.Threading.SecondTimer.InternalTaskArray.AppendNext(Start);
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
                 {
                     messages = null;
                     //freeKeepCallback();
-                    AutoCSer.Threading.TimerTask.Default.Add(reStart, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
+                    AutoCSer.Threading.SecondTimer.InternalTaskArray.AppendNext(reStart);
                 }
             }
         }

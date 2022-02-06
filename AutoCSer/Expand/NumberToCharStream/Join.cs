@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.NumberToCharStream
 {
@@ -35,16 +36,16 @@ namespace AutoCSer.NumberToCharStream
             if (nullString == null) nullString = string.Empty;
             if (array.length() == 0) return nullString;
             if (NumberJoinChar == null) return otherJoinChar(array, join, nullString);
-            byte* buffer = UnmanagedPool.Default.Get();
+            AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
             try
             {
-                using (CharStream stream = new CharStream((char*)buffer, UnmanagedPool.DefaultSize >> 1))
+                using (CharStream stream = new CharStream(ref buffer))
                 {
                     NumberJoinChar(stream, array, 0, array.Length, join, nullString);
                     return new string(stream.Char, 0, stream.Length);
                 }
             }
-            finally { UnmanagedPool.Default.Push(buffer); }
+            finally { UnmanagedPool.Default.PushOnly(ref buffer); }
         }
         /// <summary>
         /// 连接字符串集合
@@ -58,16 +59,16 @@ namespace AutoCSer.NumberToCharStream
             if (nullString == null) nullString = string.Empty;
             if (array.Length == 0) return nullString;
             if (NumberJoinChar == null) return subArrayJoinChar(array, join, nullString);
-            byte* buffer = UnmanagedPool.Default.Get();
+            AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
             try
             {
-                using (CharStream stream = new CharStream((char*)buffer, UnmanagedPool.DefaultSize >> 1))
+                using (CharStream stream = new CharStream(ref buffer))
                 {
                     NumberJoinChar(stream, array.Array, array.Start, array.Length, join, nullString);
                     return new string(stream.Char, 0, stream.Length);
                 }
             }
-            finally { UnmanagedPool.Default.Push(buffer); }
+            finally { UnmanagedPool.Default.PushOnly(ref buffer); }
         }
         /// <summary>
         /// 连接字符串集合
@@ -90,7 +91,7 @@ namespace AutoCSer.NumberToCharStream
                 if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
                     Type[] parameterTypes = type.GetGenericArguments();
-                    MethodInfo method = JoinMethod.GetToStringMethod(parameterTypes[0]);
+                    Delegate method = JoinMethod.GetToStringMethod(parameterTypes[0]);
                     if (method == null)
                     {
                         //otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), JoinMethod.NullableJoinCharMethod.MakeGenericMethod(parameterTypes));
@@ -104,14 +105,14 @@ namespace AutoCSer.NumberToCharStream
                         NumberJoinChar = new NullableJoiner(method).Join;
 #else
                         JoinDynamicMethod dynamicMethod = new JoinDynamicMethod(type, typeof(valueType[]));
-                        dynamicMethod.JoinCharNull(method, type);
+                        dynamicMethod.JoinCharNull(method.Method, type);
                         NumberJoinChar = (Action<CharStream, valueType[], int, int, char, string>)dynamicMethod.Create<Action<CharStream, valueType[], int, int, char, string>>();
 #endif
                     }
                 }
                 else
                 {
-                    MethodInfo method = JoinMethod.GetToStringMethod(type);
+                    Delegate method = JoinMethod.GetToStringMethod(type);
                     if (method == null)
                     {
                         //otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), JoinMethod.StructJoinCharMethod.MakeGenericMethod(type));
@@ -125,7 +126,7 @@ namespace AutoCSer.NumberToCharStream
                         NumberJoinChar = new Joiner(method).Join;
 #else
                         JoinDynamicMethod dynamicMethod = new JoinDynamicMethod(type, typeof(valueType[]));
-                        dynamicMethod.JoinChar(method, type);
+                        dynamicMethod.JoinChar(method.Method, type);
                         NumberJoinChar = (Action<CharStream, valueType[], int, int, char, string>)dynamicMethod.Create<Action<CharStream, valueType[], int, int, char, string>>();
 #endif
                     }

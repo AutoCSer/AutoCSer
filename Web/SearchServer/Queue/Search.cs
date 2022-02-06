@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Web.SearchServer.Queue
@@ -8,7 +8,7 @@ namespace AutoCSer.Web.SearchServer.Queue
     /// <summary>
     /// 搜索
     /// </summary>
-    internal sealed class Search : Node
+    internal sealed class Search : AutoCSer.Threading.TaskLinkNode
     {
         /// <summary>
         /// 最大搜索文本长度
@@ -84,9 +84,9 @@ namespace AutoCSer.Web.SearchServer.Queue
                         LeftArray<KeyValue<HashString, AutoCSer.Search.StaticSearcher<DataKey>.QueryResult>> results = threadParameter.Search(); 
                         switch (results.Count)
                         {
-                            case 0: result = NullValue<SearchItem>.Array; break;
+                            case 0: result = EmptyArray<SearchItem>.Array; break;
                             case 1:
-                                threadParameter.ResultIndexArray.Empty();
+                                threadParameter.ResultIndexArray.ResetCount();
                                 results[0].Value.CopyTo(ref threadParameter.ResultIndexArray);
                                 result = threadParameter.ResultIndexArray.GetRangeSortDesc(value => getWeight(value.Key.Type, value.Value.Indexs.Length), 0, pageSize, value => new SearchItem(results[0].Key, value));
                                 break;
@@ -103,7 +103,7 @@ namespace AutoCSer.Web.SearchServer.Queue
             }
             finally
             {
-                onSearch.Callback(result ?? NullValue<SearchItem>.Array);
+                onSearch.Callback(result ?? EmptyArray<SearchItem>.Array);
             }
         }
     }

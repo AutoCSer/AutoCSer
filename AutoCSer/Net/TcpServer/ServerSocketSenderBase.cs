@@ -31,11 +31,11 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 输出数据 JSON 序列化
         /// </summary>
-        internal Json.Serializer OutputJsonSerializer;
+        internal AutoCSer.JsonSerializer OutputJsonSerializer;
         /// <summary>
         /// 输出数据二进制序列化
         /// </summary>
-        internal BinarySerialize.Serializer OutputSerializer;
+        internal BinarySerializer OutputSerializer;
         /// <summary>
         /// 输出数据缓冲区
         /// </summary>
@@ -72,13 +72,22 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 套接字是否有效
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         public bool IsSocket
         {
             get
             {
                 return ServerSocket.Socket == Socket;
             }
+        }
+        /// <summary>
+        /// 套接字是否有效
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static bool GetIsSocket(ServerSocketSenderBase socket)
+        {
+            return socket.IsSocket;
         }
 #if !NOJIT
         /// <summary>
@@ -124,7 +133,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void callOnClose()
         {
-            ServerCallTask.Task.Add(new ServerSocketSenderCloseTask { Sender = this });
+            ServerCallThreadArray.Default.CurrentThread.Add(new ServerSocketSenderCloseTask { Sender = this });
             if (OnClose != null) OnClose();
         }
         /// <summary>
@@ -181,10 +190,36 @@ namespace AutoCSer.Net.TcpServer
         /// 通过函数验证处理
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         public void SetVerifyMethod()
         {
             ServerSocket.IsVerifyMethod = true;
+        }
+        /// <summary>
+        /// 通过函数验证处理
+        /// </summary>
+        /// <param name="socket"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static void SetVerifyMethod(ServerSocketSenderBase socket)
+        {
+            socket.SetVerifyMethod();
+        }
+        /// <summary>
+        /// 增加验证函数调用次数
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void IncrementVerifyMethodCount()
+        {
+            ServerSocket.IncrementVerifyMethodCount();
+        }
+        /// <summary>
+        /// 增加验证函数调用次数
+        /// </summary>
+        /// <param name="ticks">时间验证时钟周期</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void IncrementVerifyMethodCount(long ticks)
+        {
+            TimeVerifyTicks = ticks;
+            ServerSocket.IncrementVerifyMethodCount();
         }
         /// <summary>
         /// 添加自定义 TCP 服务器端同步调用任务
@@ -197,9 +232,9 @@ namespace AutoCSer.Net.TcpServer
         {
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(serverCall.ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(serverCall); return true;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(serverCall); return true;
-                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(serverCall.ThreadPoolCall)) AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallThreadArray.Default.CurrentThread.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.Queue:
@@ -280,7 +315,7 @@ namespace AutoCSer.Net.TcpServer
         {
             if (OutputJsonSerializer == null)
             {
-                OutputJsonSerializer = Json.Serializer.YieldPool.Default.Pop() ?? new Json.Serializer();
+                OutputJsonSerializer = AutoCSer.JsonSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonSerializer();
                 OutputJsonSerializer.SetTcpServer();
             }
             OutputJsonSerializer.SerializeTcpServer(ref value, OutputSerializer.Stream);
@@ -294,18 +329,25 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="isSimpleSerialize"></param>
         /// <returns>是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe bool DeSerialize<valueType>(ref SubArray<byte> data, ref valueType value, bool isSimpleSerialize = false)
             where valueType : struct
         {
             return ServerSocket.DeSerialize(ref data, ref value, isSimpleSerialize);
         }
         /// <summary>
-        /// 创建输出
+        /// 反序列化
         /// </summary>
-        internal virtual void VirtualBuildOutput()
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <param name="socket"></param>
+        /// <param name="data">数据</param>
+        /// <param name="value">目标对象</param>
+        /// <param name="isSimpleSerialize"></param>
+        /// <returns>是否成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static bool DeSerialize<valueType>(ServerSocketSenderBase socket, ref SubArray<byte> data, ref valueType value, bool isSimpleSerialize = false)
+            where valueType : struct
         {
-            throw new InvalidOperationException();
+            return socket.DeSerialize(ref data, ref value, isSimpleSerialize);
         }
     }
 }

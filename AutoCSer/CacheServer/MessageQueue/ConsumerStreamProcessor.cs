@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer.MessageQueue
@@ -73,7 +73,7 @@ namespace AutoCSer.CacheServer.MessageQueue
             }
             finally
             {
-                if (isIdentity == 0 && consumer.IsProcessor(this)) AutoCSer.Threading.TimerTask.Default.Add(Start, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
+                if (isIdentity == 0 && consumer.IsProcessor(this)) AutoCSer.Threading.SecondTimer.InternalTaskArray.AppendNext(Start);
             }
         }
         /// <summary>
@@ -89,7 +89,7 @@ namespace AutoCSer.CacheServer.MessageQueue
                 case ReturnType.Success:
                     if (identity.Parameter.Type == ValueData.DataType.ULong && consumer.IsProcessor(this))
                     {
-                        messageTime = Date.NowTime.Now;
+                        messageTime = AutoCSer.Threading.SecondTimer.Now;
                         sendClientCount = (consumer.Config.SendClientCount >> 1) | 1U;
                         getMessageKeepCallback = consumer.GetMessage(this.identity = identity.Parameter.Int64.ULong, onGetMessage);
                         return true;
@@ -121,7 +121,7 @@ namespace AutoCSer.CacheServer.MessageQueue
                 if (isMessage == 0 && consumer.IsProcessor(this))
                 {
                     //FreeMessageKeepCallback();
-                    AutoCSer.Threading.TimerTask.Default.Add(reStart, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
+                    AutoCSer.Threading.SecondTimer.InternalTaskArray.AppendNext(reStart);
                 }
             }
         }
@@ -153,15 +153,15 @@ namespace AutoCSer.CacheServer.MessageQueue
                     }
                     catch (Exception error)
                     {
-                        consumer.Log.Add(Log.LogType.Error, error);
+                        consumer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         System.Threading.Thread.Sleep(1);
                         goto ONMESSAGE;
                     }
                     ++identity;
-                    if (messageTime != Date.NowTime.Now || --sendClientCount == 0)
+                    if (messageTime != AutoCSer.Threading.SecondTimer.Now || --sendClientCount == 0)
                     {
                         consumer.SetDequeueIdentity(identity);
-                        messageTime = Date.NowTime.Now;
+                        messageTime = AutoCSer.Threading.SecondTimer.Now;
                         sendClientCount = (consumer.Config.SendClientCount >> 1) | 1U;
                     }
                     return true;

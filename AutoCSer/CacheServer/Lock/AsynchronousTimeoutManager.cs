@@ -47,7 +47,7 @@ namespace AutoCSer.CacheServer.Lock
                 if (returnParameter.Value.Parameter.ReturnType == ReturnType.Success)
                 {
                     randomNo = returnParameter.Value.Parameter.Int64.ULong;
-                    timeout = Date.NowTime.Now.AddTicks(timeoutTicks - TimeSpan.TicksPerSecond);
+                    timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks - TimeSpan.TicksPerSecond);
                     if (Step == Step.None)
                     {
                         Step = Step.Lock;
@@ -60,7 +60,7 @@ namespace AutoCSer.CacheServer.Lock
             else if (returnParameter.Value.Parameter.ReturnType == ReturnType.Success)
             {
                 randomNo = returnParameter.Value.Parameter.Int64.ULong;
-                timeout = Date.NowTime.Now.AddTicks(timeoutTicks - TimeSpan.TicksPerSecond);
+                timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks - TimeSpan.TicksPerSecond);
                 exit();
             }
         }
@@ -79,7 +79,7 @@ namespace AutoCSer.CacheServer.Lock
         internal void Enter(uint timeoutMilliseconds)
         {
             node.ClientDataStructure.Client.MasterQueryAsynchronous(node.GetEnterNode(timeoutTicks), enter);
-            AutoCSer.Threading.TimerTask.Default.Add(enterTimeout, Date.NowTime.Set().AddTicks(timeoutMilliseconds * TimeSpan.TicksPerMillisecond));
+            AutoCSer.Threading.SecondTimer.InternalTaskArray.Append(enterTimeout, AutoCSer.Threading.SecondTimer.SetNow().AddTicks(timeoutMilliseconds * TimeSpan.TicksPerMillisecond));
         }
         /// <summary>
         /// 申请锁
@@ -89,7 +89,7 @@ namespace AutoCSer.CacheServer.Lock
         internal void EnterStream(uint timeoutMilliseconds)
         {
             node.ClientDataStructure.Client.MasterQueryAsynchronousStream(node.GetEnterNode(timeoutTicks), enter);
-            AutoCSer.Threading.TimerTask.Default.Add(enterTimeout, Date.NowTime.Set().AddTicks(timeoutMilliseconds * TimeSpan.TicksPerMillisecond));
+            AutoCSer.Threading.SecondTimer.InternalTaskArray.Append(enterTimeout, AutoCSer.Threading.SecondTimer.SetNow().AddTicks(timeoutMilliseconds * TimeSpan.TicksPerMillisecond));
         }
     }
 }

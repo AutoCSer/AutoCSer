@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Search
 {
@@ -12,7 +13,7 @@ namespace AutoCSer.Search
         /// <summary>
         /// 分词字符类型数据
         /// </summary>
-        internal Pointer.Size CharTypeData;
+        internal AutoCSer.Memory.Pointer CharTypeData;
         /// <summary>
         /// 字符分词类型
         /// </summary>
@@ -29,7 +30,7 @@ namespace AutoCSer.Search
         /// </summary>
         internal StaticStringTrieGraph()
         {
-            CharTypeData = new Pointer.Size { Data = StringTrieGraph.DefaultCharTypeData.Data };
+            CharTypeData = new AutoCSer.Memory.Pointer { Data = StringTrieGraph.DefaultCharTypeData.Data };
         }
         /// <summary>
         ///  析构释放资源
@@ -47,7 +48,7 @@ namespace AutoCSer.Search
             if (CharTypeData.Data != StringTrieGraph.DefaultCharTypeData.Data)
             {
                 Unmanaged.Free(ref CharTypeData);
-                CharTypeData = new Pointer.Size { Data = StringTrieGraph.DefaultCharTypeData.Data };
+                CharTypeData = new AutoCSer.Memory.Pointer { Data = StringTrieGraph.DefaultCharTypeData.Data };
             }
         }
         /// <summary>
@@ -57,8 +58,8 @@ namespace AutoCSer.Search
         private void setBoot(int boot)
         {
             this.boot = boot;
-            nodes = (int*)Unmanaged.Get64((1 << 16) * sizeof(int), true);
-            foreach (KeyValue<char, int> node in NodePool.Pool[boot >> ArrayPool.ArraySizeBit][boot & ArrayPool.ArraySizeAnd].Nodes) nodes[node.Key] = node.Value;
+            nodes = Unmanaged.GetPointer((1 << 16) * sizeof(int), true);
+            foreach (KeyValue<char, int> node in NodePool.Pool[boot >> ArrayPool.ArraySizeBit][boot & ArrayPool.ArraySizeAnd].Nodes) nodes.Int[node.Key] = node.Value;
         }
         /// <summary>
         /// 创建 Trie 图
@@ -72,12 +73,12 @@ namespace AutoCSer.Search
             {
                 if (isCopyCharTypeData)
                 {
-                    AutoCSer.Memory.CopyNotNull(trieGraph.CharTypeData.Byte, (CharTypeData = Unmanaged.GetSizeUnsafe64(1 << 16, false)).Byte, 1 << 16);
+                    AutoCSer.Memory.Common.CopyNotNull(trieGraph.CharTypeData.Byte, (CharTypeData = Unmanaged.GetPointer(1 << 16, false)).Byte, 1 << 16);
                 }
                 else
                 {
                     CharTypeData = trieGraph.CharTypeData;
-                    trieGraph.CharTypeData = new Pointer.Size { Data = StringTrieGraph.DefaultCharTypeData.Data };
+                    trieGraph.CharTypeData = new AutoCSer.Memory.Pointer { Data = StringTrieGraph.DefaultCharTypeData.Data };
                 }
             }
             AnyHeadChar = trieGraph.AnyHeadChar;
@@ -91,7 +92,7 @@ namespace AutoCSer.Search
         internal void LeftRightMatchs(char* start, char* end, ref LeftArray<KeyValue<int, int>> matchs)
         {
             Node[][] pool = NodePool.Pool;
-            if (nodes != null)
+            if (nodes.Data != null)
             {
                 string value;
                 int node = boot, linkNode = 0, index = -1;
@@ -100,7 +101,7 @@ namespace AutoCSer.Search
                     char letter = *start;
                     if (node != boot) goto NEXT;
                 BOOT:
-                    if ((node = nodes[letter]) == 0)
+                    if ((node = nodes.Int[letter]) == 0)
                     {
                         ++index;
                         node = boot;
@@ -173,7 +174,7 @@ namespace AutoCSer.Search
         {
             if (text.Length != 0)
             {
-                fixed (char* valueFixed = text.String)
+                fixed (char* valueFixed = text.GetFixedBuffer())
                 {
                     char* start = valueFixed + text.Start;
                     LeftRightMatchs(start, start + text.Length, ref matchs);
@@ -198,7 +199,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<int, int>> LeftRightMatchs(string text)
         {
-            LeftArray<KeyValue<int, int>> matchs = default(LeftArray<KeyValue<int, int>>);
+            LeftArray<KeyValue<int, int>> matchs = new LeftArray<KeyValue<int, int>>(0);
             LeftRightMatchs(text, ref matchs);
             return matchs;
         }
@@ -210,7 +211,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<int, int>> LeftRightMatchs(ref SubString text)
         {
-            LeftArray<KeyValue<int, int>> matchs = default(LeftArray<KeyValue<int, int>>);
+            LeftArray<KeyValue<int, int>> matchs = new LeftArray<KeyValue<int, int>>(0);
             LeftRightMatchs(ref text, ref matchs);
             return matchs;
         }
@@ -222,7 +223,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<int, int>> LeftRightMatchs(SubString text)
         {
-            LeftArray<KeyValue<int, int>> matchs = default(LeftArray<KeyValue<int, int>>);
+            LeftArray<KeyValue<int, int>> matchs = new LeftArray<KeyValue<int, int>>(0);
             LeftRightMatchs(ref text, ref matchs);
             return matchs;
         }

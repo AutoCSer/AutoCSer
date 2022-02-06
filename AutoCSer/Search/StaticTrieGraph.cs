@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Search
 {
@@ -17,7 +18,7 @@ namespace AutoCSer.Search
         /// <summary>
         /// 子节点
         /// </summary>
-        protected int* nodes;
+        protected AutoCSer.Memory.Pointer nodes;
         /// <summary>
         /// 根节点
         /// </summary>
@@ -47,12 +48,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CancelBuilder()
         {
-            int* nodes = this.nodes;
-            if (nodes != null)
-            {
-                this.nodes = null;
-                Unmanaged.Free((byte*)nodes, (1 << 16) * sizeof(int));
-            }
+            Unmanaged.Free(ref nodes);
         }
 
         /// <summary>
@@ -74,7 +70,7 @@ namespace AutoCSer.Search
         static StaticTrieGraph()
         {
             NodePool = new ArrayPool<Node>(256);
-            NodePool.Pool[0][0].Nodes = NullValue<KeyValue<keyType, int>>.Array;
+            NodePool.Pool[0][0].Nodes = EmptyArray<KeyValue<keyType, int>>.Array;
             NodePool.CurrentArrayIndex = 1;
         }
     }

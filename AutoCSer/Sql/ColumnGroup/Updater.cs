@@ -1,7 +1,8 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -83,7 +84,7 @@ namespace AutoCSer.Sql.ColumnGroup
                 generator.Emit(OpCodes.Ldarg_3);
                 generator.int32(index);
                 generator.Emit(OpCodes.Ldelem_Ref);
-                generator.Emit(OpCodes.Call, GetTypeUpdate(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).UpdateMethod);
             }
             else
             {
@@ -91,7 +92,7 @@ namespace AutoCSer.Sql.ColumnGroup
                 generator.Emit(OpCodes.Ldarg_3);
                 generator.int32(index);
                 generator.Emit(OpCodes.Ldelem_Ref);
-                generator.charStreamSimpleWriteNotNull();
+                generator.charStreamSimpleWrite();
                 generator.charStreamWriteChar(OpCodes.Ldarg_0, '=');
 
                 generator.Emit(OpCodes.Ldarg_2);
@@ -114,84 +115,14 @@ namespace AutoCSer.Sql.ColumnGroup
         }
 #endif
         /// <summary>
-        /// 类型调用函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> typeUpdates = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 类型委托调用函数信息
-        /// </summary>
-        /// <param name="type">数组类型</param>
-        /// <returns>类型委托调用函数信息</returns>
-        public static MethodInfo GetTypeUpdate(Type type)
-        {
-            MethodInfo method;
-            if (typeUpdates.TryGetValue(type, out method)) return method;
-            typeUpdates.Set(type, method = updateMethod.MakeGenericMethod(type));
-            return method;
-        }
-        /// <summary>
-        /// 获取更新数据SQL表达式
-        /// </summary>
-        /// <param name="sqlStream">SQL表达式流</param>
-        /// <param name="value">数据列</param>
-        /// <param name="converter">SQL常量转换</param>
-        /// <param name="columnName">列名前缀</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void update<valueType>(CharStream sqlStream, valueType value, ConstantConverter converter, string columnName)
-        {
-            Column<valueType>.Updater.Update(sqlStream, value, converter, columnName);
-        }
-        /// <summary>
-        /// 获取更新数据SQL表达式函数信息
-        /// </summary>
-        private static readonly MethodInfo updateMethod = typeof(Updater).GetMethod("update", BindingFlags.Static | BindingFlags.NonPublic);
-        /// <summary>
-        /// 获取列名委托集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, Verifyer.GetName> getColumnNameMethods = new AutoCSer.Threading.LockDictionary<Type, Verifyer.GetName>();
-        /// <summary>
-        /// 获取列名委托
-        /// </summary>
-        /// <param name="type">数据列类型</param>
-        /// <returns>获取列名委托</returns>
-        public static Verifyer.GetName GetColumnNames(Type type)
-        {//showjim
-            Verifyer.GetName getColumnName;
-            if (getColumnNameMethods.TryGetValue(type, out getColumnName)) return getColumnName;
-            getColumnName = (Verifyer.GetName)Delegate.CreateDelegate(typeof(Verifyer.GetName), getColumnNamesMethod.MakeGenericMethod(type));
-            getColumnNameMethods.Set(type, getColumnName);
-            return getColumnName;
-        }
-        /// <summary>
         /// 获取列名集合
         /// </summary>
         /// <param name="names">列名集合</param>
         /// <param name="name">列名前缀</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void getColumnNames<valueType>(ref LeftArray<string> names, string name)
+        internal static void GetColumnNames<valueType>(ref LeftArray<string> names, string name)
         {
             names.Add(Column<valueType>.Updater.GetColumnNames(name));
-        }
-        /// <summary>
-        /// 获取列名集合函数信息
-        /// </summary>
-        private static readonly MethodInfo getColumnNamesMethod = typeof(Updater).GetMethod("getColumnNames", BindingFlags.Static | BindingFlags.NonPublic);
-
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            typeUpdates.Clear();
-            getColumnNameMethods.Clear();
-        }
-        static Updater()
-        {
-            AutoCSer.Pub.ClearCaches += clearCache;
         }
     }
     /// <summary>
@@ -207,7 +138,7 @@ namespace AutoCSer.Sql.ColumnGroup
             /// <summary>
             /// 数据列名集合
             /// </summary>
-            private static readonly AutoCSer.Threading.LockEquatableLastDictionary<HashString, string[]> columnNames;
+            private static readonly AutoCSer.Threading.LockDictionary<HashString, string[]> columnNames;
             /// <summary>
             /// 获取列名集合
             /// </summary>
@@ -217,24 +148,15 @@ namespace AutoCSer.Sql.ColumnGroup
             {
                 string[] names;
                 HashString nameKey = name;
-                if (columnNames.TryGetValue(ref nameKey, out names)) return names;
+                if (columnNames.TryGetValue(nameKey, out names)) return names;
                 LeftArray<string> nameList = new LeftArray<string>(Fields.Length);
                 foreach (Field field in Fields)
                 {
-                    if (field.IsSqlColumn) ColumnGroup.Updater.GetColumnNames(field.FieldInfo.FieldType)(ref nameList, name + "_" + field.FieldInfo.Name);
+                    if (field.IsSqlColumn) ((ColumnGroup.Verifyer.GetName)AutoCSer.Sql.Metadata.GenericType.Get(field.FieldInfo.FieldType).UpdaterGetColumnNamesMethod)(ref nameList, name + "_" + field.FieldInfo.Name);
                     else nameList.Add(name + "_" + field.FieldInfo.Name);
                 }
-                columnNames.Set(ref nameKey, names = nameList.ToArray());
+                columnNames.Set(nameKey, names = nameList.ToArray());
                 return names;
-            }
-            /// <summary>
-            /// 清除缓存数据
-            /// </summary>
-            /// <param name="count">保留缓存数据数量</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            private static void clearCache(int count)
-            {
-                columnNames.Clear();
             }
 
             /// <summary>
@@ -283,7 +205,7 @@ namespace AutoCSer.Sql.ColumnGroup
             {
                 if (attribute != null && custom == null && Fields != null)
                 {
-                    columnNames = new AutoCSer.Threading.LockEquatableLastDictionary<HashString, string[]>();
+                    columnNames = new AutoCSer.Threading.LockDictionary<HashString, string[]>();
                     int index = 0;
 #if NOJIT
                     fields = new sqlModel.updateField[Fields.Length];
@@ -293,7 +215,7 @@ namespace AutoCSer.Sql.ColumnGroup
                     foreach (Field member in Fields) dynamicMethod.Push(member, index++);
                     updater = (Action<CharStream, valueType, ConstantConverter, string[]>)dynamicMethod.Create<Action<CharStream, valueType, ConstantConverter, string[]>>();
 #endif
-                    AutoCSer.Pub.ClearCaches += clearCache;
+                    AutoCSer.Memory.Common.AddClearCache(columnNames.Clear, typeof(Updater), 60 * 60);
                 }
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer.Emit
 {
@@ -153,7 +153,7 @@ namespace AutoCSer.Net.TcpServer.Emit
             , MethodInfo serverSocketSenderAddLogMethod, MethodInfo serverCallCallMethod, MethodInfo serverCallCallQueueMethod)
             : base(serverType, senderType)
         {
-            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog), typeof(int), typeof(bool), typeof(bool) });
+            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(byte), typeof(Action<SubArray<byte>>), typeof(AutoCSer.ILog), typeof(int), typeof(bool), typeof(bool) });
             GetParameterGenericType = getParameterGenericType;
             GetOutputParameterGenericType = getOutputParameterGenericType;
 
@@ -177,21 +177,17 @@ namespace AutoCSer.Net.TcpServer.Emit
         }
 
         /// <summary>
-        /// TCP 服务器端同步调用会话标识字段信息
+        /// TCP 服务器端同步调用会话标识函数信息
         /// </summary>
-        internal static readonly FieldInfo ServerCallCommandIndexField = typeof(TcpServer.ServerCall).GetField("CommandIndex", BindingFlags.Instance | BindingFlags.Public);
+        internal static readonly MethodInfo ServerCallGetCommandIndexMethod = ((Func<TcpServer.ServerCall, uint>)TcpServer.ServerCall.GetCommandIndex).Method;
         /// <summary>
         /// TCP 服务器端同步调用套接字发送对象套接字是否有效函数信息
         /// </summary>
-        internal static readonly MethodInfo ServerSocketSenderGetIsSocketMethod = typeof(ServerSocketSenderBase).GetProperty("IsSocket", BindingFlags.Instance | BindingFlags.Public).GetGetMethod();
+        internal static readonly MethodInfo ServerSocketSenderGetIsSocketMethod = ((Func<ServerSocketSenderBase, bool>)ServerSocketSenderBase.GetIsSocket).Method;
         /// <summary>
         /// TCP 服务器端同步调用套接字发送对象通过函数验证处理
         /// </summary>
         internal static readonly MethodInfo ServerSocketSenderSetVerifyMethod;
-        /// <summary>
-        /// TCP 服务器端同步调用套接字发送对象通过函数验证处理
-        /// </summary>
-        internal static readonly MethodInfo ServerSocketSenderDeSerializeMethod;
         /// <summary>
         /// 返回值类型字段信息
         /// </summary>
@@ -200,24 +196,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         static ServerMetadata()
         {
             Type subArrayByteRefType = typeof(SubArray<byte>).MakeByRefType();
-            foreach (MethodInfo method in typeof(ServerSocketSenderBase).GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            {
-                if (method.ReturnType == typeof(bool))
-                {
-                    if (method.IsGenericMethod && method.Name == "DeSerialize")
-                    {
-                        ParameterInfo[] parameters = method.GetParameters();
-                        if (parameters.Length == 3 && parameters[0].ParameterType == subArrayByteRefType && parameters[1].ParameterType.IsByRef && parameters[2].ParameterType == typeof(bool)) ServerSocketSenderDeSerializeMethod = method;
-                    }
-                }
-                else if (method.ReturnType == typeof(void))
-                {
-                    if (method.Name == "SetVerifyMethod" && method.GetParameters().Length == 0)
-                    {
-                        ServerSocketSenderSetVerifyMethod = method;
-                    }
-                }
-            }
+            ServerSocketSenderSetVerifyMethod = ((Action<ServerSocketSenderBase>)ServerSocketSenderBase.SetVerifyMethod).Method;
         }
     }
 }

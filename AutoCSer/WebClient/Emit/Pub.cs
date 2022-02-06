@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Threading;
 using AutoCSer.Metadata;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.WebClient.Emit
 {
@@ -43,19 +44,17 @@ namespace AutoCSer.Net.WebClient.Emit
         /// <summary>
         /// 数值转换调用函数信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> numberToStringMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        private static readonly Dictionary<HashType, MethodInfo> numberToStringMethods;
         /// <summary>
         /// 获取数值转换委托调用函数信息
         /// </summary>
         /// <param name="type">数值类型</param>
         /// <returns>数值转换委托调用函数信息</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static MethodInfo GetNumberToStringMethod(Type type)
         {
             MethodInfo method;
-            if (numberToStringMethods.TryGetValue(type, out method)) return method;
-            method = typeof(AutoCSer.Extension.Number).GetMethod("toString", BindingFlags.Static | BindingFlags.Public, null, new Type[] { type }, null);
-            numberToStringMethods.Set(type, method);
-            return method;
+            return numberToStringMethods.TryGetValue(type, out method) ? method : null;
         }
         /// <summary>
         /// 字符串转换调用函数信息集合
@@ -72,6 +71,7 @@ namespace AutoCSer.Net.WebClient.Emit
         /// <returns>字符串转换委托调用函数信息</returns>
         internal static MethodInfo GetToStringMethod(Type type)
         {
+            type.ToString();
             MethodInfo method;
             Monitor.Enter(toStringMethodLock);
             if (toStringMethods.TryGetValue(type, out method))
@@ -81,7 +81,7 @@ namespace AutoCSer.Net.WebClient.Emit
             }
             try
             {
-                method = type.GetMethod("ToString", BindingFlags.Instance | BindingFlags.Public, null, NullValue<Type>.Array, null);
+                method = type.GetMethod("ToString", BindingFlags.Instance | BindingFlags.Public, null, EmptyArray<Type>.Array, null);
                 toStringMethods.Add(type, method);
             }
             finally { Monitor.Exit(toStringMethodLock); }
@@ -90,6 +90,30 @@ namespace AutoCSer.Net.WebClient.Emit
         /// <summary>
         /// 添加表单函数信息
         /// </summary>
-        internal static readonly MethodInfo NameValueCollectionAddMethod = ((Action<string, string>)new NameValueCollection().Add).Method;// typeof(NameValueCollection).GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(string), typeof(string) }, null);
+        /// <param name="nameValueCollection"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static void add(NameValueCollection nameValueCollection, string name, string value)
+        {
+            nameValueCollection.Add(name, value);
+        }
+        /// <summary>
+        /// 添加表单函数信息
+        /// </summary>
+        internal static readonly MethodInfo NameValueCollectionAddMethod = ((Action<NameValueCollection, string, string>)add).Method;
+
+        static Pub()
+        {
+            numberToStringMethods = DictionaryCreator<HashType>.Create<MethodInfo>();
+            numberToStringMethods.Add(typeof(int), ((Func<int, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+            numberToStringMethods.Add(typeof(long), ((Func<long, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+            numberToStringMethods.Add(typeof(byte), ((Func<byte, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+            numberToStringMethods.Add(typeof(uint), ((Func<uint, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+            numberToStringMethods.Add(typeof(ulong), ((Func<ulong, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+            numberToStringMethods.Add(typeof(sbyte), ((Func<sbyte, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+            numberToStringMethods.Add(typeof(short), ((Func<short, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+            numberToStringMethods.Add(typeof(ushort), ((Func<ushort, string>)AutoCSer.Extensions.NumberExtension.toString).Method);
+        }
     }
 }

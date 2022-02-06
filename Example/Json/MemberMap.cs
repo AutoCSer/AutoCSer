@@ -40,8 +40,8 @@ namespace AutoCSer.Example.Json
 #endif
             AutoCSer.Json.SerializeConfig serializeMemberMapConfig = new AutoCSer.Json.SerializeConfig { MemberMap = serializeMemberMap };
 
-            string json = AutoCSer.Json.Serializer.Serialize(value, serializeMemberMapConfig);
-            MemberMap newValue = AutoCSer.Json.Parser.Parse<MemberMap>(json);
+            string json = AutoCSer.JsonSerializer.Serialize(value, serializeMemberMapConfig);
+            MemberMap newValue = AutoCSer.JsonDeSerializer.DeSerialize<MemberMap>(json);
 
             return newValue != null && newValue.Value1 == 1 && newValue.Value2 == 2 && newValue.Value3 == 0;
         }

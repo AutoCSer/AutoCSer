@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Threading;
 
 namespace AutoCSer.TestCase.TcpInternalServerPerformance
@@ -41,7 +42,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// 自定义序列化输出
         /// </summary>
         /// <param name="serializer"></param>
-        internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        internal void Serialize(AutoCSer.BinarySerializer serializer)
         {
             UnmanagedStream stream = serializer.Stream;
             int count = Math.Min((stream.FreeSize - sizeof(int) * 2) / (sizeof(int) * 2), right), endRight = right - count;
@@ -56,7 +57,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 endRight = 0;
             }
             int size = (count * (sizeof(int) * 2)) + sizeof(int);
-            byte* write = stream.CurrentData;
+            byte* write = stream.Current;
             *(int*)write = size;
             write += sizeof(int);
             while (right != endRight)

@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
     /// <summary>
     /// TCP 客户端命令
     /// </summary>
-    internal abstract class CommandBase : AutoCSer.Threading.Link<CommandBase>, AutoCSer.Threading.ILinkTask
+    internal abstract class CommandBase : AutoCSer.Threading.Link<CommandBase>, AutoCSer.Threading.ISwitchTaskNode
     {
         /// <summary>
         /// 输出流起始位置
@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        long AutoCSer.Threading.ILinkTask.LinkTaskTimestamp
+        long AutoCSer.Threading.ISwitchTaskNode.SwitchTimestamp
         {
             get { return TaskTimestamp; }
             set { TaskTimestamp = value; }
@@ -45,19 +45,21 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 下一个任务节点
         /// </summary>
-        AutoCSer.Threading.ILinkTask AutoCSer.Threading.ILinkTask.NextLinkTask
+        AutoCSer.Threading.ISwitchTaskNode AutoCSer.Threading.ISwitchTaskNode.NextSwitchTask
         {
             get { return NextTask; }
-            set { NextTask = new UnionType { Value = value  }.ClientCommandBase; }
+            set { NextTask = new UnionType.ClientCommandBase { Object = value  }.Value; }
         }
         /// <summary>
         /// 执行任务
         /// </summary>
         /// <param name="next"></param>
+        /// <param name="currentTaskTimestamp"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void RunTask(ref AutoCSer.Threading.ILinkTask next)
+        public void RunTask(ref AutoCSer.Threading.ISwitchTaskNode next, ref long currentTaskTimestamp)
         {
             next = NextTask;
+            currentTaskTimestamp = TaskTimestamp;
             NextTask = null;
             onReceiveTask();
         }

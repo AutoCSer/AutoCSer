@@ -1,8 +1,9 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using System.IO;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -14,7 +15,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 默认 WEB 调用配置
         /// </summary>
-        internal static readonly CallAttribute DefaultAttribute = ConfigLoader.GetUnion(typeof(CallAttribute)).CallAttribute ?? new CallAttribute();
+        internal static readonly CallAttribute DefaultAttribute = (CallAttribute)AutoCSer.Configuration.Common.Get(typeof(CallAttribute)) ?? new CallAttribute();
         /// <summary>
         /// HTTP请求头部处理
         /// </summary>
@@ -122,23 +123,23 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static callType Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            popLock.EnterYield();
             callType headValue;
             do
             {
                 if ((headValue = poolHead) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     return null;
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref poolHead, headValue.next, headValue) == headValue)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref poolCount);
                     headValue.setPool(headValue);
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -169,7 +170,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(callType));
+        private readonly static int poolMaxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(callType));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -177,7 +178,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -209,7 +210,7 @@ namespace AutoCSer.WebView
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -236,7 +237,7 @@ namespace AutoCSer.WebView
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -285,7 +286,7 @@ namespace AutoCSer.WebView
         }
         static Call()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(Call<callType>));
         }
     }
 }

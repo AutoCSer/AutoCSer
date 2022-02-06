@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 

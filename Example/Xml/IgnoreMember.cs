@@ -25,16 +25,16 @@ namespace AutoCSer.Example.Xml
         internal static bool TestCase()
         {
             IgnoreMember value = new IgnoreMember { Value = 1, Ignore = 2 };
-            string xml = AutoCSer.Xml.Serializer.Serialize(value);
-            NoIgnoreMember newValue = AutoCSer.Xml.Parser.Parse<NoIgnoreMember>(xml);
+            string xml = AutoCSer.XmlSerializer.Serialize(value);
+            NoIgnoreMember newValue = AutoCSer.XmlDeSerializer.DeSerialize<NoIgnoreMember>(xml);
             if (newValue == null || newValue.Value != 1 || newValue.Ignore != 0)
             {
                 return false;
             }
 
             newValue = new NoIgnoreMember { Value = 1, Ignore = 2 };
-            xml = AutoCSer.Xml.Serializer.Serialize(newValue);
-            value = AutoCSer.Xml.Parser.Parse<IgnoreMember>(xml);
+            xml = AutoCSer.XmlSerializer.Serialize(newValue);
+            value = AutoCSer.XmlDeSerializer.DeSerialize<IgnoreMember>(xml);
             return value != null && value.Value == 1 && value.Ignore == 0;
         }
     }

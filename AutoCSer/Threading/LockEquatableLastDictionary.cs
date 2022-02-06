@@ -10,7 +10,7 @@ namespace AutoCSer.Threading
     /// </summary>
     /// <typeparam name="keyType"></typeparam>
     /// <typeparam name="valueType"></typeparam>
-    internal sealed class LockEquatableLastDictionary<keyType, valueType> where keyType : struct, IEquatable<keyType>
+    //internal sealed class LockEquatableLastDictionary<keyType, valueType> where keyType : struct, IEquatable<keyType>
     {
         /// <summary>
         /// 字典
@@ -34,14 +34,17 @@ namespace AutoCSer.Threading
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Clear()
         {
-            Monitor.Enter(Lock);
-            try
+            if (Dictionary.Count != 0)
             {
-                if (Dictionary.Count != 0) Dictionary = DictionaryCreator<keyType>.Create<valueType>();
-                lastKey = default(keyType);
-                lastValue = default(valueType);
+                Monitor.Enter(Lock);
+                try
+                {
+                    if (Dictionary.Count != 0) Dictionary = DictionaryCreator<keyType>.Create<valueType>();
+                    lastKey = default(keyType);
+                    lastValue = default(valueType);
+                }
+                finally { Monitor.Exit(Lock); }
             }
-            finally { Monitor.Exit(Lock); }
         }
         /// <summary>
         /// 获取数据

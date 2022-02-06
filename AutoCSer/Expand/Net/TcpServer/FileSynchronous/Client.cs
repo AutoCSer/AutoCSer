@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using AutoCSer.IO;
 
 namespace AutoCSer.Net.TcpServer.FileSynchronous
 {

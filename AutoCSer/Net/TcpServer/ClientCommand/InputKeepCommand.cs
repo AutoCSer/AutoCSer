@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
@@ -22,15 +23,15 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         internal unsafe override CommandBase Build(ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
-            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.ByteSize) >= CommandInfo.MaxDataSize)
+            if (buildInfo.Count == 0 || (buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= CommandInfo.MaxDataSize)
             {
-                int streamLength = stream.ByteSize;
-                stream.PrepLength(sizeof(uint) + sizeof(int) * 3);
+                int streamLength = stream.Data.CurrentIndex;
+                stream.PrepSize(sizeof(uint) + sizeof(int) * 3);
                 CommandBase nextBuild = LinkNext;
-                stream.ByteSize += sizeof(uint) + sizeof(int) * 2;
+                stream.Data.CurrentIndex += sizeof(uint) + sizeof(int) * 2;
                 if ((CommandInfo.CommandFlags & CommandFlags.JsonSerialize) == 0) Socket.Serialize(CommandInfo, ref InputParameter);
                 else Socket.JsonSerialize(ref InputParameter);
-                int dataLength = stream.ByteSize - streamLength - (sizeof(int) * 2 + sizeof(uint));
+                int dataLength = stream.Data.CurrentIndex - streamLength - (sizeof(int) * 2 + sizeof(uint));
                 InputParameter = default(inputParameterType);
                 if (dataLength <= Socket.MaxInputSize)
                 {
@@ -54,7 +55,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                     else KeepCallback.BuildCancel();
                 }
                 else KeepCallback.BuildCancel();
-                stream.ByteSize = streamLength;
+                stream.Data.CurrentIndex = streamLength;
                 LinkNext = null;
                 return nextBuild;
             }
@@ -71,7 +72,6 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Set(ClientSocket socket, CommandInfo command, Action<ReturnValue> onCall, ref inputParameterType inputParameter)
         {
-            if (command.TaskType != ClientTaskType.Synchronous) OutputLock = new object();
             KeepCallback = new KeepCallback(this);
             Socket = socket;
             Callback = onCall;

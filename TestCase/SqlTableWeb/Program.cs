@@ -2,7 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.SqlTableWeb
 {
@@ -25,15 +25,15 @@ namespace AutoCSer.TestCase.SqlTableWeb
             {
 #if DotNetStandard
 #if DEBUG
-                FileInfo dataServerFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\SqlTableCacheServer\bin\Debug\netcoreapp2.0\AutoCSer.TestCase.SqlTableCacheServer.dll".pathSeparator()));
+                FileInfo dataServerFile = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, @"..\..\..\..\SqlTableCacheServer\bin\Debug\netcoreapp2.0\AutoCSer.TestCase.SqlTableCacheServer.dll".pathSeparator()));
 #else
-                FileInfo dataServerFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\SqlTableCacheServer\bin\Release\netcoreapp2.0\AutoCSer.TestCase.SqlTableCacheServer.dll".pathSeparator()));
+                FileInfo dataServerFile = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, @"..\..\..\..\SqlTableCacheServer\bin\Release\netcoreapp2.0\AutoCSer.TestCase.SqlTableCacheServer.dll".pathSeparator()));
 #endif
                 ProcessStartInfo process = new ProcessStartInfo("dotnet", dataServerFile.FullName);
                 process.UseShellExecute = true;
                 Process.Start(process);
 #else
-                Process.Start(new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.SqlTableCacheServer.exe")).FullName);
+                Process.Start(new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, @"AutoCSer.TestCase.SqlTableCacheServer.exe")).FullName);
 #endif
 
                 WebConfig webConfig = new WebConfig();

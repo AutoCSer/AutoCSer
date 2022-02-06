@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Algorithm
@@ -17,31 +18,13 @@ namespace AutoCSer.Algorithm
         /// </summary>
         internal const int SortSize64 = 4 << 9;
         /// <summary>
-        /// 计数缓冲区字节大小
+        /// 计数缓冲区
         /// </summary>
-        private const int countBufferSize = 256 * 4 * sizeof(int);
+        private static readonly UnmanagedPool countBuffer = UnmanagedPool.Default;
         /// <summary>
         /// 计数缓冲区
         /// </summary>
-        private static readonly UnmanagedPool countBuffer = UnmanagedPool.GetOrCreate(countBufferSize);
-        /// <summary>
-        /// 计数缓冲区字节大小
-        /// </summary>
-        private const int countBufferSize64 = 256 * 8 * sizeof(int);
-        /// <summary>
-        /// 计数缓冲区
-        /// </summary>
-        private static readonly UnmanagedPool countBuffer64 = UnmanagedPool.GetOrCreate(countBufferSize64);
-        /// <summary>
-        /// 获取非托管内存池
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static UnmanagedPool GetUnmanagedPool(int size)
-        {
-            return size <= UnmanagedPool.DefaultSize ? (size <= UnmanagedPool.TinySize ? UnmanagedPool.Tiny : UnmanagedPool.Default) : countBuffer64;
-        }
+        private static readonly UnmanagedPool countBuffer64 = UnmanagedPool.RadixSortCountBuffer;
 
         /// <summary>
         /// 数组排序
@@ -52,8 +35,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sort(uint* arrayFixed, uint* newArrayFixed, uint* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (uint* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -101,8 +84,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void Sort(UIntSortIndex* arrayFixed, UIntSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (UIntSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -151,8 +134,8 @@ namespace AutoCSer.Algorithm
         internal static unsafe void Sort(uint[] array, int startIndex, int count)
         {
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (uint* arrayFixed = array)
@@ -161,7 +144,7 @@ namespace AutoCSer.Algorithm
                     sort(start, start, swap.UInt, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -174,13 +157,13 @@ namespace AutoCSer.Algorithm
         {
             uint[] newArray = new uint[count];
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (uint* newArrayFixed = newArray, arrayFixed = array) sort(arrayFixed + startIndex, newArrayFixed, swap.UInt, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
 
@@ -193,8 +176,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sortDesc(uint* arrayFixed, uint* newArrayFixed, uint* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (uint* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -242,8 +225,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void SortDesc(UIntSortIndex* arrayFixed, UIntSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (UIntSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -292,8 +275,8 @@ namespace AutoCSer.Algorithm
         internal static unsafe void SortDesc(uint[] array, int startIndex, int count)
         {
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (uint* arrayFixed = array)
@@ -302,7 +285,7 @@ namespace AutoCSer.Algorithm
                     sortDesc(start, start, swap.UInt, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -315,13 +298,13 @@ namespace AutoCSer.Algorithm
         {
             uint[] newArray = new uint[count];
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (uint* newArrayFixed = newArray, arrayFixed = array) sortDesc(arrayFixed + startIndex, newArrayFixed, swap.UInt, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
         
@@ -345,8 +328,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sort(int* arrayFixed, int* newArrayFixed, uint* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (int* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -395,8 +378,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void Sort(IntSortIndex* arrayFixed, UIntSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (IntSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -457,8 +440,8 @@ namespace AutoCSer.Algorithm
         public static unsafe void Sort(int[] array, int startIndex, int count)
         {
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (int* arrayFixed = array)
@@ -467,7 +450,7 @@ namespace AutoCSer.Algorithm
                     sort(start, start, swap.UInt, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -480,13 +463,13 @@ namespace AutoCSer.Algorithm
         {
             int[] newArray = new int[count];
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (int* newArrayFixed = newArray, arrayFixed = array) sort(arrayFixed + startIndex, newArrayFixed, swap.UInt, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
 
@@ -499,8 +482,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sortDesc(int* arrayFixed, int* newArrayFixed, uint* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (int* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -549,8 +532,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void SortDesc(IntSortIndex* arrayFixed, UIntSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize >> 3);
+            byte* countFixed = countBuffer.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.DefaultSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + (256 * 3 - 1);
             for (IntSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
             {
@@ -600,8 +583,8 @@ namespace AutoCSer.Algorithm
         public static unsafe void SortDesc(int[] array, int startIndex, int count)
         {
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (int* arrayFixed = array)
@@ -610,7 +593,7 @@ namespace AutoCSer.Algorithm
                     sortDesc(start, start, swap.UInt, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -623,13 +606,13 @@ namespace AutoCSer.Algorithm
         {
             int[] newArray = new int[count];
             int size = count * sizeof(uint);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (int* newArrayFixed = newArray, arrayFixed = array) sortDesc(arrayFixed + startIndex, newArrayFixed, swap.UInt, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
 
@@ -642,8 +625,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sort(ulong* arrayFixed, ulong* newArrayFixed, ulong* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (ulong* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -724,8 +707,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void Sort(ULongSortIndex* arrayFixed, ULongSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (ULongSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -807,8 +790,8 @@ namespace AutoCSer.Algorithm
         internal static unsafe void Sort(ulong[] array, int startIndex, int count)
         {
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (ulong* arrayFixed = array)
@@ -817,7 +800,7 @@ namespace AutoCSer.Algorithm
                     sort(start, start, swap.ULong, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -830,13 +813,13 @@ namespace AutoCSer.Algorithm
         {
             ulong[] newArray = new ulong[count];
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (ulong* newArrayFixed = newArray, arrayFixed = array) sort(arrayFixed + startIndex, newArrayFixed, swap.ULong, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
 
@@ -849,8 +832,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sortDesc(ulong* arrayFixed, ulong* newArrayFixed, ulong* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (ulong* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -931,8 +914,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void SortDesc(ULongSortIndex* arrayFixed, ULongSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (ULongSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -1014,8 +997,8 @@ namespace AutoCSer.Algorithm
         internal static unsafe void SortDesc(ulong[] array, int startIndex, int count)
         {
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (ulong* arrayFixed = array)
@@ -1024,7 +1007,7 @@ namespace AutoCSer.Algorithm
                     sortDesc(start, start, swap.ULong, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -1037,13 +1020,13 @@ namespace AutoCSer.Algorithm
         {
             ulong[] newArray = new ulong[count];
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (ulong* newArrayFixed = newArray, arrayFixed = array) sortDesc(arrayFixed + startIndex, newArrayFixed, swap.ULong, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
         
@@ -1067,8 +1050,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sort(long* arrayFixed, long* newArrayFixed, ulong* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (long* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -1156,8 +1139,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void Sort(LongSortIndex* arrayFixed, ULongSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (LongSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -1259,8 +1242,8 @@ namespace AutoCSer.Algorithm
         internal static unsafe void Sort(long[] array, int startIndex, int count)
         {
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (long* arrayFixed = array)
@@ -1269,7 +1252,7 @@ namespace AutoCSer.Algorithm
                     sort(start, start, swap.ULong, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -1282,13 +1265,13 @@ namespace AutoCSer.Algorithm
         {
             long[] newArray = new long[count];
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (long* newArrayFixed = newArray, arrayFixed = array) sort(arrayFixed + startIndex, newArrayFixed, swap.ULong, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
 
@@ -1301,8 +1284,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         private static unsafe void sortDesc(long* arrayFixed, long* newArrayFixed, ulong* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (long* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -1390,8 +1373,8 @@ namespace AutoCSer.Algorithm
         /// <param name="length">数组数据长度</param>
         internal static unsafe void SortDesc(LongSortIndex* arrayFixed, ULongSortIndex* swapFixed, int length)
         {
-            byte* countFixed = countBuffer64.Get();
-            Memory.ClearUnsafe((ulong*)countFixed, countBufferSize64 >> 3);
+            byte* countFixed = countBuffer64.GetPointer().Byte;
+            AutoCSer.Memory.Common.Clear((ulong*)countFixed, UnmanagedPool.RadixSortCountBufferSize >> 3);
             int* count0 = (int*)countFixed + 1, count8 = count0 + 256, count16 = count0 + 256 * 2, count24 = count0 + 256 * 3;
             int* count32 = count0 + 256 * 4, count40 = count0 + 256 * 5, count48 = count0 + 256 * 6, count56 = count0 + (256 * 7 - 1);
             for (LongSortIndex* start = arrayFixed, end = arrayFixed + length; start != end; ++start)
@@ -1482,8 +1465,8 @@ namespace AutoCSer.Algorithm
         internal static unsafe void SortDesc(long[] array, int startIndex, int count)
         {
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (long* arrayFixed = array)
@@ -1492,7 +1475,7 @@ namespace AutoCSer.Algorithm
                     sortDesc(start, start, swap.ULong, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -1505,13 +1488,13 @@ namespace AutoCSer.Algorithm
         {
             long[] newArray = new long[count];
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (long* newArrayFixed = newArray, arrayFixed = array) sortDesc(arrayFixed + startIndex, newArrayFixed, swap.ULong, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
         
@@ -1535,10 +1518,10 @@ namespace AutoCSer.Algorithm
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static unsafe void Sort(DateTime[] array, int startIndex, int count)
         {
-            Sort(new UnionType { Value = array }.LongArray, startIndex, count);
+            Sort(new UnionType.LongArray { Object = array }.Value, startIndex, count);
             //int size = count * sizeof(ulong);
             //UnmanagedPool pool = GetUnmanagedPool(size);
-            //Pointer.Size swap = pool.GetSize64(size);
+            //AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             //try
             //{
             //    fixed (DateTime* arrayFixed = array)
@@ -1547,7 +1530,7 @@ namespace AutoCSer.Algorithm
             //        sort(start, start, swap.ULong, count);
             //    }
             //}
-            //finally { pool.PushOnly(ref swap); }
+            //finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -1560,13 +1543,13 @@ namespace AutoCSer.Algorithm
         {
             DateTime[] newArray = new DateTime[count];
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (DateTime* newArrayFixed = newArray, arrayFixed = array) sort((long*)arrayFixed + startIndex, (long*)newArrayFixed, swap.ULong, count);
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
         /// <summary>
@@ -1589,10 +1572,10 @@ namespace AutoCSer.Algorithm
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static unsafe void SortDesc(DateTime[] array, int startIndex, int count)
         {
-            SortDesc(new UnionType { Value = array }.LongArray, startIndex, count);
+            SortDesc(new UnionType.LongArray { Object = array }.Value, startIndex, count);
             //int size = count * sizeof(ulong);
             //UnmanagedPool pool = GetUnmanagedPool(size);
-            //Pointer.Size swap = pool.GetSize64(size);
+            //AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             //try
             //{
             //    fixed (DateTime* arrayFixed = array)
@@ -1601,7 +1584,7 @@ namespace AutoCSer.Algorithm
             //        sortDesc(start, start, swap.ULong, count);
             //    }
             //}
-            //finally { pool.PushOnly(ref swap); }
+            //finally { pool.Push(ref swap); }
         }
         /// <summary>
         /// 数组排序
@@ -1614,8 +1597,8 @@ namespace AutoCSer.Algorithm
         {
             DateTime[] newArray = new DateTime[count];
             int size = count * sizeof(ulong);
-            UnmanagedPool pool = GetUnmanagedPool(size);
-            Pointer.Size swap = pool.GetSize64(size);
+            UnmanagedPool pool = UnmanagedPool.GetPool(size);
+            AutoCSer.Memory.Pointer swap = pool.GetMinSize(size);
             try
             {
                 fixed (DateTime* newArrayFixed = newArray, arrayFixed = array)
@@ -1623,7 +1606,7 @@ namespace AutoCSer.Algorithm
                     sortDesc((long*)arrayFixed + startIndex, (long*)newArrayFixed, swap.ULong, count);
                 }
             }
-            finally { pool.PushOnly(ref swap); }
+            finally { pool.Push(ref swap); }
             return newArray;
         }
     }

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer
@@ -90,7 +90,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(AutoWaitReturnValue));
+        private readonly static int poolMaxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(AutoWaitReturnValue));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -98,7 +98,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -126,7 +126,7 @@ namespace AutoCSer.Net.TcpServer
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -138,23 +138,23 @@ namespace AutoCSer.Net.TcpServer
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         public static AutoWaitReturnValue Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            popLock.EnterYield();
             AutoWaitReturnValue headValue;
             do
             {
                 if ((headValue = poolHead) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     return new AutoWaitReturnValue();
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref poolHead, headValue.next, headValue) == headValue)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref poolCount);
                     headValue.next = null;
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -181,7 +181,7 @@ namespace AutoCSer.Net.TcpServer
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -212,7 +212,7 @@ namespace AutoCSer.Net.TcpServer
         }
         static AutoWaitReturnValue()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(AutoWaitReturnValue));
         }
     }
     /// <summary>
@@ -302,7 +302,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(AutoWaitReturnValue<outputParameterType>));
+        private readonly static int poolMaxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(AutoWaitReturnValue<outputParameterType>));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -310,7 +310,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -338,7 +338,7 @@ namespace AutoCSer.Net.TcpServer
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -349,23 +349,23 @@ namespace AutoCSer.Net.TcpServer
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         public static AutoWaitReturnValue<outputParameterType> Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            popLock.EnterYield();
             AutoWaitReturnValue<outputParameterType> headValue;
             do
             {
                 if ((headValue = poolHead) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     return new AutoWaitReturnValue<outputParameterType>();
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref poolHead, headValue.next, headValue) == headValue)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref poolCount);
                     headValue.next = null;
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -392,7 +392,7 @@ namespace AutoCSer.Net.TcpServer
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -424,7 +424,7 @@ namespace AutoCSer.Net.TcpServer
 
         static AutoWaitReturnValue()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(AutoWaitReturnValue<outputParameterType>));
         }
     }
 }

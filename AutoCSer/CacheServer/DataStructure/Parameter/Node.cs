@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure.Abstract;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CacheServer.DataStructure.Parameter
 {

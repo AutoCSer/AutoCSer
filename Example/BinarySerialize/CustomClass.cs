@@ -17,9 +17,9 @@ namespace AutoCSer.Example.BinarySerialize
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal static void Serialize(AutoCSer.BinarySerialize.Serializer serializer, CustomClass value)
+        internal static void Serialize(AutoCSer.BinarySerializer serializer, CustomClass value)
         {
             serializer.Stream.Write(value.Value == null ? 1 : 2);
         }
@@ -28,9 +28,9 @@ namespace AutoCSer.Example.BinarySerialize
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <param name="value">目标数据，可能为 null</param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref CustomClass value)
+        private static unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer, ref CustomClass value)
         {
             byte* read = deSerializer.CustomRead;
             if (deSerializer.MoveReadAny(sizeof(int)))
@@ -51,15 +51,15 @@ namespace AutoCSer.Example.BinarySerialize
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(new CustomClass { Value = null });
-            CustomClass newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<CustomClass>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(new CustomClass { Value = null });
+            CustomClass newValue = AutoCSer.BinaryDeSerializer.DeSerialize<CustomClass>(data);
             if (newValue == null || newValue.Value != null)
             {
                 return false;
             }
 
-            data = AutoCSer.BinarySerialize.Serializer.Serialize(new CustomClass { Value = string.Empty });
-            newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<CustomClass>(data);
+            data = AutoCSer.BinarySerializer.Serialize(new CustomClass { Value = string.Empty });
+            newValue = AutoCSer.BinaryDeSerializer.DeSerialize<CustomClass>(data);
             return newValue != null && newValue.Value == string.Empty;
         }
     }

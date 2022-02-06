@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -474,20 +474,22 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
+        private static void clearCache()
         {
-            Monitor.Enter(typeLock);
-            try
+            if (types.Count != 0)
             {
-                if (types.Count != 0) types = DictionaryCreator.CreateOnly<Type, ExtensionType>();
+                Monitor.Enter(typeLock);
+                try
+                {
+                    if (types.Count != 0) types = DictionaryCreator.CreateOnly<Type, ExtensionType>();
+                }
+                finally { Monitor.Exit(typeLock); }
             }
-            finally { Monitor.Exit(typeLock); }
         }
         static ExtensionType()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(ExtensionType), 60 * 60);
 
             scriptTypes = DictionaryCreator.CreateOnly<Type, string>();
             scriptTypes.Add(typeof(bool), "boolean");

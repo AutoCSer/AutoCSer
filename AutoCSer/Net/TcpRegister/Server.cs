@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using AutoCSer.Net.TcpInternalServer;
 
@@ -38,7 +38,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// 客户端集合
         /// </summary>
-        protected LeftArray<ClientInfo> clients;
+        protected LeftArray<ClientInfo> clients = new LeftArray<ClientInfo>(0);
         /// <summary>
         /// TCP 服务信息集合
         /// </summary>
@@ -89,7 +89,7 @@ namespace AutoCSer.Net.TcpRegister
         [TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.QueueLink, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         protected virtual void getLog(ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallback<ServerLog> onLog)
         {
-            ClientInfo client = new UnionType { Value = sender.ClientObject }.ClientInfo;
+            ClientInfo client = new UnionType.ClientInfo { Object = sender.ClientObject }.Value;
             foreach (ServerSet serverSet in serverSets.Values)
             {
                 if (!serverSet.OnLog(onLog))
@@ -127,7 +127,7 @@ namespace AutoCSer.Net.TcpRegister
                         if (serverSets.TryGetValue(server.Name, out serverSet)) serverSet.Remove(server);
                         break;
                     default:
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, "未知的 TCP 内部注册服务更新日志类型 " + server.toJson());
+                        AutoCSer.LogHelper.Error("未知的 TCP 内部注册服务更新日志类型 " + server.toJson(), LogLevel.Error | LogLevel.AutoCSer);
                         return false;
                 }
                 if (isLog)

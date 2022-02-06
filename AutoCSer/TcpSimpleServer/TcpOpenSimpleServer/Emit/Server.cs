@@ -14,10 +14,10 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         /// </summary>
         internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenSimpleServer.Server), typeof(ServerAttribute), typeof(ServerSocket)
             , ParameterGenericType.Get
-            , ((Func<bool>)ParameterGenericType.ServerSocket.Send).Method
-            , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.Send).Method
-            , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.SendOutput).Method
-            , ((Action<Exception>)ParameterGenericType.ServerSocket.Log).Method);
+            , ParameterGenericType.ServerSocketSendMethod
+            , ParameterGenericType.ServerSocketSendReturnTypeMethod
+            , ParameterGenericType.ServerSocketSendOutputMethod
+            , ParameterGenericType.ServerSocketLogMethod);
     }
     /// <summary>
     /// TCP 服务
@@ -59,7 +59,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         /// <param name="verify">套接字验证委托</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 服务</returns>
-        public static TcpOpenSimpleServer.Server Create(interfaceType value, ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+        public static TcpOpenSimpleServer.Server Create(interfaceType value, ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
         {
             if (serverConstructorInfo == null) throw new InvalidOperationException();
             if (errorString != null) throw new Exception(errorString);
@@ -91,7 +91,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
                 defaultServerAttribute = builder.DefaultServerAttribute;
                 methods = builder.Methods;
 
-                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.Log.ILog) };
+                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.ILog) };
                 Method<ServerAttribute, MethodAttribute, ServerSocket>.ServerBuilder serverBuilder = new Method<ServerAttribute, MethodAttribute, ServerSocket>.ServerBuilder { Metadata = Server.Metadata };
                 serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), constructorParameterTypes, methods);
                 Outputs = serverBuilder.Outputs;

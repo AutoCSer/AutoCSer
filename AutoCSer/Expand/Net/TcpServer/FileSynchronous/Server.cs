@@ -8,7 +8,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
     /// <summary>
     /// 文件同步服务端
     /// </summary>
-    public sealed class Server : IDisposable
+    public sealed class Server : AutoCSer.Threading.SecondTimerTaskNode, IDisposable
     {
         /// <summary>
         /// 文件同步根目录
@@ -27,25 +27,13 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
         /// </summary>
         private readonly object fileLock = new object();
         /// <summary>
-        /// 超时检测
-        /// </summary>
-        private readonly Action onTimerHandle;
-        /// <summary>
         /// 超时秒数
         /// </summary>
         private readonly int timeoutSeconds;
         /// <summary>
-        /// 超时检测间隔秒数
-        /// </summary>
-        private readonly int checkTimeoutSeconds;
-        /// <summary>
         /// 超时检测文件编号集合
         /// </summary>
         private readonly List<long> timeoutIdentitys = new List<long>();
-        /// <summary>
-        /// 当前超时检测秒数
-        /// </summary>
-        private int timerSeconds;
         /// <summary>
         /// 删除同步文件
         /// </summary>
@@ -64,51 +52,39 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
         /// <param name="timeoutSeconds">超时秒数，默认为 60</param>
         /// <param name="checkTimeoutSeconds">超时检测间隔秒数，默认为 30</param>
         public Server(string path, int downloadBufferSize = 4 << 10, int timeoutSeconds = 60, int checkTimeoutSeconds = 30)
+            : base(AutoCSer.Threading.SecondTimer.InternalTaskArray, Math.Max(checkTimeoutSeconds, 1), Threading.SecondTimerThreadMode.TinyBackgroundThreadPool, Threading.SecondTimerKeepMode.After, Math.Max(checkTimeoutSeconds, 1))
         {
             DirectoryInfo directory = new DirectoryInfo(path);
             if (!directory.Exists) directory.Create();
             Path = directory.FullName;
             DownloadBufferSize = Math.Max(downloadBufferSize, 1 << 10);
             this.timeoutSeconds = Math.Max(timeoutSeconds, 1);
-            timerSeconds = this.checkTimeoutSeconds = Math.Max(checkTimeoutSeconds, 1);
-            AutoCSer.Date.OnTime += (onTimerHandle = onTimer);
         }
         /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()
         {
-            AutoCSer.Date.OnTime -= onTimerHandle;
+            KeepMode = Threading.SecondTimerKeepMode.Canceled;
         }
         /// <summary>
         /// 超时检测
         /// </summary>
-        private void onTimer()
+        protected internal override void OnTimer()
         {
-            if (Interlocked.Decrement(ref timerSeconds) == 0)
+            if (files.Count != 0)
             {
+                timeoutIdentitys.Clear();
+                Monitor.Enter(fileLock);
                 try
                 {
-                    if (files.Count != 0)
+                    foreach (ServerFile serverFile in files.Values)
                     {
-                        timeoutIdentitys.Clear();
-                        Monitor.Enter(fileLock);
-                        try
-                        {
-                            foreach (ServerFile serverFile in files.Values)
-                            {
-                                if (serverFile.CheckTimeout(timeoutSeconds)) timeoutIdentitys.Add(serverFile.Identity);
-                            }
-                            foreach (long identity in timeoutIdentitys) files.Remove(identity);
-                        }
-                        finally { Monitor.Exit(fileLock); }
+                        if (serverFile.CheckTimeout(timeoutSeconds)) timeoutIdentitys.Add(serverFile.Identity);
                     }
+                    foreach (long identity in timeoutIdentitys) files.Remove(identity);
                 }
-                finally
-                {
-                    
-                    Interlocked.Exchange(ref timerSeconds, checkTimeoutSeconds);
-                }
+                finally { Monitor.Exit(fileLock); }
             }
         }
 
@@ -259,7 +235,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
                     {
                         Monitor.Exit(fileLock);
                         state = SynchronousState.ServerException;
-                        new UnionType { Value = serverFile }.ServerUploadFile.Upload(ref data, ref onUploaded);
+                        new UnionType.ServerUploadFile { Object = serverFile }.Value.Upload(ref data, ref onUploaded);
                     }
                     else
                     {
@@ -324,7 +300,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
                     {
                         Monitor.Exit(fileLock);
                         state = SynchronousState.ServerException;
-                        new UnionType { Value = serverFile }.ServerDownloadFile.Download(ref onDownload);
+                        new UnionType.ServerDownloadFile { Object = serverFile }.Value.Download(ref onDownload);
                     }
                     else
                     {

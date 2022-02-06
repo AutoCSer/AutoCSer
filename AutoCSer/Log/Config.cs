@@ -5,7 +5,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 日志配置
     /// </summary>
-    public class Config
+    //public class Config
     {
         /// <summary>
         /// 日志文件目录

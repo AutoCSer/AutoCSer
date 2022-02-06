@@ -67,19 +67,19 @@ namespace AutoCSer.Example.TcpInterfaceOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -153,19 +153,19 @@ namespace AutoCSer.Example.TcpInterfaceOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -225,19 +225,19 @@ namespace AutoCSer.Example.TcpInterfaceOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -318,19 +318,19 @@ namespace AutoCSer.Example.TcpInterfaceOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }
@@ -390,19 +390,19 @@ namespace AutoCSer.Example.TcpInterfaceOpenSimpleServer
                         this.Parent = _parent_;
                         this.value = value;
                     }
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         base.deSerializeParameterStruct(deSerializer, ref value);
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         base.serializeParameterStruct(serializer, ref value);
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         base.deSerializeParameter(parser, ref value);
                     }

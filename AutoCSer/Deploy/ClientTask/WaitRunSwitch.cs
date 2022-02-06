@@ -7,7 +7,7 @@ namespace AutoCSer.Deploy.ClientTask
     /// <summary>
     /// 等待运行程序切换结束 任务信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class WaitRunSwitch : Task
     {
         /// <summary>
@@ -24,7 +24,7 @@ namespace AutoCSer.Deploy.ClientTask
         /// </summary>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal override DeployState Call(Timer timer)
+        internal override DeployResultData Call(Timer timer)
         {
             FileInfo file = new FileInfo(((UpdateSwitchFile)timer.DeployInfo.Tasks.Array[TaskIndex]).WaitFile);
             if (file.Exists)

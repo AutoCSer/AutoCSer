@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpServer.Emit
     /// <summary>
     /// 输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ReturnParameterGenericType
+    internal abstract partial class ReturnParameterGenericType : AutoCSer.Metadata.GenericTypeBase
     {
         /// <summary>
         /// 获取异步回调

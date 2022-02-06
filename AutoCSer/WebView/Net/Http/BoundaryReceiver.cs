@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -15,7 +15,7 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 缓存文件名称前缀
         /// </summary>
-        protected static readonly string cacheFileName = AutoCSer.Config.Pub.Default.CachePath + ((ulong)Date.NowTime.Now.Ticks).toHex();
+        protected static readonly string cacheFileName = AutoCSer.Common.Config.CachePath + ((ulong)AutoCSer.Threading.SecondTimer.Now.Ticks).toHex();
         /// <summary>
         /// HTTP 套接字
         /// </summary>
@@ -91,11 +91,11 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        public long LinkTaskTimestamp { get; set; }
+        public long SwitchTimestamp { get; set; }
         /// <summary>
         /// 下一个任务节点
         /// </summary>
-        public AutoCSer.Threading.ILinkTask NextLinkTask { get; set; }
+        public AutoCSer.Threading.ISwitchTaskNode NextSwitchTask { get; set; }
         /// <summary>
         /// HTTP 套接字数据接收器
         /// </summary>

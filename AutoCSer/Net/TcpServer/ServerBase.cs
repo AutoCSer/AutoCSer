@@ -2,10 +2,11 @@
 using System.Net.Sockets;
 using AutoCSer.Log;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Net;
 using System.Diagnostics;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpServer
 {
@@ -47,10 +48,16 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务器端同步调用队列（低优先级）
         /// </summary>
         internal readonly ServerCallCanDisposableQueue.LowPriorityLink CallQueueLink;
+#if !NOJIT
+        /// <summary>
+        /// 扩展服务集合
+        /// </summary>
+        private readonly ExtendServerSet extendServerSet;
+#endif
         /// <summary>
         /// 命令位图
         /// </summary>
-        private Pointer.Size commandData;
+        private AutoCSer.Memory.Pointer commandData;
         /// <summary>
         /// 命令位图
         /// </summary>
@@ -62,7 +69,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 验证超时
         /// </summary>
-        internal SocketTimeoutLink.TimerLink ReceiveVerifyCommandTimeout;
+        internal SocketTimeoutLink ReceiveVerifyCommandTimeout;
         /// <summary>
         /// TCP 套接字
         /// </summary>
@@ -95,13 +102,19 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
+        /// <param name="extendCommandBits">扩展服务命令二进制位数</param>
         /// <param name="log">日志接口</param>
         /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal ServerBase(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+        internal ServerBase(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, byte extendCommandBits, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
             : base(attribute, attribute.GetReceiveBufferSize, attribute.GetSendBufferSize, attribute.GetServerSendBufferMaxSize, log)
         {
+#if !NOJIT
+            if (extendCommandBits == 0) extendServerSet = ExtendServerSet.Null;
+            else if (extendCommandBits < 9 || extendCommandBits > 16) throw new IndexOutOfRangeException("扩展服务命令二进制位数 " + extendCommandBits.toString() + " 超出范围 9-16");
+            else extendServerSet = new ExtendServerSet(this, extendCommandBits);
+#endif
             this.verify = verify;
             if (callQueueCount > 0)
             {
@@ -112,7 +125,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 else
                 {
-                    CallQueueArray = new KeyValue<ServerCallCanDisposableQueue, Threading.QueueTaskLinkThread<ServerCallBase>.LowPriorityLink>[Math.Min(callQueueCount, 256)];
+                    CallQueueArray = new KeyValue<ServerCallCanDisposableQueue, Threading.TaskQueueThread<ServerCallBase>.LowPriorityLink>[Math.Min(callQueueCount, 256)];
                     if (isCallQueueLink)
                     {
                         for (int index = 0; index != CallQueueArray.Length; ++index)
@@ -133,7 +146,7 @@ namespace AutoCSer.Net.TcpServer
             Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);
             int binaryDeSerializeMaxArraySize = attribute.GetBinaryDeSerializeMaxArraySize;
-            BinaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
+            BinaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinaryDeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
             VerifyMethodCount = isSynchronousVerifyMethod ? Server.DefaultVerifyMethodCount : (byte)(Server.DefaultVerifyMethodCount + 1);
         }
         /// <summary>
@@ -146,7 +159,7 @@ namespace AutoCSer.Net.TcpServer
                 if (isListen != 0)
                 {
                     isListen = 0;
-                    if (Log.IsAnyType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, "停止服务 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString());
+                    if (Log.IsAnyLevel(LogLevel.Info)) Log.Info("停止服务 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString(), LogLevel.Info | LogLevel.AutoCSer);
                     AutoCSer.DomainUnload.Unloader.Remove(this, DomainUnload.Type.TcpCommandBaseDispose, false);
                     StopListen();
                 }
@@ -168,6 +181,9 @@ namespace AutoCSer.Net.TcpServer
                 Socket = null;
             }
             Unmanaged.Free(ref commandData);
+#if !NOJIT
+            extendServerSet.Free();
+#endif
         }
         /// <summary>
         /// 启动服务
@@ -190,12 +206,12 @@ namespace AutoCSer.Net.TcpServer
                 Socket.Bind(new IPEndPoint(IpAddress, Port));
                 Socket.Listen(int.MaxValue);
                 isListen = 1;
-                if (Port == 0) Log.Add(AutoCSer.Log.LogType.Warn, GetType().FullName + "服务器端口为 0");
+                if (Port == 0) Log.Warn(GetType().FullName + "服务器端口为 0", LogLevel.Warn | LogLevel.AutoCSer);
             }
             catch (Exception error)
             {
                 Dispose();
-                Log.Add(AutoCSer.Log.LogType.Error, error, GetType().FullName + "服务器端口 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString() + " TCP连接失败)");
+                Log.Exception(error, GetType().FullName + "服务器端口 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString() + " TCP连接失败)", LogLevel.Exception | LogLevel.AutoCSer);
             }
             return isListen != 0;
         }
@@ -213,7 +229,7 @@ namespace AutoCSer.Net.TcpServer
                 tcpRegisterClient = TcpRegister.Client.Get(tcpRegisterName, Log);
                 if (tcpRegisterClient == null)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部注册服务 " + tcpRegisterName + " 客户端获取失败");
+                    Log.Error("TCP 内部注册服务 " + tcpRegisterName + " 客户端获取失败", LogLevel.Error | LogLevel.AutoCSer);
                     return false;
                 }
                 if (attribute.ClientRegisterHost == null) attribute.ClientRegisterHost = attribute.Host;
@@ -248,7 +264,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="count">命令数量</param>
         protected internal void setCommandData(int count)
         {
-            commandData = Unmanaged.GetSizeUnsafe64(((count + TcpServer.Server.CommandStartIndex + 63) >> 6) << 3, true);
+            commandData = Unmanaged.GetPointer(((count + TcpServer.Server.CommandStartIndex + 63) >> 6) << 3, true);
             commands = new MemoryMap(commandData.Data);
             commands.Set(TcpServer.Server.CheckCommandIndex);
             if (isCustomData) commands.Set(TcpServer.Server.CustomDataCommandIndex);
@@ -264,11 +280,21 @@ namespace AutoCSer.Net.TcpServer
         /// 设置命令索引信息
         /// </summary>
         /// <param name="methodIndex">命令处理索引</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected internal void setCommand(int methodIndex)
         {
             int command = methodIndex + TcpServer.Server.CommandStartIndex;
-            if (command > MaxCommand) MaxCommand = command;
+            if (command > MaxCommand)
+            {
+#if NOJIT
+                if (command > (int)Server.CommandIndexAnd)
+#else
+                if (!extendServerSet.CheckMaxCommand(command))
+#endif
+                {
+                    throw new IndexOutOfRangeException("命令索引超出最大范围");
+                }
+                MaxCommand = command;
+            }
             commands.Set(command);
         }
         /// <summary>
@@ -277,11 +303,11 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="commandData"></param>
         /// <param name="commands"></param>
         /// <returns></returns>
-        internal bool CreateCommandData(ref Pointer.Size commandData, ref MemoryMap commands)
+        internal bool CreateCommandData(ref AutoCSer.Memory.Pointer commandData, ref MemoryMap commands)
         {
             if (this.commandData.Data != null)
             {
-                commandData = Unmanaged.GetSizeUnsafe64(this.commandData.ByteSize, true);
+                commandData = Unmanaged.GetPointer8(this.commandData.ByteSize, true);
                 commands = new MemoryMap(commandData.Data);
                 commands.Set(TcpServer.Server.CheckCommandIndex);
                 //if (isCustomData) commands.Set(TcpServer.Server.CustomDataCommandIndex);
@@ -313,8 +339,12 @@ namespace AutoCSer.Net.TcpServer
                 }
                 if (commandData.Data == null) return false;
             }
-            if (Log.IsAllType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, ServerAttribute.ServerName + " 缺少命令处理委托 [" + index.toString() + "]");
+#if NOJIT
+            if (Log.IsAllType(AutoCSer.LogLevel.Info)) Log.Add(AutoCSer.LogLevel.Info, ServerAttribute.ServerName + " 缺少命令处理委托 [" + index.toString() + "]");
             return false;
+#else
+            return extendServerSet.IsCommand(index);
+#endif
         }
         /// <summary>
         /// 设置验证命令序号
@@ -332,9 +362,9 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="socket"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool PushReceiveVerifyCommandTimeout(SocketTimeoutLink serverSocket, Socket socket)
+        internal bool PushReceiveVerifyCommandTimeout(SocketTimeoutNode serverSocket, Socket socket)
         {
-            SocketTimeoutLink.TimerLink receiveVerifyCommandTimeout = this.ReceiveVerifyCommandTimeout;
+            SocketTimeoutLink receiveVerifyCommandTimeout = this.ReceiveVerifyCommandTimeout;
             if (receiveVerifyCommandTimeout != null)
             {
                 receiveVerifyCommandTimeout.Push(serverSocket, socket);
@@ -347,9 +377,9 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="socket"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void CancelReceiveVerifyCommandTimeout(SocketTimeoutLink socket)
+        internal void CancelReceiveVerifyCommandTimeout(SocketTimeoutNode socket)
         {
-            SocketTimeoutLink.TimerLink receiveVerifyCommandTimeout = this.ReceiveVerifyCommandTimeout;
+            SocketTimeoutLink receiveVerifyCommandTimeout = this.ReceiveVerifyCommandTimeout;
             if (receiveVerifyCommandTimeout != null) receiveVerifyCommandTimeout.Cancel(socket);
         }
         /// <summary>
@@ -361,14 +391,36 @@ namespace AutoCSer.Net.TcpServer
             string verify = Attribute.VerifyString;
             if (verify == null)
             {
-                if (AutoCSer.Config.Pub.Default.IsDebug)
+                if (AutoCSer.Common.Config.IsDebug)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, "警告：调试模式未启用服务验证 " + ServerAttribute.ServerName, (StackFrame)null, true);
+                    Log.Debug("警告：调试模式未启用服务验证 " + ServerAttribute.ServerName, LogLevel.Debug | LogLevel.Warn | LogLevel.AutoCSer);
                     return true;
                 }
-                Log.Add(AutoCSer.Log.LogType.Error, "服务 " + ServerAttribute.ServerName + " 验证字符串不能为空", (StackFrame)null, true);
+                Log.Error("服务 " + ServerAttribute.ServerName + " 验证字符串不能为空", LogLevel.Error | LogLevel.AutoCSer);
             }
             return false;
         }
+#if !NOJIT
+        /// <summary>
+        /// 添加扩展服务
+        /// </summary>
+        /// <param name="interfaceType">服务接口类型</param>
+        /// <param name="name">服务绑定名称</param>
+        /// <returns>是否添加成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool AppendExtendServer(Type interfaceType, string name = null)
+        {
+            return extendServerSet.Append(interfaceType, name);
+        }
+        /// <summary>
+        /// 创建扩展服务
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        internal virtual ExtendServer CreateExtendServer(Type interfaceType)
+        {
+            throw new NotImplementedException();
+        }
+#endif
     }
 }

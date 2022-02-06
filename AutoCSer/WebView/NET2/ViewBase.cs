@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -60,14 +61,16 @@ namespace AutoCSer.WebView
         /// <param name="encodeBuffer"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool ResponsePage(ref byte* buffer, ref byte* encodeBuffer)
+        internal bool ResponsePage(ref AutoCSer.Memory.Pointer buffer, ref AutoCSer.Memory.Pointer encodeBuffer)
         {
-            if (ResponseStream == null) ResponseStream = new UnmanagedStream(null, 0);
-            ResponseStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+            if (ResponseStream == null) ResponseStream = new UnmanagedStream(default(AutoCSer.Memory.Pointer));
+            buffer = UnmanagedPool.Default.GetPointer();
+            ResponseStream.Reset(ref buffer);
             using (ResponseStream)
             {
-                if (EncodeStream == null) EncodeStream = new UnmanagedStream(null, 0);
-                EncodeStream.Reset(encodeBuffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                if (EncodeStream == null) EncodeStream = new UnmanagedStream(default(AutoCSer.Memory.Pointer));
+                encodeBuffer = UnmanagedPool.Default.GetPointer();
+                EncodeStream.Reset(ref encodeBuffer);
                 using (EncodeStream)
                 {
                     Response bodyResponse = new Response { Stream = ResponseStream, EncodeStream = EncodeStream, Encoding = DomainServer.ResponseEncoding };
@@ -85,9 +88,10 @@ namespace AutoCSer.WebView
         /// </summary>
         /// <param name="buffer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void ResponseAjax(ref byte* buffer)
+        internal void ResponseAjax(ref AutoCSer.Memory.Pointer buffer)
         {
-            AjaxStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+            buffer = UnmanagedPool.Default.GetPointer();
+            AjaxStream.Reset(ref buffer);
             using (AjaxStream)
             {
                 SetJsContentType();

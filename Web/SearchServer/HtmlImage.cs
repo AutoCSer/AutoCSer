@@ -63,7 +63,7 @@ namespace AutoCSer.Web.SearchServer
                     if (freeImageEnd == null) freeImageHead = images[images.Length - 1];
                     else freeImageEnd.HtmlId = headIndex;
                     freeImageEnd = images[0];
-                    images = NullValue<HtmlImage>.Array;
+                    images = EmptyArray<HtmlImage>.Array;
                 }
             }
             finally { Monitor.Exit(freeImageLock); }

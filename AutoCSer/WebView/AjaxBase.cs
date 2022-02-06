@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -32,7 +33,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// AJAX 输出数据流
         /// </summary>
-        internal readonly CharStream AjaxStream = new CharStream(null, 0);
+        internal readonly CharStream AjaxStream = new CharStream(default(AutoCSer.Memory.Pointer));
         /// <summary>
         /// AJAX 调用信息
         /// </summary>
@@ -40,7 +41,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 内存流最大字节数
         /// </summary>
-        internal override SubBuffer.Size MaxMemoryStreamSize { get { return MethodInfo.MaxMemoryStreamSize; } }
+        internal override AutoCSer.Memory.BufferSize MaxMemoryStreamSize { get { return MethodInfo.MaxMemoryStreamSize; } }
         /// <summary>
         /// 是否异步
         /// </summary>
@@ -75,14 +76,14 @@ namespace AutoCSer.WebView
         /// <param name="value">输出数据</param>
         /// <param name="buffer">输出缓冲区</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Response<valueType>(ref valueType value, byte* buffer) where valueType : struct
+        internal void Response<valueType>(ref valueType value, ref AutoCSer.Memory.Pointer buffer) where valueType : struct
         {
-            AjaxStream.Reset(buffer, AutoCSer.UnmanagedPool.DefaultSize);
+            AjaxStream.Reset(ref buffer);
             using (AjaxStream)
             {
                 SetJsContentType();
                 bool isCallBack = ResponseAjaxCallBack(AjaxStream);
-                AutoCSer.Json.Serializer.Serialize(ref value, AjaxStream, JsonSerializeConfig);
+                AutoCSer.JsonSerializer.Serialize(ref value, AjaxStream, JsonSerializeConfig);
                 if (isCallBack) AjaxStream.Write(')');
                 PageResponse.SetBody(AjaxStream, ref DomainServer.ResponseEncoding);
             }
@@ -92,9 +93,9 @@ namespace AutoCSer.WebView
         /// </summary>
         /// <param name="buffer">输出缓冲区</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Response(byte* buffer)
+        internal void Response(ref AutoCSer.Memory.Pointer buffer)
         {
-            AjaxStream.Reset(buffer, AutoCSer.UnmanagedPool.TinySize);
+            AjaxStream.Reset(ref buffer);
             using (AjaxStream)
             {
                 SetJsContentType();

@@ -23,13 +23,13 @@ namespace AutoCSer.Metadata
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinaryDeSerializeSubArrayMethod { get; }
+        internal abstract Delegate BinaryDeSerializeSubArrayMethod { get; }
 
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeSubArrayMethod { get; }
+        internal abstract Delegate BinarySerializeSubArrayMethod { get; }
 
         /// <summary>
         /// JSON 序列化预编译
@@ -43,44 +43,39 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal sealed partial class GenericType<Type> : GenericType
+    internal sealed partial class GenericType<T> : GenericType
     {
         /// <summary>
         /// 二进制序列化预编译
         /// </summary>
         internal override void BinarySerializeCompile()
         {
-            AutoCSer.BinarySerialize.TypeSerializer<Type>.Compile();
+            AutoCSer.BinarySerialize.TypeSerializer<T>.Compile();
         }
         /// <summary>
         /// 二进制反序列化预编译
         /// </summary>
         internal override void BinaryDeSerializeCompile()
         {
-            AutoCSer.BinarySerialize.TypeDeSerializer<Type>.Compile();
+            AutoCSer.BinarySerialize.TypeDeSerializer<T>.Compile();
         }
 
-        /// <summary>
-        /// 反序列化委托
-        /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerializeSubArray(ref SubArray<Type> value);
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinaryDeSerializeSubArrayMethod
+        internal override Delegate BinaryDeSerializeSubArrayMethod
         {
-            get { return ((deSerializeSubArray)GenericType.BinaryDeSerializer.subArrayDeSerialize<Type>).Method; }
+            get { return (AutoCSer.BinaryDeSerializer.DeSerializeDelegate<SubArray<T>>)BinaryDeSerializer.SubArrayDeSerialize<T>; }
         }
 
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeSubArrayMethod
+        internal override Delegate BinarySerializeSubArrayMethod
         {
-            get { return ((Action<SubArray<Type>>)GenericType.BinarySerializer.subArraySerialize<Type>).Method; }
+            get { return (Action<BinarySerializer, SubArray<T>>)BinarySerializer.SubArraySerialize<T>; }
         }
 
         /// <summary>
@@ -88,14 +83,14 @@ namespace AutoCSer.Metadata
         /// </summary>
         internal override void JsonSerializeCompile()
         {
-            AutoCSer.Json.TypeSerializer<Type>.Compile();
+            AutoCSer.Json.TypeSerializer<T>.Compile();
         }
         /// <summary>
         /// JSON 反序列化预编译
         /// </summary>
         internal override void JsonDeSerializeCompile()
         {
-            AutoCSer.Json.TypeParser<Type>.Compile();
+            AutoCSer.Json.TypeDeSerializer<T>.Compile();
         }
     }
 }

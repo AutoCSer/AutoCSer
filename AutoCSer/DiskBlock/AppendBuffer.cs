@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.DiskBlock
@@ -40,26 +41,25 @@ namespace AutoCSer.DiskBlock
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private unsafe void serialize(AutoCSer.BinarySerializer serializer)
         {
             UnmanagedStream stream = serializer.Stream;
             int size = Buffer.Length, offset = -(size + sizeof(ushort)) & 3;
-            stream.PrepLength(size + offset + (sizeof(int) + sizeof(ulong) + sizeof(ushort)));
-            stream.UnsafeWrite(size);
-            stream.UnsafeWrite(Index);
-            stream.UnsafeWriteNotEmpty(ref Buffer);
-            stream.UnsafeWrite(BlockIndex);
-            stream.ByteSize += offset;
+            byte* write = stream.GetBeforeMove(size + offset + (sizeof(int) + sizeof(ulong) + sizeof(ushort)));
+            *(int*)write = size;
+            *(ulong*)(write + sizeof(int)) = Index;
+            Buffer.CopyTo(new Span<byte>(write + (sizeof(int) + sizeof(ulong)), size));
+            *(ushort*)(write + (size + (sizeof(int) + sizeof(ulong)))) = BlockIndex;
         }
         /// <summary>
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer">序列化数据</param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             byte* read = deSerializer.Read;
             int size = *(int*)read;

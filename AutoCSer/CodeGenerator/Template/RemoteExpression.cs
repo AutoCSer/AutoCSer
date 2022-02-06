@@ -57,7 +57,7 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion LOOP IntputParameters
                     }
                     #region IF IntputParameters.Length
-                    protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                     {
                         #region LOOP IntputParameters
                         #region IF ParameterType.IsNull
@@ -68,7 +68,7 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion NOT ParameterType.IsNull
                         #endregion LOOP IntputParameters
                     }
-                    protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                     {
                         #region LOOP IntputParameters
                         #region IF ParameterType.IsNull
@@ -79,7 +79,7 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion NOT ParameterType.IsNull
                         #endregion LOOP IntputParameters
                     }
-                    protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                    protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                     {
                         #region LOOP IntputParameters
                         #region IF ParameterType.IsNull
@@ -90,7 +90,7 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion NOT ParameterType.IsNull
                         #endregion LOOP IntputParameters
                     }
-                    protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                    protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                     {
                         #region LOOP IntputParameters
                         base.deSerializeParameter(parser, ref @ParameterName);
@@ -177,7 +177,7 @@ namespace AutoCSer.CodeGenerator.Template
                             #endregion LOOP IntputParameters
                         }
                         #region IF IntputParameters.Length
-                        protected override void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer)
+                        protected override void serializeParameter(AutoCSer.BinarySerializer serializer)
                         {
                             #region LOOP IntputParameters
                             #region IF ParameterType.IsNull
@@ -188,7 +188,7 @@ namespace AutoCSer.CodeGenerator.Template
                             #endregion NOT ParameterType.IsNull
                             #endregion LOOP IntputParameters
                         }
-                        protected override void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                        protected override void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer)
                         {
                             #region LOOP IntputParameters
                             #region IF ParameterType.IsNull
@@ -199,7 +199,7 @@ namespace AutoCSer.CodeGenerator.Template
                             #endregion NOT ParameterType.IsNull
                             #endregion LOOP IntputParameters
                         }
-                        protected override void serializeParameter(AutoCSer.Json.Serializer serializer)
+                        protected override void serializeParameter(AutoCSer.JsonSerializer serializer)
                         {
                             #region LOOP IntputParameters
                             #region IF ParameterType.IsNull
@@ -210,7 +210,7 @@ namespace AutoCSer.CodeGenerator.Template
                             #endregion NOT ParameterType.IsNull
                             #endregion LOOP IntputParameters
                         }
-                        protected override void deSerializeParameter(AutoCSer.Json.Parser parser)
+                        protected override void deSerializeParameter(AutoCSer.JsonDeSerializer parser)
                         {
                             #region LOOP IntputParameters
                             deSerializeParameter(parser, ref @ParameterName);

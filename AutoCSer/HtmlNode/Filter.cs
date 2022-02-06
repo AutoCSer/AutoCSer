@@ -1,7 +1,8 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.HtmlNode
 {
@@ -25,7 +26,7 @@ namespace AutoCSer.HtmlNode
         /// <summary>
         /// 当前筛选节点匹配多值集合
         /// </summary>
-        private Pointer.Size valueData;
+        private AutoCSer.Memory.Pointer valueData;
         /// <summary>
         /// 当前筛选节点匹配多值集合
         /// </summary>
@@ -84,7 +85,7 @@ namespace AutoCSer.HtmlNode
                         if (++start != end && start != (end = next(start, end)))
                         {
                             char* index = end;
-                            if (*--index == ']' && (index = AutoCSer.Extension.StringExtension.FindNotNull(start, index, '[')) != null)
+                            if (*--index == ']' && (index = AutoCSer.Extensions.StringExtension.FindNotNull(start, index, '[')) != null)
                             {
                                 getValue(start, index);
                                 getIndex(++index, --end);
@@ -121,7 +122,7 @@ namespace AutoCSer.HtmlNode
                         if (++start != end)
                         {
                             end = next(start, end);
-                            char* value = AutoCSer.Extension.StringExtension.FindNotNull(start, end, '=');
+                            char* value = AutoCSer.Extensions.StringExtension.FindNotNull(start, end, '=');
                             if (value != null)
                             {
                                 getName(start, value);
@@ -193,7 +194,7 @@ namespace AutoCSer.HtmlNode
             {
                 isValueLower = true;
                 (this.value = new string(start, 0, (int)(end - start))).toLower();
-                if (AutoCSer.Extension.StringExtension.FindNotNull(start, end, ',') != null) getValues();
+                if (AutoCSer.Extensions.StringExtension.FindNotNull(start, end, ',') != null) getValues();
             }
         }
         /// <summary>
@@ -207,7 +208,7 @@ namespace AutoCSer.HtmlNode
             if (start != end)
             {
                 this.value = new string(start, 0, (int)(end - start));
-                if (AutoCSer.Extension.StringExtension.FindNotNull(start, end, ',') != null) getValues();
+                if (AutoCSer.Extensions.StringExtension.FindNotNull(start, end, ',') != null) getValues();
             }
         }
         /// <summary>
@@ -224,7 +225,7 @@ namespace AutoCSer.HtmlNode
             if (hashSet.Count > 1)
             {
                 valueData = AutoCSer.StateSearcher.CharBuilder.Create(hashSet.getArray(value => (string)value), false);
-                values = new StateSearcher.CharSearcher(valueData.Pointer);
+                values = new StateSearcher.CharSearcher(ref valueData);
             }
             else
             {
@@ -261,7 +262,7 @@ namespace AutoCSer.HtmlNode
             if (start != end)
             {
                 string value = new string(start, 0, (int)(end - start));
-                if (AutoCSer.Extension.StringExtension.FindNotNull(start, end, ',') == null)
+                if (AutoCSer.Extensions.StringExtension.FindNotNull(start, end, ',') == null)
                 {
                     if (!int.TryParse(value, out index)) index = -1;
                 }
@@ -348,12 +349,12 @@ namespace AutoCSer.HtmlNode
                             {
                                 do
                                 {
-                                    if (start == end) return AutoCSer.Extension.StringExtension.equalCaseNotNull(start - value.Length, valueFixed, value.Length);
+                                    if (start == end) return AutoCSer.Extensions.StringExtension.equalCaseNotNull(start - value.Length, valueFixed, value.Length);
                                     if (*start == ' ') break;
                                     ++start;
                                 }
                                 while (true);
-                                if (AutoCSer.Extension.StringExtension.equalCaseNotNull(start - value.Length, valueFixed, value.Length)) return true;
+                                if (AutoCSer.Extensions.StringExtension.equalCaseNotNull(start - value.Length, valueFixed, value.Length)) return true;
                                 start += value.Length + 1;
                             }
                             while (start <= end);
@@ -732,7 +733,7 @@ namespace AutoCSer.HtmlNode
             bits[':'] &= Node.FilterBit ^ 255;
             bits['@'] &= Node.FilterBit ^ 255;
 
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(Filter));
         }
     }
 }

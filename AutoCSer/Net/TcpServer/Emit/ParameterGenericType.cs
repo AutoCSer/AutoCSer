@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpServer.Emit
     /// <summary>
     /// 输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ParameterGenericType
+    internal abstract partial class ParameterGenericType : AutoCSer.Metadata.GenericTypeBase
     {
         /// <summary>
         /// TCP调用
@@ -63,5 +63,10 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 发送数据
         /// </summary>
         internal abstract MethodInfo ServerSocketSenderPushCommandMethod { get; }
+
+        /// <summary>
+        /// TCP 服务器端同步调用套接字发送对象通过函数验证处理
+        /// </summary>
+        internal abstract MethodInfo ServerSocketSenderDeSerializeMethod { get; }
     }
 }

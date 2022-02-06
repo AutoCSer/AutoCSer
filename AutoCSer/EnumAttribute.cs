@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -82,7 +82,7 @@ namespace AutoCSer
             int length = GetMaxValue(-1) + 1;
             if (length != 0)
             {
-                if (length >= 1024) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn, typeof(enumType).fullName() + " 枚举数组过大 " + length.toString());
+                if (length >= 1024) AutoCSer.LogHelper.Warn(typeof(enumType).fullName() + " 枚举数组过大 " + length.toString(), LogLevel.Warn | LogLevel.AutoCSer);
                 int index;
                 attributeType[] names = new attributeType[length];
                 //Type enumAttributeType = typeof(attributeType);
@@ -96,7 +96,7 @@ namespace AutoCSer
                 }
                 return names;
             }
-            return NullValue<attributeType>.Array;
+            return EmptyArray<attributeType>.Array;
         }
         /// <summary>
         /// 根据索引获取属性

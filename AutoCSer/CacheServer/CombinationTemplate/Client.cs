@@ -1,5 +1,5 @@
 ﻿using System;
-/*Type:ulong,GetULong;long,GetLong;uint,GetUInt;int,GetInt;ushort,GetUShort;short,GetShort;byte,GetByte;sbyte,GetSByte;double,GetDouble;float,GetFloat;decimal,GetDecimal;bool,GetBool*/
+/*ulong,ULong;long,Long;uint,UInt;int,Int;ushort,UShort;short,Short;byte,Byte;sbyte,SByte;double,Double;float,Float;decimal,Decimal;bool,Bool*/
 
 namespace AutoCSer.CacheServer
 {
@@ -14,9 +14,9 @@ namespace AutoCSer.CacheServer
         /// <param name="value"></param>
         /// <returns></returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static ReturnValue</*Type[0]*/ulong/*Type[0]*/> /*Type[1]*/GetULong/*Type[1]*/(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
+        internal static ReturnValue<ulong> GetULong(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.Parameter./*Type[1]*/GetULong/*Type[1]*/(value.Type);
+            return value.Value.Parameter.GetULong(value.Type);
         }
     }
 }

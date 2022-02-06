@@ -7,7 +7,7 @@ namespace AutoCSer.Threading
     /// 定时任务信息
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    internal struct TimerTaskInfo
+    //internal struct TimerTaskInfo
     {
         /// <summary>
         /// 任务委托
@@ -16,7 +16,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 调用类型
         /// </summary>
-        internal Thread.CallType CallType;
+        internal Thread.ThreadTaskType CallType;
         /// <summary>
         /// 是否启动线程池线程
         /// </summary>
@@ -36,7 +36,7 @@ namespace AutoCSer.Threading
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Call()
         {
-            new Thread.CallInfo { Value = Value, Type = CallType }.Call();
+            new Thread.ThreadTask { Value = Value, Type = CallType }.Call();
         }
     }
 }

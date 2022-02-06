@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -12,7 +13,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 默认 AJAX 调用配置
         /// </summary>
-        internal static readonly AjaxAttribute DefaultAttribute = ConfigLoader.GetUnion(typeof(AjaxAttribute)).AjaxAttribute ?? new AjaxAttribute();
+        internal static readonly AjaxAttribute DefaultAttribute = (AjaxAttribute)AutoCSer.Configuration.Common.Get(typeof(AjaxAttribute)) ?? new AjaxAttribute();
         /// <summary>
         /// HTTP请求头部处理
         /// </summary>
@@ -34,13 +35,13 @@ namespace AutoCSer.WebView
         /// <param name="value">输出数据</param>
         internal unsafe void Response<valueType>(ref valueType value) where valueType : struct
         {
-            byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
+            AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
             try
             {
-                Response(ref value, buffer);
+                Response(ref value, ref buffer);
                 SocketResponse(ref PageResponse);
             }
-            finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }
+            finally { UnmanagedPool.Default.PushOnly(ref buffer); }
         }
         /// <summary>
         /// AJAX响应输出
@@ -54,13 +55,13 @@ namespace AutoCSer.WebView
             }
             else
             {
-                byte* buffer = AutoCSer.UnmanagedPool.Tiny.Get();
+                AutoCSer.Memory.Pointer buffer = UnmanagedPool.Tiny.GetPointer();
                 try
                 {
-                    Response(buffer);
+                    Response(ref buffer);
                     SocketResponse(ref PageResponse);
                 }
-                finally { AutoCSer.UnmanagedPool.Tiny.Push(buffer); }
+                finally { UnmanagedPool.Tiny.PushOnly(ref buffer); }
             }
         }
 
@@ -108,13 +109,13 @@ namespace AutoCSer.WebView
         /// <param name="value">输出数据</param>
         internal unsafe void Response<valueType>(ref valueType value) where valueType : struct
         {
-            byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
+            AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
             try
             {
-                Response(ref value, buffer);
+                Response(ref value, ref buffer);
                 if (SocketResponse(ref PageResponse)) PushPool();
             }
-            finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }
+            finally { UnmanagedPool.Default.PushOnly(ref buffer); }
         }
         /// <summary>
         /// AJAX响应输出
@@ -128,13 +129,13 @@ namespace AutoCSer.WebView
             }
             else
             {
-                byte* buffer = AutoCSer.UnmanagedPool.Tiny.Get();
+                AutoCSer.Memory.Pointer buffer = UnmanagedPool.Tiny.GetPointer();
                 try
                 {
-                    Response(buffer);
+                    Response(ref buffer);
                     if (SocketResponse(ref PageResponse)) PushPool();
                 }
-                finally { AutoCSer.UnmanagedPool.Tiny.Push(buffer); }
+                finally { UnmanagedPool.Tiny.PushOnly(ref buffer); }
             }
         }
 
@@ -177,23 +178,23 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static ajaxType Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            popLock.EnterYield();
             ajaxType headValue;
             do
             {
                 if ((headValue = poolHead) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     return null;
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref poolHead, headValue.next, headValue) == headValue)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref poolCount);
                     headValue.setPool(headValue);
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -224,7 +225,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(ajaxType));
+        private readonly static int poolMaxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(ajaxType));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -232,7 +233,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -264,7 +265,7 @@ namespace AutoCSer.WebView
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -291,7 +292,7 @@ namespace AutoCSer.WebView
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -340,7 +341,7 @@ namespace AutoCSer.WebView
         }
         static Ajax()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(Ajax<ajaxType>));
         }
     }
 }

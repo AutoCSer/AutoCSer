@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
@@ -65,7 +65,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             if (!tree.TryAdd(getSort(value), value))
             {
-                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -90,7 +90,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             if (!tree.Remove(getSort(value)))
             {
-                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
             }
         }
         /// <summary>

@@ -114,7 +114,7 @@ namespace AutoCSer.Net.Packet
         {
             if (data.Length >= HeaderSize)
             {
-                fixed (byte* dataFixed = data.Array)
+                fixed (byte* dataFixed = data.GetFixedBuffer())
                 {
                     byte* start = dataFixed + data.StartIndex;
                     uint packetSize = ((uint)*(start + 4) << 8) + *(start + 5);
@@ -125,7 +125,7 @@ namespace AutoCSer.Net.Packet
                     }
                 }
             }
-            this.data = default(SubArray<byte>);
+            this.data = new SubArray<byte>();
         }
     }
 }

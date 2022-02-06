@@ -5,7 +5,7 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 定时任务线程模式
     /// </summary>
-    public enum TimerTaskThreadType : byte
+    //public enum TimerTaskThreadType : byte
     {
         /// <summary>
         /// 线程池处理

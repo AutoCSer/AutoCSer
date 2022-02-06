@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer.Emit
 {
@@ -129,17 +130,22 @@ namespace AutoCSer.Net.TcpServer.Emit
         internal readonly MethodInfo ClientSocketSenderGetAwaiterMethod;
 
         /// <summary>
-        /// 异步等待
+        /// 创建异步等待
         /// </summary>
-        internal static readonly Awaiter Awaiter = new Awaiter();
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static Awaiter CreateAwaiter()
+        {
+            return new Awaiter();
+        }
         /// <summary>
         /// 异步等待构造函数
         /// </summary>
-        internal static readonly ConstructorInfo AwaiterConstructor = typeof(Awaiter).GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null);
+        internal static readonly MethodInfo CreateAwaiterMethod = ((Func<Awaiter>)CreateAwaiter).Method;
         /// <summary>
         /// 设置错误返回值类型
         /// </summary>
-        internal static readonly MethodInfo AwaiterCallReturnTypeMethod = ((Action<ReturnType>)Awaiter.Call).Method;
+        internal static readonly MethodInfo AwaiterCallReturnTypeMethod = ((Action<Awaiter, ReturnType>)Awaiter.Call).Method;
 #endif
     }
     /// <summary>
@@ -249,15 +255,15 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// TCP 客户端回调转换函数信息
         /// </summary>
-        internal static readonly MethodInfo ClientCallbackGetMethod = ((Func<Func<ReturnValue, bool>, Action<ReturnValue>>)ClientCallback.Get).Method;// typeof(ClientCallback).GetMethod("Get", BindingFlags.Public | BindingFlags.Static);
+        internal static readonly MethodInfo ClientCallbackGetMethod = ((Func<Func<ReturnValue, bool>, Action<ReturnValue>>)ClientCallback.Get).Method;
         /// <summary>
         /// 同步等待调用添加节点函数信息
         /// </summary>
-        internal static readonly MethodInfo AutoWaitReturnValuePushNotNullMethod = ((Action<AutoWaitReturnValue>)AutoWaitReturnValue.PushNotNull).Method;// typeof(AutoWaitReturnValue).GetMethod("PushNotNull", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue) }, null);
+        internal static readonly MethodInfo AutoWaitReturnValuePushNotNullMethod = ((Action<AutoWaitReturnValue>)AutoWaitReturnValue.PushNotNull).Method;
         /// <summary>
         /// TCP 服务客户端获取同步等待调用函数信息
         /// </summary>
-        internal static readonly MethodInfo AutoWaitReturnValuePopMethod = ((Func<AutoWaitReturnValue>)AutoWaitReturnValue.Pop).Method;//typeof(AutoWaitReturnValue).GetMethod("Pop", BindingFlags.Static | BindingFlags.Public);
+        internal static readonly MethodInfo AutoWaitReturnValuePopMethod = ((Func<AutoWaitReturnValue>)AutoWaitReturnValue.Pop).Method;
         /// <summary>
         /// 返回值类型字段信息
         /// </summary>

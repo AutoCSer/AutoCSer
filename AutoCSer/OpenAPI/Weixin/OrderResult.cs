@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -25,7 +25,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [AutoCSer.Xml.UnknownName]
-        private unsafe static bool parseCoupon(AutoCSer.Xml.Parser parser, ref OrderResult value, ref Pointer.Size name)
+        private unsafe static bool parseCoupon(AutoCSer.XmlDeSerializer parser, ref OrderResult value, ref AutoCSer.Memory.Pointer name)
         {
             return value.parseCoupon(parser, name.Char);
         }
@@ -38,7 +38,7 @@ namespace AutoCSer.OpenAPI.Weixin
         {
             if (config == null) config = Config.Default;
             if (appid == config.appid && mch_id == config.mch_id && Sign<PayNotify>.Check(this, config.key, sign)) return true;
-            config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+            config.PayLog.Debug("签名验证错误 " + AutoCSer.JsonSerializer.Serialize(this), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             return false;
         }
     }

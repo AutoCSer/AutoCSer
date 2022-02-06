@@ -34,7 +34,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// 完成状态
         /// </summary>
-        public bool IsCompleted { get; set; }
+        public bool IsCompleted { get; private set; }
         /// <summary>
         /// 设置错误返回值类型
         /// </summary>
@@ -43,7 +43,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         public void Call(ReturnType type)
         {
             returnValueType = type;
-            continuation = Pub.EmptyAction;
+            continuation = Common.EmptyAction;
             IsCompleted = true;
         }
         /// <summary>
@@ -54,7 +54,8 @@ namespace AutoCSer.Net.TcpServer.Emit
         {
             returnValueType = returnValue.Type;
             this.returnValue = returnValue.Value.Return;
-            if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();
+            IsCompleted = true;
+            if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null) continuation();
         }
         /// <summary>
         /// 获取返回值

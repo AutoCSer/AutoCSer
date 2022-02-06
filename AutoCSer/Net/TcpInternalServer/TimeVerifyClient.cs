@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpInternalServer
 {
@@ -8,6 +8,18 @@ namespace AutoCSer.Net.TcpInternalServer
     /// </summary>
     public static class TimeVerifyClient
     {
+        /// <summary>
+        /// 基本时钟周期
+        /// </summary>
+        private static readonly long baseTicks = AutoCSer.Date.StartTime.Ticks - AutoCSer.Date.StartTimestamp;
+        /// <summary>
+        /// 获取验证始终周期值
+        /// </summary>
+        /// <returns></returns>
+        internal static long GetTicks()
+        {
+            return System.Diagnostics.Stopwatch.IsHighResolution ? baseTicks + System.Diagnostics.Stopwatch.GetTimestamp() : AutoCSer.Threading.SecondTimer.SetUtcNow().Ticks;
+        }
         /// <summary>
         /// 时间验证服务客户端委托
         /// </summary>
@@ -46,12 +58,12 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <returns></returns>
         public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, AutoCSer.Net.TcpInternalServer.Client client, string userID, string verifyString)
         {
-            long ticks;
             TcpServer.ServerBaseAttribute attribute = client.Attribute;
             ulong markData = 0;
             if (attribute.IsMarkData) markData = attribute.VerifyHashCode;
-            ticks = Date.NowTime.SetUtc().Ticks;
+            long ticks = GetTicks();
             TcpServer.ClientSocketBase socket = sender.ClientSocket;
+            bool isError = false;
             do
             {
                 ulong randomPrefix = Random.Default.SecureNextULongNotZero();
@@ -63,14 +75,16 @@ namespace AutoCSer.Net.TcpInternalServer
                 if (isVerify.Value)
                 {
                     sender.SendMarkData = socket.ReceiveMarkData;
+                    if (isError) socket.Log.Debug(sender.ClientSocket.IpAddress.ToString() + ":" + sender.ClientSocket.Port.toString() + " TCP客户端验证时间重试成功");
                     return true;
                 }
                 if (isVerify.Type != TcpServer.ReturnType.Success || ticks <= lastTicks)
                 {
-                    socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
+                    socket.Log.Error(sender.ClientSocket.IpAddress.ToString() + ":" + sender.ClientSocket.Port.toString() + " TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
                     return false;
                 }
-                socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                socket.Log.Error(sender.ClientSocket.IpAddress.ToString() + ":" + sender.ClientSocket.Port.toString() + " TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                isError = true;
             }
             while (true);
         }

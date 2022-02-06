@@ -12,7 +12,7 @@ namespace AutoCSer.Web.SearchServer
         /// <summary>
         /// 索引结果
         /// </summary>
-        internal LeftArray<KeyValuePair<DataKey, ResultIndexArray>> ResultIndexArray;
+        internal LeftArray<KeyValuePair<DataKey, ResultIndexArray>> ResultIndexArray = new LeftArray<KeyValuePair<DataKey, AutoCSer.Search.ResultIndexArray>>(0);
         /// <summary>
         /// 线程参数
         /// </summary>

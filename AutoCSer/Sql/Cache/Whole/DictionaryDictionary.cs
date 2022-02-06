@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Cache.Whole
@@ -101,7 +101,7 @@ namespace AutoCSer.Sql.Cache.Whole
                     {
                         dictionary.Add(key, cacheValue);
                     }
-                    else cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                    else cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                 }
             }
             else
@@ -122,7 +122,7 @@ namespace AutoCSer.Sql.Cache.Whole
             {
                 if (dictionary.Count == 0) groups.Remove(groupKey);
             }
-            else cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 删除数据
@@ -143,7 +143,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             Dictionary<RandomKey<keyType>, valueType> dictionary;
             if (groups.TryGetValue(key, out dictionary)) return dictionary.Keys;
-            return NullValue<RandomKey<keyType>>.Array;
+            return EmptyArray<RandomKey<keyType>>.Array;
         }
     }
 }

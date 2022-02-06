@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Drawing;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Drawing.Imaging;
 using System.IO;
 
@@ -23,15 +23,15 @@ namespace AutoCSer.Drawing.Gif
         /// <summary>
         /// GIF 文件处理结束等待锁
         /// </summary>
-        private readonly AutoCSer.Threading.WaitHandle finallyWait;
+        private AutoCSer.Threading.WaitHandle finallyWait;
         /// <summary>
         /// 位图等待锁
         /// </summary>
-        private readonly AutoCSer.Threading.AutoWaitHandle bitmapWait;
+        private AutoCSer.Threading.AutoWaitHandle bitmapWait;
         /// <summary>
         /// 未处理图片队列
         /// </summary>
-        private readonly BitmapInfo.YieldQueue bitmapQueue;
+        private BitmapInfo.YieldQueue bitmapQueue;
         /// <summary>
         /// 截屏定时毫秒数
         /// </summary>
@@ -102,34 +102,39 @@ namespace AutoCSer.Drawing.Gif
         /// <param name="state"></param>
         private void onTimer(object state)
         {
-            if (Interlocked.Exchange(ref isTimer, 1) == 0)
+            Interlocked.Increment(ref AutoCSer.Threading.Pub.TimerThread);
+            try
             {
-                if (isDisposed)
+                if (Interlocked.Exchange(ref isTimer, 1) == 0)
                 {
-                    if (timer != null)
+                    if (isDisposed)
                     {
-                        timer.Dispose();
-                        timer = null;
-                    }
-                    if (bitmapQueue.IsPushHead(new BitmapInfo())) bitmapWait.Set();
-                    return;
-                }
-                try
-                {
-                    Bitmap bitmap = getBitmap();
-                    if (bitmap != null)
-                    {
-                        if (bitmapQueue.IsPushHead(new BitmapInfo { Bitmap = bitmap, KeepCount = Interlocked.Exchange(ref this.keepCount, 0) })) bitmapWait.Set();
+                        if (timer != null)
+                        {
+                            timer.Dispose();
+                            timer = null;
+                        }
+                        if (bitmapQueue.IsPushHead(new BitmapInfo())) bitmapWait.Set();
                         return;
                     }
+                    try
+                    {
+                        Bitmap bitmap = getBitmap();
+                        if (bitmap != null)
+                        {
+                            if (bitmapQueue.IsPushHead(new BitmapInfo { Bitmap = bitmap, KeepCount = Interlocked.Exchange(ref this.keepCount, 0) })) bitmapWait.Set();
+                            return;
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                    }
+                    finally { isTimer = 0; }
                 }
-                catch (Exception error)
-                {
-                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-                }
-                finally { isTimer = 0; }
+                Interlocked.Increment(ref keepCount);
             }
-            Interlocked.Increment(ref keepCount);
+            finally { Interlocked.Decrement(ref AutoCSer.Threading.Pub.TimerThread); }
         }
         /// <summary>
         /// GIF文件处理线程
@@ -164,7 +169,7 @@ namespace AutoCSer.Drawing.Gif
                                 width3 = (minWidth << 1) + minWidth;
                                 for (byte* lastRow = lastBitmapFixed, currentRow = currentBitmapFixed; top != minHeight; ++top)
                                 {
-                                    if (!AutoCSer.Memory.EqualNotNull(lastRow, currentRow, width3)) break;
+                                    if (!AutoCSer.Memory.Common.EqualNotNull(lastRow, currentRow, width3)) break;
                                     lastRow += lastBitmapData.Stride;
                                     currentRow += currentBitmapData.Stride;
                                 }
@@ -173,7 +178,7 @@ namespace AutoCSer.Drawing.Gif
                                     ++top;
                                     for (byte* lastRow = lastBitmapFixed + lastBitmapData.Stride * minHeight, currentRow = currentBitmapFixed + currentBitmapData.Stride * minHeight; top != bottom; --bottom)
                                     {
-                                        if (!AutoCSer.Memory.EqualNotNull(lastRow -= lastBitmapData.Stride, currentRow -= currentBitmapData.Stride, width3)) break;
+                                        if (!AutoCSer.Memory.Common.EqualNotNull(lastRow -= lastBitmapData.Stride, currentRow -= currentBitmapData.Stride, width3)) break;
                                     }
                                     --top;
                                 }

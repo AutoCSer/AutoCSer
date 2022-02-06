@@ -60,11 +60,11 @@ namespace AutoCSer.DataSetSerialize
                 case 2:
                     return strings[stringIndex++];
                 case 3:
-                    value = AutoCSer.Extension.DateTime_DataSetSerialize.FromKindTicks(*(ulong*)data);
+                    value = AutoCSer.Extensions.DateTimeExtensionDataSetSerialize.FromKindTicks(*(ulong*)data);
                     data += sizeof(long);
                     return value;
                 case 4:
-                    value = (DateTime?)AutoCSer.Extension.DateTime_DataSetSerialize.FromKindTicks(*(ulong*)data);
+                    value = (DateTime?)AutoCSer.Extensions.DateTimeExtensionDataSetSerialize.FromKindTicks(*(ulong*)data);
                     data += sizeof(long);
                     return value;
                 case 5:

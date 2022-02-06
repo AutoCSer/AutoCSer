@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Deploy;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Web.DeployServer
 {
@@ -16,7 +16,7 @@ namespace AutoCSer.Web.DeployServer
         /// <param name="sender"></param>
         /// <param name="customData"></param>
         /// <returns></returns>
-        public DeployState OnExample(AutoCSer.Deploy.Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, byte[] customData)
+        public DeployResultData OnExample(AutoCSer.Deploy.Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, byte[] customData)
         {
             string path = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\Download\";
             System.IO.File.Copy(path + "AutoCSer.zip", path + "AutoCSer.Example.zip", true);

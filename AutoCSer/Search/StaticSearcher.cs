@@ -1,9 +1,10 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Search
 {
@@ -284,7 +285,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<HashString, QueryResult>> Search(string text)
         {
-            LeftArray<KeyValue<HashString, QueryResult>> words = default(LeftArray<KeyValue<HashString, QueryResult>>);
+            LeftArray<KeyValue<HashString, QueryResult>> words = new LeftArray<KeyValue<HashString, QueryResult>>(0);
             Search(text, ref words);
             return words;
         }
@@ -293,16 +294,37 @@ namespace AutoCSer.Search
         /// </summary>
         /// <param name="text">分词文本</param>
         /// <param name="result">分词结果</param>
-        /// <param name="isAllMatch">是否要求关键字全匹配</param>
-        public void Search(string text, ref LeftArray<KeyValue<HashString, QueryResult>> result, bool isAllMatch = false)
+        /// <param name="matchType">是否要求关键字全匹配</param>
+        public void Search(string text, ref LeftArray<KeyValue<HashString, QueryResult>> result, MatchType matchType = MatchType.None)
         {
             WordQuery query = Interlocked.Exchange(ref this.query, null) ?? new WordQuery(this);
-            query.Get(text, isAllMatch, ref result);
+            LeftArray<SubString> lessWords = default(LeftArray<SubString>);
+            query.Get(text, matchType, ref result, ref lessWords);
+            freeWordQuery(query);
+        }
+        /// <summary>
+        /// 释放分词查询
+        /// </summary>
+        /// <param name="query"></param>
+        private void freeWordQuery(WordQuery query)
+        {
             if (Interlocked.CompareExchange(ref this.query, query, null) == null)
             {
                 if (isDisposed != 0 && (query = Interlocked.Exchange(ref this.query, null)) != null) query.Dispose();
             }
             else query.Dispose();
+        }
+        /// <summary>
+        /// 获取分词结果
+        /// </summary>
+        /// <param name="text">分词文本</param>
+        /// <param name="result">分词结果</param>
+        /// <param name="lessWords">未匹配分词集合</param>
+        public void Search(string text, ref LeftArray<KeyValue<HashString, QueryResult>> result, ref LeftArray<SubString> lessWords)
+        {
+            WordQuery query = Interlocked.Exchange(ref this.query, null) ?? new WordQuery(this);
+            query.Get(text, MatchType.Less, ref result, ref lessWords);
+            freeWordQuery(query);
         }
         /// <summary>
         /// 获取分词结果
@@ -312,7 +334,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<HashString, QueryResult>> Search(ref Simplified text)
         {
-            LeftArray<KeyValue<HashString, QueryResult>> words = default(LeftArray<KeyValue<HashString, QueryResult>>);
+            LeftArray<KeyValue<HashString, QueryResult>> words = new LeftArray<KeyValue<HashString, QueryResult>>(0);
             Search(ref text, ref words);
             return words;
         }
@@ -321,16 +343,25 @@ namespace AutoCSer.Search
         /// </summary>
         /// <param name="text">分词文本</param>
         /// <param name="results">分词结果</param>
-        /// <param name="isAllMatch">是否要求关键字全匹配</param>
-        public void Search(ref Simplified text, ref LeftArray<KeyValue<HashString, QueryResult>> results, bool isAllMatch = false)
+        /// <param name="matchType">是否要求关键字全匹配</param>
+        public void Search(ref Simplified text, ref LeftArray<KeyValue<HashString, QueryResult>> results, MatchType matchType = MatchType.None)
         {
             WordQuery query = Interlocked.Exchange(ref this.query, null) ?? new WordQuery(this);
-            query.Get(ref text, isAllMatch, ref results);
-            if (Interlocked.CompareExchange(ref this.query, query, null) == null)
-            {
-                if (isDisposed != 0 && (query = Interlocked.Exchange(ref this.query, null)) != null) query.Dispose();
-            }
-            else query.Dispose();
+            LeftArray<SubString> lessWords = default(LeftArray<SubString>);
+            query.Get(ref text, matchType, ref results, ref lessWords);
+            freeWordQuery(query);
+        }
+        /// <summary>
+        /// 获取分词结果
+        /// </summary>
+        /// <param name="text">分词文本</param>
+        /// <param name="results">分词结果</param>
+        /// <param name="lessWords">未匹配分词集合</param>
+        public void Search(ref Simplified text, ref LeftArray<KeyValue<HashString, QueryResult>> results, ref LeftArray<SubString> lessWords)
+        {
+            WordQuery query = Interlocked.Exchange(ref this.query, null) ?? new WordQuery(this);
+            query.Get(ref text, MatchType.Less, ref results, ref lessWords);
+            freeWordQuery(query);
         }
         /// <summary>
         /// 获取文本的匹配索引位置
@@ -364,7 +395,7 @@ namespace AutoCSer.Search
                 int startIndex = text.Length - maxLength, index0 = indexs[0];
                 if (startIndex > index0)
                 {
-                    fixed (char* textFixed = text.String)
+                    fixed (char* textFixed = text.GetFixedBuffer())
                     {
                         char* textStart = textFixed + text.Start;
                         if ((startIndex = maxLength - (endIndex - index0)) < 0)
@@ -396,7 +427,7 @@ namespace AutoCSer.Search
                                     {
                                         if (maxLength == 0)
                                         {
-                                            if (resultIndexs == null) resultIndexs = NullValue<KeyValue<int, int>>.Array;
+                                            if (resultIndexs == null) resultIndexs = EmptyArray<KeyValue<int, int>>.Array;
                                         }
                                         else
                                         {
@@ -520,7 +551,7 @@ namespace AutoCSer.Search
         public unsafe KeyValue<int, int>[] GetResultIndexs(ref keyType key, int textLength, ref LeftArray<KeyValue<HashString, QueryResult>> results)
         {
             KeyValue<int, int>[] indexs = null;
-            Pointer.Size mapBuffer = Unmanaged.GetSize64((textLength + 7) >> 3, true);
+            AutoCSer.Memory.Pointer mapBuffer = Unmanaged.GetPointer8((textLength + 7) >> 3, true);
             try
             {
                 GetResultIndexs(ref key, textLength, ref results, ref indexs, mapBuffer.Data);
@@ -577,7 +608,7 @@ namespace AutoCSer.Search
         public unsafe KeyValue<int, int>[] FormatTextIndexs(ref keyType key, ref SubString text, ref LeftArray<KeyValue<HashString, QueryResult>> results, int maxLength)
         {
             KeyValue<int, int>[] indexs = null;
-            Pointer.Size mapBuffer = Unmanaged.GetSize64((text.Length + 7) >> 3);
+            AutoCSer.Memory.Pointer mapBuffer = Unmanaged.GetPointer8((text.Length + 7) >> 3, true);
             try
             {
                 FormatTextIndexs(ref key, ref text, ref results, maxLength, ref indexs, ref mapBuffer);
@@ -595,11 +626,11 @@ namespace AutoCSer.Search
         /// <param name="indexs">匹配索引位置集合</param>
         /// <param name="mapBuffer">文本匹配位图缓冲区</param>
         /// <returns>匹配文本段数量</returns>
-        internal unsafe int FormatTextIndexs(ref keyType key, ref SubString text, ref LeftArray<KeyValue<HashString, QueryResult>> results, int maxLength, ref KeyValue<int, int>[] indexs, ref Pointer.Size mapBuffer)
+        internal unsafe int FormatTextIndexs(ref keyType key, ref SubString text, ref LeftArray<KeyValue<HashString, QueryResult>> results, int maxLength, ref KeyValue<int, int>[] indexs, ref AutoCSer.Memory.Pointer mapBuffer)
         {
             if (text.Length <= maxLength)
             {
-                Memory.ClearUnsafe(mapBuffer.ULong, (text.Length + 63) >> 6);
+                AutoCSer.Memory.Common.Clear(mapBuffer.ULong, (text.Length + 63) >> 6);
                 return GetResultIndexs(ref key, text.Length, ref results, ref indexs, mapBuffer.Data);
             }
             int count = results.Length, index0 = int.MaxValue, endIndex = 0;
@@ -626,7 +657,7 @@ namespace AutoCSer.Search
                 else
                 {
                     byte* charTypeData = trieGraph.CharTypeData.Byte;
-                    fixed (char* textFixed = text.String)
+                    fixed (char* textFixed = text.GetFixedBuffer())
                     {
                         char* textStart = textFixed, wordStart = textStart + index0, start = textStart + startIndex;
                         byte type = formatWordType(charTypeData[*(start - 1)]);
@@ -640,7 +671,7 @@ namespace AutoCSer.Search
                     text.Sub(startIndex, Math.Min(maxLength, text.Length - startIndex));
                 }
 
-                Memory.ClearUnsafe(mapBuffer.ULong, (text.Length + 63) >> 6);
+                AutoCSer.Memory.Common.Clear(mapBuffer.ULong, (text.Length + 63) >> 6);
                 MemoryMap map = new MemoryMap(mapBuffer.Data);
                 endIndex = startIndex + maxLength;
                 count = results.Length;

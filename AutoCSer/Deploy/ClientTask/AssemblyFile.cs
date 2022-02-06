@@ -1,4 +1,4 @@
-﻿using AutoCSer.Extension;
+﻿using AutoCSer.Extensions;
 using System;
 using System.IO;
 
@@ -7,7 +7,7 @@ namespace AutoCSer.Deploy.ClientTask
     /// <summary>
     /// 写文件 exe/dll/pdb 任务信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class AssemblyFile : WebFile
     {
         /// <summary>
@@ -24,7 +24,7 @@ namespace AutoCSer.Deploy.ClientTask
         /// </summary>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal override DeployState Call(Timer timer)
+        internal override DeployResultData Call(Timer timer)
         {
             DirectoryInfo serverDirectory = new DirectoryInfo(ServerPath);
             if (!serverDirectory.Exists) serverDirectory.Create();

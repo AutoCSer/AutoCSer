@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.Http
@@ -17,11 +17,11 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 表单数据集合
         /// </summary>
-        internal LeftArray<FormValue> Values;
+        internal LeftArray<FormValue> Values = new LeftArray<FormValue>(0);
         /// <summary>
         /// 文件集合
         /// </summary>
-        internal LeftArray<FormValue> Files;
+        internal LeftArray<FormValue> Files = new LeftArray<FormValue>(0);
         /// <summary>
         /// 字符串
         /// </summary>

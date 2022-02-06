@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Algorithm
 {
@@ -14,7 +14,7 @@ namespace AutoCSer.Algorithm
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-        private struct Sorter<valueType>
+        private struct Sorter<valueType> where valueType : IEquatable<valueType>
         {
             /// <summary>
             /// 图
@@ -127,6 +127,7 @@ namespace AutoCSer.Algorithm
         /// <param name="isDesc">是否反向排序</param>
         /// <returns>排序结果</returns>
         public static valueType[] Sort<valueType>(ICollection<KeyValue<valueType, valueType>> edges, HashSet<valueType> points, bool isDesc = false)
+            where valueType : IEquatable<valueType>
         {
             if (edges.count() == 0) return points.getArray();
             Dictionary<valueType, ListArray<valueType>> graph = DictionaryCreator.CreateAny<valueType, ListArray<valueType>>();

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -30,7 +31,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 模板命令HASH匹配数据
         /// </summary>
-        private static Pointer commandUniqueHashData;
+        private static AutoCSer.Memory.Pointer commandUniqueHashData;
         /// <summary>
         /// 客户端命令索引位置
         /// </summary>
@@ -96,7 +97,7 @@ namespace AutoCSer.WebView
                                     *current = '-';
                                     int tagLength = (int)(contentStart - tagStart), tagIndex = (((*tagStart >> 1) ^ (tagStart[tagLength >> 2] >> 2)) & ((1 << 4) - 1));
                                     byte* hashData = commandUniqueHashDataFixed + (tagIndex * commandUniqueHashDataSize);
-                                    if (*(int*)hashData == tagLength && Memory.SimpleEqualNotNull((byte*)tagStart, hashData + sizeof(int), tagLength << 1))
+                                    if (*(int*)hashData == tagLength && AutoCSer.Memory.Common.SimpleEqualNotNull((byte*)tagStart, hashData + sizeof(int), tagLength << 1))
                                     {
                                         ViewTreeTag tag = new ViewTreeTag
                                         {
@@ -270,14 +271,15 @@ namespace AutoCSer.WebView
 
         static ViewTreeBuilder()
         {
-            atMap = new MemoryMap(Unmanaged.GetStatic64(atMapSize + commandUniqueHashDataCount * commandUniqueHashDataSize, true));
+            AutoCSer.Memory.Pointer buffer = Unmanaged.GetStaticPointer(atMapSize + commandUniqueHashDataCount * commandUniqueHashDataSize, true);
+            atMap = new MemoryMap(buffer.Data);
             atMap.Set('0', 10);
             atMap.Set('A', 26);
             atMap.Set('a', 26);
             atMap.Set('.');
             atMap.Set('_');
 
-            commandUniqueHashData = new Pointer { Data = atMap.Map + atMapSize };
+            commandUniqueHashData = new Pointer { Data = buffer.Byte + atMapSize };
             for (byte* start = commandUniqueHashData.Byte, end = start + commandUniqueHashDataCount * commandUniqueHashDataSize; start != end; start += commandUniqueHashDataSize) *(int*)start = int.MinValue;
             foreach (ViewTreeCommand command in System.Enum.GetValues(typeof(ViewTreeCommand)))
             {
@@ -293,7 +295,7 @@ namespace AutoCSer.WebView
                     byte* data = commandUniqueHashData.Byte + (code * commandUniqueHashDataSize);
                     if (*(int*)data != int.MinValue) throw new IndexOutOfRangeException();
                     *(int*)data = commandString.Length;
-                    Memory.CopyNotNull(commandFixed, data + sizeof(int), commandString.Length << 1);
+                    AutoCSer.Memory.Common.CopyNotNull(commandFixed, data + sizeof(int), commandString.Length << 1);
                 }
             } 
         }

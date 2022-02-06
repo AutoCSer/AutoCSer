@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.HtmlNode
 {
@@ -34,7 +34,7 @@ namespace AutoCSer.HtmlNode
                                     string style = formatStyle(attributeArray[index].Value.Text);
                                     if (style == null)
                                     {
-                                        attributeArray[index].Key.SetNull();
+                                        attributeArray[index].Key.SetEmpty();
                                         removeCount = 1;
                                     }
                                     else attributeArray[index].Value.Text = style;
@@ -43,13 +43,13 @@ namespace AutoCSer.HtmlNode
                                 {
                                     if (!isHttpOrDefalut(attributeArray[index].Value.Text))
                                     {
-                                        attributeArray[index].Key.SetNull();
+                                        attributeArray[index].Key.SetEmpty();
                                         removeCount = 1;
                                     }
                                 }
                                 else
                                 {
-                                    attributeArray[index].Key.SetNull();
+                                    attributeArray[index].Key.SetEmpty();
                                     removeCount = 1;
                                 }
                             }
@@ -101,7 +101,7 @@ namespace AutoCSer.HtmlNode
         {
             if (style.Length != 0)
             {
-                LeftArray<KeyValue<SubString, SubString>> values = new LeftArray<KeyValue<SubString, SubString>>();
+                LeftArray<KeyValue<SubString, SubString>> values = new LeftArray<KeyValue<SubString, SubString>>(0);
                 LeftArray<SubString> styles = style.Split(';');
                 SubString[] styleArray = styles.Array;
                 for (int index = 0; index != styles.Length; ++index)
@@ -121,9 +121,9 @@ namespace AutoCSer.HtmlNode
                 {
                     int length = (values.Count << 1) - 1;
                     foreach (KeyValue<SubString, SubString> value in values) length += value.Key.Length + value.Value.Length;
-                    string newStyle = AutoCSer.Extension.StringExtension.FastAllocateString(length);
+                    string newStyle = AutoCSer.Extensions.StringExtension.FastAllocateString(length);
                     byte* bits = Node.Bits.Byte;
-                    fixed (char* newStyleFixed = newStyle, styleFixed = style.String)
+                    fixed (char* newStyleFixed = newStyle, styleFixed = style.GetFixedBuffer())
                     {
                         char* write = newStyleFixed;
                         foreach (KeyValue<SubString, SubString> value in values)
@@ -151,7 +151,7 @@ namespace AutoCSer.HtmlNode
         {
             if (url.Length > 7 && url[6] == '/')
             {
-                fixed (char* urlFixed = url.String)
+                fixed (char* urlFixed = url.GetFixedBuffer())
                 {
                     char* start = urlFixed + url.Start;
                     if ((*(int*)start | 0x200020) == 'h' + ('t' << 16) && (*(int*)(start + 2) | 0x200020) == 't' + ('p' << 16))
@@ -180,7 +180,7 @@ namespace AutoCSer.HtmlNode
         /// <summary>
         /// 默认允许标签名称集合
         /// </summary>
-        private static readonly AutoCSer.StateSearcher.AsciiSearcher tagNames = new AutoCSer.StateSearcher.AsciiSearcher(AutoCSer.StateSearcher.AsciiBuilder.Create(new string[] { "a", "b", "big", "blockquote", "br", "center", "code", "dd", "del", "div", "dl", "dt", "em", "font", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "ins", "li", "ol", "p", "pre", "s", "small", "span", "strike", "strong", "sub", "sup", "table", "tbody", "td", "th", "thead", "title", "tr", "u", "ul" }, true).Pointer);
+        private static readonly AutoCSer.StateSearcher.AsciiSearcher tagNames = new AutoCSer.StateSearcher.AsciiSearcher(AutoCSer.StateSearcher.AsciiBuilder.Create(new string[] { "a", "b", "big", "blockquote", "br", "center", "code", "dd", "del", "div", "dl", "dt", "em", "font", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "ins", "li", "ol", "p", "pre", "s", "small", "span", "strike", "strong", "sub", "sup", "table", "tbody", "td", "th", "thead", "title", "tr", "u", "ul" }, true));
         /// <summary>
         /// 删除标签名称过滤
         /// </summary>

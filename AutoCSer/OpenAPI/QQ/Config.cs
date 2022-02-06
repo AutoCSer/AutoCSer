@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.QQ
 {
@@ -78,7 +78,7 @@ namespace AutoCSer.OpenAPI.QQ
                         int.TryParse(query, out token.expires_in);
                     }
                 }
-                if (!token.IsToken) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, data);
+                if (!token.IsToken) AutoCSer.LogHelper.Debug(data, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return token;
         }
@@ -89,7 +89,7 @@ namespace AutoCSer.OpenAPI.QQ
         /// <returns>API调用,失败返回null</returns>
         public API GetApi(string code)
         {
-            if (string.IsNullOrEmpty(site)) AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, "网站名称不能为空");
+            if (string.IsNullOrEmpty(site)) AutoCSer.LogHelper.Error("网站名称不能为空", LogLevel.Error | LogLevel.AutoCSer);
             else
             {
                 Token token = getToken(code);
@@ -127,11 +127,11 @@ namespace AutoCSer.OpenAPI.QQ
         public API GetApiByJson(string tokenOpenId)
         {
             TokenOpenId value = new TokenOpenId();
-            return AutoCSer.Json.Parser.Parse(tokenOpenId, ref value) ? GetApi(value) : null;
+            return AutoCSer.JsonDeSerializer.DeSerialize(tokenOpenId, ref value) ? GetApi(value) : null;
         }
         /// <summary>
         /// 默认配置
         /// </summary>
-        public static readonly Config Default = AutoCSer.Config.Loader.Get<Config>() ?? new Config();
+        public static readonly Config Default = (Config)AutoCSer.Configuration.Common.Get(typeof(Config)) ?? new Config();
     }
 }

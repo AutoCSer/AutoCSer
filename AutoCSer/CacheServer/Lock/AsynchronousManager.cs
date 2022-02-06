@@ -40,7 +40,7 @@ namespace AutoCSer.CacheServer.Lock
             if (returnParameter.Value.Parameter.ReturnType == ReturnType.Success)
             {
                 randomNo = returnParameter.Value.Parameter.Int64.ULong;
-                timeout = Date.NowTime.Now.AddTicks(timeoutTicks - TimeSpan.TicksPerSecond);
+                timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks - TimeSpan.TicksPerSecond);
                 if (Step == Step.None)
                 {
                     Step = Step.Lock;

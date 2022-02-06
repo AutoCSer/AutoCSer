@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer
@@ -8,8 +8,12 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务器端同步调用
     /// </summary>
-    public abstract class ServerCallBase : AutoCSer.Threading.TimestampTaskLinkNode<ServerCallBase>
+    public abstract class ServerCallBase : AutoCSer.Threading.SwitchTaskNode<ServerCallBase>
     {
+        /// <summary>
+        /// TCP 服务端任务线程超时切换配置名称
+        /// </summary>
+        public const string TaskSwitchThreadConfigName = "ServerCallThread";
         /// <summary>
         /// 添加任务队列（不允许添加重复的任务实例，否则可能造成严重后果）
         /// </summary>
@@ -21,9 +25,9 @@ namespace AutoCSer.Net.TcpServer
         {
             switch (taskType)
             {
-                case ServerTaskType.ThreadPool: return System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall) || AutoCSer.Threading.LinkTask.Task.CheckAdd(this);
-                case ServerTaskType.Timeout: return Threading.LinkTask.Task.CheckAdd(this);
-                case ServerTaskType.TcpTask: return ServerCallTask.Task.CheckAdd(this);
+                case ServerTaskType.ThreadPool: return System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall) || AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.CheckAdd(this);
+                case ServerTaskType.Timeout: return AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.CheckAdd(this);
+                case ServerTaskType.TcpTask: return ServerCallThreadArray.Default.CurrentThread.CheckAdd(this);
                 case ServerTaskType.TcpQueue: return ServerCallQueue.Default.CheckAdd(this);
                 case ServerTaskType.TcpQueueLink: return ServerCallQueue.DefaultLink.CheckAdd(this);
                 case ServerTaskType.Queue: return server.CallQueue.CheckAdd(this);
@@ -55,9 +59,19 @@ namespace AutoCSer.Net.TcpServer
     public abstract class ServerCall : ServerCallBase
     {
         /// <summary>
-        /// 回话标识
+        /// 会话标识
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         public uint CommandIndex;
+
+        /// <summary>
+        /// 获取会话标识
+        /// </summary>
+        /// <param name="serverCall"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static uint GetCommandIndex(ServerCall serverCall)
+        {
+            return serverCall.CommandIndex;
+        }
     }
 }

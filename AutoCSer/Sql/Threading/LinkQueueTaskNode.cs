@@ -32,28 +32,28 @@ namespace AutoCSer.Sql.Threading
     /// </summary>
     internal abstract class LinkQueueTaskNode<nodeType> : LinkQueueTaskNode
     {
-        /// <summary>
-        /// 链表节点池
-        /// </summary>
-        internal new static class YieldPool
-        {
-            /// <summary>
-            /// 链表节点池
-            /// </summary>
-            internal static YieldPoolLink Default;
-            /// <summary>
-            /// 清除缓存数据
-            /// </summary>
-            /// <param name="count">保留缓存数据数量</param>
-            private static void clearCache(int count)
-            {
-                Default.ClearCache(count);
-            }
+        ///// <summary>
+        ///// 链表节点池
+        ///// </summary>
+        //internal new static class YieldPool
+        //{
+        //    /// <summary>
+        //    /// 链表节点池
+        //    /// </summary>
+        //    internal static LinkQueueTaskNode.YieldPool Default;
+        //    /// <summary>
+        //    /// 清除缓存数据
+        //    /// </summary>
+        //    /// <param name="count">保留缓存数据数量</param>
+        //    private static void clearCache(int count)
+        //    {
+        //        Default.ClearCache(count);
+        //    }
 
-            static YieldPool()
-            {
-                AutoCSer.Pub.ClearCaches += clearCache;
-            }
-        }
+        //    static YieldPool()
+        //    {
+        //        AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(YieldPool));
+        //    }
+        //}
     }
 }

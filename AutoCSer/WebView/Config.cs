@@ -13,7 +13,7 @@ namespace AutoCSer.WebView
         /// </summary>
         public virtual Encoding Encoding
         {
-            get { return AutoCSer.Config.Pub.Default.Encoding; }
+            get { return AutoCSer.Common.Config.Encoding; }
         }
         /// <summary>
         /// Session类型

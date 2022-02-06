@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 客户端回调队列处理
     /// </summary>
-    internal sealed class ClientCallQueue : AutoCSer.Threading.QueueTaskThread<ClientCommand.CommandBase>
+    internal sealed class ClientCallQueue : AutoCSer.Threading.TaskQueueThreadBase<ClientCommand.CommandBase>
     {
         /// <summary>
         /// 添加任务
@@ -17,19 +17,19 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="value"></param>
         internal void Add(ClientCommand.CommandBase value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            QueueLock.EnterYield();
             if (head == null)
             {
                 end = value;
                 head = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                QueueLock.Exit();
                 WaitHandle.Set();
             }
             else
             {
                 end.NextTask = value;
                 end = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                QueueLock.Exit();
             }
         }
         /// <summary>
@@ -40,11 +40,11 @@ namespace AutoCSer.Net.TcpServer
             do
             {
                 WaitHandle.Wait();
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                QueueLock.EnterYield();
                 ClientCommand.CommandBase value = head;
                 end = null;
                 head = null;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                QueueLock.Exit();
                 do
                 {
                     try
@@ -58,7 +58,7 @@ namespace AutoCSer.Net.TcpServer
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                        AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 while (value != null);

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -102,7 +102,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             asyncEventArgs = SocketAsyncEventArgsPool.Get();
 #endif
             Server.ReceiveBufferPool.Get(ref Buffer);
-            OutputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
+            OutputStream = (OutputSerializer = BinarySerializer.YieldPool.Default.Pop() ?? new BinarySerializer()).SetTcpServer();
 
             asyncCallback = onSocket;
 #if !DOTNET2
@@ -118,18 +118,18 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 if (socketError == SocketError.Success) return;
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                asyncLock.EnterSleepFlag();
 #endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, bufferSize);
                 if (Socket.ReceiveAsync(asyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.ExitSleepFlag();
 #endif
                     return;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref asyncLock, 0);
+                asyncLock.ExitSleepFlag();
 #endif
 #endif
             }
@@ -137,7 +137,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             {
                 IsVerifyMethod = false;
                 SocketType = TcpSimpleServer.ServerSocketType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = AutoCSer.Threading.SecondTimer.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = Socket.BeginReceive(Buffer.Buffer, Buffer.StartIndex, bufferSize, SocketFlags.None, out socketError,asyncCallback, Socket);
                 if (socketError == SocketError.Success)
@@ -147,24 +147,27 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                asyncLock.EnterSleepFlag();
 #endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, bufferSize);
                 if (Socket.ReceiveAsync(asyncEventArgs))
                 {
+#if !DotNetStandard
+                    asyncLock.SleepFlag = 0;
+#endif
                     Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.Exit();
 #endif
                     return;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref asyncLock, 0);
+                asyncLock.ExitSleepFlag();
 #endif
 #endif
             }
 #if !DOTNET2
-            ServerSocketTask.Task.Add(this);
+            ServerSocketThreadArray.Default.CurrentThread.Add(this);
 #endif
         }
 #if DOTNET2
@@ -185,6 +188,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #if DOTNET2
             asyncEventArgs = async;
 #endif
+            LastReceiveTime = AutoCSer.Threading.SecondTimer.Now;
             try
             {
                 switch (SocketType)
@@ -209,7 +213,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             Close();
         }
@@ -223,7 +227,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             if (socket != null)
             {
                 SocketType = TcpSimpleServer.ServerSocketType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = AutoCSer.Threading.SecondTimer.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(Buffer.Buffer, Buffer.StartIndex, bufferSize, SocketFlags.None, out socketError, asyncCallback, socket);
                 if (socketError == SocketError.Success)
@@ -233,19 +237,22 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                asyncLock.EnterSleepFlag();
 #endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, bufferSize);
                 if (socket.ReceiveAsync(asyncEventArgs))
                 {
+#if !DotNetStandard
+                    asyncLock.SleepFlag = 0;
+#endif
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref asyncLock, 0);
+                asyncLock.ExitSleepFlag();
 #endif
                 return isVerifyCommand();
 #endif
@@ -260,7 +267,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         {
             if (IsVerifyMethod) return isCommand();
 #if DOTNET2
-            Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)asyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 receiveCount = socket.EndReceive(asyncEventArgs, out socketError);
@@ -273,7 +280,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #endif
                     if (receiveCount >= (sizeof(int) + sizeof(uint)))
                     {
-                        fixed (byte* receiveDataFixed = Buffer.Buffer)
+                        fixed (byte* receiveDataFixed = Buffer.GetFixedBuffer())
                         {
                             byte* start = receiveDataFixed + Buffer.StartIndex;
                             command = *(int*)start;
@@ -294,12 +301,12 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                                     }
                                 }
                             }
-                            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+                            else if (Server.Log.IsAnyLevel(LogLevel.Info))
                             {
 #if !DOTNET2
                             Socket socket = Socket;
 #endif
-                                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
+                                Server.Log.Info(socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
                             }
                         }
                     }
@@ -327,13 +334,13 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     if (doVerifyCommand()) return true;
                 }
                 else if (compressionDataSize > receiveSize && isReceiveVerifyData()) return true;
-                if (!IsVerifyMethod && Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+                if (!IsVerifyMethod && Server.Log.IsAnyLevel(LogLevel.Info))
                 {
                     Socket socket = Socket;
-                    Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
+                    Server.Log.Info(socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
                 }
             }
-            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + dataSize.toString() + " > " + maxVerifyDataSize.toString());
+            else if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("TCP 验证函数接收数据长度超限 " + dataSize.toString() + " > " + maxVerifyDataSize.toString(), LogLevel.Debug | LogLevel.AutoCSer);
             return false;
         }
         /// <summary>
@@ -355,19 +362,19 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                asyncLock.EnterSleepFlag();
 #endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, bufferSize - receiveCount);
                 if (socket.ReceiveAsync(asyncEventArgs))
                 {
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.ExitSleepFlag();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref asyncLock, 0);
+                asyncLock.ExitSleepFlag();
 #endif
                 return isVerifyData();
 #endif
@@ -386,10 +393,10 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             Server.CancelReceiveVerifyCommandTimeout(this);
 #endif
             if (isVerifyData()) return true;
-            if (!IsVerifyMethod && Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+            if (!IsVerifyMethod && Server.Log.IsAnyLevel(LogLevel.Info))
             {
                 Socket socket = Socket;
-                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Info(socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }
@@ -399,10 +406,10 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <returns></returns>
         private bool isVerifyData()
         {
-            if (Date.NowTime.Now < receiveTimeout)
+            if (AutoCSer.Threading.SecondTimer.Now < receiveTimeout)
             {
 #if DOTNET2
-                Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+                Socket socket = (Socket)asyncEventArgs.AsyncState;
                 if (socket == Socket)
                 {
                     int count = socket.EndReceive(asyncEventArgs, out socketError);
@@ -428,10 +435,10 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 socketError = asyncEventArgs.SocketError;
 #endif
             }
-            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+            else if (Server.Log.IsAnyLevel(LogLevel.Info))
             {
                 Socket socket = Socket;
-                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Info(socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }
@@ -468,18 +475,18 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 if (socketError == SocketError.Success) return true;
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                asyncLock.EnterSleepFlag();
 #endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, bufferSize);
                 if(socket.ReceiveAsync(asyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.ExitSleepFlag();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref asyncLock, 0);
+                asyncLock.ExitSleepFlag();
 #endif
                 return isCommand();
 #endif
@@ -494,7 +501,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         private bool isCommand()
         {
 #if DOTNET2
-            Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)asyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 receiveCount = socket.EndReceive(asyncEventArgs, out socketError);
@@ -507,7 +514,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #endif
                 if (receiveCount >= sizeof(int))
                 {
-                    fixed (byte* receiveDataFixed = Buffer.Buffer)
+                    fixed (byte* receiveDataFixed = Buffer.GetFixedBuffer())
                     {
                         command = *(int*)(bufferStart = receiveDataFixed + Buffer.StartIndex);
                         int commandIndex = base.commandIndex;
@@ -586,21 +593,24 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
 #else
 #if !DotNetStandard
-                            while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                            asyncLock.EnterSleepFlag();
 #endif
                             asyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount);
                             if (socket.ReceiveAsync(asyncEventArgs))
                             {
+#if !DotNetStandard
+                                asyncLock.SleepFlag = 0;
+#endif
                                 Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                                Interlocked.Exchange(ref asyncLock, 0);
+                                asyncLock.Exit();
 #endif
                                 return true;
                             }
                             if (asyncEventArgs.SocketError == SocketError.Success)
                             {
 #if !DotNetStandard
-                                Interlocked.Exchange(ref asyncLock, 0);
+                                asyncLock.ExitSleepFlag();
 #endif
                                 if (compressionDataSize == (receiveBigBufferCount += asyncEventArgs.BytesTransferred)) return isDoCommandBig();
                                 goto BIGRECEIVE;
@@ -621,7 +631,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 {
                     if (receiveIndex + compressionDataSize > bufferSize)
                     {
-                        Memory.CopyNotNull(bufferStart + receiveIndex, bufferStart, receiveCount = receiveSize);
+                        AutoCSer.Memory.Common.CopyNotNull(bufferStart + receiveIndex, bufferStart, receiveCount = receiveSize);
                         receiveIndex = 0;
                     }
                     SocketType = TcpSimpleServer.ServerSocketType.Data;
@@ -640,21 +650,24 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
 #else
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        asyncLock.EnterSleepFlag();
 #endif
                         asyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, nextSize);
                         if (socket.ReceiveAsync(asyncEventArgs))
                         {
+#if !DotNetStandard
+                            asyncLock.SleepFlag = 0;
+#endif
                             Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                            Interlocked.Exchange(ref asyncLock, 0);
+                            asyncLock.Exit();
 #endif
                             return true;
                         }
                         if (asyncEventArgs.SocketError == SocketError.Success)
                         {
 #if !DotNetStandard
-                            Interlocked.Exchange(ref asyncLock, 0);
+                            asyncLock.ExitSleepFlag();
 #endif
                             receiveCount += (receiveSize = asyncEventArgs.BytesTransferred);
                             if ((nextSize -= receiveSize) == 0) return isDoCommand();
@@ -675,7 +688,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         {
 #if DOTNET2
             if (!asyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
-            Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)asyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 int count = socket.EndReceive(asyncEventArgs, out socketError);
@@ -711,19 +724,22 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     if (socket != null)
                     {
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        asyncLock.EnterSleepFlag();
 #endif
                         asyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, nextSize);
                         if (socket.ReceiveAsync(asyncEventArgs))
                         {
+#if !DotNetStandard
+                            asyncLock.SleepFlag = 0;
+#endif
                             Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                            Interlocked.Exchange(ref asyncLock, 0);
+                            asyncLock.Exit();
 #endif
                             return true;
                         }
 #if !DotNetStandard
-                        Interlocked.Exchange(ref asyncLock, 0);
+                        asyncLock.ExitSleepFlag();
 #endif
                         goto CHECK;
                     }
@@ -746,7 +762,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         {
 #if DOTNET2
             if (!asyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
-            Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)asyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 int count = socket.EndReceive(asyncEventArgs, out socketError);
@@ -781,19 +797,22 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     if (socket != null)
                     {
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        asyncLock.EnterSleepFlag();
 #endif
                         asyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount);
                         if (socket.ReceiveAsync(asyncEventArgs))
                         {
+#if !DotNetStandard
+                            asyncLock.SleepFlag = 0;
+#endif
                             Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                            Interlocked.Exchange(ref asyncLock, 0);
+                            asyncLock.Exit();
 #endif
                             return true;
                         }
 #if !DotNetStandard
-                        Interlocked.Exchange(ref asyncLock, 0);
+                        asyncLock.ExitSleepFlag();
 #endif
                         goto CHECK;
                     }
@@ -963,19 +982,22 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
 #else
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    asyncLock.EnterSleepFlag();
 #endif
                     asyncEventArgs.SetBuffer(Buffer.StartIndex, sizeof(int));
                     if (socket.SendAsync(asyncEventArgs))
                     {
+#if !DotNetStandard
+                        asyncLock.SleepFlag = 0;
+#endif
                         Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                        Interlocked.Exchange(ref asyncLock, 0);
+                        asyncLock.Exit();
 #endif
                         return true;
                     }
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.ExitSleepFlag();
 #endif
                     if (asyncEventArgs.SocketError == SocketError.Success)
                     {
@@ -991,7 +1013,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             Close();
             return isSend;
@@ -1001,7 +1023,6 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// </summary>
         /// <param name="returnType">返回值类型</param>
         /// <returns></returns>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Send(TcpServer.ReturnType returnType)
         {
             Socket socket = Socket;
@@ -1018,19 +1039,22 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                asyncLock.EnterSleepFlag();
 #endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, sizeof(int));
                 if (socket.SendAsync(asyncEventArgs))
                 {
+#if !DotNetStandard
+                    asyncLock.SleepFlag = 0;
+#endif
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref asyncLock, 0);
+                asyncLock.ExitSleepFlag();
 #endif
                 if (asyncEventArgs.SocketError == SocketError.Success) return asyncEventArgs.BytesTransferred == sizeof(int) && isReceiveCommand();
                 socketError = asyncEventArgs.SocketError;
@@ -1041,12 +1065,32 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 发送数据
         /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="returnType">返回值类型</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        public static bool Send(ServerSocket socket, TcpServer.ReturnType returnType)
+        {
+            return socket.Send(returnType);
+        }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public bool Send()
         {
             return Send(TcpServer.ReturnType.Success);
+        }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static bool Send(ServerSocket socket)
+        {
+            return socket.Send();
         }
         /// <summary>
         /// 发送数据
@@ -1057,7 +1101,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         {
 #if DOTNET2
             if (!asyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
-            Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)asyncEventArgs.AsyncState;
             return socket == Socket && socket.EndSend(asyncEventArgs, out socketError) == sizeof(int) && socketError == SocketError.Success && isReceiveCommand();
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
@@ -1088,7 +1132,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             Close();
             return isSend;
@@ -1102,7 +1146,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         {
 #if DOTNET2
             if (!asyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
-            Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)asyncEventArgs.AsyncState;
             return socket == Socket && socket.EndSend(asyncEventArgs, out socketError) == sizeof(int) * 2 && socketError == SocketError.Success && (IsVerifyMethod ? isReceiveCommand() : (--verifyMethodCount != 0 && isReceiveVerifyCommand()));
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
@@ -1120,11 +1164,21 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <param name="returnType">返回值类型</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool SendOutput(TcpServer.ReturnType returnType)
         {
             bool isSend = false;
             return send(returnType, ref isSend);
+        }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="returnType">返回值类型</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static bool SendOutput(ServerSocket socket, TcpServer.ReturnType returnType)
+        {
+            return socket.SendOutput(returnType);
         }
         /// <summary>
         /// 发送数据
@@ -1137,7 +1191,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             Socket socket = Socket;
             if (socket != null)
             {
-                fixed (byte* bufferFixed = Buffer.Buffer)
+                fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
                 {
                     byte* start = bufferFixed + Buffer.StartIndex;
                     *(int*)start = 0;
@@ -1153,19 +1207,22 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                asyncLock.EnterSleepFlag();
 #endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, sizeof(int) * 2);
                 if (socket.SendAsync(asyncEventArgs))
                 {
+#if !DotNetStandard
+                    asyncLock.SleepFlag = 0;
+#endif
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref asyncLock, 0);
+                    asyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref asyncLock, 0);
+                asyncLock.ExitSleepFlag();
 #endif
                 if (asyncEventArgs.SocketError == SocketError.Success)
                 {
@@ -1188,12 +1245,25 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <param name="outputParameter">输出数据</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Send<outputParameterType>(TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
             bool isSend = false;
             return send(outputInfo, ref outputParameter, ref isSend);
+        }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <typeparam name="outputParameterType">输出数据类型</typeparam>
+        /// <param name="socket">服务端输出信息</param>
+        /// <param name="outputInfo">服务端输出信息</param>
+        /// <param name="outputParameter">输出数据</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static bool Send<outputParameterType>(ServerSocket socket, TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+            where outputParameterType : struct
+        {
+            return socket.Send(outputInfo, ref outputParameter);
         }
         /// <summary>
         /// 发送数据
@@ -1227,20 +1297,23 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         }
 #else
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        asyncLock.EnterSleepFlag();
 #endif
                         OutputBuffer.SetBuffer(asyncEventArgs);
                         if (socket.SendAsync(asyncEventArgs))
                         {
+#if !DotNetStandard
+                            asyncLock.SleepFlag = 0;
+#endif
                             Server.PushReceiveVerifyCommandTimeout(this, socket);
                             isFree = false;
 #if !DotNetStandard
-                            Interlocked.Exchange(ref asyncLock, 0);
+                            asyncLock.Exit();
 #endif
                             return isSend = true;
                         }
 #if !DotNetStandard
-                        Interlocked.Exchange(ref asyncLock, 0);
+                        asyncLock.ExitSleepFlag();
 #endif
                         if (asyncEventArgs.SocketError == SocketError.Success)
                         {
@@ -1260,7 +1333,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     {
                         isVerifyMethod = IsVerifyMethod;
                         SocketType = TcpSimpleServer.ServerSocketType.SendVerify;
-                        receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
+                        receiveTimeout = AutoCSer.Threading.SecondTimer.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                         IAsyncResult async = socket.BeginSend(Buffer.Buffer, Buffer.StartIndex, OutputBuffer.Data.Length, SocketFlags.None, out socketError, asyncCallback, socket);
                         if (socketError == SocketError.Success)
@@ -1270,19 +1343,22 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         }
 #else
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        asyncLock.EnterSleepFlag();
 #endif
                         asyncEventArgs.SetBuffer(Buffer.StartIndex, OutputBuffer.Data.Length);
                         if (socket.SendAsync(asyncEventArgs))
                         {
+#if !DotNetStandard
+                            asyncLock.SleepFlag = 0;
+#endif
                             Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                            Interlocked.Exchange(ref asyncLock, 0);
+                            asyncLock.Exit();
 #endif
                             return isSend = true;
                         }
 #if !DotNetStandard
-                        Interlocked.Exchange(ref asyncLock, 0);
+                        asyncLock.ExitSleepFlag();
 #endif
                         if (asyncEventArgs.SocketError == SocketError.Success)
                         {
@@ -1311,10 +1387,10 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
 #endif
-            if (Date.NowTime.Now < receiveTimeout)
+            if (AutoCSer.Threading.SecondTimer.Now < receiveTimeout)
             {
 #if DOTNET2
-                Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+                Socket socket = (Socket)asyncEventArgs.AsyncState;
                 return socket == Socket && socket.EndSend(asyncEventArgs, out socketError) == OutputBuffer.Data.Length && socketError == SocketError.Success && (IsVerifyMethod ? isReceiveCommand() : (--verifyMethodCount != 0 && isReceiveVerifyCommand()));
 #else
                 if (asyncEventArgs.SocketError == SocketError.Success)
@@ -1324,10 +1400,10 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 else socketError = asyncEventArgs.SocketError;
 #endif
             }
-            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+            else if (Server.Log.IsAnyLevel(LogLevel.Info))
             {
                 Socket socket = Socket;
-                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证数据发送超时" : ("TCP 验证数据发送超时 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Info(socket == null ? "TCP 验证数据发送超时" : ("TCP 验证数据发送超时 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }
@@ -1342,7 +1418,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             {
 #if DOTNET2
                 if (!asyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
-                Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
+                Socket socket = (Socket)asyncEventArgs.AsyncState;
                 if (socket == Socket)
                 {
                     int count = socket.EndSend(asyncEventArgs, out socketError);
@@ -1381,20 +1457,23 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         if (socket != null)
                         {
 #if !DotNetStandard
-                            while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+                            asyncLock.EnterSleepFlag();
 #endif
                             OutputBuffer.SetBufferNext(asyncEventArgs);
                             if (socket.ReceiveAsync(asyncEventArgs))
                             {
+#if !DotNetStandard
+                                asyncLock.SleepFlag = 0;
+#endif
                                 Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                                Interlocked.Exchange(ref asyncLock, 0);
+                                asyncLock.Exit();
 #endif
                                 isFree = false;
                                 return true;
                             }
 #if !DotNetStandard
-                            Interlocked.Exchange(ref asyncLock, 0);
+                            asyncLock.ExitSleepFlag();
 #endif
                             goto CHECK;
                         }

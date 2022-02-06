@@ -64,7 +64,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketAsyncEventArgsPool.cs" />
     <Compile Include="ClientSocketAsyncType.cs" />
-    <Compile Include="UnionType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\AutoCSer.DotNet2.csproj">

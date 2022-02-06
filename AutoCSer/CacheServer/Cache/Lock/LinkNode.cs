@@ -46,7 +46,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
             returnParameter.Parameter.ReturnParameterSet(++node.RandomNo);
             if (OnReturn.Callback(returnParameter))
             {
-                AutoCSer.Threading.TimerTask.Default.Add(onTimeout, Date.NowTime.Set().AddTicks(timeOutTicks));
+                AutoCSer.Threading.SecondTimer.InternalTaskArray.Append(onTimeout, AutoCSer.Threading.SecondTimer.SetNow().AddTicks(timeOutTicks));
                 return true;
             }
             return false;

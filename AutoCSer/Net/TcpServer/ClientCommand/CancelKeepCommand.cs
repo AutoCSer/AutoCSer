@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
@@ -31,14 +32,10 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         internal unsafe override CommandBase Build(ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
-            if ((buildInfo.SendBufferSize - stream.ByteSize) >= sizeof(int) * 3)
+            if ((buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= sizeof(int) * 3)
             {
                 CommandBase nextBuild = LinkNext;
-                byte* write = stream.CurrentData;
-                *(int*)write = Server.CancelKeepCommandIndex;
-                *(int*)(write + sizeof(int)) = cancelCommandIndex;
-                *(int*)(write + (sizeof(uint) + sizeof(int))) = 0;
-                stream.ByteSize += sizeof(int) * 3;
+                stream.Data.Write(Server.CancelKeepCommandIndex, cancelCommandIndex, 0);
                 ++buildInfo.Count;
 
                 Socket = null;

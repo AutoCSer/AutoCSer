@@ -2,7 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.ChatServer
 {
@@ -51,7 +51,7 @@ namespace AutoCSer.TestCase.ChatServer
 #else
  ".exe";
 #endif
-            FileInfo fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, (
+            FileInfo fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, (
 #if !DOTNET45
 @"..\" +
 #endif
@@ -76,7 +76,7 @@ namespace AutoCSer.TestCase.ChatServer
             ).pathSeparator()));
 #if DotNetStandard
             Console.WriteLine(fileInfo.FullName);
-            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (fileInfo.Exists)
             {
                 ProcessStartInfo process = new ProcessStartInfo("dotnet", fileInfo.FullName + " user1");
@@ -91,7 +91,7 @@ namespace AutoCSer.TestCase.ChatServer
                 return true;
             }
 #else
-            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (fileInfo.Exists)
             {
                 Process.Start(fileInfo.FullName, "user1");

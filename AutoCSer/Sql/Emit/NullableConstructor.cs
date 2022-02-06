@@ -13,22 +13,132 @@ namespace AutoCSer.Emit
         /// <summary>
         /// 可空类型构造函数
         /// </summary>
-        internal static readonly Dictionary<Type, ConstructorInfo> Constructors;
+        internal static readonly Dictionary<Type, MethodInfo> Constructors;
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool? create(bool value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static byte? create(byte value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static char? create(char value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static DateTime? create(DateTime value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static decimal? create(decimal value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double? create(double value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float? create(float value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Guid? create(Guid value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static short? create(short value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int? create(int value)
+        {
+            return value;
+        }
+        /// <summary>
+        /// 创建可空数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static long? create(long value)
+        {
+            return value;
+        }
 
         static NullableConstructor()
         {
-            Constructors = DictionaryCreator.CreateOnly<Type, ConstructorInfo>();
-            Constructors.Add(typeof(bool), typeof(bool?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null));
-            Constructors.Add(typeof(byte), typeof(byte?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(byte) }, null));
-            Constructors.Add(typeof(char), typeof(char?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(char) }, null));
-            Constructors.Add(typeof(DateTime), typeof(DateTime?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(DateTime) }, null));
-            Constructors.Add(typeof(decimal), typeof(decimal?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(decimal) }, null));
-            Constructors.Add(typeof(double), typeof(double?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(double) }, null));
-            Constructors.Add(typeof(float), typeof(float?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(float) }, null));
-            Constructors.Add(typeof(Guid), typeof(Guid?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(Guid) }, null));
-            Constructors.Add(typeof(short), typeof(short?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(short) }, null));
-            Constructors.Add(typeof(int), typeof(int?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(int) }, null));
-            Constructors.Add(typeof(long), typeof(long?).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(long) }, null));
+            Constructors = DictionaryCreator.CreateOnly<Type, MethodInfo>();
+            Constructors.Add(typeof(bool), ((Func<bool, bool?>)create).Method);
+            Constructors.Add(typeof(byte), ((Func<byte, byte?>)create).Method);
+            Constructors.Add(typeof(char), ((Func<char, char?>)create).Method);
+            Constructors.Add(typeof(DateTime), ((Func<DateTime, DateTime?>)create).Method);
+            Constructors.Add(typeof(decimal), ((Func<decimal, decimal?>)create).Method);
+            Constructors.Add(typeof(double), ((Func<double, double?>)create).Method);
+            Constructors.Add(typeof(float), ((Func<float, float?>)create).Method);
+            Constructors.Add(typeof(Guid), ((Func<Guid, Guid?>)create).Method);
+            Constructors.Add(typeof(short), ((Func<short, short?>)create).Method);
+            Constructors.Add(typeof(int), ((Func<int, int?>)create).Method);
+            Constructors.Add(typeof(long), ((Func<long, long?>)create).Method);
         }
     }
 }

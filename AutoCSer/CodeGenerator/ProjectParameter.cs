@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
@@ -73,8 +73,8 @@ namespace AutoCSer.CodeGenerator
                     }
                     catch (Exception error)
                     {
-                        types = NullValue<Type>.Array;
-                        Messages.Add(error);
+                        types = EmptyArray<Type>.Array;
+                        Messages.Exception(error);
                     }
                 }
                 return types;
@@ -177,14 +177,14 @@ namespace AutoCSer.CodeGenerator
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void run(IGenerator generator)
         {
-            if (!generator.Run(this)) Messages.Add(generator.GetType().fullName() + " 安装失败");
+            if (!generator.Run(this)) Messages.Error(generator.GetType().fullName() + " 安装失败");
         }
         /// <summary>
         /// 启动代码生成
         /// </summary>
         public void Start()
         {
-            if (string.IsNullOrEmpty(ProjectPath) || !Directory.Exists(ProjectPath)) Messages.Add("项目路径不存在 : " + ProjectPath);
+            if (string.IsNullOrEmpty(ProjectPath) || !Directory.Exists(ProjectPath)) Messages.Error("项目路径不存在 : " + ProjectPath);
             else
             {
                 try
@@ -195,18 +195,18 @@ namespace AutoCSer.CodeGenerator
                     }
                     else
                     {
-                        KeyValue<Type, GeneratorAttribute>[] generators = (CustomConfig.Default.IsAutoCSer ? CurrentAssembly.GetTypes() : NullValue<Type>.Array)
-                            .concat(CustomConfig.Assembly == null ? null : CustomConfig.Assembly.GetTypes())
+                        KeyValue<Type, GeneratorAttribute>[] generators = (CustomConfig.Default.IsAutoCSer ? CurrentAssembly.GetTypes() : EmptyArray<Type>.Array)
+                            .concat(CustomConfig.Assembly == null ? EmptyArray<Type>.Array : CustomConfig.Assembly.GetTypes())
                             .getFind(type => !type.IsInterface && !type.IsAbstract && typeof(IGenerator).IsAssignableFrom(type))
                             .GetArray(type => new KeyValue<Type, GeneratorAttribute>(type, type.customAttribute<GeneratorAttribute>()))
                             .getFind(value => value.Value != null && value.Value.IsAuto).ToArray();
                         if (generators.Length != 0)
                         {
                             generators = generators.sort((left, right) => string.CompareOrdinal(left.Key.FullName, right.Key.FullName));
-                            HashSet<Type> types = generators.getHash(value => value.Key);
-                            KeyValue<Type, Type>[] depends = generators
+                            HashSet<HashType> types = generators.getHash(value => (HashType)value.Key);
+                            KeyValue<HashType, HashType>[] depends = generators
                                 .getFind(value => value.Value.DependType != null && types.Contains(value.Value.DependType))
-                                .GetArray(value => new KeyValue<Type, Type>(value.Key, value.Value.DependType));
+                                .GetArray(value => new KeyValue<HashType, HashType>((HashType)value.Key, (HashType)value.Value.DependType));
                             foreach (Type type in AutoCSer.Algorithm.TopologySort.Sort(depends, types, true)) run(type.Assembly.CreateInstance(type.FullName) as IGenerator);
                         }
                         if (CustomConfig.Default.IsAutoCSer)
@@ -251,8 +251,8 @@ namespace AutoCSer.CodeGenerator
                 }
                 catch (Exception error)
                 {
-                    if (CustomConfig.Assembly == null) Messages.Add(error);
-                    else Messages.Add(CustomConfig.Assembly.FullName + "\r\n" + error.ToString());
+                    if (CustomConfig.Assembly == null) Messages.Exception(error);
+                    else Messages.Error(CustomConfig.Assembly.FullName + "\r\n" + error.ToString());
                 }
                 finally { Coder.Output(this); }
             }

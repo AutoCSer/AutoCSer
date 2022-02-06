@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.IO;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Web.Ajax

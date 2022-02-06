@@ -39,8 +39,8 @@ namespace AutoCSer.IO.Compression
 #endif
         {
             int length = count + seek;
-            SubBuffer.Pool.GetBuffer(ref buffer, length);
-            using (MemoryStream dataStream = AutoCSer.Extension.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
+            SubBuffer.Pool.GetSingleBuffer(ref buffer, length);
+            using (MemoryStream dataStream = AutoCSer.Extensions.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
             {
                 if (seek != 0) dataStream.Seek(seek, SeekOrigin.Begin);
 #if DOTNET2 || DOTNET4
@@ -85,10 +85,10 @@ namespace AutoCSer.IO.Compression
         {
             int length = data.Length + seek;
             SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
-            SubBuffer.Pool.GetBuffer(ref buffer, length);
+            SubBuffer.Pool.GetSingleBuffer(ref buffer, length);
             try
             {
-                using (MemoryStream dataStream = AutoCSer.Extension.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
+                using (MemoryStream dataStream = AutoCSer.Extensions.MemoryStreamExtension.New(buffer.Buffer, buffer.StartIndex, buffer.Length))
                 {
                     if (seek != 0) dataStream.Seek(seek, SeekOrigin.Begin);
 #if DOTNET2 || DOTNET4

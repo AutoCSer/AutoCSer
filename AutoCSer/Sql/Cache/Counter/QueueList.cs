@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 
@@ -76,14 +76,14 @@ namespace AutoCSer.Sql.Cache.Counter
                         if (oldValues != null)
                         {
                             values.Add(cacheValue);
-                            if (!oldValues.Remove(cacheValue)) counter.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                            if (!oldValues.Remove(cacheValue)) counter.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                         }
                         else values.Add(counter.Add(cacheValue));
                     }
                     else if (oldValues != null)
                     {
                         if (oldValues.Remove(cacheValue)) counter.Remove(cacheValue);
-                        else counter.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                        else counter.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace AutoCSer.Sql.Cache.Counter
         {
             keyType key = getKey(value);
             ListArray<valueType> values = queueCache.Get(ref key, null);
-            if (values != null && !values.Remove(value)) counter.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            if (values != null && !values.Remove(value)) counter.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal| LogLevel.AutoCSer);
         }
         /// <summary>
         /// 读取数据库数据列表
@@ -104,29 +104,34 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="connection"></param>
         /// <param name="key">关键字</param>
         /// <returns>数据列表</returns>
-        private ListArray<valueType> createList(ref DbConnection connection, keyType key)
+        private ReturnValue<ListArray<valueType>> createList(ref DbConnection connection, keyType key)
         {
-            ListArray<valueType> list = new ListArray<valueType>(counter.SqlTable.SelectQueue(ref connection, getWhere(key), counter.MemberMap));
-            if (list != null)
+            ReturnValue<LeftArray<valueType>> valueArray = counter.SqlTable.SelectQueue(ref connection, getWhere(key), counter.MemberMap);
+            if (valueArray.ReturnType == ReturnType.Success)
             {
-                if (list.Length != 0)
+                ListArray<valueType> list = new ListArray<valueType>(ref valueArray.Value);
+                if (list != null)
                 {
-                    int index = 0, count = list.Length;
-                    valueType[] array = list.Array;
-                    foreach (valueType value in array)
+                    if (list.Array.Length != 0)
                     {
-                        array[index] = counter.Add(value);
-                        if (++index == count) break;
+                        int index = 0, count = list.Array.Length;
+                        valueType[] array = list.Array.Array;
+                        foreach (valueType value in array)
+                        {
+                            array[index] = counter.Add(value);
+                            if (++index == count) break;
+                        }
                     }
                 }
+                else list = new ListArray<valueType>();
+                queueCache[key] = list;
+                if (queueCache.Count > maxCount)
+                {
+                    foreach (valueType value in queueCache.UnsafePopValue()) counter.Remove(value);
+                }
+                return list;
             }
-            else list = new ListArray<valueType>();
-            queueCache[key] = list;
-            if (queueCache.Count > maxCount)
-            {
-                foreach (valueType value in queueCache.UnsafePopValue()) counter.Remove(value);
-            }
-            return list;
+            return valueArray.ReturnType;
         }
         /// <summary>
         /// 获取缓存数据集合
@@ -135,9 +140,11 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="key">关键字</param>
         /// <returns>数据集合</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private ListArray<valueType> getList(ref DbConnection connection, keyType key)
+        private ReturnValue<ListArray<valueType>> getList(ref DbConnection connection, keyType key)
         {
-            return queueCache.Get(ref key, null) ?? createList(ref connection, key);
+            ListArray<valueType> list = queueCache.Get(ref key, null);
+            if (list != null) return list;
+            return createList(ref connection, key);
         }
         /// <summary>
         /// 获取数据
@@ -151,7 +158,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// <summary>
             /// 返回值
             /// </summary>
-            private valueType[] value;
+            private ReturnValue<valueType[]> value;
             /// <summary>
             /// 关键字
             /// </summary>
@@ -179,7 +186,13 @@ namespace AutoCSer.Sql.Cache.Counter
             {
                 try
                 {
-                    value = new LeftArray<valueType>(queue.getList(ref connection, key)).GetArray();
+                    ReturnValue<ListArray<valueType>> listArray = queue.getList(ref connection, key);
+                    if (listArray.ReturnType == ReturnType.Success) value = listArray.Value.Array.GetArray();
+                    else value = listArray.ReturnType;
+                }
+                catch (Exception error)
+                {
+                    value = error;
                 }
                 finally
                 {
@@ -191,7 +204,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType[] Wait()
+            internal ReturnValue<valueType[]> Wait()
             {
                 wait.Wait();
                 return value;
@@ -202,7 +215,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// </summary>
         /// <param name="key">关键字</param>
         /// <returns>数据集合</returns>
-        public valueType[] GetArray(keyType key)
+        public ReturnValue<valueType[]> GetArray(keyType key)
         {
             GetArrayTask task = new GetArrayTask(this, key);
             counter.SqlTable.AddQueue(task);
@@ -214,15 +227,20 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="key">关键字</param>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>数据集合</returns>
-        public LeftArray<valueType> GetFindArray(keyType key, Func<valueType, bool> isValue)
+        public ReturnValue<LeftArray<valueType>> GetFindArray(keyType key, Func<valueType, bool> isValue)
         {
-            valueType[] array = GetArray(key);
-            int index = 0;
-            foreach (valueType value in array)
+            ReturnValue<valueType[]> valueArray = GetArray(key);
+            if (valueArray.ReturnType == ReturnType.Success)
             {
-                if (isValue(value)) array[index++] = value;
+                valueType[] array = valueArray.Value;
+                int index = 0;
+                foreach (valueType value in array)
+                {
+                    if (isValue(value)) array[index++] = value;
+                }
+                return new LeftArray<valueType>(index, array);
             }
-            return new LeftArray<valueType>(index, array);
+            return valueArray.ReturnType;
         }
         /// <summary>
         /// 获取数据
@@ -240,7 +258,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// <summary>
             /// 返回值
             /// </summary>
-            private valueType value;
+            private ReturnValue<valueType> value;
             /// <summary>
             /// 关键字
             /// </summary>
@@ -270,7 +288,13 @@ namespace AutoCSer.Sql.Cache.Counter
             {
                 try
                 {
-                    value = new LeftArray<valueType>(queue.getList(ref connection, key)).FirstOrDefault(isValue);
+                    ReturnValue<ListArray<valueType>> listArray = queue.getList(ref connection, key);
+                    if (listArray.ReturnType == ReturnType.Success) value = listArray.Value.Array.FirstOrDefault(isValue);
+                    else value = listArray.ReturnType;
+                }
+                catch (Exception error)
+                {
+                    value = error;
                 }
                 finally
                 {
@@ -282,7 +306,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType Wait()
+            internal ReturnValue<valueType> Wait()
             {
                 wait.Wait();
                 return value;
@@ -294,12 +318,15 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="key">关键字</param>
         /// <param name="isValue">数据匹配器,禁止数据库与锁操作</param>
         /// <returns>匹配数据,失败返回null</returns>
-        public valueType FirstOrDefault(keyType key, Func<valueType, bool> isValue)
+        public ReturnValue<valueType> FirstOrDefault(keyType key, Func<valueType, bool> isValue)
         {
-            if (isValue == null) throw new ArgumentNullException();
-            FindTask task = new FindTask(this, key, isValue);
-            counter.SqlTable.AddQueue(task);
-            return task.Wait();
+            if (isValue != null)
+            {
+                FindTask task = new FindTask(this, key, isValue);
+                counter.SqlTable.AddQueue(task);
+                return task.Wait();
+            }
+            return ReturnType.ArgumentNull;
         }
     }
 }

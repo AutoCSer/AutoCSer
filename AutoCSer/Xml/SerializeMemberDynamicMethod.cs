@@ -1,8 +1,9 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Reflection;
 using AutoCSer.Emit;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -18,11 +19,11 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 获取字符串输出缓冲区属性方法信息
         /// </summary>
-        internal static readonly FieldInfo CharStreamField = typeof(Serializer).GetField("CharStream", BindingFlags.Instance | BindingFlags.Public);
+        internal static readonly MethodInfo GetCharStreamMethod = ((Func<XmlSerializer, CharStream>)XmlSerializer.GetCharStream).Method;
         /// <summary>
-        /// 集合子节点名称字段
+        /// 设置集合子节点名称函数信息
         /// </summary>
-        internal static readonly FieldInfo ItemNameField = typeof(Serializer).GetField("itemName", BindingFlags.Instance | BindingFlags.NonPublic);
+        internal static readonly MethodInfo SetItemNameMethod = ((Action<XmlSerializer, string>)XmlSerializer.SetItemName).Method;
         /// <summary>
         /// 动态函数
         /// </summary>
@@ -41,12 +42,12 @@ namespace AutoCSer.Xml
         /// <param name="type"></param>
         public SerializeMemberDynamicMethod(Type type)
         {
-            dynamicMethod = new DynamicMethod("XmlSerializer", null, new Type[] { typeof(Serializer), type }, type, true);
+            dynamicMethod = new DynamicMethod("XmlSerializer", null, new Type[] { typeof(XmlSerializer), type }, type, true);
             generator = dynamicMethod.GetILGenerator();
             generator.DeclareLocal(typeof(CharStream));
 
             generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldfld, CharStreamField);
+            generator.call(GetCharStreamMethod);
             generator.Emit(OpCodes.Stloc_0);
 
             isValueType = type.IsValueType;
@@ -56,7 +57,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="name">成员名称</param>
         /// <param name="attribute">XML序列化成员配置</param>
-        private void nameStart(string name, MemberAttribute attribute)
+        private void nameStart(string name, XmlSerializeMemberAttribute attribute)
         {
             WriteName(generator, OpCodes.Ldloc_0, name, false);
 
@@ -64,7 +65,7 @@ namespace AutoCSer.Xml
             {
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldstr, attribute.ItemName);
-                generator.Emit(OpCodes.Stfld, ItemNameField);
+                generator.call(SetItemNameMethod);
             }
         }
         /// <summary>
@@ -72,7 +73,7 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="field">字段信息</param>
         /// <param name="attribute">XML序列化成员配置</param>
-        public void Push(FieldIndex field, MemberAttribute attribute)
+        public void Push(FieldIndex field, XmlSerializeMemberAttribute attribute)
         {
             Label end = default(Label);
             MethodInfo isOutputMethod = SerializeMethodCache.GetIsOutputMethod(field.Member.FieldType);
@@ -116,7 +117,7 @@ namespace AutoCSer.Xml
         /// <param name="property">属性信息</param>
         /// <param name="propertyMethod">函数信息</param>
         /// <param name="attribute">XML序列化成员配置</param>
-        public void Push(PropertyIndex property, MethodInfo propertyMethod, MemberAttribute attribute)
+        public void Push(PropertyIndex property, MethodInfo propertyMethod, XmlSerializeMemberAttribute attribute)
         {
             Label end = default(Label);
             MethodInfo isOutputMethod = SerializeMethodCache.GetIsOutputMethod(property.Member.PropertyType);

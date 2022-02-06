@@ -7,7 +7,7 @@ namespace fastCSharp
     /// <summary>
     /// 非托管内存
     /// </summary>
-    internal unsafe static partial class Unmanaged
+    //internal unsafe static partial class Unmanaged
     {
         /// <summary>
         /// 静态类型初始化申请非托管内存(不释放的固定内存)

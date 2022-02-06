@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Threading;
 
 namespace AutoCSer.Emit
@@ -6,7 +7,7 @@ namespace AutoCSer.Emit
     /// <summary>
     /// 名称申请池
     /// </summary>
-    internal unsafe static class NamePool
+    //internal unsafe static class NamePool
     {
         /// <summary>
         /// 申请池起始位置
@@ -35,7 +36,7 @@ namespace AutoCSer.Emit
         /// <returns></returns>
         public static char* GetChar(int length)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref getLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.NamePoolGet);
+            while (System.Threading.Interlocked.CompareExchange(ref getLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
             char* value = start;
             if ((start += length) <= end)
             {
@@ -44,7 +45,7 @@ namespace AutoCSer.Emit
             }
             System.Threading.Interlocked.Exchange(ref getLock, 0);
             Monitor.Enter(createLock);
-            while (System.Threading.Interlocked.CompareExchange(ref getLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.NamePoolGet);
+            while (System.Threading.Interlocked.CompareExchange(ref getLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
             if ((start += length) <= end)
             {
                 value = start - length;
@@ -55,8 +56,8 @@ namespace AutoCSer.Emit
             System.Threading.Interlocked.Exchange(ref getLock, 0);
             try
             {
-                value = (char*)Unmanaged.GetStatic64(poolSize, false);
-                while (System.Threading.Interlocked.CompareExchange(ref getLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.NamePoolGet);
+                value = (char*)Unmanaged.GetStaticPointer8(poolSize, false);
+                while (System.Threading.Interlocked.CompareExchange(ref getLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
                 start = value + length;
                 end = value + (poolSize >> 1);
                 System.Threading.Interlocked.Exchange(ref getLock, 0);
@@ -74,7 +75,7 @@ namespace AutoCSer.Emit
         public static char* Get(string name, int seek, int endSize)
         {
             char* value = GetChar(name.Length + (seek + endSize));
-            fixed (char* nameFixed = name) AutoCSer.Extension.StringExtension.SimpleCopyNotNull(nameFixed, value + seek, name.Length);
+            fixed (char* nameFixed = name) AutoCSer.Extensions.StringExtension.SimpleCopyNotNull(nameFixed, value + seek, name.Length);
             return value;
         }
     }

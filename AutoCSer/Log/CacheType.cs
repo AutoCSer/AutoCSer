@@ -5,7 +5,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 缓存类型
     /// </summary>
-    public enum CacheType : byte
+    //public enum CacheType : byte
     {
         /// <summary>
         /// 不缓存

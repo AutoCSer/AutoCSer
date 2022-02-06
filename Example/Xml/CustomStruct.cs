@@ -18,23 +18,23 @@ namespace AutoCSer.Example.Xml
         /// <param name="serializer"></param>
         [AutoCSer.Xml.Custom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void Serialize(AutoCSer.Xml.Serializer serializer)
+        internal void Serialize(AutoCSer.XmlSerializer serializer)
         {
             serializer.TypeSerialize(Value == null ? 1 : 2);
         }
         /// <summary>
         /// 自定义反序列化函数
         /// </summary>
-        /// <param name="parser"></param>
+        /// <param name="xmlDeSerializer"></param>
         [AutoCSer.Xml.Custom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.Xml.Parser parser)
+        private unsafe void deSerialize(AutoCSer.XmlDeSerializer xmlDeSerializer)
         {
-            switch (parser.TypeParse<int>())
+            switch (xmlDeSerializer.TypeDeSerialize<int>())
             {
                 case 1: Value = null; return;
                 case 2: Value = string.Empty; return;
-                default: parser.MoveRead(-1); return;
+                default: xmlDeSerializer.MoveRead(-1); return;
             }
         }
 
@@ -45,14 +45,14 @@ namespace AutoCSer.Example.Xml
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            string xml = AutoCSer.Xml.Serializer.Serialize(new CustomStruct { Value = null });
-            if (AutoCSer.Xml.Parser.Parse<CustomStruct>(xml).Value != null)
+            string xml = AutoCSer.XmlSerializer.Serialize(new CustomStruct { Value = null });
+            if (AutoCSer.XmlDeSerializer.DeSerialize<CustomStruct>(xml).Value != null)
             {
                 return false;
             }
 
-            xml = AutoCSer.Xml.Serializer.Serialize(new CustomStruct { Value = string.Empty });
-            return AutoCSer.Xml.Parser.Parse<CustomStruct>(xml).Value == string.Empty;
+            xml = AutoCSer.XmlSerializer.Serialize(new CustomStruct { Value = string.Empty });
+            return AutoCSer.XmlDeSerializer.DeSerialize<CustomStruct>(xml).Value == string.Empty;
         }
     }
 }

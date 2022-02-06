@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Email
 {
@@ -83,7 +83,7 @@ namespace AutoCSer.Email
         /// <param name="content">电子邮件内容</param>
         /// <param name="log">日志处理</param>
         /// <returns>邮件是否发送成功</returns>
-        public bool Send(Content content, AutoCSer.Log.ILog log = null)
+        public bool Send(Content content, AutoCSer.ILog log = null)
         {
             bool isSend = false;
             if (check(content))
@@ -97,7 +97,7 @@ namespace AutoCSer.Email
                     }
                     catch (Exception error)
                     {
-                        log.Add(Log.LogType.Debug | Log.LogType.Info, error, "邮件发送失败 : " + content.SendTo);
+                        log.Exception(error, "邮件发送失败 : " + content.SendTo, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -110,11 +110,11 @@ namespace AutoCSer.Email
         /// <param name="onSend">邮件发送回调</param>
         /// <param name="log">日志处理</param>
         /// <returns>是否异步完成</returns>
-        public bool Send(Content content, Action<Exception> onSend, AutoCSer.Log.ILog log = null)
+        public bool Send(Content content, Action<Exception> onSend, AutoCSer.ILog log = null)
         {
             if (check(content))
             {
-                if (log == null) log = AutoCSer.Log.Pub.Log;
+                if (log == null) log = AutoCSer.LogHelper.Default;
                 MailMessage message = null;
                 try
                 {
@@ -125,7 +125,7 @@ namespace AutoCSer.Email
                 }
                 catch (Exception error)
                 {
-                    log.Add(Log.LogType.Debug | Log.LogType.Info, error, "邮件发送失败 : " + content.SendTo);
+                    log.Exception(error, "邮件发送失败 : " + content.SendTo, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 if (message != null) message.Dispose();
             }

@@ -40,8 +40,8 @@ namespace AutoCSer.Example.BinarySerialize
 #endif
             AutoCSer.BinarySerialize.SerializeConfig serializeMemberMapConfig = new AutoCSer.BinarySerialize.SerializeConfig { MemberMap = serializeMemberMap };
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value, serializeMemberMapConfig);
-            MemberMap newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<MemberMap>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value, serializeMemberMapConfig);
+            MemberMap newValue = AutoCSer.BinaryDeSerializer.DeSerialize<MemberMap>(data);
 
             return newValue != null && newValue.Value1 == 1 && newValue.Value2 == 2 && newValue.Value3 == 0;
         }

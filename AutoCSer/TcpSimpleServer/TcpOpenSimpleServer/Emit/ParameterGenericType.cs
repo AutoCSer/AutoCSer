@@ -11,18 +11,26 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
     internal abstract partial class ParameterGenericType : AutoCSer.Net.TcpSimpleServer.Emit.ParameterGenericType
     {
         /// <summary>
-        /// TCP 开放服务客户端
+        /// TCP 开放服务端套接字 错误日志处理函数
         /// </summary>
-        internal static readonly TcpOpenSimpleServer.Client Client = new Client();
+        internal static MethodInfo ServerSocketLogMethod { get { return ((Action<ServerSocket, Exception>)ServerSocket.Log).Method; } }
         /// <summary>
-        /// TCP 开放服务端套接字
+        /// TCP 开放服务端套接字 发送数据函数
         /// </summary>
-        internal static readonly ServerSocket ServerSocket = new ServerSocket();
+        internal static MethodInfo ServerSocketSendOutputMethod { get { return ((Func<ServerSocket, TcpServer.ReturnType, bool>)ServerSocket.SendOutput).Method; } }
+        /// <summary>
+        /// TCP 开放服务端套接字 发送数据函数
+        /// </summary>
+        internal static MethodInfo ServerSocketSendReturnTypeMethod { get { return ((Func<ServerSocket, TcpServer.ReturnType, bool>)ServerSocket.Send).Method; } }
+        /// <summary>
+        /// TCP 开放服务端套接字 发送数据函数
+        /// </summary>
+        internal static MethodInfo ServerSocketSendMethod { get { return ((Func<ServerSocket,bool>)ServerSocket.Send).Method; } }
 
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ParameterGenericType> cache = new LockLastDictionary<Type, ParameterGenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, ParameterGenericType> cache = new LockLastDictionary<HashType, ParameterGenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -50,7 +58,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(outputParameterType).Invoke(null, null) }.ParameterGenericType;
+                    value = new UnionType.ParameterGenericType { Object = createMethod.MakeGenericMethod(outputParameterType).Invoke(null, null) }.Value;
                     cache.Set(outputParameterType, value);
                 }
                 finally { cache.Exit(); }
@@ -66,26 +74,43 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         where parameterType : struct
     {
         /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(parameterType); } }
+
+        /// <summary>
         /// TCP调用
         /// </summary>
         internal override MethodInfo ClientCallMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.Call)Client.Call<parameterType>).Method; }
+            get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.Call)TcpSimpleServer.Client.Call<parameterType>).Method; }
         }
         /// <summary>
         /// TCP调用并返回参数值
         /// </summary>
         internal override MethodInfo ClientGetMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.Call)Client.Get<parameterType>).Method; }
+            get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.Call)TcpSimpleServer.Client.Get<parameterType>).Method; }
         }
 
         /// <summary>
         /// 发送数据
         /// </summary>
-        internal override MethodInfo ServerSocketSendMethod
+        /// <param name="socket"></param>
+        /// <param name="outputInfo"></param>
+        /// <param name="outputParameter"></param>
+        /// <returns></returns>
+        private delegate bool Send(ServerSocket socket, TcpSimpleServer.OutputInfo outputInfo, ref parameterType outputParameter);
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        internal override MethodInfo ServerSocketSendParameterMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.Send)ServerSocket.Send<parameterType>).Method; }
+            get { return ((Send)ServerSocket.Send<parameterType>).Method; }
         }
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        internal override MethodInfo ServerSocketDeSerializeMethod { get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.DeSerialize)TcpSimpleServer.ServerSocket.DeSerialize<parameterType>).Method; } }
     }
 }

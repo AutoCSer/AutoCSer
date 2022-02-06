@@ -231,7 +231,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <param name="attribute">TCP调用服务器端配置信息</param>
             /// <param name="verify">TCP验证实例</param>
             /// <param name="log">日志接口</param>
-            public @ServerName(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+            public @ServerName(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.ILog log = null)
                 : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, log, @IsSynchronousVerifyMethod)
             {
                 setCommandData(@MethodIndexs.Length);
@@ -356,7 +356,7 @@ namespace AutoCSer.CodeGenerator.Template
 
             #region NAME Parameter
             #region LOOP ParameterTypes
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false/*NOT:IsSerializeReferenceMember*/, IsReferenceMember = false/*NOT:IsSerializeReferenceMember*/)]
+            [AutoCSer.BinarySerialize(IsMemberMap = false/*NOT:IsSerializeReferenceMember*/, IsReferenceMember = false/*NOT:IsSerializeReferenceMember*/)]
             #region IF IsSerializeBox
             [AutoCSer.Metadata.BoxSerialize]
             #endregion IF IsSerializeBox
@@ -450,7 +450,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <summary>
                 /// 日志接口
                 /// </summary>
-                public AutoCSer.Log.ILog Log;
+                public AutoCSer.ILog Log;
                 /// <summary>
                 /// 验证委托
                 /// </summary>
@@ -468,7 +468,7 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion PUSH TimeVerifyMethod
             static @ServerName()
             {
-                ClientConfig config = (ClientConfig)AutoCSer.Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
+                ClientConfig config = (ClientConfig)AutoCSer.Configuration.Common.Get(typeof(ClientConfig)) ?? new ClientConfig();
                 if (config.ServerAttribute == null)
                 {
                     #region IF IsSegmentation
@@ -479,7 +479,7 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion NOT IsSegmentation
                 }
                 #region NOT IsSegmentation
-                if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 @ServerName 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
+                if (config.ServerAttribute.IsServer) AutoCSer.LogHelper.Debug("请确认 @ServerName 服务器端是否本地调用", AutoCSer.LogLevel.Debug | AutoCSer.LogLevel.Warn | AutoCSer.LogLevel.AutoCSer);
                 #endregion NOT IsSegmentation
                 TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
                 #region IF Attribute.IsCompileSerialize

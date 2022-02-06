@@ -14,9 +14,9 @@ namespace AutoCSer.Example.Json
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            string json = AutoCSer.Json.Serializer.Serialize(new { Value = 1 });
+            string json = AutoCSer.JsonSerializer.Serialize(new { Value = 1 });
             var newValue = new { Value = 0 };
-            AutoCSer.Json.Parser.Parse(json, ref newValue);
+            AutoCSer.JsonDeSerializer.DeSerialize(json, ref newValue);
             return newValue.Value == 1;
         }
     }

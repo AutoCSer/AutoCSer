@@ -63,7 +63,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="value">TCP 服务目标对象</param>
                 #endregion IF Type.Type.IsPublic
                 /// <param name="log">日志接口</param>
-                public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null/*IF:Type.Type.IsPublic*/, @Type.FullName value = null/*IF:Type.Type.IsPublic*/, AutoCSer.Log.ILog log = null)
+                public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null/*IF:Type.Type.IsPublic*/, @Type.FullName value = null/*IF:Type.Type.IsPublic*/, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName))), verify, log, @IsSynchronousVerifyMethod)
                 {
                     Value =/*IF:Type.Type.IsPublic*/ value ?? /*IF:Type.Type.IsPublic*/new @Type.FullName();
@@ -215,7 +215,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF IsServerCode
 
                 #region LOOP ParameterTypes
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false/*NOT:IsSerializeReferenceMember*/, IsReferenceMember = false/*NOT:IsSerializeReferenceMember*/)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false/*NOT:IsSerializeReferenceMember*/, IsReferenceMember = false/*NOT:IsSerializeReferenceMember*/)]
                 #region IF IsSerializeBox
                 [AutoCSer.Metadata.BoxSerialize]
                 #endregion IF IsSerializeBox
@@ -297,7 +297,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="verifyMethod">TCP 验证方法</param>
                 #endregion IF IsVerifyMethod
                 /// <param name="log">日志接口</param>
-                public TcpInternalSimpleClient(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpInternalSimpleClient, bool> verifyMethod = null/*IF:IsVerifyMethod*/, AutoCSer.Log.ILog log = null)
+                public TcpInternalSimpleClient(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpInternalSimpleClient, bool> verifyMethod = null/*IF:IsVerifyMethod*/, AutoCSer.ILog log = null)
                 {
                     if (attribute == null)
                     {
@@ -305,7 +305,7 @@ namespace AutoCSer.CodeGenerator.Template
                         attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName));
                         #endregion IF IsServerCode
                         #region NOT IsServerCode
-                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>("@ServerRegisterName") ?? _DefaultServerAttribute_;
+                        attribute = (AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute)AutoCSer.Configuration.Common.Get(typeof(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute), "@ServerRegisterName") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = "@ServerRegisterName";
                         #endregion NOT IsServerCode
                     }
@@ -318,7 +318,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// </summary>
                 public static AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute _DefaultServerAttribute_
                 {
-                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(@"@AttributeJson"); }
+                    get { return AutoCSer.JsonDeSerializer.DeSerialize<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(@"@AttributeJson"); }
                 }
                 #endregion NOT IsServerCode
 

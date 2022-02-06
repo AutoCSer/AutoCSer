@@ -3,7 +3,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.WebClient
@@ -247,7 +247,7 @@ namespace AutoCSer.Net.WebClient
         {
             if (request.IsErrorOut)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, (request.IsErrorOutUri ? request.Uri.AbsoluteUri : null) + " 抓取失败", !request.IsErrorOutUri);
+                AutoCSer.LogHelper.Exception(error, (request.IsErrorOutUri ? request.Uri.AbsoluteUri : null) + " 抓取失败", LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -293,7 +293,7 @@ namespace AutoCSer.Net.WebClient
                     }
                     catch(Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, key.ToString(), true);
+                        AutoCSer.LogHelper.Exception(error, key.ToString(), LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
             }

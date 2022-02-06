@@ -1,17 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.Example.CacheServer
 {
     /// <summary>
     /// 项目配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal static class Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
+        /// <summary>
+        /// 主配置类型集合
+        /// </summary>
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// 缓存主服务配置
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.CacheServer.MasterServerConfig CacheMasterServerConfig
         {
             get
@@ -22,7 +27,7 @@ namespace AutoCSer.Example.CacheServer
         /// <summary>
         /// 缓存主服务 TCP 静态服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.CacheServer.MasterServer.ServerName)]
+        [AutoCSer.Configuration.Member(AutoCSer.CacheServer.MasterServer.ServerName)]
         public static AutoCSer.Net.TcpInternalServer.ServerAttribute CacheMasterConfig
         {
             get
@@ -35,7 +40,7 @@ namespace AutoCSer.Example.CacheServer
         /// <summary>
         /// 缓存从服务配置
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.CacheServer.SlaveServerConfig CacheSlaveServerConfig
         {
             get
@@ -46,7 +51,7 @@ namespace AutoCSer.Example.CacheServer
         /// <summary>
         /// 缓存从服务 TCP 静态服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.CacheServer.SlaveServer.ServerName)]
+        [AutoCSer.Configuration.Member(AutoCSer.CacheServer.SlaveServer.ServerName)]
         public static AutoCSer.Net.TcpInternalServer.ServerAttribute CacheSlaveConfig
         {
             get

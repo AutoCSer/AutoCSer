@@ -15,6 +15,6 @@ namespace AutoCSer.Web.DeployClient.Nuget
         /// <summary>
         /// XML 解析参数
         /// </summary>
-        internal static readonly AutoCSer.Xml.ParseConfig XmlConfig = new AutoCSer.Xml.ParseConfig { BootNodeName = "package" };
+        internal static readonly AutoCSer.Xml.DeSerializeConfig XmlConfig = new AutoCSer.Xml.DeSerializeConfig { BootNodeName = "package" };
     }
 }

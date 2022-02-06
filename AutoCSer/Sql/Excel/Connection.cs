@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.Sql.Excel
 {
@@ -7,6 +8,11 @@ namespace AutoCSer.Sql.Excel
     /// </summary>
     public sealed class Connection
     {
+        /// <summary>
+        /// 默认表格名称
+        /// </summary>
+        public const string DefaultTableName = "Sheet1$";
+
         /// <summary>
         /// 数据接口属性
         /// </summary>
@@ -36,29 +42,29 @@ namespace AutoCSer.Sql.Excel
         public unsafe Sql.Connection Get(bool isPool = false)
         {
             ProviderAttribute provider = EnumAttribute<Provider, ProviderAttribute>.Array((byte)Provider);
-            byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
+            AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
             try
             {
-                using (CharStream connectionStream = new CharStream((char*)buffer, AutoCSer.UnmanagedPool.DefaultSize >> 1))
+                using (CharStream connectionStream = new CharStream(ref buffer))
                 {
-                    connectionStream.SimpleWriteNotNull("Provider=");
+                    connectionStream.SimpleWrite("Provider=");
                     connectionStream.Write(provider.Name);
-                    connectionStream.SimpleWriteNotNull(";Data Source=");
+                    connectionStream.SimpleWrite(";Data Source=");
                     connectionStream.Write(DataSource);
                     if (Password != null)
                     {
-                        connectionStream.WriteNotNull(";Database Password=");
-                        connectionStream.SimpleWriteNotNull(Password);
+                        connectionStream.Write(";Database Password=");
+                        connectionStream.SimpleWrite(Password);
                     }
-                    connectionStream.WriteNotNull(";Extended Properties='");
+                    connectionStream.Write(";Extended Properties='");
                     connectionStream.Write(provider.Excel);
-                    connectionStream.WriteNotNull(IsTitleColumn ? ";HDR=YES;IMEX=" : ";HDR=NO;IMEX=");
-                    AutoCSer.Extension.Number.ToString((byte)Intermixed, connectionStream);
+                    connectionStream.Write(IsTitleColumn ? ";HDR=YES;IMEX=" : ";HDR=NO;IMEX=");
+                    AutoCSer.Extensions.NumberExtension.ToString((byte)Intermixed, connectionStream);
                     connectionStream.Write('\'');
                     return new Sql.Connection { Type = ClientKind.Excel, ConnectionString = connectionStream.ToString(), IsPool = isPool };
                 }
             }
-            finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }
+            finally { UnmanagedPool.Default.Push(ref buffer); }
         }
     }
 }

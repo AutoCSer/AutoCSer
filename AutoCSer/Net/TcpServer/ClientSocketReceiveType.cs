@@ -12,6 +12,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         CommandIdentity,
         /// <summary>
+        /// 继续获取命令回调序号
+        /// </summary>
+        CommandIdentityAgain,
+        /// <summary>
         /// 获取数据
         /// </summary>
         Data,
@@ -19,13 +23,5 @@ namespace AutoCSer.Net.TcpServer
         /// 获取临时数据
         /// </summary>
         BigData,
-        /// <summary>
-        /// 获取压缩数据
-        /// </summary>
-        CompressionData,
-        /// <summary>
-        /// 获取临时压缩数据
-        /// </summary>
-        CompressionBigData,
     }
 }

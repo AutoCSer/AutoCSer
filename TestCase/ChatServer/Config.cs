@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.TestCase.ChatServer
 {
     /// <summary>
     /// 服务端项目配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal static class Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
+        /// <summary>
+        /// 主配置类型集合
+        /// </summary>
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// TCP 任务处理配置
         /// </summary>
-        [AutoCSer.Config.Member]
-        internal static AutoCSer.Net.TcpServer.TaskConfig TcpTaskConfig
+        [AutoCSer.Configuration.Member(AutoCSer.Net.TcpServer.ServerCallBase.TaskSwitchThreadConfigName)]
+        internal static AutoCSer.Threading.TaskSwitchThreadConfig TcpTaskConfig
         {
-            get { return new AutoCSer.Net.TcpServer.TaskConfig { ThreadCount = 1 }; }
+            get { return new AutoCSer.Threading.TaskSwitchThreadConfig { ThreadCount = 1 }; }
         }
     }
 }

@@ -32,6 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\Creator.Enum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="CreateConfigMethod.cs" />
@@ -43,11 +45,9 @@
     <Compile Include="MethodCache.cs" />
     <Compile Include="Metadata\GenericType.cs" />
     <Compile Include="Metadata\GenericType2.cs" />
-    <Compile Include="Metadata\UnionType.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <Compile Include="Metadata\UnionType\GenericType2.cs" />
+    <Compile Include="Metadata\UnionType\GenericType.cs" />
+    <Compile Include="{AutoCSer.RandomObject}.CombinationTemplate.cs" />
   </ItemGroup>
 
   <ItemGroup>

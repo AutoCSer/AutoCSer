@@ -20,7 +20,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="onMessage">消息处理委托，直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <param name="config">消息分发 读取配置</param>
         /// <param name="log">日志处理</param>
-        public DistributionConsumerStream(DataStructure.MessageQueue.Distributor<valueType> node, Action<valueType> onMessage, DistributionConsumerConfig config, AutoCSer.Log.ILog log = null) : base(node, config, log)
+        public DistributionConsumerStream(DataStructure.MessageQueue.Distributor<valueType> node, Action<valueType> onMessage, DistributionConsumerConfig config, AutoCSer.ILog log = null) : base(node, config, log)
         {
             if (onMessage == null) throw new ArgumentNullException();
             this.onMessage = onMessage;
@@ -82,7 +82,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">消息分发 读取配置</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public DistributionConsumerStream(DataStructure.MessageQueue.Distributor<nodeType> node, Action<valueType> onMessage, DistributionConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : base(node, config, log)
+        public DistributionConsumerStream(DataStructure.MessageQueue.Distributor<nodeType> node, Action<valueType> onMessage, DistributionConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : base(node, config, log)
         {
             if (getValue == null || onMessage == null) throw new ArgumentNullException();
             this.getValue = getValue;

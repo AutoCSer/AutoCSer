@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
@@ -83,7 +83,7 @@ namespace AutoCSer.Sql.Cache.Whole
         private void onInserted(valueType value, keyType key, int index)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 ListArray<valueType>[] lists = getMember(target);
@@ -114,7 +114,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 if (index != oldIndex)
                 {
                     targetType target = getValue(key);
-                    if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+                    if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                     else
                     {
                         ListArray<valueType>[] lists = getMember(target);
@@ -125,16 +125,16 @@ namespace AutoCSer.Sql.Cache.Whole
                             list.Add(cacheValue);
                             if ((list = lists[oldIndex]) != null)
                             {
-                                index = Array.LastIndexOf(list.Array, cacheValue, list.Length - 1);
+                                index = Array.LastIndexOf(list.Array.Array, cacheValue, list.Array.Length - 1);
                                 if (index != -1)
                                 {
-                                    if (isRemoveEnd) list.RemoveAtEnd(index);
+                                    if (isRemoveEnd) list.Array.TryRemoveAtToEnd(index);
                                     else list.RemoveAt(index);
                                     return;
                                 }
                             }
                         }
-                        cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                        cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key, int index)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 ListArray<valueType>[] lists = getMember(target);
@@ -162,16 +162,16 @@ namespace AutoCSer.Sql.Cache.Whole
                     ListArray<valueType> list = lists[index];
                     if (list != null)
                     {
-                        index = Array.LastIndexOf(list.Array, value, list.Length - 1);
+                        index = Array.LastIndexOf(list.Array.Array, value, list.Array.Length - 1);
                         if (index != -1)
                         {
-                            if (isRemoveEnd) list.RemoveAtEnd(index);
+                            if (isRemoveEnd) list.Array.TryRemoveAtToEnd(index);
                             else list.RemoveAt(index);
                             return;
                         }
                     }
                 }
-                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
             }
         }
         /// <summary>

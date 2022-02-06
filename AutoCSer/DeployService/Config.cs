@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.DeployService
 {
@@ -57,11 +57,11 @@ namespace AutoCSer.DeployService
                 FileInfo JsonFile = new FileInfo(JsonFileName);
                 if (JsonFile.Exists)
                 {
-                    Config Config = AutoCSer.Json.Parser.Parse<Config>(File.ReadAllText(JsonFile.FullName, Encoding.UTF8));
+                    Config Config = AutoCSer.JsonDeSerializer.DeSerialize<Config>(File.ReadAllText(JsonFile.FullName, Encoding.UTF8));
                     if (Config != null) return Config;
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, "JSON 配置文件 " + JsonFile.FullName + " 解析失败");
+                    AutoCSer.LogHelper.Error("JSON 配置文件 " + JsonFile.FullName + " 解析失败", LogLevel.Error | LogLevel.AutoCSer);
                 }
-                else AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, "没有找到 JSON 配置文件 " + JsonFile.FullName);
+                else AutoCSer.LogHelper.Error("没有找到 JSON 配置文件 " + JsonFile.FullName, LogLevel.Error | LogLevel.AutoCSer);
             }
             return Default;
         }

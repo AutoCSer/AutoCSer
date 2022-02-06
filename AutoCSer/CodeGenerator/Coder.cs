@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -76,7 +76,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="type">模板数据视图</param>
         /// <param name="language">语言</param>
         public Coder(ProjectParameter parameter, Type type, CodeLanguage language)
-            : base(type, Messages.Add, Messages.Message)
+            : base(type, Messages.Error, Messages.Message)
         {
             this.parameter = parameter;
             extensionName = "." + EnumAttribute<CodeLanguage, CodeLanguageAttribute>.Array((int)(byte)language).ExtensionName;
@@ -102,7 +102,7 @@ namespace AutoCSer.CodeGenerator
             if (node != null)
             {
                 node = node.GetFirstNodeByTag(Command.NAME, ref name);
-                if (node == null) Messages.Add("模板文件 " + getTemplateFileName(typeName) + " 未找到NAME " + name.ToString());
+                if (node == null) Messages.Error("模板文件 " + getTemplateFileName(typeName) + " 未找到NAME " + name.ToString());
             }
             return node;
         }
@@ -130,7 +130,7 @@ namespace AutoCSer.CodeGenerator
                 {
                     nodeCache.Add(fileName, node = new TreeBuilder().Create(File.ReadAllText(fileName)));
                 }
-                else Messages.Add("未找到模板文件 " + fileName);
+                else Messages.Error("未找到模板文件 " + fileName);
             }
             return node;
         }
@@ -281,7 +281,7 @@ using AutoCSer;
                 {
                     case CodeLanguage.JavaScript:
                     case CodeLanguage.TypeScript:
-                        if (builders[index] != null) Messages.Add("生成了未知的 " + language + " 代码。");
+                        if (builders[index] != null) Messages.Error("生成了未知的 " + language + " 代码。");
                         break;
                 }
             }
@@ -347,7 +347,7 @@ using AutoCSer;
                     }
                 }
             }
-            //if (message.Length != 0) AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, message);
+            //if (message.Length != 0) AutoCSer.LogHelper.waitThrow(AutoCSer.LogLevel.All, message);
         }
         /// <summary>
         /// 输出代码
@@ -371,7 +371,9 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                AutoCSer.LogHelper.Exception(error, "文件创建失败 : " + fileName, LogLevel.All);
+                AutoCSer.LogHelper.Flush();
+                throw error;
             }
             return false;
         }
@@ -391,9 +393,10 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                AutoCSer.LogHelper.Exception(error, "文件创建失败 : " + fileName, AutoCSer.LogLevel.All);
+                AutoCSer.LogHelper.Flush();
+                throw error;
             }
-            return false;
         }
         /// <summary>
         /// 输出代码
@@ -410,7 +413,7 @@ using AutoCSer;
                 {
                     if (File.ReadAllText(fileName = file.FullName) != content)
                     {
-                        string bakName = file.Directory.fullName() + AutoCSer.IO.File.BakPrefix + Date.NowTime.Set().ToString("yyyyMMdd-HHmmss") + "_" + file.Name + "." + ((uint)Random.Default.Next()).toString();
+                        string bakName = file.Directory.fullName() + AutoCSer.IO.File.BakPrefix + AutoCSer.Threading.SecondTimer.Now.ToString("yyyyMMdd-HHmmss") + "_" + file.Name + "." + ((uint)Random.Default.Next()).toString();
                         if (File.Exists(bakName)) File.Delete(bakName);
                         File.Move(fileName, bakName);
                         File.WriteAllText(fileName, content);
@@ -427,7 +430,9 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                AutoCSer.LogHelper.Exception(error, "文件创建失败 : " + fileName, AutoCSer.LogLevel.All);
+                AutoCSer.LogHelper.Flush();
+                throw error;
             }
             return false;
         }

@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 #if !NOJIT
 using/**/System.Reflection.Emit;
@@ -13,30 +13,24 @@ namespace AutoCSer.BinarySerialize
     /// <summary>
     /// 二进制数据反序列化
     /// </summary>
-    /// <typeparam name="valueType">对象类型</typeparam>
-    internal unsafe partial class TypeDeSerializer<valueType>
+    /// <typeparam name="T">对象类型</typeparam>
+    internal unsafe partial class TypeDeSerializer<T>
     {
-        /// <summary>
-        /// 二进制数据反序列化委托
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerialize(DeSerializer deSerializer, ref valueType value);
         /// <summary>
         /// 二进制数据反序列化委托
         /// </summary>
         /// <param name="memberMap">成员位图</param>
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">目标数据</param>
-        private delegate void memberMapDeSerialize(MemberMap memberMap, DeSerializer deSerializer, ref valueType value);
+        private delegate void memberMapDeSerialize(MemberMap memberMap, BinaryDeSerializer deSerializer, ref T value);
         /// <summary>
         /// 二进制数据序列化类型配置
         /// </summary>
-        private static readonly SerializeAttribute attribute;
+        private static readonly BinarySerializeAttribute attribute;
         /// <summary>
         /// 反序列化委托
         /// </summary>
-        internal static readonly deSerialize DefaultDeSerializer;
+        internal static readonly BinaryDeSerializer.DeSerializeDelegate<T> DefaultDeSerializer;
         /// <summary>
         /// 是否值类型
         /// </summary>
@@ -59,7 +53,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void DeSerialize(DeSerializer deSerializer, ref valueType value)
+        internal static void DeSerialize(BinaryDeSerializer deSerializer, ref T value)
         {
             if (isValueType) StructDeSerialize(deSerializer, ref value);
             else ClassDeSerialize(deSerializer, ref value);
@@ -70,7 +64,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void StructDeSerialize(DeSerializer deSerializer, ref valueType value)
+        internal static void StructDeSerialize(BinaryDeSerializer deSerializer, ref T value)
         {
             if (DefaultDeSerializer == null) GetDeSerializer(deSerializer.GlobalVersion).MemberDeSerialize(deSerializer, ref value);
             else DefaultDeSerializer(deSerializer, ref value);
@@ -81,7 +75,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void ClassDeSerialize(DeSerializer deSerializer, ref valueType value)
+        internal static void ClassDeSerialize(BinaryDeSerializer deSerializer, ref T value)
         {
             if (deSerializer.CheckPoint(ref value))
             {
@@ -95,7 +89,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void classDeSerialize(DeSerializer deSerializer, ref valueType value)
+        private static void classDeSerialize(BinaryDeSerializer deSerializer, ref T value)
         {
             if (DefaultDeSerializer == null)
             {
@@ -110,10 +104,10 @@ namespace AutoCSer.BinarySerialize
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void BaseDeSerialize<childType>(DeSerializer deSerializer, ref childType value) where childType : valueType
+        internal static void BaseDeSerialize<childType>(BinaryDeSerializer deSerializer, ref childType value) where childType : T
         {
-            if (value == null) value = AutoCSer.Emit.Constructor<childType>.New();
-            valueType newValue = value;
+            if (value == null) value = AutoCSer.Metadata.DefaultConstructor<childType>.Constructor();
+            T newValue = value;
             classDeSerialize(deSerializer, ref newValue);
         }
         /// <summary>
@@ -123,7 +117,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void RealType(DeSerializer deSerializer, ref valueType value)
+        internal static void RealType(BinaryDeSerializer deSerializer, ref T value)
         {
             if (isValueType) StructDeSerialize(deSerializer, ref value);
             else classDeSerialize(deSerializer, ref value);
@@ -133,10 +127,10 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
-        private static void realType(DeSerializer deSerializer, ref valueType value)
+        private static void realType(BinaryDeSerializer deSerializer, ref T value)
         {
-            RemoteType remoteType = default(RemoteType);
-            TypeDeSerializer<RemoteType>.GetDeSerializer(deSerializer.GlobalVersion).MemberDeSerialize(deSerializer, ref remoteType);
+            AutoCSer.Reflection.RemoteType remoteType = default(AutoCSer.Reflection.RemoteType);
+            TypeDeSerializer<AutoCSer.Reflection.RemoteType>.GetDeSerializer(deSerializer.GlobalVersion).MemberDeSerialize(deSerializer, ref remoteType);
             if (deSerializer.State == DeSerializeState.Success)
             {
                 Type type;
@@ -145,7 +139,7 @@ namespace AutoCSer.BinarySerialize
                     if (value == null || type.IsValueType)
                     {
                         //value = (valueType)DeSerializeMethodCache.GetRealDeSerializer(type)(deSerializer, value);
-                        value = (valueType)GenericType.Get(type).BinaryDeSerializeRealTypeObjectDelegate(deSerializer, value);
+                        value = (T)GenericType.Get(type).BinaryDeSerializeRealTypeObjectDelegate(deSerializer, value);
                     }
                     //else DeSerializeMethodCache.GetRealDeSerializer(type)(deSerializer, value);
                     else GenericType.Get(type).BinaryDeSerializeRealTypeObjectDelegate(deSerializer, value);
@@ -159,10 +153,10 @@ namespace AutoCSer.BinarySerialize
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void fromNull(DeSerializer deSerializer, ref valueType value)
+        private static void fromNull(BinaryDeSerializer deSerializer, ref T value)
         {
             deSerializer.CheckNull();
-            value = default(valueType);
+            value = default(T);
         }
         /// <summary>
         /// 找不到构造函数
@@ -170,102 +164,21 @@ namespace AutoCSer.BinarySerialize
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void noConstructor(DeSerializer deSerializer, ref valueType value)
+        private static void noConstructor(BinaryDeSerializer deSerializer, ref T value)
         {
             //if (deSerializer.IsObjectRealType) deSerializer.State = DeSerializeState.NotNull;
             //else realType(deSerializer, ref value);
             if (deSerializer.IsObjectRealType) realType(deSerializer, ref value);
             else deSerializer.State = DeSerializeState.NotNull;
         }
-
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumByte(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumByte(ref value);
-        }
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumSByte(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumSByte(ref value);
-        }
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumShort(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumShort(ref value);
-        }
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumUShort(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumUShort(ref value);
-        }
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumInt(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumInt(ref value);
-        }
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumUInt(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumUInt(ref value);
-        }
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumLong(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumLong(ref value);
-        }
-        /// <summary>
-        /// 枚举值序列化
-        /// </summary>
-        /// <param name="deSerializer">二进制数据反序列化</param>
-        /// <param name="value">枚举值序列化</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe static void enumULong(DeSerializer deSerializer, ref valueType value)
-        {
-            deSerializer.EnumULong(ref value);
-        }
         static TypeDeSerializer()
         {
-            Type type = typeof(valueType), attributeType;
-            MethodInfo methodInfo = DeSerializer.GetDeSerializeMethod(type);
-            attribute = type.customAttribute<SerializeAttribute>(out attributeType) ?? Serializer.DefaultAttribute;
+            Type type = typeof(T), attributeType;
+            MethodInfo methodInfo = BinaryDeSerializer.GetDeSerializeMethod(type);
+            attribute = type.customAttribute<BinarySerializeAttribute>(out attributeType) ?? BinarySerializer.DefaultAttribute;
             if (methodInfo != null)
             {
-                DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), methodInfo);
+                DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)Delegate.CreateDelegate(typeof(BinaryDeSerializer.DeSerializeDelegate<T>), methodInfo);
                 IsReferenceMember = false;
                 isValueType = true;
                 return;
@@ -278,41 +191,31 @@ namespace AutoCSer.BinarySerialize
                     Type elementType = type.GetElementType();
                     if (!elementType.IsPointer && !typeof(Delegate).IsAssignableFrom(elementType))
                     {
+                        Delegate arrayDelegate;
                         if (elementType.IsValueType)
                         {
                             if (elementType.IsEnum)
                             {
-                                Type enumType = System.Enum.GetUnderlyingType(elementType);
-                                if (enumType == typeof(uint)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumUIntArrayMethod;// DeSerializeMethodCache.EnumUIntArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(byte)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumByteArrayMethod;// DeSerializeMethodCache.EnumByteArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(ulong)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumULongArrayMethod;// DeSerializeMethodCache.EnumULongArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(ushort)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumUShortArrayMethod;// DeSerializeMethodCache.EnumUShortArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(long)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumLongArrayMethod;// DeSerializeMethodCache.EnumLongArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(short)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumShortArrayMethod;// DeSerializeMethodCache.EnumShortArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(sbyte)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumSByteArrayMethod;// DeSerializeMethodCache.EnumSByteArrayMethod.MakeGenericMethod(elementType);
-                                else methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumIntArrayMethod;// DeSerializeMethodCache.EnumIntArrayMethod.MakeGenericMethod(elementType);
+                                arrayDelegate = EnumGenericType.Get(elementType).BinaryDeSerializeEnumArrayDelegate;
                                 IsReferenceMember = false;
                             }
                             else if (elementType.IsGenericType && elementType.GetGenericTypeDefinition() == typeof(Nullable<>))
                             {
-                                //methodInfo = DeSerializeMethodCache.NullableArrayMethod.MakeGenericMethod(elementType = elementType.GetGenericArguments()[0]);
-                                methodInfo = StructGenericType.Get(elementType = elementType.GetGenericArguments()[0]).BinaryDeSerializeNullableArrayMethod;
+                                arrayDelegate = StructGenericType.Get(elementType = elementType.GetGenericArguments()[0]).BinaryDeSerializeNullableArrayMethod;
                                 IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                             }
                             else
                             {
-                                //methodInfo = DeSerializeMethodCache.StructArrayMethod.MakeGenericMethod(elementType);
-                                methodInfo = GenericType.Get(elementType).BinaryDeSerializeStructArrayMethod;
+                                arrayDelegate = GenericType.Get(elementType).BinaryDeSerializeStructArrayMethod;
                                 IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                             }
                         }
                         else
                         {
-                            //methodInfo = DeSerializeMethodCache.ArrayMethod.MakeGenericMethod(elementType);
-                            methodInfo = ClassGenericType.Get(elementType).BinaryDeSerializeArrayMethod;
+                            arrayDelegate = ClassGenericType.Get(elementType).BinaryDeSerializeArrayMethod;
                             IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                         }
-                        DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), methodInfo);
+                        DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)arrayDelegate;
                         return;
                     }
                 }
@@ -322,15 +225,7 @@ namespace AutoCSer.BinarySerialize
             }
             if (type.IsEnum)
             {
-                Type enumType = System.Enum.GetUnderlyingType(type);
-                if (enumType == typeof(uint)) DefaultDeSerializer = enumUInt;
-                else if (enumType == typeof(byte)) DefaultDeSerializer = enumByte;
-                else if (enumType == typeof(ulong)) DefaultDeSerializer = enumULong;
-                else if (enumType == typeof(ushort)) DefaultDeSerializer = enumUShort;
-                else if (enumType == typeof(long)) DefaultDeSerializer = enumLong;
-                else if (enumType == typeof(short)) DefaultDeSerializer = enumShort;
-                else if (enumType == typeof(sbyte)) DefaultDeSerializer = enumSByte;
-                else DefaultDeSerializer = enumInt;
+                DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)EnumGenericType.Get(type).BinaryDeSerializeEnumDelegate;
                 IsReferenceMember = false;
                 isValueType = true;
                 return;
@@ -348,8 +243,7 @@ namespace AutoCSer.BinarySerialize
                 Type[] parameterTypes = type.GetGenericArguments();
                 if (genericType == typeof(LeftArray<>))
                 {
-                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.LeftArrayDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeLeftArrayMethod);
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)GenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeLeftArrayMethod;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
@@ -357,8 +251,7 @@ namespace AutoCSer.BinarySerialize
 #if !Serialize
                 if (genericType == typeof(SubArray<>))
                 {
-                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SubArrayDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeSubArrayMethod);
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)GenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeSubArrayMethod;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
@@ -366,40 +259,35 @@ namespace AutoCSer.BinarySerialize
 #endif
                 if (genericType == typeof(Dictionary<,>))
                 {
-                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.DictionaryDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeDictionaryMethod);
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeDictionaryMethod;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(Nullable<>))
                 {
-                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.NullableDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), StructGenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeNullableMethod);
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)StructGenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeNullableMethod;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(KeyValuePair<,>))
                 {
-                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.KeyValuePairDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeKeyValuePairMethod);
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeKeyValuePairMethod;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(SortedDictionary<,>))
                 {
-                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SortedDictionaryDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeSortedDictionaryMethod);
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeSortedDictionaryMethod;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(SortedList<,>))
                 {
-                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SortedListDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeSortedListMethod);
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeSortedListMethod;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
@@ -412,27 +300,28 @@ namespace AutoCSer.BinarySerialize
 #if NOJIT
                     DefaultDeSerializer = new CustomDeSerializer(methodInfo).DeSerialize;
 #else
-                    DynamicMethod dynamicMethod = new DynamicMethod("CustomDeSerializer", null, new Type[] { typeof(DeSerializer), type.MakeByRefType() }, type, true);
+                    DynamicMethod dynamicMethod = new DynamicMethod("CustomDeSerializer", null, new Type[] { typeof(BinaryDeSerializer), type.MakeByRefType() }, type, true);
                     ILGenerator generator = dynamicMethod.GetILGenerator();
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.call(methodInfo);
                     generator.Emit(OpCodes.Ret);
-                    DefaultDeSerializer = (deSerialize)dynamicMethod.CreateDelegate(typeof(deSerialize));
+                    DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)dynamicMethod.CreateDelegate(typeof(BinaryDeSerializer.DeSerializeDelegate<T>));
 #endif
                 }
-                else DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), methodInfo);
+                else DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)Delegate.CreateDelegate(typeof(BinaryDeSerializer.DeSerializeDelegate<T>), methodInfo);
                 IsReferenceMember = attribute.IsReferenceMember;
                 isValueType = true;
                 return;
             }
-            if (type.IsAbstract || type.IsInterface || Emit.Constructor<valueType>.New == null)
+            if (type.isSerializeNotSupport())
             {
                 DefaultDeSerializer = noConstructor;
                 isValueType = IsReferenceMember = true;
                 return;
             }
             IsReferenceMember = attribute.IsReferenceMember;
+            Delegate collectionDelegate = null;
             foreach (Type interfaceType in type.GetInterfaces())
             {
                 if (interfaceType.IsGenericType)
@@ -446,36 +335,32 @@ namespace AutoCSer.BinarySerialize
                         ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
-                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
-                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
+                            if (type.IsValueType) collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                         parameters[0] = typeof(IList<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
-                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
-                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
+                            if (type.IsValueType) collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                         parameters[0] = typeof(ICollection<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
-                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
-                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
+                            if (type.IsValueType) collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                         parameters[0] = typeof(IEnumerable<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
-                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
-                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
+                            if (type.IsValueType) collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else collectionDelegate = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                     }
@@ -485,31 +370,30 @@ namespace AutoCSer.BinarySerialize
                         if (constructorInfo != null)
                         {
                             Type[] parameters = interfaceType.GetGenericArguments();
-                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructDictionaryDeSerializeMethod : DeSerializeMethodCache.ClassDictionaryDeSerializeMethod).MakeGenericMethod(type, parameters[0], parameters[1]);
-                            if (type.IsValueType) methodInfo = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinaryDeSerializeStructDictionaryMethod;
-                            else methodInfo = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinaryDeSerializeClassDictionaryMethod;
+                            if (type.IsValueType) collectionDelegate = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinaryDeSerializeStructDictionaryMethod;
+                            else collectionDelegate = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinaryDeSerializeClassDictionaryMethod;
                             break;
                         }
                     }
                 }
             }
-            if (methodInfo != null)
+            if (collectionDelegate != null)
             {
-                DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), methodInfo);
+                DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)collectionDelegate;
                 return;
             }
             if (type.IsValueType) isValueType = true;
-            else if (attribute != Serializer.DefaultAttribute && attributeType != type)
+            else if (attribute != BinarySerializer.DefaultAttribute && attributeType != type)
             {
                 for (Type baseType = type.BaseType; baseType != typeof(object); baseType = baseType.BaseType)
                 {
-                    SerializeAttribute baseAttribute = baseType.customAttribute<SerializeAttribute>();
+                    BinarySerializeAttribute baseAttribute = baseType.customAttribute<BinarySerializeAttribute>();
                     if (baseAttribute != null)
                     {
                         if (baseAttribute.IsBaseType)
                         {
                             methodInfo = DeSerializeMethodCache.BaseSerializeMethod.MakeGenericMethod(baseType, type);
-                            DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), methodInfo);
+                            DefaultDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)Delegate.CreateDelegate(typeof(BinaryDeSerializer.DeSerializeDelegate<T>), methodInfo);
                             return;
                         }
                         break;
@@ -517,20 +401,20 @@ namespace AutoCSer.BinarySerialize
                 }
             }
 
-            LeftArray<DeSerializeVersionField> attributeFields = new LeftArray<DeSerializeVersionField>();
-            if ((attribute.MemberFilters & MemberFilters.PublicInstanceField) != 0) appendField(ref attributeFields, MemberIndexGroup<valueType>.Group.PublicFields);
+            LeftArray<DeSerializeVersionField> attributeFields = new LeftArray<DeSerializeVersionField>(0);
+            if ((attribute.MemberFilters & MemberFilters.PublicInstanceField) != 0) appendField(ref attributeFields, MemberIndexGroup<T>.Group.PublicFields);
             else
             {
-                foreach (FieldIndex field in MemberIndexGroup<valueType>.Group.PublicFields) attributeFields.Add(new DeSerializeVersionField { Field = field });
+                foreach (FieldIndex field in MemberIndexGroup<T>.Group.PublicFields) attributeFields.Add(new DeSerializeVersionField { Field = field });
             }
-            if ((attribute.MemberFilters & MemberFilters.NonPublicInstanceField) != 0) appendField(ref attributeFields, MemberIndexGroup<valueType>.Group.NonPublicFields);
-            if (attribute.IsAnonymousFields) appendField(ref attributeFields, MemberIndexGroup<valueType>.Group.AnonymousFields);
+            if ((attribute.MemberFilters & MemberFilters.NonPublicInstanceField) != 0) appendField(ref attributeFields, MemberIndexGroup<T>.Group.NonPublicFields);
+            if (attribute.IsAnonymousFields) appendField(ref attributeFields, MemberIndexGroup<T>.Group.AnonymousFields);
             foreach (FieldIndex field in new MemberIndexGroup(type, true).NonPublicFields)
             {
                 Type fieldType = field.Member.FieldType;
                 if (!fieldType.IsPointer && (!fieldType.IsArray || fieldType.GetArrayRank() == 1) && !field.IsIgnore && !typeof(Delegate).IsAssignableFrom(fieldType))
                 {
-                    SerializeMemberAttribute memberAttribute = field.GetAttribute<SerializeMemberAttribute>(true);
+                    BinarySerializeMemberAttribute memberAttribute = field.GetAttribute<BinarySerializeMemberAttribute>(true);
                     if (memberAttribute != null && memberAttribute.IsSetup && memberAttribute.RemoveGlobalVersion != memberAttribute.GlobalVersion)
                     {
                         attributeFields.Add(new DeSerializeVersionField { Field = field, Attribute = memberAttribute });
@@ -543,13 +427,13 @@ namespace AutoCSer.BinarySerialize
             isJson = attribute.GetIsJson;
             uint globalVersion = 0, removeMemberCount = 0;
             int noSerializeMemberCount = 0;
-            LeftArray<DeSerializeVersionFields<valueType>> deSerializeVersionFields = default(LeftArray<DeSerializeVersionFields<valueType>>);
+            LeftArray<DeSerializeVersionFields<T>> deSerializeVersionFields = new LeftArray<DeSerializeVersionFields<T>>(0);
             LeftArray<DeSerializeVersionField> attributeVersionFields = new LeftArray<DeSerializeVersionField>(attributeFields.Length);
             foreach (DeSerializeVersionField field in attributeFields.Sort(DeSerializeVersionField.GlobalVersionSort))
             {
                 if (field.GlobalVersion != globalVersion)
                 {
-                    deSerializeVersionFields.Add(new DeSerializeVersionFields<valueType>(globalVersion, attributeVersionFields.GetArray(), removeMemberCount, noSerializeMemberCount));
+                    deSerializeVersionFields.Add(new DeSerializeVersionFields<T>(globalVersion, attributeVersionFields.GetArray(), removeMemberCount, noSerializeMemberCount));
                     globalVersion = field.GlobalVersion;
                 }
                 if (field.IsRemove)
@@ -567,12 +451,12 @@ namespace AutoCSer.BinarySerialize
                     else ++noSerializeMemberCount;
                 }
             }
-            fieldDeSerializer = new DeSerializeVersionFields<valueType>(globalVersion, attributeVersionFields.GetArray(), removeMemberCount, noSerializeMemberCount).CreateOnly(attribute);
+            fieldDeSerializer = new DeSerializeVersionFields<T>(globalVersion, attributeVersionFields.GetArray(), removeMemberCount, noSerializeMemberCount).CreateOnly(attribute);
             if (deSerializeVersionFields.Length != 0)
             {
                 int count = deSerializeVersionFields.Length;
-                DeSerializeVersionFields<valueType>[] deSerializeVersionFieldsArray = new DeSerializeVersionFields<valueType>[count];
-                foreach (DeSerializeVersionFields<valueType> value in deSerializeVersionFields)
+                DeSerializeVersionFields<T>[] deSerializeVersionFieldsArray = new DeSerializeVersionFields<T>[count];
+                foreach (DeSerializeVersionFields<T> value in deSerializeVersionFields)
                 {
                     deSerializeVersionFieldsArray[--count] = value;
                     deSerializeVersionFieldsArray[count].CreateLock = new object();
@@ -593,10 +477,10 @@ namespace AutoCSer.BinarySerialize
                 Type fieldType = field.Member.FieldType;
                 if (!fieldType.IsPointer && (!fieldType.IsArray || fieldType.GetArrayRank() == 1) && !field.IsIgnore && !typeof(Delegate).IsAssignableFrom(fieldType))
                 {
-                    SerializeMemberAttribute memberAttribute = field.GetAttribute<SerializeMemberAttribute>(true);
+                    BinarySerializeMemberAttribute memberAttribute = field.GetAttribute<BinarySerializeMemberAttribute>(true);
                     if (memberAttribute == null)
                     {
-                        attributeFields.Add(new DeSerializeVersionField { Field = field, Attribute = SerializeMemberAttribute.Null });
+                        attributeFields.Add(new DeSerializeVersionField { Field = field, Attribute = BinarySerializeMemberAttribute.Null });
                         isSerialize = true;
                     }
                     else if (memberAttribute.IsSetup)
@@ -613,18 +497,18 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 默认二进制数据反序列化
         /// </summary>
-        private static readonly TypeDeSerializer<valueType> fieldDeSerializer;
+        private static readonly TypeDeSerializer<T> fieldDeSerializer;
         /// <summary>
         /// 默认二进制数据反序列化集合
         /// </summary>
-        private static DeSerializeVersionFields<valueType>[] fieldDeSerializers;
+        private static DeSerializeVersionFields<T>[] fieldDeSerializers;
         /// <summary>
         /// 获取二进制数据反序列化
         /// </summary>
         /// <param name="globalVersion"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static TypeDeSerializer<valueType> GetDeSerializer(uint globalVersion)
+        internal static TypeDeSerializer<T> GetDeSerializer(uint globalVersion)
         {
             if (fieldDeSerializers == null || globalVersion >= fieldDeSerializer.globalVersion) return fieldDeSerializer;
             return getDeSerializer(globalVersion);
@@ -634,10 +518,10 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="globalVersion"></param>
         /// <returns></returns>
-        private static TypeDeSerializer<valueType> getDeSerializer(uint globalVersion)
+        private static TypeDeSerializer<T> getDeSerializer(uint globalVersion)
         {
             int index = 0;
-            foreach (DeSerializeVersionFields<valueType> deSerializeVersionFields in fieldDeSerializers)
+            foreach (DeSerializeVersionFields<T> deSerializeVersionFields in fieldDeSerializers)
             {
                 if (globalVersion >= deSerializeVersionFields.GlobalVersion) return deSerializeVersionFields.DeSerializer ?? fieldDeSerializers[index].Create(attribute);
                 ++index;
@@ -647,7 +531,7 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 固定分组成员序列化
         /// </summary>
-        private readonly deSerialize fixedMemberDeSerializer;
+        private readonly BinaryDeSerializer.DeSerializeDelegate<T> fixedMemberDeSerializer;
         /// <summary>
         /// 固定分组成员位图序列化
         /// </summary>
@@ -655,7 +539,7 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 成员序列化
         /// </summary>
-        private readonly deSerialize memberDeSerializer;
+        private readonly BinaryDeSerializer.DeSerializeDelegate<T> memberDeSerializer;
         /// <summary>
         /// 成员位图序列化
         /// </summary>
@@ -688,7 +572,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="memberCountVerify"></param>
         internal TypeDeSerializer(uint globalVersion, ref Fields<FieldSize> fields, int memberCountVerify)
         {
-            Type type = typeof(valueType);
+            Type type = typeof(T);
             this.globalVersion = globalVersion;
             this.memberCountVerify = memberCountVerify;
             fixedFillSize = -fields.FixedSize & 3;
@@ -708,7 +592,7 @@ namespace AutoCSer.BinarySerialize
                 fixedDynamicMethod.Push(member);
                 if (isMemberMap) fixedMemberMapDynamicMethod.Push(member);
             }
-            fixedMemberDeSerializer = (deSerialize)fixedDynamicMethod.Create<deSerialize>();
+            fixedMemberDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)fixedDynamicMethod.Create<BinaryDeSerializer.DeSerializeDelegate<T>>();
             if (isMemberMap) fixedMemberMapDeSerializer = (memberMapDeSerialize)fixedMemberMapDynamicMethod.Create<memberMapDeSerialize>();
 
             if (fields.FieldArray.Length != 0)
@@ -720,13 +604,13 @@ namespace AutoCSer.BinarySerialize
                     dynamicMethod.Push(member);
                     if (isMemberMap) memberMapDynamicMethod.Push(member);
                 }
-                memberDeSerializer = (deSerialize)dynamicMethod.Create<deSerialize>();
+                memberDeSerializer = (BinaryDeSerializer.DeSerializeDelegate<T>)dynamicMethod.Create<BinaryDeSerializer.DeSerializeDelegate<T>>();
                 if (isMemberMap) memberMapDeSerializer = (memberMapDeSerialize)memberMapDynamicMethod.Create<memberMapDeSerialize>();
             }
 #endif
             if (fields.JsonFields.Length != 0)
             {
-                jsonMemberMap = new MemberMap<valueType>();
+                jsonMemberMap = new MemberMap<T>();
                 jsonMemberIndexs = new int[fields.JsonFields.Length];
                 int index = 0;
                 foreach (FieldIndex field in fields.JsonFields) jsonMemberMap.SetMember(jsonMemberIndexs[index++] = field.MemberIndex);
@@ -737,32 +621,32 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="deSerializer">二进制数据反序列化</param>
         /// <param name="value">数据对象</param>
-        internal void MemberDeSerialize(DeSerializer deSerializer, ref valueType value)
+        internal void MemberDeSerialize(BinaryDeSerializer deSerializer, ref T value)
         {
             if (deSerializer.CheckMemberCount(memberCountVerify))
             {
                 fixedMemberDeSerializer(deSerializer, ref value);
                 deSerializer.Read += fixedFillSize;
                 if (memberDeSerializer != null) memberDeSerializer(deSerializer, ref value);
-                if (isJson || jsonMemberMap != null) deSerializer.ParseJson(ref value);
+                if (isJson || jsonMemberMap != null) deSerializer.DeSerializeJson(ref value);
             }
             else if (isMemberMap)
             {
-                MemberMap memberMap = deSerializer.GetMemberMap<valueType>();
+                MemberMap memberMap = deSerializer.GetMemberMap<T>();
                 if (memberMap != null)
                 {
                     byte* start = deSerializer.Read;
                     fixedMemberMapDeSerializer(memberMap, deSerializer, ref value);
                     deSerializer.Read += (int)(start - deSerializer.Read) & 3;
                     if (memberMapDeSerializer != null) memberMapDeSerializer(memberMap, deSerializer, ref value);
-                    if (isJson) deSerializer.ParseJson(ref value);
+                    if (isJson) deSerializer.DeSerializeJson(ref value);
                     else if (jsonMemberMap != null)
                     {
                         foreach (int memberIndex in jsonMemberIndexs)
                         {
                             if (memberMap.IsMember(memberIndex))
                             {
-                                deSerializer.ParseJson(ref value);
+                                deSerializer.DeSerializeJson(ref value);
                                 return;
                             }
                         }

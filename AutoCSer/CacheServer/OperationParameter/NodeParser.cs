@@ -209,7 +209,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool CheckConstructorParameter(byte[] constructorParameter)
         {
-            return (int)(end - Read) == constructorParameter.Length && AutoCSer.Memory.EqualNotNull(constructorParameter, Read, constructorParameter.Length);
+            return (int)(end - Read) == constructorParameter.Length && AutoCSer.Memory.Common.EqualNotNull(constructorParameter, Read, constructorParameter.Length);
         }
         /// <summary>
         /// 获取构造参数数据包

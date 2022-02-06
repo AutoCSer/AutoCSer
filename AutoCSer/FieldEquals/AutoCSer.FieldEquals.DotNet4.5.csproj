@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;FieldEquals</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -35,7 +35,7 @@
   <ItemGroup>
     <Compile Include="Comparor.cs" />
     <Compile Include="MemberDynamicMethod.cs" />
-    <Compile Include="Metadata\UnionType.cs" />
+    <Compile Include="Metadata\UnionType\GenericType.cs" />
     <Compile Include="Metadata\GenericType.cs" />
     <Compile Include="MethodCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -47,6 +47,9 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

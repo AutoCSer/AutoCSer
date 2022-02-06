@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.FieldEquals
 {
@@ -36,10 +36,6 @@ namespace AutoCSer.FieldEquals
             if (float.IsNaN(left)) return float.IsNaN(right);
             return left == right || (!float.IsNaN(right) && float.Parse(left.ToString()) == right);
         }
-        ///// <summary>
-        ///// 浮点数比较函数信息
-        ///// </summary>
-        //public static readonly MethodInfo FloatMethod = typeof(MethodCache).GetMethod("floatEquals", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 浮点数比较
         /// </summary>
@@ -52,10 +48,6 @@ namespace AutoCSer.FieldEquals
             if (double.IsNaN(left)) return double.IsNaN(right);
             return left == right || (!double.IsNaN(right) && double.Parse(left.ToString(), System.Globalization.CultureInfo.InvariantCulture) == right);
         }
-        ///// <summary>
-        ///// 浮点数比较函数信息
-        ///// </summary>
-        //public static readonly MethodInfo DoubleMethod = typeof(MethodCache).GetMethod("doubleEquals", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 结构体数据比较
         /// </summary>
@@ -111,10 +103,6 @@ namespace AutoCSer.FieldEquals
             }
             return false;
         }
-        ///// <summary>
-        ///// 数组比较函数信息
-        ///// </summary>
-        //public static readonly MethodInfo ArrayMethod = typeof(MethodCache).GetMethod("array", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 可空数据比较
         /// </summary>
@@ -153,10 +141,6 @@ namespace AutoCSer.FieldEquals
             }
             return false;
         }
-        ///// <summary>
-        ///// 数组比较函数信息
-        ///// </summary>
-        //public static readonly MethodInfo LeftArrayMethod = typeof(MethodCache).GetMethod("leftArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 数组比较
         /// </summary>
@@ -167,22 +151,8 @@ namespace AutoCSer.FieldEquals
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal static bool listArray<valueType>(ListArray<valueType> leftArray, ListArray<valueType> rightArray)
         {
-            if (Object.ReferenceEquals(leftArray, rightArray)) return true;
-            if (leftArray != null && rightArray != null && leftArray.Length == rightArray.Length)
-            {
-                for (int index = leftArray.Length; index != 0; )
-                {
-                    --index;
-                    if (!Comparor<valueType>.Equals(leftArray[index], rightArray[index])) return false;
-                }
-                return true;
-            }
-            return false;
+            return Object.ReferenceEquals(leftArray, rightArray) || MethodCache.leftArray(leftArray.Array, rightArray.Array);
         }
-        ///// <summary>
-        ///// 数组比较函数信息
-        ///// </summary>
-        //public static readonly MethodInfo ListArrayMethod = typeof(MethodCache).GetMethod("listArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 数组比较
         /// </summary>
@@ -261,17 +231,9 @@ namespace AutoCSer.FieldEquals
             return fieldInvoke;
         }
 
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        private static void clearCache(int count)
-        {
-            equalsFieldInvokes.Clear();
-        }
         static MethodCache()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(equalsFieldInvokes.Clear, typeof(MethodCache), 60 * 60);
         }
     }
 }

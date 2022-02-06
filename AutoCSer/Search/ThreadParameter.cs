@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Search
 {
@@ -19,6 +20,10 @@ namespace AutoCSer.Search
             /// 绑定结果池的分词搜索器
             /// </summary>
             private readonly StaticSearcher<keyType> searcher;
+            /// <summary>
+            /// 未匹配分词自定义过滤处理
+            /// </summary>
+            private readonly CheckLessWord checkLessWord;
             /// <summary>
             /// 数据权重
             /// </summary>
@@ -39,11 +44,15 @@ namespace AutoCSer.Search
             /// <summary>
             /// 分词结果
             /// </summary>
-            private LeftArray<KeyValue<HashString, QueryResult>> queryResult;
+            private LeftArray<KeyValue<HashString, QueryResult>> queryResult = new LeftArray<KeyValue<HashString, QueryResult>>(0);
+            /// <summary>
+            /// 未匹配分词集合
+            /// </summary>
+            private LeftArray<SubString> lessWords;
             /// <summary>
             /// 文本匹配位图
             /// </summary>
-            private Pointer.Size getResultIndexsMapBuffer;
+            private AutoCSer.Memory.Pointer getResultIndexsMapBuffer;
             /// <summary>
             /// 匹配索引位置集合
             /// </summary>
@@ -52,9 +61,12 @@ namespace AutoCSer.Search
             /// 线程参数
             /// </summary>
             /// <param name="searcher">绑定结果池的分词搜索器</param>
-            public ThreadParameter(StaticSearcher<keyType> searcher)
+            /// <param name="checkLessWord">未匹配分词自定义过滤处理</param>
+            /// <param name="checkLess">未匹配分词自定义过滤处理</param>
+            public ThreadParameter(StaticSearcher<keyType> searcher, CheckLessWord checkLessWord = null, CheckLess checkLess = null)
             {
                 this.searcher = searcher;
+                this.checkLessWord = checkLessWord;
                 wordQuery = new WordQuery(searcher);
                 queue = new Queue(searcher);
             }
@@ -98,20 +110,34 @@ namespace AutoCSer.Search
                 Simplified.Set(text, maxSize, true);
                 if (Simplified.Size > 0)
                 {
-                    fixed (char* textFixed = Simplified.FormatText) StringExtension.ToLower(textFixed, textFixed + Simplified.Size);
+                    fixed (char* textFixed = Simplified.GetFixedBuffer()) StringExtension.ToLower(textFixed, textFixed + Simplified.Size);
                 }
                 return Simplified.Text;
             }
             /// <summary>
             /// 获取分词结果
             /// </summary>
-            /// <param name="isAllMatch">是否要求关键字全匹配</param>
+            /// <param name="matchType"></param>
             /// <returns>分词结果</returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public LeftArray<KeyValue<HashString, QueryResult>> Search(bool isAllMatch = false)
+            public LeftArray<KeyValue<HashString, QueryResult>> Search(MatchType matchType = MatchType.None)
             {
                 queryResult.Length = 0;
-                wordQuery.Get(ref Simplified, isAllMatch, ref queryResult);
+                wordQuery.Get(ref Simplified, matchType, ref queryResult, ref lessWords);
+                return queryResult;
+            }
+            /// <summary>
+            /// 获取分词结果
+            /// </summary>
+            /// <param name="lessWords"></param>
+            /// <returns>分词结果</returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            public LeftArray<KeyValue<HashString, QueryResult>> Search(out LeftArray<SubString> lessWords)
+            {
+                queryResult.Length = 0;
+                this.lessWords.Length = 0;
+                wordQuery.Get(ref Simplified, MatchType.Less, ref queryResult, ref this.lessWords);
+                lessWords = this.lessWords;
                 return queryResult;
             }
             /// <summary>
@@ -148,9 +174,9 @@ namespace AutoCSer.Search
                 if (getResultIndexsMapBuffer.ByteSize < size)
                 {
                     Unmanaged.Free(ref getResultIndexsMapBuffer);
-                    getResultIndexsMapBuffer = Unmanaged.GetSize64(size, true);
+                    getResultIndexsMapBuffer = Unmanaged.GetPointer(size, true);
                 }
-                else Memory.ClearUnsafe(getResultIndexsMapBuffer.ULong, size >> 3);
+                else AutoCSer.Memory.Common.Clear(getResultIndexsMapBuffer.ULong, size >> 3);
                 int count = searcher.GetResultIndexs(ref key, textLength, ref queryResult, ref resultIndexs, getResultIndexsMapBuffer.Data);
                 return new LeftArray<KeyValue<int, int>>(count, resultIndexs).GetArray();
             }
@@ -181,7 +207,7 @@ namespace AutoCSer.Search
                 if (getResultIndexsMapBuffer.ByteSize < size)
                 {
                     Unmanaged.Free(ref getResultIndexsMapBuffer);
-                    getResultIndexsMapBuffer = Unmanaged.GetSize64(size);
+                    getResultIndexsMapBuffer = Unmanaged.GetPointer(size, true);
                 }
                 int count = searcher.FormatTextIndexs(ref key, ref text, ref queryResult, maxLength, ref resultIndexs, ref getResultIndexsMapBuffer);
                 return new LeftArray<KeyValue<int, int>>(count, resultIndexs).GetArray();
@@ -194,7 +220,7 @@ namespace AutoCSer.Search
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             public void Add(ref keyType key, string text)
             {
-                queue.Add(ref key, text);
+                if (!string.IsNullOrEmpty(text)) queue.Add(ref key, text);
             }
             /// <summary>
             /// 删除数据
@@ -221,16 +247,16 @@ namespace AutoCSer.Search
             public void Update(ref keyType key, string text, string oldText = null)
             {
                 Remove(ref key, oldText);
-                queue.Add(ref key, text);
+                if (!string.IsNullOrEmpty(text)) queue.Add(ref key, text);
             }
             /// <summary>
             /// 单关键字搜索结果
             /// </summary>
-            private LeftArray<KeyValuePair<keyType, ResultIndexArray>> resultIndexArray;
+            private LeftArray<KeyValuePair<keyType, ResultIndexArray>> resultIndexArray = new LeftArray<KeyValuePair<keyType, ResultIndexArray>>(0);
             /// <summary>
             /// 多关键字数据权重结果
             /// </summary>
-            private LeftArray<KeyValue<keyType, int>> weightArray;
+            private LeftArray<KeyValue<keyType, int>> weightArray = new LeftArray<KeyValue<keyType, int>>(0);
             /// <summary>
             /// 获取搜索数据标识集合（任意匹配分词，根据权重排序）
             /// </summary>
@@ -248,11 +274,11 @@ namespace AutoCSer.Search
                 if (Simplified.Size == 0)
                 {
                     count = 0;
-                    return NullValue<keyType>.Array;
+                    return EmptyArray<keyType>.Array;
                 }
 
                 queryResult.Length = 0;
-                wordQuery.Get(ref Simplified, false, ref queryResult);
+                wordQuery.Get(ref Simplified, MatchType.None, ref queryResult, ref lessWords);
                 switch (queryResult.Count)
                 {
                     case 0: count = 0; break;
@@ -276,16 +302,8 @@ namespace AutoCSer.Search
                         }
                         break;
                 }
-                return NullValue<keyType>.Array;
+                return EmptyArray<keyType>.Array;
             }
-            /// <summary>
-            /// 单关键字搜索结果
-            /// </summary>
-            private LeftArray<keyType> resultArray;
-            /// <summary>
-            /// 多关键字搜索结果
-            /// </summary>
-            private readonly ReusableDictionary<keyType, int> resultCountDictionary = ReusableDictionary<keyType>.Create<int>();
             /// <summary>
             /// 获取搜索数据标识集合（匹配所有分词结果）
             /// </summary>
@@ -293,76 +311,227 @@ namespace AutoCSer.Search
             /// <param name="maxSize">关键字最大字符长度</param>
             /// <param name="isKey">数据标识过滤</param>
             /// <returns>数据标识集合</returns>
-            public LeftArray<keyType> SearchAll(string text, int maxSize, Func<keyType, bool> isKey = null)
+            public IEnumerable<keyType> SearchAll(string text, int maxSize, Func<keyType, bool> isKey)
             {
-                resultArray.Length = 0;
                 Simplified.Set(text, maxSize, true);
                 if (Simplified.Size != 0)
                 {
                     queryResult.Length = 0;
-                    wordQuery.Get(ref Simplified, true, ref queryResult);
+                    wordQuery.Get(ref Simplified, MatchType.All, ref queryResult, ref lessWords);
                     switch (queryResult.Count)
                     {
                         case 0: break;
                         case 1:
                             foreach (KeyValuePair<keyType, ResultIndexArray> result in queryResult[0].Value.Dictionary)
                             {
-                                if (isKey(result.Key)) resultArray.Add(result.Key);
+                                if (isKey(result.Key)) yield return result.Key;
+                            }
+                            break;
+                        case 2:
+                            Dictionary<keyType, ResultIndexArray> resultDictionary = sortResult();
+                            Dictionary<keyType, ResultIndexArray> nextResultDictionary = queryResult.Array[0].Value.Dictionary;
+                            foreach (keyType key in resultDictionary.Keys)
+                            {
+                                if (nextResultDictionary.ContainsKey(key) && isKey(key)) yield return key;
                             }
                             break;
                         default:
-                            Dictionary<keyType, ResultIndexArray> resultDictionary = null;
-                            foreach (KeyValue<HashString, QueryResult> result in queryResult)
-                            {
-                                if (resultDictionary == null || result.Value.Dictionary.Count < resultDictionary.Count) resultDictionary = result.Value.Dictionary;
-                            }
-                            resultCountDictionary.Empty();
+                            resultDictionary = sortResult();
+                            KeyValue<HashString, QueryResult>[] resultArray = queryResult.Array;
                             foreach (keyType key in resultDictionary.Keys)
                             {
-                                if (isKey(key))
+                                int count = queryResult.Length;
+                                foreach (KeyValue<HashString, QueryResult> result in resultArray)
                                 {
-                                    resultCountDictionary.Set(key, 0);
-                                }
-                            }
-                            if (resultCountDictionary.Count != 0)
-                            {
-                                int count = 0, keyCount = resultCountDictionary.Count;
-                                foreach (KeyValue<HashString, QueryResult> result in queryResult)
-                                {
-                                    if (!object.ReferenceEquals(result.Value.Dictionary, resultDictionary))
+                                    if (!result.Value.Dictionary.ContainsKey(key)) break;
+                                    if (--count == 0)
                                     {
-                                        int nextCount = count + 1, resultCount;
-                                        keyCount = 0;
-                                        foreach (keyType key in result.Value.Dictionary.Keys)
-                                        {
-                                            if (resultCountDictionary.TryGetValue(key, out resultCount) && resultCount == count)
-                                            {
-                                                resultCountDictionary.Set(key, nextCount);
-                                                ++keyCount;
-                                            }
-                                        }
-                                        if (keyCount == 0)
-                                        {
-                                            resultCountDictionary.Empty();
-                                            break;
-                                        }
-                                        count = nextCount;
-                                    }
-                                }
-                                if (keyCount > 0)
-                                {
-                                    resultArray.PrepLength(keyCount);
-                                    foreach (KeyValue<keyType, int> result in resultCountDictionary.KeyValues)
-                                    {
-                                        if (result.Value == count) resultArray.UnsafeAdd(result.Key);
+                                        if (isKey(key)) yield return key;
+                                        break;
                                     }
                                 }
                             }
                             break;
                     }
                 }
-                return resultArray;
             }
+            /// <summary>
+            /// 多结果集排序
+            /// </summary>
+            /// <returns></returns>
+            private Dictionary<keyType, ResultIndexArray> sortResult()
+            {
+                int resultIndex = 0, count = queryResult.Length;
+                Dictionary<keyType, ResultIndexArray> resultDictionary = null;
+                KeyValue<HashString, QueryResult>[] resultArray = queryResult.Array;
+                foreach (KeyValue<HashString, QueryResult> result in resultArray)
+                {
+                    if (resultDictionary != null)
+                    {
+                        if (result.Value.Dictionary.Count < resultDictionary.Count)
+                        {
+                            resultIndex = queryResult.Length - count;
+                            resultDictionary = result.Value.Dictionary;
+                        }
+                    }
+                    else resultDictionary = result.Value.Dictionary;
+                    if (--count == 0) break;
+                }
+                if (resultIndex != --queryResult.Length) resultArray[resultIndex] = resultArray[queryResult.Length];
+                if (queryResult.Length != 1) AutoCSer.Algorithm.QuickSort.Sort(resultArray, resultSort, 0, queryResult.Length);
+                return resultDictionary;
+            }
+            /// <summary>
+            /// 获取搜索数据标识集合（记录未匹配分词）
+            /// </summary>
+            /// <param name="text">搜索关键字</param>
+            /// <param name="maxSize">关键字最大字符长度</param>
+            /// <param name="isKey">数据标识过滤</param>
+            /// <returns>数据标识集合</returns>
+            public IEnumerable<keyType> SearchLess(string text, int maxSize, CheckLess isKey)
+            {
+                Simplified.Set(text, maxSize, true);
+                if (Simplified.Size != 0)
+                {
+                    queryResult.Length = 0;
+                    wordQuery.Get(ref Simplified, MatchType.Less, ref queryResult, ref lessWords);
+                    if (queryResult.Length > 0 && (lessWords.Length == 0 || checkLessWord(ref lessWords)))
+                    {
+                        if (queryResult.Length == 1)
+                        {
+                            foreach (KeyValuePair<keyType, ResultIndexArray> result in queryResult[0].Value.Dictionary)
+                            {
+                                if (isKey(result.Key, ref lessWords)) yield return result.Key;
+                            }
+                        }
+                        else
+                        {
+                            Dictionary<keyType, ResultIndexArray> resultDictionary = sortResultLess();
+                            IEnumerable<keyType> keys;
+                            if (resultDictionary != null) keys = resultDictionary.Keys;
+                            else
+                            {
+                                getLessKeys();
+                                keys = weights.Keys;
+                            }
+                            KeyValue<HashString, QueryResult>[] resultArray = queryResult.Array;
+                            foreach (keyType key in keys)
+                            {
+                                int count = queryResult.Length, lessWordCount = 0;
+                                foreach (KeyValue<HashString, QueryResult> result in resultArray)
+                                {
+                                    if (!result.Value.Dictionary.ContainsKey(key))
+                                    {
+                                        if (result.Key.String.Length != 1) break;
+                                        lessWords.Add(result.Key.String);
+                                        ++lessWordCount;
+                                    }
+                                    if (--count == 0)
+                                    {
+                                        if (isKey(key, ref lessWords)) yield return key;
+                                        break;
+                                    }
+                                }
+                                lessWords.Length -= lessWordCount;
+                            }
+                        }
+                    }
+                }
+            }
+            /// <summary>
+            /// 多结果集排序
+            /// </summary>
+            /// <returns></returns>
+            private Dictionary<keyType, ResultIndexArray> sortResultLess()
+            {
+                int resultIndex = 0, count = queryResult.Length;
+                Dictionary<keyType, ResultIndexArray> resultDictionary = null;
+                KeyValue<HashString, QueryResult>[] resultArray = queryResult.Array;
+                foreach (KeyValue<HashString, QueryResult> result in resultArray)
+                {
+                    if (result.Key.String.Length > 1)
+                    {
+                        if (resultDictionary != null)
+                        {
+                            if (result.Value.Dictionary.Count < resultDictionary.Count)
+                            {
+                                resultIndex = queryResult.Length - count;
+                                resultDictionary = result.Value.Dictionary;
+                            }
+                        }
+                        else resultDictionary = result.Value.Dictionary;
+                    }
+                    if (--count == 0) break;
+                }
+                if (resultDictionary == null) return null;
+                if (resultIndex != --queryResult.Length) resultArray[resultIndex] = resultArray[queryResult.Length];
+                if (queryResult.Length != 1) AutoCSer.Algorithm.QuickSort.Sort(resultArray, resultSort, 0, queryResult.Length);
+                return resultDictionary;
+            }
+            /// <summary>
+            /// 获取所有关键字
+            /// </summary>
+            private void getLessKeys()
+            {
+                weights.Empty();
+                int resultIndex = 0, count = queryResult.Length;
+                Dictionary<keyType, ResultIndexArray> resultDictionary = null;
+                KeyValue<HashString, QueryResult>[] resultArray = queryResult.Array;
+                foreach (KeyValue<HashString, QueryResult> result in resultArray)
+                {
+                    foreach (keyType key in result.Value.Dictionary.Keys) weights.Set(key, 0);
+                    if (resultDictionary != null)
+                    {
+                        if (result.Value.Dictionary.Count > resultDictionary.Count)
+                        {
+                            resultIndex = queryResult.Length - count;
+                            resultDictionary = result.Value.Dictionary;
+                        }
+                    }
+                    else resultDictionary = result.Value.Dictionary;
+                    if (--count == 0) break;
+                }
+                if (resultIndex != --queryResult.Length) resultArray[resultIndex] = resultArray[queryResult.Length];
+            }
+
+            /// <summary>
+            /// 获取文本分词结果
+            /// </summary>
+            /// <param name="text"></param>
+            /// <returns></returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            public LeftArray<KeyValue<SubString, WordType>> WordSegment(string text)
+            {
+                if (!string.IsNullOrEmpty(text))
+                {
+                    queue.GetResult(text, true);
+                    return queue.Words;
+                }
+                return new LeftArray<KeyValue<SubString, WordType>>(0);
+            }
+
+            /// <summary>
+            /// 搜索结果数量排序
+            /// </summary>
+            /// <param name="left"></param>
+            /// <param name="right"></param>
+            /// <returns></returns>
+            private static int sort(KeyValue<HashString, QueryResult> left, KeyValue<HashString, QueryResult> right)
+            {
+                return left.Value.Dictionary.Count - right.Value.Dictionary.Count;
+            }
+            /// <summary>
+            /// 搜索结果数量排序
+            /// </summary>
+            private static readonly Func<KeyValue<HashString, QueryResult>, KeyValue<HashString, QueryResult>, int> resultSort = sort;
         }
+
+        /// <summary>
+        /// 未匹配分词自定义过滤处理
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="lessWords"></param>
+        /// <returns></returns>
+        public delegate bool CheckLess(keyType key, ref LeftArray<SubString> lessWords);
     }
 }

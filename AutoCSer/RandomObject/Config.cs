@@ -38,7 +38,7 @@ namespace AutoCSer.RandomObject
             if (History != null && AutoCSer.Random.Default.NextBit() == 0)
             {
                 ListArray<object> objects;
-                if (History.TryGetValue(type, out objects)) return objects.Array[AutoCSer.Random.Default.Next(objects.Length)];
+                if (History.TryGetValue(type, out objects)) return objects.Array[AutoCSer.Random.Default.Next(objects.Array.Length)];
             }
             return null;
         }

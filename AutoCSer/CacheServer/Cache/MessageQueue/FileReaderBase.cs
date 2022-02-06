@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CacheServer.Cache.MessageQueue
 {
@@ -280,10 +280,10 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                     fixed (byte* stateDataFixed = bigBuffer) *(ulong*)stateDataFixed = identity;
                     stateFileStream.Write(bigBuffer, 0, stateBufferSize);
                     savedIdentity = identity;
-                    if (flushIdentityTime != Date.NowTime.Now)
+                    if (flushIdentityTime != AutoCSer.Threading.SecondTimer.Now)
                     {
                         stateFileStream.Flush(true);
-                        flushIdentityTime = Date.NowTime.Now;
+                        flushIdentityTime = AutoCSer.Threading.SecondTimer.Now;
                     }
                     if (identity != saveIdentity) goto SAVE;
                     if (isDisposed != 0)

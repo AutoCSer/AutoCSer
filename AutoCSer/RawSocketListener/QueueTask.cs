@@ -1,12 +1,12 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.RawSocketListener
 {
     /// <summary>
     /// 队列线程
     /// </summary>
-    internal sealed class QueueTask : AutoCSer.Threading.QueueTaskThread<Buffer>, IDisposable
+    internal sealed class QueueTask : AutoCSer.Threading.TaskQueueThreadBase<Buffer>, IDisposable
     {
         /// <summary>
         /// 数据包处理委托
@@ -15,7 +15,7 @@ namespace AutoCSer.Net.RawSocketListener
         /// <summary>
         /// 日志处理
         /// </summary>
-        private readonly AutoCSer.Log.ILog log;
+        private readonly AutoCSer.ILog log;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
@@ -25,7 +25,7 @@ namespace AutoCSer.Net.RawSocketListener
         /// </summary>
         /// <param name="onPacket">数据包处理委托</param>
         /// <param name="log">日志处理</param>
-        internal QueueTask(Action<Buffer> onPacket, AutoCSer.Log.ILog log)
+        internal QueueTask(Action<Buffer> onPacket, AutoCSer.ILog log)
         {
             this.onPacket = onPacket;
             this.log = log;
@@ -44,19 +44,19 @@ namespace AutoCSer.Net.RawSocketListener
         /// <param name="value"></param>
         internal void Add(Buffer value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            QueueLock.EnterYield();
             if (head == null)
             {
                 end = value;
                 head = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                QueueLock.Exit();
                 WaitHandle.Set();
             }
             else
             {
                 end.LinkNext = value;
                 end = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                QueueLock.Exit();
             }
         }
         /// <summary>
@@ -67,11 +67,11 @@ namespace AutoCSer.Net.RawSocketListener
             do
             {
                 WaitHandle.Wait();
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                QueueLock.EnterYield();
                 Buffer value = head;
                 end = null;
                 head = null;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                QueueLock.Exit();
                 do
                 {
                     try
@@ -84,7 +84,7 @@ namespace AutoCSer.Net.RawSocketListener
                     }
                     catch (Exception error)
                     {
-                        log.Add(Log.LogType.Error, error);
+                        log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 while (true);

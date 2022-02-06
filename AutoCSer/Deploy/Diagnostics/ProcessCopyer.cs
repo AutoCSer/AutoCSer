@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -11,7 +11,7 @@ namespace AutoCSer.Diagnostics
     /// <summary>
     /// 进程文件复制
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class ProcessCopyer : IDisposable
     {
         /// <summary>
@@ -58,7 +58,7 @@ namespace AutoCSer.Diagnostics
         /// </summary>
         private ILog log
         {
-            get { return Server == null ? Log.Pub.Log : Server.TcpServer.Log; }
+            get { return Server == null ? AutoCSer.LogHelper.Default : Server.TcpServer.Log; }
         }
         /// <summary>
         /// 释放资源
@@ -87,13 +87,13 @@ namespace AutoCSer.Diagnostics
                     if (guardEvent == null) guardEvent = guard;
                     process.EnableRaisingEvents = true;
                     process.Exited += guardEvent;
-                    server.TcpServer.Log.Add(AutoCSer.Log.LogType.Info, "添加守护进程 " + Process);
+                    server.TcpServer.Log.Info("添加守护进程 " + Process, LogLevel.Info | LogLevel.AutoCSer);
                     return true;
                 }
             }
             catch (Exception error)
             {
-                server.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                server.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             return false;
         }
@@ -120,11 +120,11 @@ namespace AutoCSer.Diagnostics
                     server.Remove(this);
                 }
                 if (System.IO.File.Exists(Process)) start();
-                else log.Add(AutoCSer.Log.LogType.Error, "没有找到文件 " + Process);
+                else log.Error("没有找到文件 " + Process, LogLevel.Error | LogLevel.AutoCSer);
             }
             catch (Exception error)
             {
-                log.Add(AutoCSer.Log.LogType.Error, error, "进程启动失败 " + Process);
+                log.Exception(error, "进程启动失败 " + Process, LogLevel.Exception  | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -136,7 +136,7 @@ namespace AutoCSer.Diagnostics
             info.UseShellExecute = true;
             info.WorkingDirectory = Path;
             System.Diagnostics.Process.Start(info);
-            log.Add(AutoCSer.Log.LogType.Info, "进程启动成功 " + Process);
+            log.Info("进程启动成功 " + Process, LogLevel.Info | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 删除进程退出事件
@@ -193,8 +193,8 @@ namespace AutoCSer.Diagnostics
         /// </summary>
         internal void Copy()
         {
-            log.Add(AutoCSer.Log.LogType.Info, "启动文件复制 " + Process);
-            DateTime timeout = Date.NowTime.Now.AddMinutes(Config.CopyTimeoutMinutes);
+            log.Info("启动文件复制 " + Process, LogLevel.Info | LogLevel.AutoCSer);
+            DateTime timeout = AutoCSer.Threading.SecondTimer.Now.AddMinutes(Config.CopyTimeoutMinutes);
             for (int milliseconds = 1 << 4; true;)
             {
                 Thread.Sleep(milliseconds);
@@ -208,11 +208,11 @@ namespace AutoCSer.Diagnostics
                 }
                 catch (Exception error)
                 {
-                    if (milliseconds == 1 << 4) log.Add(AutoCSer.Log.LogType.Error, error);
+                    if (milliseconds == 1 << 4) log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
-                if (Date.NowTime.Now >= timeout)
+                if (AutoCSer.Threading.SecondTimer.Now >= timeout)
                 {
-                    log.Add(AutoCSer.Log.LogType.Error, "文件复制超时 " + Process);
+                    log.Error("文件复制超时 " + Process, LogLevel.Error | LogLevel.AutoCSer);
                     return;
                 }
                 if (milliseconds != 4 << 10) milliseconds <<= 1;
@@ -222,7 +222,7 @@ namespace AutoCSer.Diagnostics
         /// <summary>
         /// 进程复制配置
         /// </summary>
-        internal static readonly ProcessCopyConfig Config = ConfigLoader.GetUnion(typeof(ProcessCopyConfig)).ProcessCopyConfig ?? new ProcessCopyConfig();
+        internal static readonly ProcessCopyConfig Config = (ProcessCopyConfig)AutoCSer.Configuration.Common.Get(typeof(ProcessCopyConfig)) ?? new ProcessCopyConfig();
         /// <summary>
         /// 默认文件复制器
         /// </summary>

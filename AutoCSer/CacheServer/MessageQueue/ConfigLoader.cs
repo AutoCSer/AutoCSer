@@ -6,7 +6,7 @@ namespace AutoCSer.CacheServer.MessageQueue
     /// <summary>
     /// 配置加载
     /// </summary>
-    internal static partial class ConfigLoader
+    //internal static partial class ConfigLoader
     {
         /// <summary>
         /// 获取配置数据

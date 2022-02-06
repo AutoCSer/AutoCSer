@@ -42,7 +42,9 @@
   <ItemGroup>
     <Compile Include="ArrayPool.cs" />
     <Compile Include="CharWordType.cs" />
+    <Compile Include="CheckLessWord.cs" />
     <Compile Include="IWeight.cs" />
+    <Compile Include="MatchType.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultIndexArray.cs" />

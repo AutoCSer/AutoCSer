@@ -5,7 +5,7 @@ namespace AutoCSer.Example.BinarySerialize
     /// <summary>
     /// 入侵派生类型 示例
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsBaseType = true)]
+    [AutoCSer.BinarySerialize(IsBaseType = true)]
     class BaseType
     {
         /// <summary>
@@ -21,15 +21,15 @@ namespace AutoCSer.Example.BinarySerialize
         internal static bool TestCase()
         {
             SonType value = new SonType { Value = 1, SonValue = 2 };
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value);
 
-            SonType newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<SonType>(data);
+            SonType newValue = AutoCSer.BinaryDeSerializer.DeSerialize<SonType>(data);
             if (newValue == null || newValue.Value != 1 || newValue.SonValue != 0)
             {
                 return false;
             }
 
-            SonType2 newValue2 = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<SonType2>(data);
+            SonType2 newValue2 = AutoCSer.BinaryDeSerializer.DeSerialize<SonType2>(data);
             return newValue2 != null && newValue2.Value == 1 && newValue2.SonValue == 0;
         }
     }

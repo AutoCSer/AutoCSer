@@ -22,6 +22,6 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 重定向域名集合
         /// </summary>
-        public static readonly string[] LocationDomains = new string[] { "autocser.com", "www.autocser.cn" };
+        public static readonly string[] LocationDomains = new string[] { "autocser.com", "autocser.cn", "www.autocser.cn" };
     }
 }

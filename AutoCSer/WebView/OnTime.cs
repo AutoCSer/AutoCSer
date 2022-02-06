@@ -6,14 +6,13 @@ namespace AutoCSer.WebView
     /// <summary>
     /// 定时触发 WEB 扩展
     /// </summary>
-    internal sealed class OnTime : Date.NowTime.OnTime
+    //internal sealed class OnTime : Date.NowTime.OnTime
     {
         /// <summary>
         /// 触发定时任务
         /// </summary>
         internal override void OnTimer()
         {
-            for (AutoCSer.Net.HttpDomainServer.Session session = AutoCSer.Net.HttpDomainServer.Session.SessionEnd; session != null; session = session.DoubleLinkPrevious) session.OnTimer();
             for (AutoCSer.IO.CreateFlieTimeoutWatcher watcher = AutoCSer.IO.CreateFlieTimeoutWatcher.Watchers.End; watcher != null; watcher = watcher.DoubleLinkPrevious) watcher.OnTimer();
         }
         /// <summary>

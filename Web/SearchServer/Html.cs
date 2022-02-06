@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.IO;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -111,7 +112,7 @@ namespace AutoCSer.Web.SearchServer
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -132,7 +133,7 @@ namespace AutoCSer.Web.SearchServer
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -159,7 +160,7 @@ namespace AutoCSer.Web.SearchServer
         /// <returns>HTML 信息</returns>
         private static Html getHtml(FileInfo htmlFile)
         {
-            AutoCSer.HtmlNode.Node htmlNode = new AutoCSer.HtmlNode.Node(File.ReadAllText(htmlFile.FullName, Encoding.UTF8));
+            AutoCSer.HtmlNode.Node htmlNode = new AutoCSer.HtmlNode.Node(System.IO.File.ReadAllText(htmlFile.FullName, Encoding.UTF8));
             foreach (AutoCSer.HtmlNode.Node bodyNode in bodyFilter.Get(htmlNode))
             {
                 foreach (AutoCSer.HtmlNode.Node titleNode in titleFilter.Get(htmlNode))
@@ -167,7 +168,7 @@ namespace AutoCSer.Web.SearchServer
                     string title, bodyText;
                     if (!string.IsNullOrEmpty(title = titleNode.Text) && !string.IsNullOrEmpty(bodyText = bodyNode.Text))
                     {
-                        LeftArray<HtmlImage> images = default(LeftArray<HtmlImage>);
+                        LeftArray<HtmlImage> images = new LeftArray<HtmlImage>(0);
                         foreach (AutoCSer.HtmlNode.Node imgNode in bodyNode.GetNodesByTagName("img"))
                         {
                             string alt = imgNode["alt"], src = imgNode["src"] ?? imgNode["@src"];

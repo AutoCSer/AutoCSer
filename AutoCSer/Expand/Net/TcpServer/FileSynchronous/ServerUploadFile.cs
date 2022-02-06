@@ -107,7 +107,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             {
                 if (state == SynchronousState.Success && index != listFileItem.Length)
                 {
-                    checkTimeoutSeconds = AutoCSer.Date.NowTime.CurrentSeconds;
+                    checkTimeoutSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
                     if (!onCreated(new UploadFileIdentity(Identity)))
                     {
                         server.Remove(Identity);
@@ -139,7 +139,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             {
                 this.onUploaded = onUploaded;
                 this.data = data;
-                checkTimeoutSeconds = AutoCSer.Date.NowTime.CurrentSeconds;
+                checkTimeoutSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
                 onUploaded = null;
 
                 if (onWriteHandle == null) onWriteHandle = onWrite;
@@ -174,7 +174,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             {
                 if (state == SynchronousState.Success && index != listFileItem.Length)
                 {
-                    checkTimeoutSeconds = AutoCSer.Date.NowTime.CurrentSeconds;
+                    checkTimeoutSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
                     if (!onUploaded(state))
                     {
                         server.Remove(Identity);

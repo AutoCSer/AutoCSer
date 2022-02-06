@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer
@@ -155,7 +155,7 @@ namespace AutoCSer
 
             #region GB2312
             char* gb18030Chars = stackalloc char[0x40];
-            AutoCSer.Memory.Fill((ulong*)(gb18030Char = gb18030Chars), 0UL, 0x40 * sizeof(char) / sizeof(ulong));
+            AutoCSer.Memory.Common.Fill((ulong*)(gb18030Char = gb18030Chars), 0UL, 0x40 * sizeof(char) / sizeof(ulong));
             gb18030Char[0] = char.MaxValue;
             gb18030Char[0xc4b5 & 0x3f] = (char)0xc4b5;
             gb18030Char[0xc7ca & 0x3f] = (char)0xc7ca;
@@ -185,7 +185,7 @@ namespace AutoCSer
             {
                 #region UTF16
                 char* utf16Chars = stackalloc char[0x10];
-                AutoCSer.Memory.Fill((ulong*)(utf16Char = utf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
+                AutoCSer.Memory.Common.Fill((ulong*)(utf16Char = utf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
                 utf16Char[0] = char.MaxValue;
                 utf16Char[0x7684 & 0xf] = (char)0x7684;
                 //utf16Char[0x662f & 0xf] = (char)0x662f;
@@ -196,7 +196,7 @@ namespace AutoCSer
                 utf16Char[0x3002 & 0xf] = (char)0x3002;
                 utf16Char[0x500b & 0xf] = (char)0x500b;
                 char* bigUtf16Chars = stackalloc char[0x10];
-                AutoCSer.Memory.Fill((ulong*)(bigUtf16Char = bigUtf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
+                AutoCSer.Memory.Common.Fill((ulong*)(bigUtf16Char = bigUtf16Chars), 0UL, 0x10 * sizeof(char) / sizeof(ulong));
                 bigUtf16Char[0] = char.MaxValue;
                 bigUtf16Char[(0x8476 >> 8) & 0xf] = (char)0x8476;
                 //bigUtf16Char[(0x2f66 >> 8) & 0xf] = (char)0x2f66;
@@ -224,38 +224,47 @@ namespace AutoCSer
                 }
             }
 
+
             Encoding value = null;
             endValue = -1;
+            bool manyEncoding = false;
             if (gb2312Count > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Gb2312.Encoding;
+                value = AutoCSer.EncodingCacheOther.GB2312.Encoding;
                 endValue = gb2312Count;
             }
             if (gb18030Count > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Gb18030.Encoding;
+                value = AutoCSer.EncodingCacheOther.GB18030.Encoding;
                 endValue = gb18030Count;
             }
             if (gbkCount > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Gbk.Encoding;
+                value = AutoCSer.EncodingCacheOther.GBK.Encoding;
                 endValue = gbkCount;
             }
+
             if (utf8Count > endValue)
             {
                 value = Encoding.UTF8;
                 endValue = utf8Count;
+                manyEncoding = false;
             }
+            else if (utf8Count == endValue) manyEncoding = true;
             if (big5Count > endValue)
             {
-                value = AutoCSer.EncodingCacheOther.Big5.Encoding;
+                value = AutoCSer.EncodingCacheOther.BIG5.Encoding;
                 endValue = big5Count;
+                manyEncoding = false;
             }
+            else if (big5Count == endValue) manyEncoding = true;
             if (utf32Count > endValue)
             {
                 value = Encoding.UTF32;
                 endValue = utf32Count;
+                manyEncoding = false;
             }
+            else if (utf32Count == endValue) manyEncoding = true;
             //if (bigUtf32 > endValue)
             //{
             //    value = Encoding.UTF32;//大端
@@ -265,13 +274,17 @@ namespace AutoCSer
             {
                 value = Encoding.Unicode;
                 endValue = utf16Count;
+                manyEncoding = false;
             }
+            else if (utf16Count == endValue) manyEncoding = true;
             if (bigUtf16Count > endValue)
             {
                 value = Encoding.BigEndianUnicode;
                 endValue = bigUtf16Count;
+                manyEncoding = false;
             }
-            return value;
+            else if (bigUtf16Count == endValue) manyEncoding = true;
+            return manyEncoding ? null : value;
         }
         /// <summary>
         /// 判断是否ASCII(包括结束字符)
@@ -512,7 +525,7 @@ namespace AutoCSer
         private void utf8()
         {
             uint* utf8Char = stackalloc uint[0x10];
-            AutoCSer.Memory.Fill((ulong*)utf8Char, 0UL, 0x10 >> 1);
+            AutoCSer.Memory.Common.Fill((ulong*)utf8Char, 0UL, 0x10 >> 1);
             utf8Char[0] = uint.MaxValue;
             utf8Char[(0x849ae7 >> 16) & 0xf] = 0x849ae7;
             utf8Char[(0xaf98e6 >> 16) & 0xf] = 0xaf98e6;
@@ -628,7 +641,7 @@ namespace AutoCSer
         private void big5()
         {
             char* big5Char = stackalloc char[0x40];
-            AutoCSer.Memory.Fill((ulong*)big5Char, 0UL, 0x40 * sizeof(char) / sizeof(ulong));
+            AutoCSer.Memory.Common.Fill((ulong*)big5Char, 0UL, 0x40 * sizeof(char) / sizeof(ulong));
             big5Char[0] = char.MaxValue;
             big5Char[(0xbaaa >> 8) & 0x3f] = (char)0xbaaa;
             big5Char[(0x4fac >> 8) & 0x3f] = (char)0x4fac;
@@ -714,7 +727,7 @@ namespace AutoCSer
         private void utf32()
         {
             uint* utf32Char = stackalloc uint[0x10];
-            AutoCSer.Memory.Fill((ulong*)utf32Char, 0UL, 0x10 >> 1);
+            AutoCSer.Memory.Common.Fill((ulong*)utf32Char, 0UL, 0x10 >> 1);
             utf32Char[0] = uint.MaxValue;
             utf32Char[0x7684 & 0xf] = 0x7684;
             utf32Char[0x662f & 0xf] = 0x662f;

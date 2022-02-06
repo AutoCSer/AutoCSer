@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Net.Sockets;
 
@@ -61,7 +61,7 @@ namespace AutoCSer.Net.TcpServer
         {
             Attribute = attribute;
             MinCompressSize = attribute.GetMinCompressSize;
-             Log = log ?? AutoCSer.Log.Pub.Log;
+            Log = log ?? AutoCSer.LogHelper.Default;
             SendBufferMaxSize = sendBufferMaxSize;
             if (MinCompressSize <= 0) MinCompressSize = int.MaxValue;
         }
@@ -71,6 +71,7 @@ namespace AutoCSer.Net.TcpServer
         public virtual void Dispose()
         {
             IsDisposed = 1;
+            Log.Debug("释放TCP客户端", LogLevel.Debug | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 添加日志
@@ -79,7 +80,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void AddLog(Exception error)
         {
-            Log.Add(AutoCSer.Log.LogType.Error, error);
+            Log.Exception(error);
         }
 
         /// <summary>
@@ -88,27 +89,33 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void ShutdownClient(Socket socket)
         {
-            shutdown(socket, CatchCount.Type.TcpServerClientSocket_Dispose);
+            shutdown(socket, true);
         }
         /// <summary>
         /// 关闭套接字
         /// </summary>
-        private static void shutdown(Socket socket, CatchCount.Type type)
+        /// <param name="socket"></param>
+        /// <param name="isLog">正常关闭不写日志</param>
+        private static void shutdown(Socket socket, bool isLog)
         {
             try
             {
-                socket.Shutdown(SocketShutdown.Both);
+                if(socket.Connected) socket.Shutdown(SocketShutdown.Both);
             }
-            catch { AutoCSer.Log.CatchCount.Add(type); }
+            catch(Exception error)
+            {
+                if (isLog) AutoCSer.LogHelper.Exception(error, null, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
+            }
             finally { socket.Dispose(); }
         }
         /// <summary>
         /// 关闭套接字
         /// </summary>
+        /// <param name="socket"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void ShutdownServer(Socket socket)
         {
-            shutdown(socket, CatchCount.Type.TcpServerSocket_Dispose);
+            shutdown(socket, false);
         }
         /// <summary>
         /// 关闭套接字
@@ -124,7 +131,7 @@ namespace AutoCSer.Net.TcpServer
             {
                 socket.Shutdown(SocketShutdown.Both);
             }
-            catch { AutoCSer.Log.CatchCount.Add(CatchCount.Type.TcpServerSocket_Dispose); }
+            catch { }
             finally { socket.Dispose(); }
 #else
             socket.Dispose();
@@ -138,7 +145,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal unsafe static void Mark(ref SubArray<byte> data, ulong markData)
         {
-            fixed (byte* dataFixed = data.Array) Mark(dataFixed + data.Start, markData, data.Length);
+            fixed (byte* dataFixed = data.GetFixedBuffer()) Mark(dataFixed + data.Start, markData, data.Length);
         }
         /// <summary>
         /// 变换数据
@@ -230,12 +237,12 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="jsonSerializeTypes"></param>
         internal protected static void CompileSerialize(Type[] simpleDeSerializeTypes, Type[] simpleSerializeTypes, Type[] deSerializeTypes, Type[] serializeTypes, Type[] jsonDeSerializeTypes, Type[] jsonSerializeTypes)
         {
-            if (simpleDeSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileSimpleDeSerialize);
-            if (simpleSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileSimpleSerialize);
-            if (deSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileBinaryDeSerialize);
-            if (serializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileBinarySerialize);
-            if (jsonDeSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileJsonDeSerialize);
-            if (jsonSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileJsonSerialize);
+            if (simpleDeSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.ThreadTaskType.CompileSimpleDeSerialize);
+            if (simpleSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.ThreadTaskType.CompileSimpleSerialize);
+            if (deSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.ThreadTaskType.CompileBinaryDeSerialize);
+            if (serializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.ThreadTaskType.CompileBinarySerialize);
+            if (jsonDeSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.ThreadTaskType.CompileJsonDeSerialize);
+            if (jsonSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(simpleSerializeTypes, AutoCSer.Threading.ThreadTaskType.CompileJsonSerialize);
         }
         /// <summary>
         /// 序列化预编译

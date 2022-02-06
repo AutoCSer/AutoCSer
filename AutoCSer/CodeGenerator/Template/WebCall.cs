@@ -33,7 +33,7 @@ namespace AutoCSer.CodeGenerator.Template
             }
             #region LOOP Methods
             #region NOT IsAjaxLoad
-            private static readonly AutoCSer.WebView.CallMethodInfo @CallMethodInfo = new AutoCSer.WebView.CallMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize, IsOnlyPost = @IsOnlyPost/*PUSH:Attribute*/ };
+            private static readonly AutoCSer.WebView.CallMethodInfo @CallMethodInfo = new AutoCSer.WebView.CallMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize, IsOnlyPost = @IsOnlyPost/*PUSH:Attribute*/ };
             #endregion NOT IsAjaxLoad
             #endregion LOOP Methods
             protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
@@ -59,7 +59,7 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion LOOP Methods
                 }
             }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.Memory.UnmanagedStream responseStream)
             {
                 switch (call.CallMethodIndex)
                 {

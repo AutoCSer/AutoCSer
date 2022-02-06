@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
     /// <summary>
     /// 测试消息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     internal sealed class Message
     {
         /// <summary>

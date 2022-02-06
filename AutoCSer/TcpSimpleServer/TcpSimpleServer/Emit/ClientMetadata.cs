@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpSimpleServer.Emit
 {
@@ -54,8 +54,8 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         }
 
         /// <summary>
-        /// TCP 客户端基类 是否已经释放资源字段信息
+        /// TCP 客户端基类 是否已经释放资源函数信息
         /// </summary>
-        internal static readonly FieldInfo MethodClientIsDisposedField = typeof(TcpServer.Emit.MethodClient).GetField("_isDisposed_", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        internal static readonly MethodInfo MethodClientGetIsDisposedMethod = ((Func<TcpServer.Emit.MethodClient, int>)TcpServer.Emit.MethodClient.GetIsDisposed).Method;
     }
 }

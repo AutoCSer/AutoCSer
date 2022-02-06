@@ -1,22 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.Web.HttpServer
 {
     /// <summary>
     /// HTTP 服务配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal class Config : AutoCSer.Web.Config.Config
+    internal class Config : AutoCSer.Web.Config.Public
     {
+        /// <summary>
+        /// 主配置类型集合
+        /// </summary>
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// 公用全局配置
         /// </summary>
-        [AutoCSer.Config.Member]
-        internal static AutoCSer.Config.Pub Pub
+        [AutoCSer.Configuration.Member]
+        internal static AutoCSer.Config Pub
         {
             get
             {
-                AutoCSer.Config.Pub pub = new AutoCSer.Config.Pub();
+                AutoCSer.Config pub = new AutoCSer.Config();
                 pub.CachePath = AutoCSer.Web.Config.Http.CachePath;
                 return pub;
             }
@@ -24,7 +29,7 @@ namespace AutoCSer.Web.HttpServer
         /// <summary>
         /// 搜索服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.Web.SearchServer.Server.ServerName)]
+        [AutoCSer.Configuration.Member(AutoCSer.Web.SearchServer.Server.ServerName)]
         internal static AutoCSer.Net.TcpInternalServer.ServerAttribute SearchServerAttribute
         {
             get

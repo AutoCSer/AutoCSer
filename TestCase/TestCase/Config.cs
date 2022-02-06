@@ -1,27 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.TestCase
 {
     /// <summary>
     /// 代码生成项目配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal static class Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
         /// <summary>
-        /// 日志配置
+        /// 主配置类型集合
         /// </summary>
-        [AutoCSer.Config.Member]
-        public static AutoCSer.Log.Config LogConfig
-        {
-            //get { return new Log.Config { Type = AutoCSer.Log.LogType.All }; }
-            get { return new Log.Config { Type = 0 }; }
-        }
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
 #if !NoAutoCSer
         /// <summary>
         /// TCP 静态调用客户端参数
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.TestCase.TcpStaticClient.SessionServer.ClientConfig SessionClientConfig
         {
             get { return new TcpStaticClient.SessionServer.ClientConfig { VerifyMethod = TcpStaticServer.Session.Verify }; }
@@ -30,7 +26,7 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// TCP 静态调用客户端参数
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.TestCase.TcpStaticSimpleClient.SimpleSessionServer.ClientConfig SimpleSessionClientConfig
         {
             get { return new TcpStaticSimpleClient.SimpleSessionServer.ClientConfig { VerifyMethod = TcpStaticSimpleServer.Session.Verify }; }
@@ -38,7 +34,7 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// 文件块服务 TCP 静态服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.DiskBlock.Server.ServerName)]
+        [AutoCSer.Configuration.Member(AutoCSer.DiskBlock.Server.ServerName)]
         public static AutoCSer.Net.TcpInternalServer.ServerAttribute FileBlockConfig
         {
             get
@@ -52,7 +48,7 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// 缓存主服务配置
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.CacheServer.MasterServerConfig CacheMasterServerConfig
         {
             get
@@ -63,7 +59,7 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// 缓存主服务 TCP 静态服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.CacheServer.MasterServer.ServerName)]
+        [AutoCSer.Configuration.Member(AutoCSer.CacheServer.MasterServer.ServerName)]
         public static AutoCSer.Net.TcpInternalServer.ServerAttribute CacheMasterConfig
         {
             get
@@ -76,7 +72,7 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// 缓存从服务配置
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.CacheServer.SlaveServerConfig CacheSlaveServerConfig
         {
             get
@@ -87,7 +83,7 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// 缓存从服务 TCP 静态服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.CacheServer.SlaveServer.ServerName)]
+        [AutoCSer.Configuration.Member(AutoCSer.CacheServer.SlaveServer.ServerName)]
         public static AutoCSer.Net.TcpInternalServer.ServerAttribute CacheSlaveConfig
         {
             get
@@ -101,7 +97,7 @@ namespace AutoCSer.TestCase
         ///// <summary>
         ///// K-V 缓存主服务配置
         ///// </summary>
-        //[AutoCSer.Config.Member]
+        //[AutoCSer.Configuration.Member]
         //public static AutoCSer.RemoteDictionaryStreamServer.MasterServerConfig KeyValueStreamMasterServerConfig
         //{
         //    get
@@ -112,7 +108,7 @@ namespace AutoCSer.TestCase
         ///// <summary>
         ///// K-V 缓存主服务 TCP 静态服务配置
         ///// </summary>
-        //[AutoCSer.Config.Member(Name = AutoCSer.RemoteDictionaryStreamServer.MasterServer.ServerName)]
+        //[AutoCSer.Configuration.Member(Name = AutoCSer.RemoteDictionaryStreamServer.MasterServer.ServerName)]
         //public static AutoCSer.Net.TcpInternalServer.ServerAttribute KeyValueStreamMasterConfig
         //{
         //    get
@@ -125,7 +121,7 @@ namespace AutoCSer.TestCase
         ///// <summary>
         ///// K-V 缓存从服务配置
         ///// </summary>
-        //[AutoCSer.Config.Member]
+        //[AutoCSer.Configuration.Member]
         //public static AutoCSer.RemoteDictionaryStreamServer.SlaveServerConfig KeyValueStreamSlaveServerConfig
         //{
         //    get
@@ -136,7 +132,7 @@ namespace AutoCSer.TestCase
         ///// <summary>
         ///// K-V 缓存从服务 TCP 静态服务配置
         ///// </summary>
-        //[AutoCSer.Config.Member(Name = AutoCSer.RemoteDictionaryStreamServer.SlaveServer.ServerName)]
+        //[AutoCSer.Configuration.Member(Name = AutoCSer.RemoteDictionaryStreamServer.SlaveServer.ServerName)]
         //public static AutoCSer.Net.TcpInternalServer.ServerAttribute KeyValueStreamSlaveConfig
         //{
         //    get

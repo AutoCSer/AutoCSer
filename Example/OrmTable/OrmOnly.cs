@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 
 namespace AutoCSer.Example.OrmTable
@@ -28,7 +28,7 @@ namespace AutoCSer.Example.OrmTable
             {
                 AutoCSer.Metadata.MemberMap<OrmOnly> updateMemberMap = sqlTable.CreateMemberMap().Set(value => value.Value);
                 sqlTable.InsertQueue(new OrmOnly { Value = 1 });
-                foreach (OrmOnly value in sqlTable.SelectQueue())
+                foreach (OrmOnly value in sqlTable.SelectQueue().Value)
                 {
                     Console.WriteLine(value.toJson());
                     sqlTable.UpdateQueue(new OrmOnly { Id = value.Id, Value = value.Value + 1 }, updateMemberMap);
@@ -41,7 +41,7 @@ namespace AutoCSer.Example.OrmTable
                 using (deleteWait = new AutoResetEvent(false))
                 {
                     deleteCount = 1;
-                    foreach (OrmOnly value in sqlTable.SelectQueue())
+                    foreach (OrmOnly value in sqlTable.SelectQueue().Value)
                     {
                         Console.WriteLine(value.toJson());
                         Interlocked.Increment(ref deleteCount);
@@ -70,11 +70,11 @@ namespace AutoCSer.Example.OrmTable
         /// <summary>
         /// 异步删除完成处理
         /// </summary>
-        /// <param name="value"></param>
-        private static void onDeleted(OrmOnly value)
+        /// <param name="returnValue"></param>
+        private static void onDeleted(AutoCSer.Sql.ReturnValue<OrmOnly> returnValue)
         {
-            if (value == null) Console.WriteLine("Delete Error!");
-            onDeleted();
+            if (returnValue.ReturnType == Sql.ReturnType.Success) onDeleted();
+            else Console.WriteLine("Delete Error! " + returnValue.ReturnType.ToString());
         }
     }
 }

@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// <summary>
     /// 定时触发简单 TCP 服务扩展
     /// </summary>
-    internal sealed class OnTime : Date.NowTime.OnTime
+    //internal sealed class OnTime : Date.NowTime.OnTime
     {
         /// <summary>
         /// 触发定时任务

@@ -8,12 +8,12 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal abstract partial class CollectionGenericType2
+    internal abstract partial class CollectionGenericType2  : GenericType2Base
     {
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<GenericType2.TypeKey, CollectionGenericType2> cache = new LockEquatableLastDictionary<GenericType2.TypeKey, CollectionGenericType2>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<TypeKey, CollectionGenericType2> cache = new LockLastDictionary<TypeKey, CollectionGenericType2>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -38,11 +38,15 @@ namespace AutoCSer.Metadata
         public static CollectionGenericType2 Get(Type type1, Type type2)
         {
             CollectionGenericType2 value;
-            GenericType2.TypeKey typeKey = new GenericType2.TypeKey { Type1 = type1, Type2 = type2 };
-            if (!cache.TryGetValue(ref typeKey, out value))
+            TypeKey typeKey = new TypeKey(type1, type2);
+            if (!cache.TryGetValue(typeKey, out value))
             {
-                value = new UnionType { Value = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.CollectionGenericType2;
-                cache.Set(ref typeKey, value);
+                try
+                {
+                    value = new UnionType.CollectionGenericType2 { Object = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.Value;
+                    cache.Set(typeKey, value);
+                }
+                finally { cache.Exit(); }
             }
             return value;
         }

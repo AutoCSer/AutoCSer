@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer.Cache
@@ -32,7 +32,7 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 数组
         /// </summary>
-        private nodeType[][] arrays = NullValue<nodeType[]>.Array;
+        private nodeType[][] arrays = EmptyArray<nodeType[]>.Array;
         /// <summary>
         /// 有效数据数量
         /// </summary>
@@ -114,7 +114,7 @@ namespace AutoCSer.CacheServer.Cache
                     if (arrays.Length != 0)
                     {
                         onClear();
-                        arrays = NullValue<nodeType[]>.Array;
+                        arrays = EmptyArray<nodeType[]>.Array;
                         count = 0;
                         parser.IsOperation = true;
                     }

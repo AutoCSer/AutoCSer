@@ -502,7 +502,7 @@ namespace AutoCSer.Net.SimpleSerialize
                     int lengthSize = (length <= byte.MaxValue ? 1 : (length <= ushort.MaxValue ? sizeof(ushort) : sizeof(int)));
                     if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                     {
-                        value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
+                        value = AutoCSer.Extensions.StringExtension.FastAllocateString(length);
                         fixed (char* valueFixed = value) Read = BinarySerialize.DeSerializer.DeSerialize(Read, End, valueFixed, length, lengthSize);
                         return;
                     }
@@ -1083,7 +1083,7 @@ namespace AutoCSer.Net.SimpleSerialize
         {
             if (start != null)
             {
-                if (*(int*)start == BinarySerialize.Serializer.NullValue)
+                if (*(int*)start == BinarySerializer.NullValue)
                 {
                     value = null;
                     return start + sizeof(int);
@@ -1112,8 +1112,8 @@ namespace AutoCSer.Net.SimpleSerialize
                     int lengthSize = (length <= byte.MaxValue ? 1 : (length <= ushort.MaxValue ? sizeof(ushort) : sizeof(int)));
                     if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - start))
                     {
-                        value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
-                        fixed (char* valueFixed = value) return BinarySerialize.DeSerializer.DeSerialize(start, end, valueFixed, length, lengthSize);
+                        value = AutoCSer.Extensions.StringExtension.FastAllocateString(length);
+                        fixed (char* valueFixed = value) return AutoCSer.BinaryDeSerializer.DeSerialize(start, end, valueFixed, length, lengthSize);
                     }
                 }
             }

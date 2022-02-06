@@ -16,9 +16,9 @@ namespace AutoCSer.Example.BinarySerialize
         /// 自定义序列化函数
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        internal void Serialize(AutoCSer.BinarySerializer serializer)
         {
             serializer.TypeSerialize(Value == null ? 1 : 2);
         }
@@ -26,9 +26,9 @@ namespace AutoCSer.Example.BinarySerialize
         /// 自定义反序列化函数
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             switch (deSerializer.TypeDeSerialize<int>())
             {
@@ -45,14 +45,14 @@ namespace AutoCSer.Example.BinarySerialize
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(new CustomStruct { Value = null });
-            if (AutoCSer.BinarySerialize.DeSerializer.DeSerialize<CustomStruct>(data).Value != null)
+            byte[] data = AutoCSer.BinarySerializer.Serialize(new CustomStruct { Value = null });
+            if (AutoCSer.BinaryDeSerializer.DeSerialize<CustomStruct>(data).Value != null)
             {
                 return false;
             }
 
-            data = AutoCSer.BinarySerialize.Serializer.Serialize(new CustomStruct { Value = string.Empty });
-            return AutoCSer.BinarySerialize.DeSerializer.DeSerialize<CustomStruct>(data).Value == string.Empty;
+            data = AutoCSer.BinarySerializer.Serialize(new CustomStruct { Value = string.Empty });
+            return AutoCSer.BinaryDeSerializer.DeSerialize<CustomStruct>(data).Value == string.Empty;
         }
     }
 }

@@ -6,33 +6,50 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 双向链表节点
     /// </summary>
-    /// <typeparam name="valueType"></typeparam>
-    public abstract class DoubleLink<valueType>
-        where valueType : DoubleLink<valueType>
+    /// <typeparam name="T"></typeparam>
+    public abstract class DoubleLink<T>
+        where T : DoubleLink<T>
     {
         /// <summary>
         /// 下一个节点
         /// </summary>
-        internal valueType DoubleLinkNext;
+        internal T DoubleLinkNext;
         /// <summary>
         /// 上一个节点
         /// </summary>
-        internal valueType DoubleLinkPrevious;
+        internal T DoubleLinkPrevious;
+        /// <summary>
+        /// 重置链表状态
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void ResetDoubleLink()
+        {
+            DoubleLinkNext = DoubleLinkPrevious = null;
+        }
         /// <summary>
         /// 弹出节点
         /// </summary>
+        /// <param name="linkLock">链表访问锁</param>
+        /// <returns>是否弹出节点，false 表示不允许重复弹出操作</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void freeNotEnd()
+        private bool freeNotEnd(ref AutoCSer.Threading.SpinLock linkLock)
         {
-            DoubleLinkNext.DoubleLinkPrevious = DoubleLinkPrevious;
-            if (DoubleLinkPrevious != null)
+            if (DoubleLinkNext != null)
             {
-                DoubleLinkPrevious.DoubleLinkNext = DoubleLinkNext;
-                DoubleLinkPrevious = null;
+                DoubleLinkNext.DoubleLinkPrevious = DoubleLinkPrevious;
+                if (DoubleLinkPrevious != null)
+                {
+                    DoubleLinkPrevious.DoubleLinkNext = DoubleLinkNext;
+                    DoubleLinkPrevious = null;
+                }
+                DoubleLinkNext = null;
+                linkLock.Exit();
+                return true;
             }
-            DoubleLinkNext = null;
+            linkLock.Exit(); //已经被释放的不做处理
+            return false;
         }
-        
+
         /// <summary>
         /// 双向链表
         /// </summary>
@@ -42,50 +59,53 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 链表尾部
             /// </summary>
-            internal valueType End;
+            internal T End;
             /// <summary>
             /// 链表访问锁
             /// </summary>
-            private int linkLock;
+            private AutoCSer.Threading.SpinLock linkLock;
             /// <summary>
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void PushNotNull(valueType value)
+            internal void PushNotNull(T value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePush);
+                linkLock.EnterYield();
                 if (End == null)
                 {
                     End = value;
-                    System.Threading.Interlocked.Exchange(ref linkLock, 0);
+                    linkLock.Exit();
                 }
                 else
                 {
                     End.DoubleLinkNext = value;
                     value.DoubleLinkPrevious = End;
                     End = value;
-                    System.Threading.Interlocked.Exchange(ref linkLock, 0);
+                    linkLock.Exit();
                 }
             }
             /// <summary>
             /// 弹出节点
             /// </summary>
             /// <param name="value"></param>
+            /// <returns>是否弹出节点，false 表示不允许重复弹出操作</returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void PopNotNull(valueType value)
+            internal bool PopNotNull(T value)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
+                linkLock.EnterYield();
                 if (value == End)
                 {
-                    if ((End = value.DoubleLinkPrevious) != null) End.DoubleLinkNext = value.DoubleLinkPrevious = null;
-                    System.Threading.Interlocked.Exchange(ref linkLock, 0);
+                    End = value.DoubleLinkPrevious;
+                    if (End != null)
+                    {
+                        End.DoubleLinkNext = null;
+                        value.DoubleLinkPrevious = null;
+                    }
+                    linkLock.Exit();
+                    return true;
                 }
-                else
-                {
-                    value.freeNotEnd();
-                    System.Threading.Interlocked.Exchange(ref linkLock, 0);
-                }
+                return value.freeNotEnd(ref linkLock);
             }
             ///// <summary>
             ///// 清除数据

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 
 namespace AutoCSer.Diagnostics
@@ -24,7 +24,7 @@ namespace AutoCSer.Diagnostics
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
 #endif
         }
@@ -44,7 +44,7 @@ namespace AutoCSer.Diagnostics
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
 #endif
             return false;
@@ -73,9 +73,9 @@ namespace AutoCSer.Diagnostics
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
-            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "守护进程客户端调用失败");
+            AutoCSer.LogHelper.Error("守护进程客户端调用失败",  LogLevel.Error | LogLevel.AutoCSer);
             callGuardTask();
         }
         /// <summary>
@@ -89,12 +89,12 @@ namespace AutoCSer.Diagnostics
                 {
                     if (client.guard(ProcessCopyer.Default).Type == AutoCSer.Net.TcpServer.ReturnType.Success)
                     {
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Info, "守护进程客户端调用成功");
+                        AutoCSer.LogHelper.Info("守护进程客户端调用成功", LogLevel.Info | LogLevel.AutoCSer);
                         return;
                     }
                 }
                 catch { }
-                AutoCSer.Threading.TimerTask.Default.Add(callGuard, Date.NowTime.Now.AddMinutes(1));
+                AutoCSer.Threading.SecondTimer.TaskArray.AppendMinute(callGuard, Threading.SecondTimerThreadMode.TinyBackgroundThreadPool);
             }
             else Interlocked.Exchange(ref isGuardTask, 0);
         }
@@ -105,7 +105,7 @@ namespace AutoCSer.Diagnostics
         {
             if (Interlocked.CompareExchange(ref isGuardTask, 1, 0) == 0)
             {
-                AutoCSer.Threading.TimerTask.Default.Add(callGuard, Date.NowTime.Now.AddMinutes(1));
+                AutoCSer.Threading.SecondTimer.TaskArray.AppendMinute(callGuard, Threading.SecondTimerThreadMode.TinyBackgroundThreadPool);
             }
         }
         /// <summary>

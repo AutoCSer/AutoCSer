@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;RawSocketListenerClient</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -41,8 +41,8 @@
   <ItemGroup>
     <Compile Include="Buffer.cs" />
     <Compile Include="BufferCount.cs" />
-    <Compile Include="Extension\Memory.cs" />
-    <Compile Include="Extension\Number.cs" />
+    <Compile Include="Extensions\MemoryExtension.RawSocketListener.cs" />
+    <Compile Include="Extensions\NumberExtension.RawSocketListener.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Packet\Arp.cs" />
     <Compile Include="Packet\Ethernet.cs" />
@@ -69,6 +69,9 @@
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

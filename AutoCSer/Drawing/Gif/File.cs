@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Drawing.Gif
@@ -44,7 +44,7 @@ namespace AutoCSer.Drawing.Gif
         /// <summary>
         /// 数据块集合
         /// </summary>
-        private LeftArray<DataBlock> blocks;
+        private LeftArray<DataBlock> blocks = new LeftArray<DataBlock>(0);
         /// <summary>
         /// 数据块集合
         /// </summary>

@@ -26,8 +26,8 @@ namespace AutoCSer.Example.BinarySerialize
         {
             IgnoreMember value = new IgnoreMember { Value = 1, Ignore = 2 };
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value);
-            IgnoreMember newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<IgnoreMember>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value);
+            IgnoreMember newValue = AutoCSer.BinaryDeSerializer.DeSerialize<IgnoreMember>(data);
 
             return newValue != null && newValue.Value == 1 && newValue.Ignore == 0;
         }

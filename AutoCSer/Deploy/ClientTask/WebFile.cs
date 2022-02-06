@@ -6,7 +6,7 @@ namespace AutoCSer.Deploy.ClientTask
     /// <summary>
     /// 写 css/js/html 任务信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public class WebFile : Task
     {
         /// <summary>
@@ -32,7 +32,7 @@ namespace AutoCSer.Deploy.ClientTask
         /// </summary>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal override DeployState Call(Timer timer)
+        internal override DeployResultData Call(Timer timer)
         {
             if (Directory.Name != null)
             {

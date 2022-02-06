@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Web;
+using AutoCSer.Memory;
 
 namespace AutoCSer.HtmlNode
 {
@@ -14,7 +15,7 @@ namespace AutoCSer.HtmlNode
         /// <summary>
         /// 子节点集合
         /// </summary>
-        internal LeftArray<Node> ChildrenArray;
+        internal LeftArray<Node> ChildrenArray = new LeftArray<Node>(0);
         /// <summary>
         /// 子节点集合
         /// </summary>
@@ -50,7 +51,7 @@ namespace AutoCSer.HtmlNode
         /// <summary>
         /// 属性集合
         /// </summary>
-        internal LeftArray<KeyValue<SubString, FormatString>> AttributeArray;
+        internal LeftArray<KeyValue<SubString, FormatString>> AttributeArray = new LeftArray<KeyValue<SubString, FormatString>>(0);
         /// <summary>
         /// 属性数量
         /// </summary>
@@ -100,7 +101,7 @@ namespace AutoCSer.HtmlNode
             {
                 if (ChildrenArray.Length != 0)
                 {
-                    LeftArray<NodeIndex> indexs = default(LeftArray<NodeIndex>);
+                    LeftArray<NodeIndex> indexs = new LeftArray<NodeIndex>(0);
                     NodeIndex index = new NodeIndex { Array = ChildrenArray };
                     Node node = ChildrenArray.Array[0];
                     do
@@ -173,28 +174,28 @@ namespace AutoCSer.HtmlNode
                 {
                     if (ChildrenArray.Length != 0)
                     {
-                        LeftArray<NodeIndex> indexs = default(LeftArray<NodeIndex>);
+                        LeftArray<NodeIndex> indexs = new LeftArray<NodeIndex>(0);
                         NodeIndex index = new NodeIndex { Array = ChildrenArray };
                         Node node = ChildrenArray.Array[0];
                         bool isSpace = false, isEnter = false;
-                        byte* buffer = UnmanagedPool.Default.Get();
+                        AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                         try
                         {
-                            using (CharStream html = new CharStream((char*)buffer, UnmanagedPool.DefaultSize >> 1))
+                            using (CharStream html = new CharStream(ref buffer))
                             {
                                 while (true)
                                 {
                                     if (node.isTextBr)
                                     {
                                         isSpace = isEnter = false;
-                                        html.SimpleWriteNotNull(@"
+                                        html.SimpleWrite(@"
 ");
                                     }
                                     if (node.isLastTextNode)
                                     {
                                         if (node.Tag.Length == 0)
                                         {
-                                            if (isEnter) html.SimpleWriteNotNull(@"
+                                            if (isEnter) html.SimpleWrite(@"
 ");
                                             else if (isSpace) html.Write(' ');
                                             html.Write(node.nodeText.Text);
@@ -219,7 +220,7 @@ namespace AutoCSer.HtmlNode
                                 return html.ToString();
                             }
                         }
-                        finally { UnmanagedPool.Default.Push(buffer); }
+                        finally { UnmanagedPool.Default.PushOnly(ref buffer); }
                     }
                 }
                 return string.Empty;
@@ -315,8 +316,8 @@ namespace AutoCSer.HtmlNode
                     }
                     if (endTag != null)
                     {
-                        LeftArray<Node> children = new LeftArray<Node>();
-                        LeftArray<KeyValue<SubString, FormatString>> attributes = default(LeftArray<KeyValue<SubString, FormatString>>);
+                        LeftArray<Node> children = new LeftArray<Node>(0);
+                        LeftArray<KeyValue<SubString, FormatString>> attributes = new LeftArray<KeyValue<SubString, FormatString>>(0);
                         Node nextNode;
                         SubString name = default(SubString);
                         FormatString value = default(FormatString);
@@ -374,7 +375,7 @@ namespace AutoCSer.HtmlNode
                                                             foreach (Node sonNode in nextNode.ChildrenArray.Array) sonNode.Parent = nextNode;
                                                         }
                                                     }
-                                                    else if (nextNode.nodeText.FormatHtml.Length == 0) nextNode.nodeText.FormatHtml.SetNull();
+                                                    else if (nextNode.nodeText.FormatHtml.Length == 0) nextNode.nodeText.FormatHtml.SetEmpty();
                                                 }
                                                 nextNode = children.Array[startIndex];
                                                 if ((nodeCount = children.Length - ++startIndex) != 0)
@@ -492,14 +493,14 @@ namespace AutoCSer.HtmlNode
                                         {
                                             script = end;
                                             int tagNameLength = Tag.Length + 2;
-                                            fixed (char* tagNameFixed = Tag.String)
+                                            fixed (char* tagNameFixed = Tag.GetFixedBuffer())
                                             {
                                                 char* tarNameStart = tagNameFixed + Tag.Start;
                                                 while ((int)(endTagRound - current) >= tagNameLength)
                                                 {
                                                     for (current += tagNameLength; *current != '>'; ++current) ;
                                                     if (*(int*)(current - tagNameLength) == (('/' << 16) + '<')
-                                                        && AutoCSer.Extension.StringExtension.equalCaseNotNull(current - Tag.Length, tarNameStart, Tag.Length))
+                                                        && AutoCSer.Extensions.StringExtension.equalCaseNotNull(current - Tag.Length, tarNameStart, Tag.Length))
                                                     {
                                                         script = current++ - tagNameLength;
                                                         break;
@@ -567,7 +568,7 @@ namespace AutoCSer.HtmlNode
                                 --end;
                             }
                             while (((bits[*(byte*)end] & spaceBit) | *(((byte*)end) + 1)) == 0);
-                            if (isErrorHtml || AutoCSer.Extension.StringExtension.FindNotNull(start, ++end, '<') != null)
+                            if (isErrorHtml || AutoCSer.Extensions.StringExtension.FindNotNull(start, ++end, '<') != null)
                             {
                                 children.Add(new Node((int)(start - htmlFixed), (int)(end - start), html));
                             }
@@ -585,14 +586,14 @@ namespace AutoCSer.HtmlNode
                                     foreach (Node sonNode in nextNode.ChildrenArray.Array) sonNode.Parent = nextNode;
                                 }
                             }
-                            else if (nextNode.nodeText.FormatHtml.Length == 0) nextNode.nodeText.FormatHtml.SetNull();
+                            else if (nextNode.nodeText.FormatHtml.Length == 0) nextNode.nodeText.FormatHtml.SetEmpty();
                         }
                         foreach (Node sonNode in children) sonNode.Parent = this;
                         this.ChildrenArray = new LeftArray<Node>(children.ToArray());
                     }
                     else
                     {
-                        if (AutoCSer.Extension.StringExtension.FindNotNull(endTagRound == null ? start : endTagRound, end, '<') == null) nodeText.FormatHtml.Set(html, 0, html.Length);
+                        if (AutoCSer.Extensions.StringExtension.FindNotNull(endTagRound == null ? start : endTagRound, end, '<') == null) nodeText.FormatHtml.Set(html, 0, html.Length);
                         else nodeText.FormatText = HttpUtility.HtmlDecode(html);
                     }
                 }
@@ -649,7 +650,7 @@ namespace AutoCSer.HtmlNode
         {
             if (ChildrenArray.Length != 0)
             {
-                LeftArray<NodeIndex> indexs = default(LeftArray<NodeIndex>);
+                LeftArray<NodeIndex> indexs = new LeftArray<NodeIndex>(0);
                 NodeIndex index = new NodeIndex { Array = ChildrenArray };
                 Node node = ChildrenArray.Array[0];
                 do
@@ -742,10 +743,10 @@ namespace AutoCSer.HtmlNode
                 {
                     if (isTag && Tag.Length != 1)
                     {
-                        byte* buffer = UnmanagedPool.Default.Get();
+                        AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                         try
                         {
-                            using (CharStream html = new CharStream((char*)buffer, UnmanagedPool.DefaultSize >> 1))
+                            using (CharStream html = new CharStream(ref buffer))
                             {
                                 tagHtml(html);
                                 html.Write(nodeText.Html);
@@ -753,20 +754,20 @@ namespace AutoCSer.HtmlNode
                                 return html.ToString();
                             }
                         }
-                        finally { UnmanagedPool.Default.Push(buffer); }
+                        finally { UnmanagedPool.Default.PushOnly(ref buffer); }
                     }
                 }
                 else
                 {
-                    byte* buffer = UnmanagedPool.Default.Get();
+                    AutoCSer.Memory.Pointer buffer = UnmanagedPool.Default.GetPointer();
                     try
                     {
-                        using (CharStream html = new CharStream((char*)buffer, UnmanagedPool.DefaultSize >> 1))
+                        using (CharStream html = new CharStream(ref buffer))
                         {
                             if (isTag) tagHtml(html);
                             if (ChildrenArray.Length != 0)
                             {
-                                LeftArray<NodeIndex> indexs = default(LeftArray<NodeIndex>);
+                                LeftArray<NodeIndex> indexs = new LeftArray<NodeIndex>(0);
                                 NodeIndex index = new NodeIndex { Array = ChildrenArray };
                                 Node node = ChildrenArray.Array[0];
                                 do
@@ -797,7 +798,7 @@ namespace AutoCSer.HtmlNode
                             return html.ToString();
                         }
                     }
-                    finally { UnmanagedPool.Default.Push(buffer); }
+                    finally { UnmanagedPool.Default.PushOnly(ref buffer); }
                 }
             }
             return nodeText.Html;
@@ -827,11 +828,11 @@ namespace AutoCSer.HtmlNode
                 {
                     html.Write(' ');
                     html.Write(HttpUtility.HtmlEncode(attribute.Key.ToString()));
-                    html.SimpleWriteNotNull(@"=""");
+                    html.SimpleWrite(@"=""");
                     html.Write(attribute.Value.Html);
                     html.Write('"');
                 }
-                if (CanNonRoundTagName.TagNames.Contains(Tag) && ChildrenArray.Array == null && nodeText.Html == null) html.SimpleWriteNotNull(" />");
+                if (CanNonRoundTagName.TagNames.Contains(Tag) && ChildrenArray.Array.Length == 0 && nodeText.Html == null) html.SimpleWrite(" />");
                 else html.Write('>');
             }
         }
@@ -842,10 +843,10 @@ namespace AutoCSer.HtmlNode
         private void tagRound(CharStream html)
         {
             if (Tag.Length != 0
-                && (!CanNonRoundTagName.TagNames.Contains(Tag) || ChildrenArray.Array != null || nodeText.Html != null))
+                && (!CanNonRoundTagName.TagNames.Contains(Tag) || ChildrenArray.Array.Length != 0 || nodeText.Html != null))
             {
-                html.SimpleWriteNotNull("</");
-                html.WriteNotEmpty(ref Tag);
+                html.SimpleWrite("</");
+                html.Write(ref Tag);
                 html.Write('>');
             }
         }
@@ -861,7 +862,7 @@ namespace AutoCSer.HtmlNode
                 ChildrenArray.Remove(isRemove);
                 if (ChildrenArray.Length != 0)
                 {
-                    LeftArray<NodeIndex> indexs = default(LeftArray<NodeIndex>);
+                    LeftArray<NodeIndex> indexs = new LeftArray<NodeIndex>(0);
                     NodeIndex index = new NodeIndex { Array = ChildrenArray };
                     Node node = ChildrenArray.Array[0];
                     do
@@ -911,9 +912,9 @@ namespace AutoCSer.HtmlNode
         internal static Pointer Bits;
         static Node()
         {
-            byte* bits = (byte*)Unmanaged.GetStatic(256, false);
-            AutoCSer.Memory.Fill((ulong*)bits, ulong.MaxValue, 256 >> 3);
-            Bits = new Pointer { Data = bits };
+            Bits = Unmanaged.GetStaticPointer(256, false);
+            byte* bits = Bits.Byte;
+            AutoCSer.Memory.Common.Fill((ulong*)bits, ulong.MaxValue, 256 >> 3);
             bits['/'] &= (tagNameSplitBit | attributeSplitBit | attributeNameSplitBit | tagNameBit) ^ 255;
             bits['\t'] &= (spaceBit | spaceSplitBit | tagNameSplitBit | attributeSplitBit) ^ 255;
             bits['\r'] &= (spaceBit | spaceSplitBit | tagNameSplitBit | attributeSplitBit) ^ 255;

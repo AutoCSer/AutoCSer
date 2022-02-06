@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
@@ -60,7 +60,7 @@ namespace AutoCSer.Search
             {
                 if (!string.IsNullOrEmpty(text))
                 {
-                    getResult(text);
+                    GetResult(text);
                     if (result.Count != 0)
                     {
                         searcher.initializeAdd(ref key, text, result);

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CodeGenerator.Metadata;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
@@ -31,7 +31,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             internal MemberIndex[] NextPrimaryKeys
             {
-                get { return PrimaryKeys.getSub(1, PrimaryKeys.Length - 1); }
+                get { return PrimaryKeys.AsSpan(1, PrimaryKeys.Length - 1).GetArray(); }
             }
             /// <summary>
             /// 安装下一个类型

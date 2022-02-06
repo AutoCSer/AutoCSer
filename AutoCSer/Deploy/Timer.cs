@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Net;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Deploy
 {
@@ -44,7 +44,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 启动定时任务
         /// </summary>
-        internal DeployState Start()
+        internal DeployResultData Start()
         {
             if (IsCancel) return DeployState.Canceled;
             ClientObject client = DeployInfo.Client;
@@ -52,25 +52,21 @@ namespace AutoCSer.Deploy
             bool isLog = true;
             try
             {
-                //Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = Server.GetLog(ref Identity, ref clientId) ?? Timer.onLog;
                 AutoCSer.Net.TcpServer.ServerCallback<Log> onLog = client.OnLog ?? AutoCSer.Net.TcpServer.ServerCallback<Log>.Null.Default;
-                log.Type = LogType.CreateBakDirectory;
-                isLog |= onLog.Callback(log);
-                (BakDirectory = new DirectoryInfo(Server.GetBakDirectoryName(DeployInfo.Index))).Create();
-                log.Type = LogType.OnCreateBakDirectory;
-                isLog |= onLog.Callback(log);
+                byte[] data = null;
                 while (TaskIndex != DeployInfo.Tasks.Length && !IsCancel)
                 {
                     ClientTask.Task task = DeployInfo.Tasks.Array[TaskIndex];
                     log.Set(TaskIndex, task.Type);
                     isLog |= onLog.Callback(log);
-                    DeployState state = task.Call(this);
+                    DeployResultData state = task.Call(this);
                     log.Type = LogType.OnRun;
                     isLog |= onLog.Callback(log);
-                    if (state != DeployState.Success) return state;
+                    if (state.State != DeployState.Success) return state;
+                    if (state.Data != null) data = state.Data;
                     ++TaskIndex;
                 }
-                return DeployState.Success;
+                return new DeployResultData { State = DeployState.Success, Data = data };
             }
             catch (Exception error)
             {
@@ -83,7 +79,7 @@ namespace AutoCSer.Deploy
                 if (Error == null) log.Type = LogType.Completed;
                 else
                 {
-                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, Error);
+                    AutoCSer.LogHelper.Exception(Error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     log.Type = LogType.Error;
                 }
                 //if (!(isLog |= onLog(log))) Server.ClearClient(ref clientId);
@@ -96,6 +92,7 @@ namespace AutoCSer.Deploy
         /// <returns></returns>
         internal DirectoryInfo CreateBakDirectory()
         {
+            if (BakDirectory == null) (BakDirectory = new DirectoryInfo(Server.GetBakDirectoryName(DeployInfo.Index))).Create();
             DirectoryInfo bakDirectory = new DirectoryInfo(BakDirectory.fullName() + TaskIndex.toString());
             bakDirectory.Create();
             return bakDirectory;

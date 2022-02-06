@@ -17,8 +17,8 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        [AutoCSer.Json.SerializeCustom]
-        private static void toJson(AutoCSer.Json.Serializer serializer, BulkMessage value)
+        [AutoCSer.JsonSerializeCustom]
+        private static void toJson(AutoCSer.JsonSerializer serializer, BulkMessage value)
         {
             serializer.CustomWriteFirstName("filter");
             serializer.TypeSerialize(ref value.filter);

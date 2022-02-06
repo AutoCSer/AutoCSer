@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.Http
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.Http
                 }
                 catch (Exception error)
                 {
-                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                    AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 SaveFileName = null;
             }

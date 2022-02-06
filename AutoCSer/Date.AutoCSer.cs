@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
@@ -13,11 +13,11 @@ namespace AutoCSer
         /// <summary>
         /// 星期
         /// </summary>
-        private static Pointer weekData;
+        private static AutoCSer.Memory.Pointer weekData;
         /// <summary>
         /// 月份
         /// </summary>
-        private static Pointer monthData;
+        private static AutoCSer.Memory.Pointer monthData;
         /// <summary>
         /// 时间转字节流长度
         /// </summary>
@@ -50,13 +50,13 @@ namespace AutoCSer
         internal unsafe static void UniversalToBytes(DateTime date, byte* data)
         {
             *(int*)data = weekData.Int[(int)date.DayOfWeek];
-            int value = date.Day, value10 = (value * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+            int value = date.Day, value10 = (value * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
             *(int*)(data + sizeof(int)) = (' ' + (value10 << 8) + ((value - value10 * 10) << 16) + (' ' << 24)) | 0x303000;
             value = date.Year;
             *(int*)(data + sizeof(int) * 2) = monthData.Int[date.Month - 1];
-            value10 = (value * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
-            int value100 = (value10 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
-            int value1000 = (value100 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+            value10 = (value * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
+            int value100 = (value10 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
+            int value1000 = (value100 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
             *(int*)(data + sizeof(int) * 3) = (value1000 + ((value100 - value1000 * 10) << 8) + ((value10 - value100 * 10) << 16) + ((value - value10 * 10) << 24)) | 0x30303030;
 
             value100 = (int)(date.Ticks % TimeSpan.TicksPerDay / TimeSpan.TicksPerSecond);
@@ -65,10 +65,10 @@ namespace AutoCSer
             value = (value1000 * (int)Div60_16Mul) >> Div60_16Shift;
             value1000 -= value * 60;
 
-            value10 = (value * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+            value10 = (value * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
             *(int*)(data + sizeof(int) * 4) = (' ' + (value10 << 8) + ((value - value10 * 10) << 16) + (':' << 24)) | 0x303000;
-            value10 = (value1000 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
-            value = (value100 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+            value10 = (value1000 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
+            value = (value100 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
             *(int*)(data + sizeof(int) * 5) = (value10 + ((value1000 - value10 * 10) << 8) + (':' << 16) + (value << 24)) | 0x30003030;
             *(int*)(data + sizeof(int) * 6) = ((value100 - value * 10) + '0') + (' ' << 8) + ('G' << 16) + ('M' << 24);
             *(data + sizeof(int) * 7) = (byte)'T';
@@ -105,17 +105,17 @@ namespace AutoCSer
         /// <returns></returns>
         internal unsafe static int UniversalByteEquals(DateTime date, SubArray<byte> dataArray)
         {
-            fixed (byte* dataFixed = dataArray.Array)
+            fixed (byte* dataFixed = dataArray.GetFixedBuffer())
             {
                 byte* data = dataFixed + dataArray.Start;
                 if (((*(int*)data ^ weekData.Int[(int)date.DayOfWeek]) | (*(data + sizeof(int) * 7) ^ (byte)'T')) != 0) return 1;
-                int value = date.Day, value10 = (value * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+                int value = date.Day, value10 = (value * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
                 if (*(int*)(data + sizeof(int)) != ((' ' + (value10 << 8) + ((value - value10 * 10) << 16) + (' ' << 24)) | 0x303000)) return 1;
                 value = date.Year;
                 if (*(int*)(data + sizeof(int) * 2) != monthData.Int[date.Month - 1]) return 1;
-                value10 = (value * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
-                int value100 = (value10 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
-                int value1000 = (value100 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+                value10 = (value * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
+                int value100 = (value10 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
+                int value1000 = (value100 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
                 if (*(int*)(data + sizeof(int) * 3) != ((value1000 + ((value100 - value1000 * 10) << 8) + ((value10 - value100 * 10) << 16) + ((value - value10 * 10) << 24)) | 0x30303030)) return 1;
 
 
@@ -125,10 +125,10 @@ namespace AutoCSer
                 value = (value1000 * (int)Div60_16Mul) >> Div60_16Shift;
                 value1000 -= value * 60;
 
-                value10 = (value * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+                value10 = (value * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
                 if (*(int*)(data + sizeof(int) * 4) != ((' ' + (value10 << 8) + ((value - value10 * 10) << 16) + (':' << 24)) | 0x303000)) return 1;
-                value10 = (value1000 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
-                value = (value100 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
+                value10 = (value1000 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
+                value = (value100 * (int)NumberExtension.Div10_16Mul) >> NumberExtension.Div10_16Shift;
                 return (*(int*)(data + sizeof(int) * 5) ^ ((value10 + ((value1000 - value10 * 10) << 8) + (':' << 16) + (value << 24)) | 0x30003030))
                     | (*(int*)(data + sizeof(int) * 6) ^ ((value100 - value * 10) + '0') + (' ' << 8) + ('G' << 16) + ('M' << 24));
             }
@@ -142,7 +142,7 @@ namespace AutoCSer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public unsafe static string toDateString(this DateTime time, char split = '/')
         {
-            string timeString = AutoCSer.Extension.StringExtension.FastAllocateString(10);
+            string timeString = AutoCSer.Extensions.StringExtension.FastAllocateString(10);
             fixed (char* timeFixed = timeString) toString(time, timeFixed, split);
             return timeString;
         }
@@ -163,7 +163,8 @@ namespace AutoCSer
         {
             get
             {
-                return Stopwatch.GetTimestamp() - startTimestamp;
+                if (Stopwatch.IsHighResolution) return Stopwatch.GetTimestamp() - StartTimestamp;
+                return DateTime.UtcNow.Ticks - StartTimestamp;
             }
         }
         ///// <summary>

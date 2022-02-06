@@ -9,7 +9,7 @@ namespace AutoCSer.Log
     /// 日志信息
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    internal struct DebugString
+    //internal struct DebugString
     {
         /// <summary>
         /// 字符串转换流
@@ -99,9 +99,9 @@ namespace AutoCSer.Log
                     DebugStream.SimpleWriteNotNull(" in ");
                     DebugStream.WriteNotNull(stackFrameFile);
                     DebugStream.SimpleWriteNotNull(" line ");
-                    AutoCSer.Extension.Number.ToString(stackFrameLine, DebugStream);
+                    AutoCSer.Extensions.NumberExtension.ToString(stackFrameLine, DebugStream);
                     DebugStream.SimpleWriteNotNull(" col ");
-                    AutoCSer.Extension.Number.ToString(stackFrameColumn, DebugStream);
+                    AutoCSer.Extensions.NumberExtension.ToString(stackFrameColumn, DebugStream);
                 }
             }
         }

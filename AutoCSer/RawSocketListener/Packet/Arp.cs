@@ -103,7 +103,7 @@ namespace AutoCSer.Net.Packet
         /// <param name="data">数据</param>
         public Arp(ref SubArray<byte> data)
         {
-            this.data = data.Length >= PacketSize ? data : default(SubArray<byte>);
+            this.data = data.Length >= PacketSize ? data : new SubArray<byte>();
         }
     }
 }

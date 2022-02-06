@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Emit
 {
@@ -13,7 +13,7 @@ namespace AutoCSer.Emit
         /// <summary>
         /// object 构造 函数信息
         /// </summary>
-        private static readonly ConstructorInfo objectConstructorInfo = typeof(object).GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null);
+        private static readonly ConstructorInfo objectConstructorInfo = typeof(object).GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, EmptyArray<Type>.Array, null);
         /// <summary>
         /// 参数类型编号
         /// </summary>
@@ -27,7 +27,7 @@ namespace AutoCSer.Emit
         /// <returns></returns>
         public static Type CreateParameterType(this ModuleBuilder builder, ParameterInfo[] parameterInfoArray, string typeNamePrefix)
         {
-            TypeBuilder TypeBuilder = (builder ?? AutoCSer.Emit.Builder.Module.Builder).DefineType(typeNamePrefix + "+" + System.Threading.Interlocked.Increment(ref parametrTypeIndex).toString(), TypeAttributes.Class | TypeAttributes.Sealed, typeof(object), NullValue<Type>.Array);
+            TypeBuilder TypeBuilder = (builder ?? AutoCSer.Emit.Builder.Module.Builder).DefineType(typeNamePrefix + "+" + System.Threading.Interlocked.Increment(ref parametrTypeIndex).toString(), TypeAttributes.Class | TypeAttributes.Sealed, typeof(object), EmptyArray<Type>.Array);
             ConstructorBuilder ConstructorBuilder = TypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, parameterInfoArray.getArray(p => p.ParameterType));
             ILGenerator ConstructorGenerator = ConstructorBuilder.GetILGenerator();
             #region 构造函数

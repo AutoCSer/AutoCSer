@@ -35,10 +35,14 @@ namespace AutoCSer.Sql.Threading
             try
             {
                 Value = tree.GetFind(isValue);
+                IsCompleted = true;
             }
             finally
             {
-                if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) new Task(continuation).Start();
+                if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null)
+                {
+                    continuation();
+                }
             }
         }
     }

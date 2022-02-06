@@ -1,7 +1,7 @@
 ﻿using System;
-/*Type:ulong;long;uint;int;ushort;short;byte;sbyte*/
+/*ulong;long;uint;int;ushort;short;byte;sbyte*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -15,7 +15,7 @@ namespace AutoCSer.Extension
         /// <param name="index">数组索引位置</param>
         /// <returns>整数更新</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static AutoCSer.CacheServer.OperationUpdater.Integer</*Type[0]*/ulong/*Type[0]*/> GetIntegerUpdater(this AutoCSer.CacheServer.DataStructure.Abstract.ValueArray</*Type[0]*/ulong/*Type[0]*/> node, int index)
+        public static AutoCSer.CacheServer.OperationUpdater.Integer<ulong> GetIntegerUpdater(this AutoCSer.CacheServer.DataStructure.Abstract.ValueArray<ulong> node, int index)
         {
             return node.GetInteger(index);
         }
@@ -26,7 +26,7 @@ namespace AutoCSer.Extension
         /// <param name="key">关键字</param>
         /// <returns>整数更新</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static AutoCSer.CacheServer.OperationUpdater.Integer</*Type[0]*/ulong/*Type[0]*/> GetIntegerUpdater<keyType>(this AutoCSer.CacheServer.DataStructure.Abstract.ValueDictionary<keyType, /*Type[0]*/ulong/*Type[0]*/> node, keyType key)
+        public static AutoCSer.CacheServer.OperationUpdater.Integer<ulong> GetIntegerUpdater<keyType>(this AutoCSer.CacheServer.DataStructure.Abstract.ValueDictionary<keyType, ulong> node, keyType key)
             where keyType : IEquatable<keyType>
         {
             return node.GetInteger(key);
@@ -38,7 +38,7 @@ namespace AutoCSer.Extension
         /// <param name="key">关键字</param>
         /// <returns>整数更新</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static AutoCSer.CacheServer.OperationUpdater.Integer</*Type[0]*/ulong/*Type[0]*/> GetIntegerUpdater<keyType>(this AutoCSer.CacheServer.DataStructure.ValueSearchTreeDictionary<keyType, /*Type[0]*/ulong/*Type[0]*/> node, keyType key)
+        public static AutoCSer.CacheServer.OperationUpdater.Integer<ulong> GetIntegerUpdater<keyType>(this AutoCSer.CacheServer.DataStructure.ValueSearchTreeDictionary<keyType, ulong> node, keyType key)
             where keyType : IEquatable<keyType>, IComparable<keyType>
         {
             return node.GetInteger(key);

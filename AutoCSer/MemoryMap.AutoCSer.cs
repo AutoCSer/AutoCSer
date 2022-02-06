@@ -17,7 +17,7 @@ namespace AutoCSer
         internal void Set(ulong* map, int count)
         {
             Map = (byte*)map;
-            Memory.ClearUnsafe(map, count);
+            AutoCSer.Memory.Common.Clear(map, count);
         }
         /// <summary>
         /// 当占位状态为空时设置占位
@@ -47,7 +47,7 @@ namespace AutoCSer
                 count += start;
                 start = 0;
             }
-            if (count > 0) Memory.FillBits(Map, start, count);
+            if (count > 0) AutoCSer.Memory.Common.FillBits(Map, start, count);
         }
         /// <summary>
         /// 清除占位

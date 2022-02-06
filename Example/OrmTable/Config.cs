@@ -1,17 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.Example.OrmTable
 {
     /// <summary>
     /// 配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal static class Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
+        /// <summary>
+        /// 主配置类型集合
+        /// </summary>
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// SQL 配置
         /// </summary>
-        [AutoCSer.Config.Member]
+        [AutoCSer.Configuration.Member]
         public static AutoCSer.Sql.Config SqlConfig
         {
             get
@@ -31,7 +36,7 @@ namespace AutoCSer.Example.OrmTable
         /// <summary>
         /// 数据库连接信息配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.Example.OrmConfig.Pub.ConnectionName)]
+        [AutoCSer.Configuration.Member(Name = AutoCSer.Example.OrmConfig.Pub.ConnectionName)]
         public static AutoCSer.Sql.Connection SqlConnection
         {
             get
@@ -56,7 +61,7 @@ namespace AutoCSer.Example.OrmTable
         /// <summary>
         /// 数据库连接信息配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = "Weixin")]
+        [AutoCSer.Configuration.Member(Name = "Weixin")]
         public static AutoCSer.Sql.Connection WeixinSqlConnection
         {
             get

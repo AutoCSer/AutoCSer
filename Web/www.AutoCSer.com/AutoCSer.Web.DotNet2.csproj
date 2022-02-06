@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Ajax\Code.cs" />
     <Compile Include="Ajax\Example.cs" />
+    <Compile Include="Ajax\Example2.cs" />
     <Compile Include="Ajax\TestCase.cs" />
     <Compile Include="FileServer.cs" />
     <Compile Include="HttpDomain.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Search.cs" />
     <Compile Include="WebConfig.cs" />
     <Compile Include="WebServer.cs" />
+    <Compile Include="WebViewConfig.cs" />
     <Compile Include="WebView\Template.cs" />
     <Compile Include="{AutoCSer.Web}.AutoCSer.cs" />
   </ItemGroup>
@@ -63,6 +65,8 @@
     <Content Include="404.page.html" />
     <Content Include="Android\Index.page.html" />
     <Content Include="Android\Index.page.js" />
+    <Content Include="AutoCSer2.page.html" />
+    <Content Include="Beian.png" />
     <Content Include="CacheServer\Index.page.html" />
     <Content Include="CacheServer\MessageQueue.page.html" />
     <Content Include="CodeGenerator.png" />
@@ -73,6 +77,8 @@
     <Content Include="Include\BaiduFoot.html" />
     <Content Include="Include\GetCode.html" />
     <Content Include="Include\GetCode.ts" />
+    <Content Include="Include\GetCode2.html" />
+    <Content Include="Include\GetCode2.js" />
     <Content Include="Include\Header.html" />
     <Content Include="Include\HighPerformance.html" />
     <Content Include="Include\InterfaceInternalOpenDifference.html" />
@@ -141,9 +147,11 @@
     <Content Include="WebView\Call.page.html" />
     <Content Include="Joke.page.html" />
     <Content Include="WebView\Script.page.html" />
+    <Content Include="备案图标.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Download\AutoCSer.zip" />
+    <None Include="Download\AutoCSer2.Example.zip" />
     <None Include="Hyper-v\Hyper-v.auto.bat" />
     <None Include="Hyper-v\Hyper-v.off.bat" />
   </ItemGroup>

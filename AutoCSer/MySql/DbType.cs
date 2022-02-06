@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.MySql
@@ -53,7 +53,7 @@ namespace AutoCSer.Sql.MySql
             if (string.IsNullOrEmpty(typeString)) throw new ArgumentNullException();
             fixed (char* typeFixed = typeString)
             {
-                char* end = typeFixed + typeString.Length, typeEnd = *(end - 1) == ')' ? AutoCSer.Extension.StringExtension.FindNotNull(typeFixed, end, '(') : end;
+                char* end = typeFixed + typeString.Length, typeEnd = *(end - 1) == ')' ? AutoCSer.Extensions.StringExtension.FindNotNull(typeFixed, end, '(') : end;
                 TypeName typeName = new TypeName { Name = typeString, Length = (int)(typeEnd - typeFixed) };
                 KeyValue<SqlDbType, int> value = new KeyValue<SqlDbType, int>((SqlDbType)(-1), int.MinValue);
                 sqlTypes.Get(typeName, ref value);

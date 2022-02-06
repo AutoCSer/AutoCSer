@@ -22,7 +22,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="value">TCP 服务目标对象</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.TestCase.TcpInternalSimpleServerPerformance.InternalSimpleServer value = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.TestCase.TcpInternalSimpleServerPerformance.InternalSimpleServer value = null, AutoCSer.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("TcpInternalSimpleServerPerformance", typeof(AutoCSer.TestCase.TcpInternalSimpleServerPerformance.InternalSimpleServer))), verify, log, false)
                 {
                     Value = value ?? new AutoCSer.TestCase.TcpInternalSimpleServerPerformance.InternalSimpleServer();
@@ -101,7 +101,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                         , new System.Type[] { null });
                 }
 
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
@@ -109,7 +109,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                     public int p0;
                     public int p1;
                 }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.BinarySerialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2
@@ -147,7 +147,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalSimpleClient(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalSimpleClient(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, AutoCSer.ILog log = null)
                 {
                     if (attribute == null)
                     {

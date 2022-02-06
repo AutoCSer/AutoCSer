@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Threading;
 using System.Reflection.Emit;
@@ -74,15 +74,15 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// 二进制数据序列化类型配置构造函数
         /// </summary>
-        private static readonly ConstructorInfo serializeAttributeConstructorInfo = typeof(AutoCSer.BinarySerialize.SerializeAttribute).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(bool) }, null);
+        private static readonly ConstructorInfo serializeAttributeConstructorInfo = typeof(AutoCSer.BinarySerializeAttribute).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(bool) }, null);
         /// <summary>
         /// 序列化包装处理配置构造函数
         /// </summary>
-        private static readonly ConstructorInfo boxSerializeAttributeConstructorInfo = typeof(AutoCSer.Metadata.BoxSerializeAttribute).GetConstructor(NullValue<Type>.Array);
+        private static readonly ConstructorInfo boxSerializeAttributeConstructorInfo = typeof(AutoCSer.Metadata.BoxSerializeAttribute).GetConstructor(EmptyArray<Type>.Array);
         /// <summary>
         /// JSON 序列化成员配置构造函数
         /// </summary>
-        private static readonly ConstructorInfo jsonIgnoreMemberAttributeConstructorInfo = typeof(AutoCSer.Json.IgnoreMemberAttribute).GetConstructor(NullValue<Type>.Array);
+        private static readonly ConstructorInfo jsonIgnoreMemberAttributeConstructorInfo = typeof(AutoCSer.Json.IgnoreMemberAttribute).GetConstructor(EmptyArray<Type>.Array);
         /// <summary>
         /// 逻辑真值参数
         /// </summary>
@@ -152,9 +152,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                 if (returnType != typeof(void))
                 {
                     FieldBuilder returnFieldBuilder = typeBuilder.DefineField(ReturnValue.RetParameterName, returnType, FieldAttributes.Public);
-                    returnFieldBuilder.SetCustomAttribute(new CustomAttributeBuilder(jsonIgnoreMemberAttributeConstructorInfo, NullValue<object>.Array));
-                    //returnFieldBuilder.SetCustomAttribute(new CustomAttributeBuilder(jsonSerializeMemberAttributeConstructorInfo, trueParameter));
-                    //returnFieldBuilder.SetCustomAttribute(new CustomAttributeBuilder(jsonParseMemberAttributeConstructorInfo, trueParameter));
+                    returnFieldBuilder.SetCustomAttribute(new CustomAttributeBuilder(jsonIgnoreMemberAttributeConstructorInfo, EmptyArray<object>.Array));
 
                     PropertyInfo returnProperty = interfaces[0].GetProperty(ReturnValue.ReturnParameterName);
                     MethodInfo returnPropertyGetMethod = returnProperty.GetGetMethod();
@@ -181,7 +179,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                     returnPropertyBuilder.SetSetMethod(setReturnMethodBuilder);
                 }
                 typeBuilder.SetCustomAttribute(new CustomAttributeBuilder(serializeAttributeConstructorInfo, (flag & ParameterFlag.IsSerializeReferenceMember) == 0 ? falseParameter : trueParameter));
-                if ((flag & ParameterFlag.IsSerializeBox) != 0) typeBuilder.SetCustomAttribute(new CustomAttributeBuilder(boxSerializeAttributeConstructorInfo, NullValue<object>.Array));
+                if ((flag & ParameterFlag.IsSerializeBox) != 0) typeBuilder.SetCustomAttribute(new CustomAttributeBuilder(boxSerializeAttributeConstructorInfo, EmptyArray<object>.Array));
                 type = new ParameterType { Type = typeBuilder.CreateType(), Index = typeIndex };
                 type.setFields(type.Type.GetFields());
                 types.Add(parameterType, type);

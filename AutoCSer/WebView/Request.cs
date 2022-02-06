@@ -116,15 +116,15 @@ namespace AutoCSer.WebView
         /// <summary>
         /// JSON解析配置参数
         /// </summary>
-        protected virtual AutoCSer.Json.ParseConfig jsonParserConfig { get { return null; } }
+        protected virtual AutoCSer.Json.DeSerializeConfig jsonParserConfig { get { return null; } }
         /// <summary>
         /// XML解析配置参数
         /// </summary>
-        protected virtual AutoCSer.Xml.ParseConfig xmlParserConfig { get { return null; } }
+        protected virtual AutoCSer.Xml.DeSerializeConfig xmlParserConfig { get { return null; } }
         /// <summary>
         /// JSON 解析
         /// </summary>
-        internal static Json.Parser JsonParser;
+        internal static AutoCSer.JsonDeSerializer JsonParser;
         /// <summary>
         /// JSON 解析
         /// </summary>
@@ -135,8 +135,8 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected bool parseJson<parameterType>(ref parameterType parameter, string json) where parameterType : struct
         {
-            Json.Parser parser = Interlocked.Exchange(ref JsonParser, null) ?? Json.Parser.YieldPool.Default.Pop() ?? new Json.Parser();
-            bool isParse = parser.ParseWebViewNotEmpty(ref parameter, json, jsonParserConfig);
+            AutoCSer.JsonDeSerializer parser = Interlocked.Exchange(ref JsonParser, null) ?? AutoCSer.JsonDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonDeSerializer();
+            bool isParse = parser.DeSerializeWebViewNotEmpty(ref parameter, json, jsonParserConfig);
             if ((parser = Interlocked.Exchange(ref JsonParser, parser)) != null) parser.Free();
             return isParse;
         }
@@ -154,7 +154,7 @@ namespace AutoCSer.WebView
                 string queryJson = header.QueryJson;
                 if (queryJson != null) return parseJson(ref parameter, queryJson);
                 string queryXml = header.QueryXml;
-                if (queryXml != null) return AutoCSer.Xml.Parser.Parse(queryXml, ref parameter, xmlParserConfig);
+                if (queryXml != null) return AutoCSer.XmlDeSerializer.DeSerialize(queryXml, ref parameter, xmlParserConfig);
                 return true;
             }
             return false;
@@ -171,9 +171,9 @@ namespace AutoCSer.WebView
             if (header.ParseQuery(ref parameter))
             {
                 string queryJson = header.QueryJson;
-                if (queryJson != null) return AutoCSer.Json.Parser.ParseNotEmpty(queryJson, ref parameter, jsonParserConfig);
+                if (queryJson != null) return AutoCSer.JsonDeSerializer.DeSerializeNotEmpty(queryJson, ref parameter, jsonParserConfig);
                 string queryXml = header.QueryXml;
-                if (queryXml != null) return AutoCSer.Xml.Parser.Parse(queryXml, ref parameter, xmlParserConfig);
+                if (queryXml != null) return AutoCSer.XmlDeSerializer.DeSerialize(queryXml, ref parameter, xmlParserConfig);
                 return true;
             }
             return false;
@@ -186,8 +186,8 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal protected static void CompileJsonSerialize(Type[] deSerializeTypes, Type[] serializeTypes)
         {
-            if (deSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(deSerializeTypes, AutoCSer.Threading.Thread.CallType.CompileJsonDeSerialize);
-            if (serializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(serializeTypes, AutoCSer.Threading.Thread.CallType.CompileJsonSerialize);
+            if (deSerializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(deSerializeTypes, AutoCSer.Threading.ThreadTaskType.CompileJsonDeSerialize);
+            if (serializeTypes.Length > 1) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(serializeTypes, AutoCSer.Threading.ThreadTaskType.CompileJsonSerialize);
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace AutoCSer.WebView
         }
         static Request()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(Request));
         }
     }
 }

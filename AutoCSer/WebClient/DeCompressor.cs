@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -29,13 +30,13 @@ namespace AutoCSer.Net.WebClient
         internal byte[] Get()
         {
             AutoCSer.SubBuffer.PoolBufferFull buffer = default(AutoCSer.SubBuffer.PoolBufferFull);
-            byte* data = AutoCSer.UnmanagedPool.Default.Get();
+            AutoCSer.Memory.Pointer data = UnmanagedPool.Default.GetPointer();
             try
             {
                 AutoCSer.SubBuffer.Pool.GetBuffer(ref buffer, bufferSize);
-                using (dataStream = new UnmanagedStream(data, AutoCSer.UnmanagedPool.DefaultSize))
+                using (dataStream = new UnmanagedStream(ref data))
                 {
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                     {
                         byte* start = bufferFixed + buffer.StartIndex;
                         do
@@ -46,12 +47,12 @@ namespace AutoCSer.Net.WebClient
                         }
                         while (true);
                     }
-                    return dataStream.GetArray();
+                    return dataStream.Data.GetArray();
                 }
             }
             finally
             {
-                AutoCSer.UnmanagedPool.Default.Push(data);
+                UnmanagedPool.Default.PushOnly(ref data);
                 buffer.Free();
             }
         }

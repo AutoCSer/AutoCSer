@@ -7,7 +7,7 @@ namespace AutoCSer.DataSetSerialize
     /// <summary>
     /// 数据源
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     internal struct DataSource
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Threading
@@ -22,32 +22,11 @@ namespace AutoCSer.Threading
     internal sealed class RingPool<valueType>
         where valueType : class
     {
-        /// <summary>
-        /// 数组元素
-        /// </summary>
-        private struct ArrayValue
-        {
-            /// <summary>
-            /// 数组元素
-            /// </summary>
-            internal valueType Value;
-            /// <summary>
-            /// 弹出数组元素
-            /// </summary>
-            /// <returns>数组元素</returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType Pop()
-            {
-                valueType value = Value;
-                Value = null;
-                return value;
-            }
-        }
         private readonly ulong pad0, pad1, pad2, pad3, pad4, pad5, pad6;
         /// <summary>
         /// 环池数组
         /// </summary>
-        private readonly ArrayValue[] ring;
+        private readonly ArrayValue<valueType>[] ring;
         /// <summary>
         /// 环大小
         /// </summary>
@@ -96,15 +75,15 @@ namespace AutoCSer.Threading
         /// </summary>
         private RingPool()
         {
-            count = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
-            if (count <= 0) count = AutoCSer.Config.Pub.DefaultPoolCount;
+            count = AutoCSer.Common.Config.GetYieldPoolCount(typeof(valueType));
+            if (count <= 0) count = AutoCSer.Config.DefaultPoolCount;
             else
             {
                 count = (int)((uint)count).UpToPower2();
                 if ((uint)count > 0x40000000) count = 0x40000000;
             }
             countLess = (uint)(count - 1);
-            ring = new ArrayValue[count + (RingPool.PadCount << 1)];
+            ring = new ArrayValue<valueType>[count + (RingPool.PadCount << 1)];
             writeEndIndex = count;
         }
         /// <summary>
@@ -121,13 +100,12 @@ namespace AutoCSer.Threading
                 if (System.Threading.Interlocked.CompareExchange(ref writeIndex, nextIndex, index) == index)
                 {
                     ring[(int)((uint)index & countLess) + RingPool.PadCount].Value = value;
-                    //if (nextIndex == writeEndIndex) AutoCSer.Threading.Interlocked.writeEndLock = 0;
                     if (nextIndex == writeEndIndex) System.Threading.Interlocked.Exchange(ref writeEndLock, 0);
-                    while (writedIndex != index) ThreadYield.YieldOnly();
+                    while (writedIndex != index) ThreadYield.Yield();
                     writedIndex = nextIndex;
                     return;
                 }
-                ThreadYield.YieldOnly();
+                ThreadYield.Yield();
                 goto START;
             }
             if (System.Threading.Interlocked.CompareExchange(ref writeEndLock, 1, 0) == 0)
@@ -138,7 +116,6 @@ namespace AutoCSer.Threading
                     writeEndIndex = newWriteEndIndex;
                     goto START;
                 }
-                //AutoCSer.Threading.Interlocked.writeEndLock = 0;
                 System.Threading.Interlocked.Exchange(ref writeEndLock, 0);
             }
         }
@@ -157,13 +134,12 @@ namespace AutoCSer.Threading
                 if (System.Threading.Interlocked.CompareExchange(ref readIndex, nextIndex, index) == index)
                 {
                     valueType value = ring[(int)((uint)index & countLess) + RingPool.PadCount].Pop();
-                    //if (nextIndex == readEndIndex) AutoCSer.Threading.Interlocked.readEndLock = 0;
                     if (nextIndex == readEndIndex) System.Threading.Interlocked.Exchange(ref readEndLock, 0);
-                    if (readedIndex != index) ThreadYield.YieldOnly();
+                    if (readedIndex != index) ThreadYield.Yield();
                     readedIndex = nextIndex;
                     return value;
                 }
-                ThreadYield.YieldOnly();
+                ThreadYield.Yield();
                 goto START;
             }
             if (System.Threading.Interlocked.CompareExchange(ref readEndLock, 1, 0) == 0)
@@ -171,7 +147,7 @@ namespace AutoCSer.Threading
                 int newReadEndIndex = writedIndex;
                 if (newReadEndIndex == readEndIndex)
                 {
-                    ThreadYield.YieldOnly();
+                    ThreadYield.Yield();
                     newReadEndIndex = writedIndex;
                 }
                 if (newReadEndIndex != readEndIndex)
@@ -181,11 +157,10 @@ namespace AutoCSer.Threading
                     goto START;
                 }
                 System.Threading.Interlocked.Exchange(ref readEndLock, 0);
-                //AutoCSer.Threading.Interlocked.readEndLock = 0;
             }
             else if (tryCount != 0)
             {
-                ThreadYield.YieldOnly();
+                ThreadYield.Yield();
                 --tryCount;
                 goto START;
             }
@@ -207,9 +182,8 @@ namespace AutoCSer.Threading
         internal static readonly RingPool<valueType> Default = new RingPool<valueType>();
         static RingPool()
         {
-            if (typeof(IDisposable).IsAssignableFrom(typeof(valueType))) AutoCSer.Log.Pub.Log.Add(Log.LogType.Fatal, "环池不支持资源对象类型 " + typeof(valueType).fullName());
-            Default = new RingPool<valueType>();
-            AutoCSer.Pub.ClearCaches += Default.clearCache;
+            if (typeof(IDisposable).IsAssignableFrom(typeof(valueType))) AutoCSer.LogHelper.Fatal("环池不支持资源对象类型 " + typeof(valueType).fullName(), LogLevel.Fatal | LogLevel.Error | LogLevel.AutoCSer);
+            AutoCSer.Memory.Common.AddClearCache(Default.clearCache, typeof(RingPool<valueType>));
         }
     }
 }

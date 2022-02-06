@@ -7,14 +7,14 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 链表任务线程
     /// </summary>
-    /// <typeparam name="taskType">任务对象类型</typeparam>
-    internal abstract class LinkTaskThread<taskType>
-        where taskType : class
+    /// <typeparam name="T">任务对象类型</typeparam>
+    //internal abstract class TaskSwitchThread<T>
+        where T : class
     {
         /// <summary>
         /// 等待事件
         /// </summary>
-        protected AutoCSer.Threading.Thread.AutoWaitHandle waitHandle;
+        protected OnceAutoWaitHandle waitHandle;
         /// <summary>
         /// 线程句柄
         /// </summary>
@@ -22,7 +22,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 链表头部
         /// </summary>
-        protected taskType head;
+        protected T head;
         /// <summary>
         /// 当前处理任务时钟周期
         /// </summary>
@@ -30,15 +30,15 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 线程切换超时时钟周期
         /// </summary>
-        protected long taskTimestamp;
+        protected long noSwitchTimestamp;
         /// <summary>
         /// TCP 服务器端同步调用任务处理
         /// </summary>
         /// <param name="taskTimestamp">线程切换超时时钟周期</param>
-        internal LinkTaskThread(long taskTimestamp)
+        internal TaskSwitchThread(long taskTimestamp)
         {
             //maxTaskCount = taskCount;
-            this.taskTimestamp = currentTaskTimestamp = long.MaxValue - taskTimestamp;
+            this.noSwitchTimestamp = currentTaskTimestamp = long.MaxValue - taskTimestamp;
             waitHandle.Set(0);
             threadHandle = new System.Threading.Thread(run, AutoCSer.Threading.ThreadPool.TinyStackSize);
             threadHandle.IsBackground = true;

@@ -52,7 +52,6 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         /// <param name="index"></param>
         /// <returns>客户端命令信息</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve]
         public static TcpServer.CommandInfoBase GetCommand(int index)
         {
             return commands[index];
@@ -64,7 +63,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         /// <param name="verifyMethod">TCP 验证方法</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 客户端</returns>
-        public static interfaceType Create(ServerAttribute attribute = null, Func<interfaceType, bool> verifyMethod = null, AutoCSer.Log.ILog log = null)
+        public static interfaceType Create(ServerAttribute attribute = null, Func<interfaceType, bool> verifyMethod = null, AutoCSer.ILog log = null)
         {
             if (errorString != null) throw new Exception(errorString);
             if (clientType == null) throw new InvalidCastException();
@@ -87,7 +86,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
                 defaultServerAttribute = builder.DefaultServerAttribute;
 
                 Method<ServerAttribute, MethodAttribute, ServerSocket>.ClientBuilder clientBuilder = new Method<ServerAttribute, MethodAttribute, ServerSocket>.ClientBuilder { Metadata = ClientMetadata.Default };
-                clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, typeof(Client<interfaceType>).GetMethod("GetCommand", BindingFlags.Static | BindingFlags.Public));
+                clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, ((Func<int, TcpServer.CommandInfoBase>)Client<interfaceType>.GetCommand).Method);
                 commands = clientBuilder.Commands;
             }
         }

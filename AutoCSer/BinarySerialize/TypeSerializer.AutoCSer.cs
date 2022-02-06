@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.BinarySerialize
@@ -6,7 +7,7 @@ namespace AutoCSer.BinarySerialize
     /// <summary>
     /// 二进制数据序列化
     /// </summary>
-    internal unsafe static partial class TypeSerializer<valueType>
+    internal unsafe static partial class TypeSerializer<T>
     {
         /// <summary>
         /// 对象序列化
@@ -14,29 +15,29 @@ namespace AutoCSer.BinarySerialize
         /// <param name="serializer">二进制数据序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void SerializeTcpServer(Serializer serializer, ref valueType value)
+        internal static void SerializeTcpServer(BinarySerializer serializer, ref T value)
         {
             if (DefaultSerializer == null)
             {
                 UnmanagedStream stream = serializer.Stream;
-                stream.PrepLength(fixedSize);
-                stream.UnsafeWrite(memberCountVerify);
+                stream.PrepSize(fixedSize);
+                stream.Data.Write(memberCountVerify);
                 fixedMemberSerializer(serializer, value);
-                stream.ByteSize += fixedFillSize;
+                stream.Data.CurrentIndex += fixedFillSize;
                 //stream.PrepLength();
                 if (memberSerializer != null) memberSerializer(serializer, value);
                 if (jsonMemberMap == null)
                 {
                     if (isJson) stream.Write(0);
                 }
-                else AutoCSer.Json.Serializer.Serialize(ref value, stream, serializer.GetJsonConfig(jsonMemberMap));
+                else AutoCSer.JsonSerializer.Serialize(ref value, stream, serializer.GetJsonConfig(jsonMemberMap));
             }
             else DefaultSerializer(serializer, value);
         }
         /// <summary>
         /// 预编译
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void Compile() { }
     }
 }

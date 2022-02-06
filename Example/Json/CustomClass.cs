@@ -17,9 +17,9 @@ namespace AutoCSer.Example.Json
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal static void Serialize(AutoCSer.Json.Serializer serializer, CustomClass value)
+        internal static void Serialize(AutoCSer.JsonSerializer serializer, CustomClass value)
         {
             serializer.CharStream.Write(value.Value == null ? '1' : '2');
         }
@@ -28,9 +28,9 @@ namespace AutoCSer.Example.Json
         /// </summary>
         /// <param name="parser"></param>
         /// <param name="value">目标数据，可能为 null</param>
-        [AutoCSer.Json.ParseCustom]
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static unsafe void deSerialize(AutoCSer.Json.Parser parser, ref CustomClass value)
+        private static unsafe void deSerialize(AutoCSer.JsonDeSerializer parser, ref CustomClass value)
         {
             char* read = parser.CustomRead;
             if (parser.VerifyRead(1))
@@ -51,15 +51,15 @@ namespace AutoCSer.Example.Json
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            string json = AutoCSer.Json.Serializer.Serialize(new CustomClass { Value = null });
-            CustomClass newValue = AutoCSer.Json.Parser.Parse<CustomClass>(json);
+            string json = AutoCSer.JsonSerializer.Serialize(new CustomClass { Value = null });
+            CustomClass newValue = AutoCSer.JsonDeSerializer.DeSerialize<CustomClass>(json);
             if (newValue == null || newValue.Value != null)
             {
                 return false;
             }
 
-            json = AutoCSer.Json.Serializer.Serialize(new CustomClass { Value = string.Empty });
-            newValue = AutoCSer.Json.Parser.Parse<CustomClass>(json);
+            json = AutoCSer.JsonSerializer.Serialize(new CustomClass { Value = string.Empty });
+            newValue = AutoCSer.JsonDeSerializer.DeSerialize<CustomClass>(json);
             return newValue != null && newValue.Value == string.Empty;
         }
     }

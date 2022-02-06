@@ -30,7 +30,7 @@ namespace AutoCSer.TestCase
 
                     using (AutoCSer.CacheServer.MasterServer.TcpInternalServer cacheMasterServer = new AutoCSer.CacheServer.MasterServer.TcpInternalServer())
                     using (AutoCSer.CacheServer.SlaveServer.TcpInternalServer cacheSlaveServer = new AutoCSer.CacheServer.SlaveServer.TcpInternalServer())
-                    using (AutoCSer.DiskBlock.Server.TcpInternalServer fileBlockServer = AutoCSer.DiskBlock.Server.Create(new AutoCSer.DiskBlock.File(new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, "blockFile" + AutoCSer.DiskBlock.File.ExtensionName)).FullName, 0)))
+                    using (AutoCSer.DiskBlock.Server.TcpInternalServer fileBlockServer = AutoCSer.DiskBlock.Server.Create(new AutoCSer.DiskBlock.File(new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, "blockFile" + AutoCSer.DiskBlock.File.ExtensionName)).FullName, 0)))
                     using (AutoCSer.TestCase.TcpStaticServer.JsonServer jsonServer = new AutoCSer.TestCase.TcpStaticServer.JsonServer())
                     using (AutoCSer.TestCase.TcpStaticServer.MemberServer memberServer = new AutoCSer.TestCase.TcpStaticServer.MemberServer())
                     using (AutoCSer.TestCase.TcpStaticServer.SessionServer sessionServer = new AutoCSer.TestCase.TcpStaticServer.SessionServer())
@@ -103,7 +103,7 @@ namespace AutoCSer.TestCase
         /// <param name="fileName"></param>
         private static void checkFileSize(string fileName)
         {
-            FileInfo file = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            FileInfo file = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (file.Exists && file.Length >= 1 << 20) file.Delete();
         }
         private static int testCount = 1;

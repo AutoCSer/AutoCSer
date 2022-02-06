@@ -12,67 +12,67 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseStructMethod { get; }
+        internal abstract MethodInfo JsonDeSerializeStructMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseNullableEnumMethod { get; }
+        internal abstract Delegate JsonDeSerializeNullableEnumMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseNullableMethod { get; }
+        internal abstract Delegate JsonDeSerializeNullableMethod { get; }
 
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeNullableMethod { get; }
+        internal abstract Delegate JsonSerializeNullableMethod { get; }
 
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeStructArrayMethod { get; }
+        internal abstract Delegate JsonSerializeStructArrayMethod { get; }
     }
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    internal sealed partial class StructGenericType<Type> : StructGenericType where Type : struct
+    internal sealed partial class StructGenericType<T> : StructGenericType where T : struct
     {
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseStructMethod
+        internal override MethodInfo JsonDeSerializeStructMethod
         {
-            get { return ((deSerialize)GenericType.JsonParser.structParse<Type>).Method; }
+            get { return ((JsonDeSerializer.DeSerializeDelegate<T>)JsonDeSerializer.StructDeSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseNullableEnumMethod
+        internal override Delegate JsonDeSerializeNullableEnumMethod
         {
-            get { return ((deSerializeNullable)GenericType.JsonParser.nullableEnumParse<Type>).Method; }
+            get { return (JsonDeSerializer.DeSerializeDelegate<T?>)JsonDeSerializer.NullableEnumDeSerialize<T>; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseNullableMethod
+        internal override Delegate JsonDeSerializeNullableMethod
         {
-            get { return ((deSerializeNullable)GenericType.JsonParser.nullableParse<Type>).Method; }
+            get { return (JsonDeSerializer.DeSerializeDelegate<T?>)JsonDeSerializer.NullableDeSerialize<T>; }
         }
 
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeNullableMethod
+        internal override Delegate JsonSerializeNullableMethod
         {
-            get { return ((Action<Nullable<Type>>)GenericType.JsonSerializer.nullableSerialize<Type>).Method; }
+            get { return (Action<JsonSerializer, Nullable<T>>)JsonSerializer.NullableSerialize<T>; }
         }
 
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeStructArrayMethod
+        internal override Delegate JsonSerializeStructArrayMethod
         {
-            get { return ((Action<Type[]>)GenericType.JsonSerializer.structArray<Type>).Method; }
+            get { return (Action<JsonSerializer, T[]>)JsonSerializer.StructArray<T>; }
         }
     }
 }

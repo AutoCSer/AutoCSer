@@ -5,7 +5,7 @@ namespace AutoCSer.BinarySerialize
     /// <summary>
     /// 二进制数据序列化成员忽略配置
     /// </summary>
-    public sealed class IgnoreMemberAttribute : SerializeMemberAttribute
+    public sealed class IgnoreMemberAttribute : BinarySerializeMemberAttribute
     {
         /// <summary>
         /// 禁止当前安装

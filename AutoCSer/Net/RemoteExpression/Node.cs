@@ -39,14 +39,14 @@ namespace AutoCSer.Net.RemoteExpression
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        protected virtual void serializeParameter(AutoCSer.BinarySerialize.Serializer serializer) { }
+        protected virtual void serializeParameter(AutoCSer.BinarySerializer serializer) { }
         /// <summary>
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
+        internal void Serialize(AutoCSer.BinarySerializer serializer, ServerNodeIdChecker checker)
         {
             serializer.Stream.Write(checker.ServerNodeIds[GetType()]);
             serializeParameter(serializer);
@@ -58,9 +58,9 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void serializeParent(AutoCSer.BinarySerialize.Serializer serializer, ServerNodeIdChecker checker)
+        protected void serializeParent(AutoCSer.BinarySerializer serializer, ServerNodeIdChecker checker)
         {
-            if (Parent == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
+            if (Parent == null) serializer.Stream.Write(AutoCSer.BinarySerializer.NullValue);
             else Parent.Serialize(serializer, checker);
         }
         /// <summary>
@@ -70,9 +70,9 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void serializeParameter<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, parameterType parameter)
+        protected void serializeParameter<parameterType>(AutoCSer.BinarySerializer serializer, parameterType parameter)
         {
-            if (parameter == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
+            if (parameter == null) serializer.Stream.Write(AutoCSer.BinarySerializer.NullValue);
             else AutoCSer.BinarySerialize.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
         }
         /// <summary>
@@ -82,7 +82,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void serializeParameterStruct<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, ref parameterType parameter)
+        protected void serializeParameterStruct<parameterType>(AutoCSer.BinarySerializer serializer, ref parameterType parameter)
         {
             AutoCSer.BinarySerialize.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
         }
@@ -90,13 +90,13 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        protected virtual void deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer) { }
+        protected virtual void deSerializeParameter(AutoCSer.BinaryDeSerializer deSerializer) { }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             deSerializeParameter(deSerializer);
             deSerializeParent(deSerializer);
@@ -106,7 +106,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <param name="value"></param>
-        internal static void DeSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer, out Node value)
+        internal static void DeSerialize(AutoCSer.BinaryDeSerializer deSerializer, out Node value)
         {
             (value = createNodes.Array[deSerializer.ReadInt()]()).deSerialize(deSerializer);
         }
@@ -114,7 +114,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// 反序列化父节点
         /// </summary>
         /// <param name="deSerializer"></param>
-        protected void deSerializeParent(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        protected void deSerializeParent(AutoCSer.BinaryDeSerializer deSerializer)
         {
             if (deSerializer.CheckNullValue() != 0) DeSerialize(deSerializer, out Parent);
         }
@@ -125,7 +125,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="deSerializer"></param>
         /// <param name="parameter"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void deSerializeParameter<parameterType>(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
+        protected void deSerializeParameter<parameterType>(AutoCSer.BinaryDeSerializer deSerializer, ref parameterType parameter)
         {
             if (deSerializer.CheckNullValue() != 0) AutoCSer.BinarySerialize.TypeDeSerializer<parameterType>.DeSerialize(deSerializer, ref parameter);
         }
@@ -136,7 +136,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="deSerializer"></param>
         /// <param name="parameter"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void deSerializeParameterStruct<parameterType>(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref parameterType parameter)
+        protected void deSerializeParameterStruct<parameterType>(AutoCSer.BinaryDeSerializer deSerializer, ref parameterType parameter)
         {
             AutoCSer.BinarySerialize.TypeDeSerializer<parameterType>.StructDeSerialize(deSerializer, ref parameter);
         }
@@ -144,14 +144,14 @@ namespace AutoCSer.Net.RemoteExpression
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        protected virtual void serializeParameter(AutoCSer.Json.Serializer serializer) { }
+        protected virtual void serializeParameter(AutoCSer.JsonSerializer serializer) { }
         /// <summary>
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Serialize(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
+        internal void Serialize(AutoCSer.JsonSerializer serializer, ServerNodeIdChecker checker)
         {
             serializeStart(serializer, checker);
             serializeParameter(serializer);
@@ -163,7 +163,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void serializeStart(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
+        protected void serializeStart(AutoCSer.JsonSerializer serializer, ServerNodeIdChecker checker)
         {
             serializer.CharStream.Write('[');
             serializer.CallSerialize(checker.ServerNodeIds[GetType()]);
@@ -174,7 +174,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="checker"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void serializeParent(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
+        protected void serializeParent(AutoCSer.JsonSerializer serializer, ServerNodeIdChecker checker)
         {
             if (Parent != null)
             {
@@ -190,7 +190,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void serializeParameter<parameterType>(AutoCSer.Json.Serializer serializer, parameterType parameter)
+        protected void serializeParameter<parameterType>(AutoCSer.JsonSerializer serializer, parameterType parameter)
         {
             if (parameter == null) serializer.CharStream.WriteJsonNull();
             else AutoCSer.Json.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
@@ -202,78 +202,78 @@ namespace AutoCSer.Net.RemoteExpression
         /// <param name="serializer"></param>
         /// <param name="parameter"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void serializeParameterStruct<parameterType>(AutoCSer.Json.Serializer serializer, ref parameterType parameter)
+        protected void serializeParameterStruct<parameterType>(AutoCSer.JsonSerializer serializer, ref parameterType parameter)
         {
             AutoCSer.Json.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
         }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
-        /// <param name="parser"></param>
-        protected virtual void deSerializeParameter(AutoCSer.Json.Parser parser) { }
+        /// <param name="jsonDeSerializer"></param>
+        protected virtual void deSerializeParameter(AutoCSer.JsonDeSerializer jsonDeSerializer) { }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
-        /// <param name="parser"></param>
+        /// <param name="jsonDeSerializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void deSerialize(AutoCSer.Json.Parser parser)
+        private void deSerialize(AutoCSer.JsonDeSerializer jsonDeSerializer)
         {
-            deSerializeParameter(parser);
-            deSerializeParent(parser);
+            deSerializeParameter(jsonDeSerializer);
+            deSerializeParent(jsonDeSerializer);
         }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
-        /// <param name="parser"></param>
+        /// <param name="jsonDeSerializer"></param>
         /// <param name="value"></param>
-        internal static void DeSerialize(AutoCSer.Json.Parser parser, ref Node value)
+        internal static void DeSerialize(AutoCSer.JsonDeSerializer jsonDeSerializer, ref Node value)
         {
-            if (*parser.Current++ == '[')
+            if (*jsonDeSerializer.Current++ == '[')
             {
                 int serverNodeId = 0;
-                parser.CallParse(ref serverNodeId);
-                if (parser.State == Json.ParseState.Success) (value = createNodes.Array[serverNodeId]()).deSerialize(parser);
+                jsonDeSerializer.CallSerialize(ref serverNodeId);
+                if (jsonDeSerializer.State == Json.DeSerializeState.Success) (value = createNodes.Array[serverNodeId]()).deSerialize(jsonDeSerializer);
                 return;
             }
-            parser.ParseState = Json.ParseState.Custom;
+            jsonDeSerializer.DeSerializeState = Json.DeSerializeState.Custom;
         }
         /// <summary>
         /// 客户端反序列化返回值
         /// </summary>
-        /// <param name="parser"></param>
-        protected void deSerializeParent(AutoCSer.Json.Parser parser)
+        /// <param name="jsonDeSerializer"></param>
+        protected void deSerializeParent(AutoCSer.JsonDeSerializer jsonDeSerializer)
         {
-            if (parser.ParseState == Json.ParseState.Success)
+            if (jsonDeSerializer.DeSerializeState == Json.DeSerializeState.Success)
             {
-                char split = *parser.Current++;
+                char split = *jsonDeSerializer.Current++;
                 if ((split & 1) == 0)
                 {
                     if (split == ',')
                     {
-                        DeSerialize(parser, ref Parent);
-                        if (parser.State != Json.ParseState.Success || *parser.Current++ == ']') return;
+                        DeSerialize(jsonDeSerializer, ref Parent);
+                        if (jsonDeSerializer.State != Json.DeSerializeState.Success || *jsonDeSerializer.Current++ == ']') return;
                     }
                 }
                 else if (split == ']') return;
-                parser.ParseState = Json.ParseState.Custom;
+                jsonDeSerializer.DeSerializeState = Json.DeSerializeState.Custom;
             }
         }
         /// <summary>
         /// 参数反序列化
         /// </summary>
         /// <typeparam name="parameterType"></typeparam>
-        /// <param name="parser"></param>
+        /// <param name="jsonDeSerializer"></param>
         /// <param name="parameter"></param>
-        protected void deSerializeParameter<parameterType>(AutoCSer.Json.Parser parser, ref parameterType parameter)
+        protected void deSerializeParameter<parameterType>(AutoCSer.JsonDeSerializer jsonDeSerializer, ref parameterType parameter)
         {
-            if (parser.ParseState == Json.ParseState.Success)
+            if (jsonDeSerializer.DeSerializeState == Json.DeSerializeState.Success)
             {
-                if (*parser.Current++ == ',')
+                if (*jsonDeSerializer.Current++ == ',')
                 {
-                    AutoCSer.Json.TypeParser<parameterType>.Parse(parser, ref parameter);
+                    AutoCSer.Json.TypeDeSerializer<parameterType>.DeSerialize(jsonDeSerializer, ref parameter);
                     return;
                 }
-                parser.ParseState = Json.ParseState.Custom;
+                jsonDeSerializer.DeSerializeState = Json.DeSerializeState.Custom;
             }
         }
         /// <summary>
@@ -380,23 +380,23 @@ namespace AutoCSer.Net.RemoteExpression
         /// <summary>
         /// 服务端节点类型集合访问锁
         /// </summary>
-        private static readonly object typeLock = new object();
+        private static AutoCSer.Threading.SleepFlagSpinLock typeLock;
         /// <summary>
         /// 创建服务端表达式委托集合
         /// </summary>
-        protected static LeftArray<Func<Node>> createNodes;
+        protected static LeftArray<Func<Node>> createNodes = new LeftArray<Func<Node>>(0);
         /// <summary>
         /// 获取服务端节点标识
         /// </summary>
         /// <param name="remoteTypes"></param>
         /// <returns></returns>
-        internal unsafe static int[] Get(RemoteType[] remoteTypes)
+        internal unsafe static int[] Get(AutoCSer.Reflection.RemoteType[] remoteTypes)
         {
             int[] ids = new int[remoteTypes.Length];
             fixed (int* idFixed = ids)
             {
                 int* idStart = idFixed;
-                foreach (RemoteType remoteType in remoteTypes)
+                foreach (AutoCSer.Reflection.RemoteType remoteType in remoteTypes)
                 {
                     Type type;
                     if (remoteType.TryGet(out type))
@@ -404,14 +404,15 @@ namespace AutoCSer.Net.RemoteExpression
                         if (types.TryGetValue(type, out *idStart)) ++idStart;
                         else
                         {
-                            Monitor.Enter(typeLock);
+                            typeLock.Enter();
                             if (types.TryGetValue(type, out *idStart))
                             {
-                                Monitor.Exit(typeLock);
+                                typeLock.Exit();
                                 ++idStart;
                             }
                             else
                             {
+                                typeLock.SleepFlag = 1;
                                 try
                                 {
                                     Func<Node> createNode = (Func<Node>)Delegate.CreateDelegate(typeof(Func<Node>), createNodeMethod.MakeGenericMethod(type));
@@ -420,7 +421,7 @@ namespace AutoCSer.Net.RemoteExpression
                                     types.Add(type, id);
                                     *idStart++ = id;
                                 }
-                                finally { Monitor.Exit(typeLock); }
+                                finally { typeLock.ExitSleepFlag(); }
                             }
                         }
                     }
@@ -438,7 +439,7 @@ namespace AutoCSer.Net.RemoteExpression
         private static Node createNew<valueType>()
             where valueType : Node
         {
-            return AutoCSer.Emit.Constructor<valueType>.New();
+            return AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
         }
         /// <summary>
         /// 创建节点函数信息

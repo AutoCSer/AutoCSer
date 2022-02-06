@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql.LogStream
 {
@@ -118,7 +118,7 @@ namespace AutoCSer.Sql.LogStream
             }
             catch (Exception error)
             {
-                log.Add(AutoCSer.Log.LogType.Error, error);
+                log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             this.error();
         }
@@ -193,7 +193,7 @@ namespace AutoCSer.Sql.LogStream
                                         if (data.Value.Value.MemberMap == null && !isErrorMemberMap)
                                         {
                                             isErrorMemberMap = true;
-                                            log.Add(AutoCSer.Log.LogType.Warn, "客户端缓存数据缺少成员位图信息 " + typeof(valueType).fullName());
+                                            log.Warn("客户端缓存数据缺少成员位图信息 " + typeof(valueType).fullName(), LogLevel.Warn | LogLevel.AutoCSer);
                                         }
                                         return;
                                     }
@@ -212,7 +212,7 @@ namespace AutoCSer.Sql.LogStream
                     }
                     catch (Exception error)
                     {
-                        log.Add(AutoCSer.Log.LogType.Error, error);
+                        log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 this.error();

@@ -23,7 +23,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                     return names;
                 }
             }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
             protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
             {
                 switch (callIndex)
@@ -38,7 +38,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                         return;
                 }
             }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.Memory.UnmanagedStream responseStream)
             {
                 switch (call.CallMethodIndex)
                 {
@@ -172,68 +172,68 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{ClassInfo:");
+                _js_.Write(@"{ClassInfo:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Class _value1_ = ClassInfo;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"Demo.Class.Get({DateRange:");
+                            _js_.Write(@"Demo.Class.Get({DateRange:");
                     {
                         AutoCSer.TestCase.SqlModel.Member.DateRange _value2_ = _value1_.DateRange;
-                            _js_.WriteNotNull(@"{Start:");
+                            _js_.Write(@"{Start:");
                     {
                         AutoCSer.Sql.Member.IntDate _value3_ = _value2_.Start;
-                            _js_.WriteNotNull(@"{DateTime:");
+                            _js_.Write(@"{DateTime:");
                     {
                         System.DateTime _value4_ = _value3_.DateTime;
-                                    _js_.WriteJson((System.DateTime)_value4_);
+                                    _js_.WriteWebViewJson((System.DateTime)_value4_);
                     }
-                    _js_.WriteNotNull(@",Value:");
+                    _js_.Write(@",Value:");
                     {
                         int _value4_ = _value3_.Value;
-                                    _js_.WriteJson((int)_value4_);
+                                    _js_.WriteWebViewJson((int)_value4_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@",Discipline:");
+                    _js_.Write(@",Discipline:");
                     {
                         AutoCSer.TestCase.SqlModel.Member.Discipline _value2_ = _value1_.Discipline;
-                                    _js_.CopyJsonNotNull(_value2_.ToString());
+                                    _js_.WriteQuote(_value2_.ToString());
                     }
-                    _js_.WriteNotNull(@",Id:");
+                    _js_.Write(@",Id:");
                     {
                         int _value2_ = _value1_.Id;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",Name:");
+                    _js_.Write(@",Name:");
                     {
                         string _value2_ = _value1_.Name;
                         if (_value2_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value2_);
+                                    _js_.WriteWebViewJson(_value2_);
                         }
                     }
-                    _js_.WriteNotNull(@",Remote:");
+                    _js_.Write(@",Remote:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Class.RemoteExtension _value2_ = _value1_.Remote;
-                            _js_.WriteNotNull(@"{StudentCount:");
+                            _js_.Write(@"{StudentCount:");
                     {
                         int _value3_ = _value2_.StudentCount;
-                                    _js_.WriteJson((int)_value3_);
+                                    _js_.WriteWebViewJson((int)_value3_);
                     }
-                    _js_.WriteNotNull(@",Students:");
+                    _js_.Write(@",Students:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Student[] _value3_ = _value2_.Students;
                         if (_value3_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"[");
+                            _js_.Write(@"[");
                     {
                         int _loopIndex3_ = _loopIndex_;
                         _loopIndex_ = 0;
@@ -242,82 +242,82 @@ namespace AutoCSer.TestCase.SqlTableWeb
                             if (_loopIndex_ == 0)
                             {
                                 _js_.Write('"');
-                                _js_.WriteNotNull("@.Demo.Student,,Birthday[DateTime,Value]Email,Gender,Id,Name");
+                                _js_.Write("@.Demo.Student,,Birthday[DateTime,Value]Email,Gender,Id,Name");
                                 _js_.Write('"');
                             }
                             _js_.Write(',');
                             if (_value4_ == null) _js_.WriteJsonNull();
                             else
                             {
-                                _js_.WriteNotNull(@"[");
+                                _js_.Write(@"[");
                     {
                         AutoCSer.Sql.Member.IntDate _value5_ = _value4_.Birthday;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         System.DateTime _value6_ = _value5_.DateTime;
-                                    _js_.WriteJson((System.DateTime)_value6_);
+                                    _js_.WriteWebViewJson((System.DateTime)_value6_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         int _value6_ = _value5_.Value;
-                                    _js_.WriteJson((int)_value6_);
+                                    _js_.WriteWebViewJson((int)_value6_);
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         string _value5_ = _value4_.Email;
                                 if (_value5_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value5_);
+                                    _js_.WriteWebViewJson(_value5_);
                                 }
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.TestCase.SqlModel.Member.Gender _value5_ = _value4_.Gender;
-                                    _js_.CopyJsonNotNull(_value5_.ToString());
+                                    _js_.WriteQuote(_value5_.ToString());
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         int _value5_ = _value4_.Id;
-                                    _js_.WriteJson((int)_value5_);
+                                    _js_.WriteWebViewJson((int)_value5_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         string _value5_ = _value4_.Name;
                                 if (_value5_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value5_);
+                                    _js_.WriteWebViewJson(_value5_);
                                 }
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                             }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex3_;
                     }
-                    _js_.WriteNotNull(@"].FormatView()");
+                    _js_.Write(@"].FormatView()");
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@"})");
+                    _js_.Write(@"})");
                         }
                     }
-                    _js_.WriteNotNull(@",PubPath:");
+                    _js_.Write(@",PubPath:");
                     {
                         AutoCSer.TestCase.SqlModel.WebPath.Pub _value1_ = PubPath;
-                                    _js_.WriteNotNull(@"new AutoCSerPath.Pub({})");
+                                    _js_.Write(@"new AutoCSerPath.Pub({})");
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 /// <summary>
                 /// 班级标识
                 /// </summary>
@@ -454,15 +454,15 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Classes:");
+                _js_.Write(@"{Classes:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Class[] _value1_ = Classes;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"[");
+                            _js_.Write(@"[");
                     {
                         int _loopIndex1_ = _loopIndex_;
                         _loopIndex_ = 0;
@@ -471,67 +471,67 @@ namespace AutoCSer.TestCase.SqlTableWeb
                             if (_loopIndex_ == 0)
                             {
                                 _js_.Write('"');
-                                _js_.WriteNotNull("@.Demo.Class,,DateRange[Start[DateTime,Value]]Discipline,Id,Name,Remote[StudentCount,Students[[@.Demo.Student,,Id,Name]]]");
+                                _js_.Write("@.Demo.Class,,DateRange[Start[DateTime,Value]]Discipline,Id,Name,Remote[StudentCount,Students[[@.Demo.Student,,Id,Name]]]");
                                 _js_.Write('"');
                             }
                             _js_.Write(',');
                             if (_value2_ == null) _js_.WriteJsonNull();
                             else
                             {
-                                _js_.WriteNotNull(@"[");
+                                _js_.Write(@"[");
                     {
                         AutoCSer.TestCase.SqlModel.Member.DateRange _value3_ = _value2_.DateRange;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         AutoCSer.Sql.Member.IntDate _value4_ = _value3_.Start;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         System.DateTime _value5_ = _value4_.DateTime;
-                                    _js_.WriteJson((System.DateTime)_value5_);
+                                    _js_.WriteWebViewJson((System.DateTime)_value5_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         int _value5_ = _value4_.Value;
-                                    _js_.WriteJson((int)_value5_);
+                                    _js_.WriteWebViewJson((int)_value5_);
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.TestCase.SqlModel.Member.Discipline _value3_ = _value2_.Discipline;
-                                    _js_.CopyJsonNotNull(_value3_.ToString());
+                                    _js_.WriteQuote(_value3_.ToString());
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         int _value3_ = _value2_.Id;
-                                    _js_.WriteJson((int)_value3_);
+                                    _js_.WriteWebViewJson((int)_value3_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         string _value3_ = _value2_.Name;
                                 if (_value3_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value3_);
+                                    _js_.WriteWebViewJson(_value3_);
                                 }
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Class.RemoteExtension _value3_ = _value2_.Remote;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         int _value4_ = _value3_.StudentCount;
-                                    _js_.WriteJson((int)_value4_);
+                                    _js_.WriteWebViewJson((int)_value4_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Student[] _value4_ = _value3_.Students;
                                 if (_value4_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteNotNull(@"[[");
+                                    _js_.Write(@"[[");
                     {
                         int _loopIndex4_ = _loopIndex_;
                         _loopIndex_ = 0;
@@ -542,51 +542,51 @@ namespace AutoCSer.TestCase.SqlTableWeb
                             else
                             {
                                 _js_.Write('[');
-                                _js_.WriteNotNull(@"");
+                                _js_.Write(@"");
                     {
                         int _value6_ = _value5_.Id;
-                                    _js_.WriteJson((int)_value6_);
+                                    _js_.WriteWebViewJson((int)_value6_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         string _value6_ = _value5_.Name;
                                 if (_value6_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value6_);
+                                    _js_.WriteWebViewJson(_value6_);
                                 }
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                             }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex4_;
                     }
-                    _js_.WriteNotNull(@"]]");
+                    _js_.Write(@"]]");
                                 }
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                             }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
                     }
-                    _js_.WriteNotNull(@"].FormatView()");
+                    _js_.Write(@"].FormatView()");
                         }
                     }
-                    _js_.WriteNotNull(@",IsClassList:");
+                    _js_.Write(@",IsClassList:");
                     {
                         bool _value1_ = IsClassList;
-                                    _js_.WriteJson((bool)_value1_);
+                                    _js_.WriteWebViewJson((bool)_value1_);
                     }
-                    _js_.WriteNotNull(@",PubPath:");
+                    _js_.Write(@",PubPath:");
                     {
                         AutoCSer.TestCase.SqlModel.WebPath.Pub _value1_ = PubPath;
-                                    _js_.WriteNotNull(@"new AutoCSerPath.Pub({})");
+                                    _js_.Write(@"new AutoCSerPath.Pub({})");
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -708,72 +708,72 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{PubPath:");
+                _js_.Write(@"{PubPath:");
                     {
                         AutoCSer.TestCase.SqlModel.WebPath.Pub _value1_ = PubPath;
-                                    _js_.WriteNotNull(@"new AutoCSerPath.Pub({})");
+                                    _js_.Write(@"new AutoCSerPath.Pub({})");
                     }
-                    _js_.WriteNotNull(@",StudentInfo:");
+                    _js_.Write(@",StudentInfo:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Student _value1_ = StudentInfo;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"Demo.Student.Get({Birthday:");
+                            _js_.Write(@"Demo.Student.Get({Birthday:");
                     {
                         AutoCSer.Sql.Member.IntDate _value2_ = _value1_.Birthday;
-                            _js_.WriteNotNull(@"{DateTime:");
+                            _js_.Write(@"{DateTime:");
                     {
                         System.DateTime _value3_ = _value2_.DateTime;
-                                    _js_.WriteJson((System.DateTime)_value3_);
+                                    _js_.WriteWebViewJson((System.DateTime)_value3_);
                     }
-                    _js_.WriteNotNull(@",Value:");
+                    _js_.Write(@",Value:");
                     {
                         int _value3_ = _value2_.Value;
-                                    _js_.WriteJson((int)_value3_);
+                                    _js_.WriteWebViewJson((int)_value3_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@",Email:");
+                    _js_.Write(@",Email:");
                     {
                         string _value2_ = _value1_.Email;
                         if (_value2_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value2_);
+                                    _js_.WriteWebViewJson(_value2_);
                         }
                     }
-                    _js_.WriteNotNull(@",Gender:");
+                    _js_.Write(@",Gender:");
                     {
                         AutoCSer.TestCase.SqlModel.Member.Gender _value2_ = _value1_.Gender;
-                                    _js_.CopyJsonNotNull(_value2_.ToString());
+                                    _js_.WriteQuote(_value2_.ToString());
                     }
-                    _js_.WriteNotNull(@",Id:");
+                    _js_.Write(@",Id:");
                     {
                         int _value2_ = _value1_.Id;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",Name:");
+                    _js_.Write(@",Name:");
                     {
                         string _value2_ = _value1_.Name;
                         if (_value2_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value2_);
+                                    _js_.WriteWebViewJson(_value2_);
                         }
                     }
-                    _js_.WriteNotNull(@",Remote:");
+                    _js_.Write(@",Remote:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Student.RemoteExtension _value2_ = _value1_.Remote;
-                            _js_.WriteNotNull(@"{Classes:");
+                            _js_.Write(@"{Classes:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Student.RemoteExtension.JoinClassDate[] _value3_ = _value2_.Classes;
                         if (_value3_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"[");
+                            _js_.Write(@"[");
                     {
                         int _loopIndex3_ = _loopIndex_;
                         _loopIndex_ = 0;
@@ -782,78 +782,78 @@ namespace AutoCSer.TestCase.SqlTableWeb
                             if (_loopIndex_ == 0)
                             {
                                 _js_.Write('"');
-                                _js_.WriteNotNull("Class[@.Demo.Class,,Discipline,Id,Name]ClassDate[Date[DateTime,Value]]");
+                                _js_.Write("Class[@.Demo.Class,,Discipline,Id,Name]ClassDate[Date[DateTime,Value]]");
                                 _js_.Write('"');
                             }
                             _js_.Write(',');
-                                _js_.WriteNotNull(@"[");
+                                _js_.Write(@"[");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Class _value5_ = _value4_.Class;
                                 if (_value5_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         AutoCSer.TestCase.SqlModel.Member.Discipline _value6_ = _value5_.Discipline;
-                                    _js_.CopyJsonNotNull(_value6_.ToString());
+                                    _js_.WriteQuote(_value6_.ToString());
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         int _value6_ = _value5_.Id;
-                                    _js_.WriteJson((int)_value6_);
+                                    _js_.WriteWebViewJson((int)_value6_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         string _value6_ = _value5_.Name;
                                 if (_value6_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value6_);
+                                    _js_.WriteWebViewJson(_value6_);
                                 }
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                                 }
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.TestCase.SqlModel.Member.ClassDate _value5_ = _value4_.ClassDate;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         AutoCSer.Sql.Member.IntDate _value6_ = _value5_.Date;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         System.DateTime _value7_ = _value6_.DateTime;
-                                    _js_.WriteJson((System.DateTime)_value7_);
+                                    _js_.WriteWebViewJson((System.DateTime)_value7_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         int _value7_ = _value6_.Value;
-                                    _js_.WriteJson((int)_value7_);
+                                    _js_.WriteWebViewJson((int)_value7_);
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex3_;
                     }
-                    _js_.WriteNotNull(@"].FormatView()");
+                    _js_.Write(@"].FormatView()");
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@"})");
+                    _js_.Write(@"})");
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 /// <summary>
                 /// 学生标识
                 /// </summary>
@@ -1012,13 +1012,13 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 string[] names = new string[4];
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[4];
                 names[0] = "/Class.html";
-                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[1] = "/ClassList.html";
-                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[2] = "/Student.html";
-                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[4 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
-                infos[4 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
+                infos[4 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.Memory.BufferSize.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
                 CompileJsonSerialize(new System.Type[] { null }, new System.Type[] { null });
             }

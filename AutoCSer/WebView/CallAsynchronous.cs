@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -193,7 +194,7 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void RepsonseEndJsonSerialize<valueType>(valueType value)
         {
-            AutoCSer.Json.Serializer.Serialize(ref value, RepsonseEnd);
+            AutoCSer.JsonSerializer.Serialize(ref value, RepsonseEnd);
         }
         /// <summary>
         /// 结束异步输出 JSON 字符串
@@ -203,7 +204,7 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void RepsonseEndJsonSerialize<valueType>(ref valueType value)
         {
-            AutoCSer.Json.Serializer.Serialize(ref value, RepsonseEnd);
+            AutoCSer.JsonSerializer.Serialize(ref value, RepsonseEnd);
         }
         /// <summary>
         /// 结束异步输出
@@ -265,23 +266,23 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static callType Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            popLock.EnterYield();
             callType headValue;
             do
             {
                 if ((headValue = poolHead) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     return null;
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref poolHead, headValue.next, headValue) == headValue)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref poolCount);
                     headValue.setPool(headValue);
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -312,7 +313,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int poolMaxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(callType));
+        private readonly static int poolMaxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(callType));
         /// <summary>
         /// 链表头部
         /// </summary>
@@ -320,7 +321,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -352,7 +353,7 @@ namespace AutoCSer.WebView
                     value.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -379,7 +380,7 @@ namespace AutoCSer.WebView
                     end.next = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref poolHead, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -428,7 +429,7 @@ namespace AutoCSer.WebView
         }
         static CallAsynchronous()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(CallAsynchronous<callType>));
         }
     }
 }

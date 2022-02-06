@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data.Common;
 
 namespace AutoCSer.Sql.Cache.Whole.Event
@@ -59,7 +59,9 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="query">查询信息</param>
         internal override void Reset(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            reset(SqlTable.SelectQueue(ref connection, ref query));
+            ReturnValue<LeftArray<valueType>> valueArray = SqlTable.SelectQueue(ref connection, ref query);
+            if (valueArray.ReturnType == ReturnType.Success) reset(valueArray.Value);
+            else SqlTable.Log.Fatal(typeof(valueType).fullName() + " 数据加载失败 " + valueArray.ReturnType.ToString(), LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 增加数据
@@ -69,7 +71,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         {
             int identity = GetKey(value);
             if (identity >= Array.Length) Array.ToSize(identity + 1);
-            valueType newValue = AutoCSer.Emit.Constructor<valueType>.New();
+            valueType newValue = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
             AutoCSer.MemberCopy.Copyer<modelType>.Copy(newValue, value, MemberMap);
             setMemberCacheAndValue(newValue);
             Array[identity] = newValue;

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Json
 {
     /// <summary>
     /// JSON 自定义简单组合模板参数
     /// </summary>
-    internal sealed class CombinationTemplateConfig : AutoCSer.CodeGenerator.CombinationTemplateConfig
+    //internal sealed class CombinationTemplateConfig : AutoCSer.CodeGenerator.CombinationTemplateConfig
     {
         /// <summary>
         /// JSON 自定义简单组合模板参数

@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;HtmlTitle</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -41,16 +41,14 @@
   <ItemGroup>
     <Compile Include="HeaderName.cs" />
     <Compile Include="HttpClient.cs" />
-    <Compile Include="ConfigLoader.cs" />
     <Compile Include="DomainIPAddress.cs" />
     <Compile Include="DomainIPAddressConfig.cs" />
-    <Compile Include="Extension\HashBytes.cs" />
-    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extensions\HashBytesExtension.HtmlTitle.cs" />
+    <Compile Include="Extensions\MemoryExtension.HtmlTitle.cs" />
     <Compile Include="IO\Compression\GzipDeCompressor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HttpTask.cs" />
     <Compile Include="SocketAsyncType.cs" />
-    <Compile Include="UnionType.cs" />
     <Compile Include="Uri.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +65,9 @@
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

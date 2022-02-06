@@ -5,7 +5,7 @@ namespace AutoCSer.Example.BinarySerialize
     /// <summary>
     /// JSON 序列化扩展 示例。即使没有 JSON 序列化字段，也应该预留 JSON 序列化标记。
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsJson = true)]
+    [AutoCSer.BinarySerialize(IsJson = true)]
     class Json
     {
         /// <summary>
@@ -32,8 +32,8 @@ namespace AutoCSer.Example.BinarySerialize
         {
             Json value = new Json { Value = 1, Json1 = "1", Json2 = "2" };
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value);
-            JsonDeSerialize newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<JsonDeSerialize>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value);
+            JsonDeSerialize newValue = AutoCSer.BinaryDeSerializer.DeSerialize<JsonDeSerialize>(data);
 
             return newValue != null && newValue.Value == 1 && newValue.Json1 == 1 && newValue.Json2 == 2 && newValue.Json3 == 0;
         }
@@ -41,7 +41,7 @@ namespace AutoCSer.Example.BinarySerialize
     /// <summary>
     /// JSON 序列化扩展 示例 反序列化定义
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsJson = true)]
+    [AutoCSer.BinarySerialize(IsJson = true)]
     class JsonDeSerialize
     {
         /// <summary>

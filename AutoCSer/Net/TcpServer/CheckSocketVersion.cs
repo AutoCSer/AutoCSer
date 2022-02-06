@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer
 {

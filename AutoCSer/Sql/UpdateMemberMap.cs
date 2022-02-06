@@ -27,7 +27,7 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         protected UpdateMemberMap(tableType value, AutoCSer.Metadata.MemberMap<modelType> memberMap)
         {
-            this.value = value ?? AutoCSer.Emit.Constructor<tableType>.New();
+            this.value = value ?? AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
             this.memberMap = memberMap;
         }
         /// <summary>
@@ -48,9 +48,10 @@ namespace AutoCSer.Sql
         /// <returns>更新是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 
-        protected bool update(Table<tableType, modelType> table, bool isIgnoreTransaction)
+        protected ReturnValue update(Table<tableType, modelType> table, bool isIgnoreTransaction)
         {
-            return memberMap != null && table.UpdateQueue(value, memberMap, isIgnoreTransaction);
+            if (memberMap == null) return ReturnType.ArgumentNull;
+            return table.UpdateQueue(value, memberMap, isIgnoreTransaction).ReturnType;
         }
         /// <summary>
         /// 更新数据
@@ -59,9 +60,9 @@ namespace AutoCSer.Sql
         /// <param name="onUpdated">更新数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void update(Table<tableType, modelType> table, Action<tableType> onUpdated, bool isIgnoreTransaction)
+        protected void update(Table<tableType, modelType> table, Action<ReturnValue<tableType>> onUpdated, bool isIgnoreTransaction)
         {
-            if (memberMap == null) onUpdated(null);
+            if (memberMap == null) onUpdated(ReturnType.ArgumentNull);
             table.UpdateQueue(value, memberMap, onUpdated, isIgnoreTransaction);
         }
     }

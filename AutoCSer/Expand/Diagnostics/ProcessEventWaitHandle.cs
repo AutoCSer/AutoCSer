@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Reflection;
 
 namespace AutoCSer.Diagnostics
@@ -47,7 +47,7 @@ namespace AutoCSer.Diagnostics
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                        AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
             }

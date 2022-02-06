@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpInternalServer.Emit
 {
@@ -33,9 +33,9 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             //CommandFlags = CommandIdentity.GetCommandFlags();
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallThreadArray.Default.CurrentThread.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
                 case TcpServer.ServerTaskType.Queue: socket.Server.CallQueue.Add(this); return;
@@ -82,7 +82,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static callType PopNew<callType>() where callType : ServerCall
         {
-            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Emit.Constructor<callType>.New();
+            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Metadata.DefaultConstructor<callType>.Constructor();
         }
         /// <summary>
         /// 空任务
@@ -130,9 +130,9 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             this.inputParameter = inputParameter;
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallThreadArray.Default.CurrentThread.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
                 case TcpServer.ServerTaskType.Queue: sender.Server.CallQueue.Add(this); return;
@@ -199,7 +199,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static new callType PopNew<callType>() where callType : ServerCall<inputParameterType>
         {
-            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Emit.Constructor<callType>.New();
+            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Metadata.DefaultConstructor<callType>.Constructor();
         }
     }
 }

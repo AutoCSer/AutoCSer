@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer
 {
@@ -23,11 +24,11 @@ namespace AutoCSer
         /// <param name="data">字节数组</param>
         public unsafe HashBytes(ref SubArray<byte> data)
         {
-            this.SubArray = data;
+            SubArray = data;
             if (data.Length == 0) HashCode = 0;
             else
             {
-                fixed (byte* dataFixed = data.Array) HashCode = Memory.GetHashCode(dataFixed + data.StartIndex, data.Length) ^ Random.Hash;
+                fixed (byte* dataFixed = data.GetFixedBuffer()) HashCode = AutoCSer.Memory.Common.GetHashCode(dataFixed + data.Start, data.Length) ^ Random.Hash;
             }
         }
         /// <summary>
@@ -52,6 +53,15 @@ namespace AutoCSer
         /// <param name="other">用于HASH的字节数组</param>
         /// <returns>是否相等</returns>
         public unsafe bool Equals(HashBytes other)
+        {
+            return HashCode == other.HashCode && SubArray.equal(ref other.SubArray);
+        }
+        /// <summary>
+        /// 比较字节数组是否相等
+        /// </summary>
+        /// <param name="other">用于HASH的字节数组</param>
+        /// <returns>是否相等</returns>
+        public unsafe bool Equals(ref HashBytes other)
         {
             return HashCode == other.HashCode && SubArray.equal(ref other.SubArray);
         }

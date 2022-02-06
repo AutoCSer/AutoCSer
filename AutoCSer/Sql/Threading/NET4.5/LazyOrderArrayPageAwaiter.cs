@@ -42,10 +42,14 @@ namespace AutoCSer.Sql.Threading
             try
             {
                 Value.Key = isDesc ? array.GetPageDesc(sorter, pageSize, currentPage, out Value.Value) : array.GetPage(sorter, pageSize, currentPage, out Value.Value);
+                IsCompleted = true;
             }
             finally
             {
-                if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) new Task(continuation).Start();
+                if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null)
+                {
+                    continuation();
+                }
             }
         }
     }

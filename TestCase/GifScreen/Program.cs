@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
@@ -15,7 +15,7 @@ namespace AutoCSer.TestCase.GifScreen
 ");
             Screen screen = Screen.PrimaryScreen;
             int width = screen.Bounds.Width, height = screen.Bounds.Height;
-            FileInfo file = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, AutoCSer.IO.File.BakPrefix + ((ulong)Date.Now.Ticks).toHex() + ".gif"));
+            FileInfo file = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, AutoCSer.IO.File.BakPrefix + ((ulong)AutoCSer.Threading.SecondTimer.Now.Ticks).toHex() + ".gif"));
             using (FileStream fileStream = new FileStream(file.FullName, FileMode.CreateNew, FileAccess.Write, FileShare.None, 1, FileOptions.WriteThrough))
             using (AutoCSer.Drawing.Gif.TimerWriter gif = new AutoCSer.Drawing.Gif.TimerWriter(fileStream, () =>
             {

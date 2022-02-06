@@ -63,9 +63,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebCall.cs" />
     <Compile Include="WebCallAsynchronous.cs" />
-    <Compile Include="WebConfig.cs" />
     <Compile Include="WebView.cs" />
     <Compile Include="WebViewAsynchronous.cs" />
+    <Compile Include="WebViewConfig.cs" />
     <Compile Include="{AutoCSer.TestCase.WebPerformance}.AutoCSer.cs">
       <SubType>Code</SubType>
     </Compile>

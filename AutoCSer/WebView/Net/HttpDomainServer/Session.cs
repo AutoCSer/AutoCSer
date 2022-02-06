@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using AutoCSer.Net.TcpServer;
 
@@ -72,133 +72,12 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         protected long timeoutTicks;
         /// <summary>
-        /// 超时刷新秒数
-        /// </summary>
-        private int refreshSeconds;
-        /// <summary>
-        /// 是否释放资源
-        /// </summary>
-        private int isDisposed;
-        /// <summary>
         /// 会话标识
         /// </summary>
         /// <param name="timeoutMinutes">超时分钟数</param>
-        /// <param name="refreshMinutes">超时刷新分钟数</param>
-        protected Session(int timeoutMinutes, int refreshMinutes)
+        protected Session(int timeoutMinutes)
         {
             timeoutTicks = new TimeSpan(0, Math.Max(timeoutMinutes, 1), 0).Ticks;
-            Math.Max(refreshMinutes * 60, 60);
-            refreshSeconds = Math.Max(refreshMinutes, 1) * 60;
-            //refreshTicks = new TimeSpan(0, refreshMinutes, 0).Ticks;
-            //timerTask.Default.Add(this, thread.callType.HttpSessionRefreshTimeout, date.nowTime.Now.AddTicks(refreshTicks));
-            SetTimeoutRefreshSeconds();
-            PushNotNull(this);
-        }
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public override void Dispose()
-        {
-            if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
-            {
-                PopNotNull(this);
-                base.Dispose();
-            }
-        }
-        /// <summary>
-        /// 重置超时刷新秒数
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void SetTimeoutRefreshSeconds()
-        {
-            Interlocked.Exchange(ref isTimer, refreshSeconds);
-        }
-        /// <summary>
-        /// 是否已经触发定时任务
-        /// </summary> 
-        private int isTimer;
-        /// <summary>
-        /// 定时器触发日志写入
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnTimer()
-        {
-            if (Interlocked.Decrement(ref isTimer) == 0) RefreshTimeout();
-        }
-        /// <summary>
-        /// 超时检测
-        /// </summary>
-        internal virtual void RefreshTimeout() { }
-
-        /// <summary>
-        /// 下一个节点
-        /// </summary>
-        internal Session DoubleLinkNext;
-        /// <summary>
-        /// 上一个节点
-        /// </summary>
-        internal Session DoubleLinkPrevious;
-        /// <summary>
-        /// 链表尾部
-        /// </summary>
-        internal static Session SessionEnd;
-        /// <summary>
-        /// 链表访问锁
-        /// </summary>
-        private static int sessionLinkLock;
-        /// <summary>
-        /// 添加节点
-        /// </summary>
-        /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void PushNotNull(Session value)
-        {
-            while (System.Threading.Interlocked.CompareExchange(ref sessionLinkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePush);
-            if (SessionEnd != null)
-            {
-                SessionEnd.DoubleLinkNext = value;
-                value.DoubleLinkPrevious = SessionEnd;
-            }
-            SessionEnd = value;
-            System.Threading.Interlocked.Exchange(ref sessionLinkLock, 0);
-        }
-        /// <summary>
-        /// 弹出节点
-        /// </summary>
-        /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void PopNotNull(Session value)
-        {
-            while (System.Threading.Interlocked.CompareExchange(ref sessionLinkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
-            if (value == SessionEnd)
-            {
-                if ((SessionEnd = value.DoubleLinkPrevious) != null) SessionEnd.DoubleLinkNext = value.DoubleLinkPrevious = null;
-                System.Threading.Interlocked.Exchange(ref sessionLinkLock, 0);
-            }
-            else
-            {
-                value.freeNotEnd();
-                System.Threading.Interlocked.Exchange(ref sessionLinkLock, 0);
-            }
-        }
-        /// <summary>
-        /// 弹出节点
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void freeNotEnd()
-        {
-            DoubleLinkNext.DoubleLinkPrevious = DoubleLinkPrevious;
-            if (DoubleLinkPrevious != null)
-            {
-                DoubleLinkPrevious.DoubleLinkNext = DoubleLinkNext;
-                DoubleLinkPrevious = null;
-            }
-            DoubleLinkNext = null;
-        }
-
-        static Session()
-        {
-            AutoCSer.WebView.OnTime.Default.Set();
         }
     }
     /// <summary>
@@ -351,7 +230,7 @@ namespace AutoCSer.Net.HttpDomainServer
             public void Refresh(int endIndex)
             {
                 int startIndex = Math.Max(endIndex - TimeoutRefreshCount, 0);
-                DateTime now = Date.NowTime.Now;
+                DateTime now = AutoCSer.Threading.SecondTimer.Now;
                 Value[] array = IndexPool.Array;
                 do
                 {
@@ -367,7 +246,7 @@ namespace AutoCSer.Net.HttpDomainServer
             /// <returns>是否设置成功</returns>
             public bool Set(ref SessionId sessionId, valueType value)
             {
-                return sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length && IndexPool.Array[sessionId.Index].Set(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), value);
+                return sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length && IndexPool.Array[sessionId.Index].Set(ref sessionId, AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks), value);
             }
             /// <summary>
             /// 设置Session值
@@ -377,7 +256,7 @@ namespace AutoCSer.Net.HttpDomainServer
             public void New(ref SessionId sessionId, valueType value)
             {
                 sessionId.Index = IndexPool.GetIndex();
-                IndexPool.Array[sessionId.Index].New(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), value);
+                IndexPool.Array[sessionId.Index].New(ref sessionId, AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks), value);
             }
             /// <summary>
             /// 获取Session值
@@ -389,7 +268,7 @@ namespace AutoCSer.Net.HttpDomainServer
             {
                 if (sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length)
                 {
-                    return IndexPool.Array[sessionId.Index].Get(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), out value);
+                    return IndexPool.Array[sessionId.Index].Get(ref sessionId, AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks), out value);
                 }
                 value = default(valueType);
                 return false;
@@ -403,6 +282,41 @@ namespace AutoCSer.Net.HttpDomainServer
                 if (sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length && IndexPool.Array[sessionId.Index].Remove(ref sessionId))
                 {
                     IndexPool.Free(sessionId.Index);
+                }
+            }
+        }
+        /// <summary>
+        /// 超时检测
+        /// </summary>
+        private sealed class RefreshTimeoutTaskNode : AutoCSer.Threading.SecondTimerTaskNode
+        {
+            /// <summary>
+            /// 会话标识服务
+            /// </summary>
+            private readonly Session<valueType> server;
+            /// <summary>
+            /// 是否已经触发定时任务
+            /// </summary> 
+            internal int isTimer;
+            /// <summary>
+            /// 超时检测
+            /// </summary>
+            /// <param name="server"></param>
+            /// <param name="refreshSeconds"></param>
+            internal RefreshTimeoutTaskNode(Session<valueType> server, int refreshSeconds) : base(AutoCSer.Threading.SecondTimer.InternalTaskArray, refreshSeconds, Threading.SecondTimerThreadMode.Synchronous, Threading.SecondTimerKeepMode.After, refreshSeconds)
+            {
+                this.server = server;
+                AppendTaskArray();
+            }
+            /// <summary>
+            /// 超时检测
+            /// </summary>
+            protected internal override void OnTimer()
+            {
+                if (isTimer == 0)
+                {
+                    isTimer = 1;
+                    server.server.CallQueueLink.Add(new RefreshTimeoutServerCall(server));
                 }
             }
         }
@@ -457,7 +371,7 @@ namespace AutoCSer.Net.HttpDomainServer
                         if (--poolIndex >= 0) endIndex = valuePool[poolIndex].IndexPool.ArrayIndex;
                         else
                         {
-                            server.SetTimeoutRefreshSeconds();
+                            server.refreshTimeoutTaskNode.isTimer = 0;
                             return;
                         }
                     }
@@ -470,24 +384,28 @@ namespace AutoCSer.Net.HttpDomainServer
             }
         }
         /// <summary>
+        /// 超时检测
+        /// </summary>
+        private readonly RefreshTimeoutTaskNode refreshTimeoutTaskNode;
+        /// <summary>
         /// Session 值索引池
         /// </summary>
         private Pool[] valuePool;
         /// <summary>
         /// 会话标识
         /// </summary>
-        public Session()
-            : base(Http.SocketBase.Config.SessionMinutes, Http.SocketBase.Config.SessionRefreshMinutes)
+        public Session() : base(Http.SocketBase.Config.SessionMinutes)
         {
             valuePool = new Pool[256];
             for (int index = valuePool.Length; index != 0; valuePool[--index].Set(timeoutTicks)) ;
+            refreshTimeoutTaskNode = new RefreshTimeoutTaskNode(this, Math.Max(Http.SocketBase.Config.SessionRefreshMinutes * 60, 60));
         }
         /// <summary>
-        /// 超时检测
+        /// 释放资源
         /// </summary>
-        internal unsafe override void RefreshTimeout()
+        public override void Dispose()
         {
-            server.CallQueueLink.Add(new RefreshTimeoutServerCall(this));
+            refreshTimeoutTaskNode.Cancel();
         }
         /// <summary>
         /// 设置Session值

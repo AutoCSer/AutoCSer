@@ -17,7 +17,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 缓存主服务默认配置
         /// </summary>
-        private static readonly MasterServerConfig defaultConfig = ConfigLoader.GetUnion(typeof(MasterServerConfig)).MasterServerConfig ?? new MasterServerConfig();
+        private static readonly MasterServerConfig defaultConfig = (MasterServerConfig)AutoCSer.Configuration.Common.Get(typeof(MasterServerConfig)) ?? new MasterServerConfig();
 
         /// <summary>
         /// 缓存主服务配置
@@ -290,7 +290,7 @@ namespace AutoCSer.CacheServer
         /// <param name="index">节点编号</param>
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="log">日志接口</param>
-        public TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+        public TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.ILog log = null)
         {
             return CreateStaticRoute(index, attribute, this, log);
         }
@@ -301,9 +301,9 @@ namespace AutoCSer.CacheServer
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="value">TCP 服务目标对象</param>
         /// <param name="log">日志接口</param>
-        public static TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, MasterServer value = null, AutoCSer.Log.ILog log = null)
+        public static TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, MasterServer value = null, AutoCSer.ILog log = null)
         {
-            return new TcpInternalServer(CreateStaticRouteAttribute(index, attribute ?? AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(ServerName, typeof(MasterServer))), null, value, null, log);
+            return new TcpInternalServer(CreateStaticRouteAttribute(index, attribute ?? AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(ServerName, typeof(MasterServer))), null, value, 0, null, log);
         }
     }
 }

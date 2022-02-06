@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
+using AutoCSer.Memory;
 
 namespace AutoCSer.BinarySerialize
 {
@@ -90,10 +91,9 @@ namespace AutoCSer.BinarySerialize
             if (globalVersion == 0) stream.Write(headerValue);
             else
             {
-                byte* write = stream.GetPrepSizeCurrent(sizeof(int) + sizeof(uint));
+                byte* write = stream.GetBeforeMove(sizeof(int) + sizeof(uint));
                 *(int*)write = headerValue;
                 *(uint*)(write + sizeof(int)) = globalVersion;
-                stream.ByteSize += sizeof(int) + sizeof(uint);
             }
         }
         /// <summary>
@@ -105,13 +105,12 @@ namespace AutoCSer.BinarySerialize
         internal unsafe void UnsafeWriteHeader(UnmanagedStream stream)
         {
             int headerValue = HeaderValue;
-            if (globalVersion == 0) stream.UnsafeWrite(headerValue);
+            if (globalVersion == 0) stream.Data.Write(headerValue);
             else
             {
-                byte* write = stream.CurrentData;
+                byte* write = stream.Data.GetBeforeMove(sizeof(int) + sizeof(uint));
                 *(int*)write = headerValue;
                 *(uint*)(write + sizeof(int)) = globalVersion;
-                stream.ByteSize += sizeof(int) + sizeof(uint);
             }
         }
 

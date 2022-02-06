@@ -12,7 +12,7 @@ namespace AutoCSer.TestCase.WebPerformance
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(SocketAsyncEventArgs));
+        private readonly static int maxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(SocketAsyncEventArgs));
         /// <summary>
         /// 套接字异步事件对象池首节点
         /// </summary>
@@ -32,7 +32,7 @@ namespace AutoCSer.TestCase.WebPerformance
         internal static SocketAsyncEventArgs Get()
         {
             SocketAsyncEventArgs value;
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref popLock);
+            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
             do
             {
                 if ((value = head) == null)
@@ -43,7 +43,7 @@ namespace AutoCSer.TestCase.WebPerformance
                     value.DisconnectReuseSocket = false;
                     return value;
                 }
-                if (Interlocked.CompareExchange(ref head, new UnionType { Value = value.UserToken }.SocketAsyncEventArgs, value) == value)
+                if (Interlocked.CompareExchange(ref head, (SocketAsyncEventArgs)value.UserToken, value) == value)
                 {
                     System.Threading.Interlocked.Exchange(ref popLock, 0);
                     System.Threading.Interlocked.Decrement(ref count);

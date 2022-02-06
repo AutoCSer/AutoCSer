@@ -23,7 +23,7 @@ namespace AutoCSer.Web
                     return names;
                 }
             }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
             protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
             {
                 switch (callIndex)
@@ -38,7 +38,7 @@ namespace AutoCSer.Web
                         return;
                 }
             }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.Memory.UnmanagedStream responseStream)
             {
                 switch (call.CallMethodIndex)
                 {
@@ -230,15 +230,15 @@ namespace AutoCSer.Web
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Items:");
+                _js_.Write(@"{Items:");
                     {
                         AutoCSer.Web.SearchServer.SearchItem[] _value1_ = Items;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"[");
+                            _js_.Write(@"[");
                     {
                         int _loopIndex1_ = _loopIndex_;
                         _loopIndex_ = 0;
@@ -247,59 +247,59 @@ namespace AutoCSer.Web
                             if (_loopIndex_ == 0)
                             {
                                 _js_.Write('"');
-                                _js_.WriteNotNull("@.AutoCSerWeb.SearchItem,,DataKey[Id,Type]Html[Title,Url]Indexs[[Key,Value]]Remote[ImageUrl]Text");
+                                _js_.Write("@.AutoCSerWeb.SearchItem,,DataKey[Id,Type]Html[Title,Url]Indexs[[Key,Value]]Remote[ImageUrl]Text");
                                 _js_.Write('"');
                             }
                             _js_.Write(',');
-                                _js_.WriteNotNull(@"[");
+                                _js_.Write(@"[");
                     {
                         AutoCSer.Web.SearchServer.DataKey _value3_ = _value2_.DataKey;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         int _value4_ = _value3_.Id;
-                                    _js_.WriteJson((int)_value4_);
+                                    _js_.WriteWebViewJson((int)_value4_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.Web.SearchServer.DataType _value4_ = _value3_.Type;
-                                    _js_.CopyJsonNotNull(_value4_.ToString());
+                                    _js_.WriteQuote(_value4_.ToString());
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.Web.SearchServer.Html _value3_ = _value2_.Html;
                                 if (_value3_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         string _value4_ = _value3_.Title;
                                 if (_value4_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value4_);
+                                    _js_.WriteWebViewJson(_value4_);
                                 }
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         string _value4_ = _value3_.Url;
                                 if (_value4_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value4_);
+                                    _js_.WriteWebViewJson(_value4_);
                                 }
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                                 }
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.KeyValue<int,int>[] _value3_ = _value2_.Indexs;
                                 if (_value3_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteNotNull(@"[[");
+                                    _js_.Write(@"[[");
                     {
                         int _loopIndex3_ = _loopIndex_;
                         _loopIndex_ = 0;
@@ -307,61 +307,61 @@ namespace AutoCSer.Web
                         {
                             if (_loopIndex_ != 0) _js_.Write(',');
                                 _js_.Write('[');
-                                _js_.WriteNotNull(@"");
+                                _js_.Write(@"");
                     {
                         int _value5_ = _value4_.Key;
-                                    _js_.WriteJson((int)_value5_);
+                                    _js_.WriteWebViewJson((int)_value5_);
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         int _value5_ = _value4_.Value;
-                                    _js_.WriteJson((int)_value5_);
+                                    _js_.WriteWebViewJson((int)_value5_);
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex3_;
                     }
-                    _js_.WriteNotNull(@"]]");
+                    _js_.Write(@"]]");
                                 }
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.Web.SearchServer.SearchItem.RemoteExtension _value3_ = _value2_.Remote;
-                                    _js_.WriteNotNull(@"[");
+                                    _js_.Write(@"[");
                     {
                         string _value4_ = _value3_.ImageUrl;
                                 if (_value4_ == null) _js_.WriteJsonNull();
                                 else
                                 {
-                                    _js_.WriteJson(_value4_);
+                                    _js_.WriteWebViewJson(_value4_);
                                 }
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                     }
-                    _js_.WriteNotNull(@",");
+                    _js_.Write(@",");
                     {
                         AutoCSer.SubString _value3_ = _value2_.Text;
-                                    _js_.WriteJson(_value3_);
+                                    _js_.WriteWebViewJson(_value3_);
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
                     }
-                    _js_.WriteNotNull(@"].FormatView()");
+                    _js_.Write(@"].FormatView()");
                         }
                     }
-                    _js_.WriteNotNull(@",Key:");
+                    _js_.Write(@",Key:");
                     {
                         string _value1_ = Key;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value1_);
+                                    _js_.WriteWebViewJson(_value1_);
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
@@ -421,18 +421,18 @@ namespace AutoCSer.Web
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{At:");
+                _js_.Write(@"{At:");
                     {
                         string _value1_ = At;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value1_);
+                                    _js_.WriteWebViewJson(_value1_);
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -497,7 +497,7 @@ namespace AutoCSer.Web
             /// <summary>
             /// 网站生成配置
             /// </summary>
-            internal new static readonly AutoCSer.Web.WebConfig WebConfig = new AutoCSer.Web.WebConfig();
+            internal new static readonly AutoCSer.Web.WebViewConfig WebConfig = new AutoCSer.Web.WebViewConfig();
             /// <summary>
             /// 网站生成配置
             /// </summary>
@@ -528,10 +528,10 @@ namespace AutoCSer.Web
             {
                 switch (ajaxInfo.MethodIndex)
                 {
-                    case 2:
+                    case 3:
                         loadView(AutoCSer.Web.Search/**/.Pop() ?? new AutoCSer.Web.Search(), ajaxInfo);
                         return;
-                    case 3:
+                    case 4:
                         loadView(AutoCSer.Web.WebView.Template/**/.Pop() ?? new AutoCSer.Web.WebView.Template(), ajaxInfo);
                         return;
                     default: return;
@@ -542,8 +542,9 @@ namespace AutoCSer.Web
                 switch (ajaxInfo.MethodIndex)
                 {
                     case 0: loadAjax(AutoCSer.Web.Ajax.Example/**/.Pop() ?? new AutoCSer.Web.Ajax.Example(), ajaxInfo); return;
-                    case 1: loadAjax(AutoCSer.Web.Ajax.TestCase/**/.Pop() ?? new AutoCSer.Web.Ajax.TestCase(), ajaxInfo); return;
-                    case 5 - 1: pubError(); return;
+                    case 1: loadAjax(AutoCSer.Web.Ajax.Example2/**/.Pop() ?? new AutoCSer.Web.Ajax.Example2(), ajaxInfo); return;
+                    case 2: loadAjax(AutoCSer.Web.Ajax.TestCase/**/.Pop() ?? new AutoCSer.Web.Ajax.TestCase(), ajaxInfo); return;
+                    case 6 - 1: pubError(); return;
                     default: return;
                 }
             }
@@ -569,6 +570,23 @@ namespace AutoCSer.Web
                         }
                         return false;
                     case 1:
+                        {
+                            _p1 inputParameter = new _p1();
+                            if (page.ParseParameter(ref inputParameter))
+                            {
+                                AutoCSer.Web.Ajax.Example2 ajax = (AutoCSer.Web.Ajax.Example2)page;
+                                _p2 outputParameter = new _p2 { };
+                                try
+                                {
+                                    
+                                    outputParameter.Return = ajax.GetCode(inputParameter.file);
+                                }
+                                finally { responseAjax(ajax, ref outputParameter); }
+                                return true;
+                            }
+                        }
+                        return false;
+                    case 2:
                         {
                             _p1 inputParameter = new _p1();
                             if (page.ParseParameter(ref inputParameter))
@@ -600,18 +618,20 @@ namespace AutoCSer.Web
             }
             static AjaxLoader()
             {
-                string[] names = new string[5];
-                AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[5];
+                string[] names = new string[6];
+                AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[6];
                 names[0] = "Example.GetCode";
-                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304 };
-                names[1] = "TestCase.GetCode";
-                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304 };
-                names[2] = "/Search.html";
-                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
-                names[3] = "/WebView/Template.html";
-                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
-                names[5 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
-                infos[5 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
+                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304 };
+                names[1] = "Example2.GetCode";
+                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304 };
+                names[2] = "TestCase.GetCode";
+                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304 };
+                names[3] = "/Search.html";
+                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                names[4] = "/WebView/Template.html";
+                infos[4] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                names[6 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
+                infos[6 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 6 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.Memory.BufferSize.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
                 CompileJsonSerialize(new System.Type[] { typeof(_p1), null }, new System.Type[] { typeof(_p2), null });
             }

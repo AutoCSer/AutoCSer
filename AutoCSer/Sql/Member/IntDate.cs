@@ -6,9 +6,9 @@ namespace AutoCSer.Sql.Member
     /// 整形日期 映射到 int
     /// </summary>
     [AutoCSer.Metadata.BoxSerialize]
-    [AutoCSer.Json.Serialize(Filter = AutoCSer.Metadata.MemberFilters.InstanceField)]
-    [AutoCSer.Json.Parse(Filter = AutoCSer.Metadata.MemberFilters.InstanceField)]
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.JsonSerialize(Filter = AutoCSer.Metadata.MemberFilters.InstanceField)]
+    [AutoCSer.JsonDeSerialize(Filter = AutoCSer.Metadata.MemberFilters.InstanceField)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     [AutoCSer.Sql.Member(DataType = typeof(int))]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct IntDate

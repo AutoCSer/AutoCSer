@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Memory;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer
@@ -57,7 +58,7 @@ namespace AutoCSer.CacheServer
         internal unsafe ServerDataStructure(CacheManager cache, Buffer buffer, ref DataStructureBuffer dataStructureBuffer) : base(dataStructureBuffer.CacheName, dataStructureBuffer.Identity, dataStructureBuffer.Data)
         {
             ReturnType = ReturnType.ServerDataStructureCreateError;
-            fixed (byte* dataFixed = NodeData.Array)
+            fixed (byte* dataFixed = NodeData.GetFixedBuffer())
             {
                 byte* start = dataFixed + NodeData.Start;
                 DataStructureParser nodeParser = new DataStructureParser(start, start + NodeData.Length);

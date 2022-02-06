@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -45,8 +45,8 @@ namespace AutoCSer.OpenAPI.Weixin
         /// </summary>
         /// <param name="serializer"></param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        [AutoCSer.Json.SerializeCustom]
-        private void toJson(AutoCSer.Json.Serializer serializer)
+        [AutoCSer.JsonSerializeCustom]
+        private void toJson(AutoCSer.JsonSerializer serializer)
         {
             serializer.CustomWriteFirstName("name");
             serializer.CallSerialize(name);

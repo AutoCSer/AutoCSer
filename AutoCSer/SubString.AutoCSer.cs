@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer
@@ -62,18 +62,6 @@ namespace AutoCSer
             Length = length;
         }
         /// <summary>
-        /// 字符子串
-        /// </summary>
-        /// <param name="startIndex">起始位置</param>
-        /// <param name="value">字符串</param>
-        /// <param name="length">长度</param>
-        internal SubString(int startIndex, int length, string value)
-        {
-            String = value;
-            Start = startIndex;
-            Length = length;
-        }
-        /// <summary>
         /// 修改起始位置
         /// </summary>
         /// <param name="count"></param>
@@ -123,74 +111,45 @@ namespace AutoCSer
         {
             if (Length != 0)
             {
-                fixed (char* valueFixed = String)
+                fixed (char* valueFixed = GetFixedBuffer())
                 {
-                    char* start = valueFixed + Start, find = AutoCSer.Extension.StringExtension.FindNotNull(start, start + Length, value);
+                    char* start = valueFixed + Start, find = AutoCSer.Extensions.StringExtension.FindNotNull(start, start + Length, value);
                     if (find != null) return (int)(find - start);
                 }
             }
             return -1;
         }
-        ///// <summary>
-        ///// 字符替换
-        ///// </summary>
-        ///// <param name="value">原字符</param>
-        ///// <param name="replaceChar">替换后的字符</param>
-        //public void Replace(char value, char replaceChar)
-        //{
-        //    if (Length != 0)
-        //    {
-        //        fixed (char* valueFixed = String)
+        //        /// <summary>
+        //        /// 字符替换
+        //        /// </summary>
+        //        /// <param name="value">原字符</param>
+        //        /// <param name="replaceChar">替换后的字符</param>
+        //        public void Replace(char value, char replaceChar)
         //        {
-        //            char* start = valueFixed + StartIndex, end = start + Length;
-        //            if (*--end == value)
+        //            if (Length != 0)
         //            {
-        //                do
+        //                fixed (char* valueFixed = GetFixedBuffer())
         //                {
-        //                    while (*start != value) ++start;
-        //                    *start = replaceChar;
-        //                    if (start == end) return;
-        //                    ++start;
+        //                    char* start = valueFixed + StartIndex, end = start + Length;
+        //                    if (*--end == value)
+        //                    {
+        //                        do
+        //                        {
+        //                            while (*start != value) ++start;
+        //                            *start = replaceChar;
+        //                            if (start == end) return;
+        //                            ++start;
+        //                        }
+        //                        while (true);
+        //                    }
+        //                    while (start != end)
+        //                    {
+        //                        if (*start == value) *start = replaceChar;
+        //                        ++start;
+        //                    }
         //                }
-        //                while (true);
-        //            }
-        //            while (start != end)
-        //            {
-        //                if (*start == value) *start = replaceChar;
-        //                ++start;
         //            }
         //        }
-        //    }
-        //}
-        /// <summary>
-        /// 分割字符串
-        /// </summary>
-        /// <param name="split">分割符</param>
-        /// <returns>字符子串集合</returns>
-        public LeftArray<SubString> Split(char split)
-        {
-            LeftArray<SubString> values = default(LeftArray<SubString>);
-            if (String != null)
-            {
-                fixed (char* valueFixed = String)
-                {
-                    char* last = valueFixed + Start, end = last + Length;
-                    for (char* start = last; start != end; )
-                    {
-                        if (*start == split)
-                        {
-                            values.PrepLength(1);
-                            values.Array[values.Length++].Set(String, (int)(last - valueFixed), (int)(start - last));
-                            last = ++start;
-                        }
-                        else ++start;
-                    }
-                    values.PrepLength(1);
-                    values.Array[values.Length++].Set(String, (int)(last - valueFixed), (int)(end - last));
-                }
-            }
-            return values;
-        }
         /// <summary>
         /// 比较字符串大小
         /// </summary>
@@ -212,7 +171,7 @@ namespace AutoCSer
                 }
                 return 1;
             }
-            fixed (char* stringFixed = String, otherStringFixed = other.String)
+            fixed (char* stringFixed = GetFixedBuffer(), otherStringFixed = other.GetFixedBuffer())
             {
                 char* start = stringFixed + Start, end = start + size, otherStart = otherStringFixed + other.Start;
                 do
@@ -225,26 +184,6 @@ namespace AutoCSer
             return Length - other.Length;
         }
         /// <summary>
-        /// 删除前后空格
-        /// </summary>
-        /// <returns>删除前后空格</returns>
-        public SubString Trim()
-        {
-            if (Length != 0)
-            {
-                fixed (char* valueFixed = String)
-                {
-                    char* start = valueFixed + Start, end = start + Length;
-                    start = AutoCSer.Extension.StringExtension.trimStartNotEmpty(start, end);
-                    if (start == null) return new SubString(string.Empty);
-                    end = AutoCSer.Extension.StringExtension.trimEndNotEmpty(start, end);
-                    if (end == null) return new SubString(string.Empty);
-                    return new SubString((int)(start - valueFixed), (int)(end - start), String);
-                }
-            }
-            return this;
-        }
-        /// <summary>
         /// 删除后缀
         /// </summary>
         /// <param name="value"></param>
@@ -253,7 +192,7 @@ namespace AutoCSer
         {
             if (Length != 0)
             {
-                fixed (char* valueFixed = String)
+                fixed (char* valueFixed = GetFixedBuffer())
                 {
                     char* start = valueFixed + Start, end = start + Length;
                     do
@@ -275,9 +214,9 @@ namespace AutoCSer
         {
             if (Length >= value.Length)
             {
-                fixed (char* valueFixed = String, cmpFixed = value)
+                fixed (char* valueFixed = GetFixedBuffer(), cmpFixed = value)
                 {
-                    return AutoCSer.Memory.EqualNotNull(valueFixed + Start, cmpFixed, value.Length << 1);
+                    return AutoCSer.Memory.Common.EqualNotNull(valueFixed + Start, cmpFixed, value.Length << 1);
                 }
             }
             return false;

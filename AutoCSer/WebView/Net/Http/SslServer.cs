@@ -1,9 +1,10 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using AutoCSer.Net.HttpRegister;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.Http
 {
@@ -63,7 +64,7 @@ namespace AutoCSer.Net.Http
             SslCertificate sslCertificate = HttpRegister.Server.Config.GetCertificate(domain, domainString, RegisterServer.TcpServer.Log);
             if (sslCertificate == null)
             {
-                RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, "安全证书获取失败 " + domainString);
+                RegisterServer.TcpServer.Log.Error("安全证书获取失败 " + domainString, LogLevel.Error | LogLevel.AutoCSer);
                 return false;
             }
             HashBytes domainKey;
@@ -121,7 +122,7 @@ namespace AutoCSer.Net.Http
                     }
                     catch (Exception error)
                     {
-                        RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                        RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                     socket = socket.Cancel();
                 }

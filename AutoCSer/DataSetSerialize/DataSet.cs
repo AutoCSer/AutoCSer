@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.DataSetSerialize
@@ -7,7 +7,7 @@ namespace AutoCSer.DataSetSerialize
     /// <summary>
     /// DataSet 包装
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false)]
     public sealed class DataSet
     {
         /// <summary>
@@ -83,7 +83,7 @@ namespace AutoCSer.DataSetSerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static byte[] Serialize(System.Data.DataSet set)
         {
-            return AutoCSer.BinarySerialize.Serializer.Serialize((DataSet)set);
+            return AutoCSer.BinarySerializer.Serialize((DataSet)set);
         }
         /// <summary>
         /// DataSet拆包
@@ -108,7 +108,7 @@ namespace AutoCSer.DataSetSerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static System.Data.DataSet DeSerialize(byte[] data)
         {
-            return (System.Data.DataSet)AutoCSer.BinarySerialize.DeSerializer.DeSerialize<DataSet>(data);
+            return (System.Data.DataSet)AutoCSer.BinaryDeSerializer.DeSerialize<DataSet>(data);
         }
     }
 }

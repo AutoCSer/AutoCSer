@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Threading;
 using AutoCSer.Metadata;
 using MySql.Data.MySqlClient;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Sql.MySql
 {
@@ -42,7 +43,7 @@ namespace AutoCSer.Sql.MySql
         /// <returns>SQL命令</returns>
         protected override DbCommand getCommand(DbConnection connection, string sql, CommandType commandType)
         {
-            DbCommand command = new MySqlCommand(sql, new UnionType { Value = connection }.MySqlConnection);
+            DbCommand command = new MySqlCommand(sql, new UnionType.SqlConnection { Object = connection }.Value);
             command.CommandType = commandType;
             return command;
         }
@@ -53,7 +54,7 @@ namespace AutoCSer.Sql.MySql
         /// <returns>数据适配器</returns>
         protected override DbDataAdapter getAdapter(DbCommand command)
         {
-            return new MySqlDataAdapter(new UnionType { Value = command }.MySqlCommand);
+            return new MySqlDataAdapter(new UnionType.SqlCommand { Object = command }.Value);
         }
         /// <summary>
         /// 获取表格名称集合
@@ -61,7 +62,7 @@ namespace AutoCSer.Sql.MySql
         /// <returns></returns>
         public override LeftArray<string> GetTableNames()
         {
-            LeftArray<string> names = new LeftArray<string>();
+            LeftArray<string> names = new LeftArray<string>(0);
             using (DbConnection dbConnection = GetConnection())
             using (DbCommand command = getCommand(dbConnection, "show tables;", CommandType.Text))
             using (DbDataReader reader = command.ExecuteReader(CommandBehavior.Default))
@@ -128,33 +129,34 @@ namespace AutoCSer.Sql.MySql
         internal override void CreateIndex(DbConnection connection, string tableName, ColumnCollection columnCollection)
         {
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
             string sql;
-            byte* buffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
-                sqlStream.WriteNotNull(@"
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
+                sqlStream.Write(@"
 create index`");
                 AppendIndexName(sqlStream, tableName, columnCollection);
-                sqlStream.WriteNotNull("`on`");
-                sqlStream.WriteNotNull(tableName);
-                sqlStream.WriteNotNull("`(");
+                sqlStream.Write("`on`");
+                sqlStream.Write(tableName);
+                sqlStream.Write("`(");
                 bool isNext = false;
                 foreach (Column column in columnCollection.Columns)
                 {
                     if (isNext) sqlStream.Write(',');
                     sqlStream.Write('`');
-                    sqlStream.WriteNotNull(column.Name);
+                    sqlStream.Write(column.Name);
                     sqlStream.Write('`');
                     isNext = true;
                 }
-                sqlStream.WriteNotNull(");");
+                sqlStream.Write(");");
                 sql = sqlStream.ToString();
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -194,7 +196,7 @@ show index from `" + tableName + @"`;", CommandType.Text))
                 {
                     Column identity = null;
                     Dictionary<HashString, Column> columns = DictionaryCreator.CreateHashString<Column>();
-                    LeftArray<Column> primaryKeys = default(LeftArray<Column>);
+                    LeftArray<Column> primaryKeys = new LeftArray<Column>(0);
                     Dictionary<HashString, ListArray<IndexColumn>> indexs = null;
                     while (reader.Read())
                     {
@@ -247,7 +249,7 @@ show index from `" + tableName + @"`;", CommandType.Text))
                         {
                             Name = index.Key.ToString(),
                             Type = index.Value[0].Type,
-                            Columns = index.Value.ToLeftArray().GetSort(value => value.Index).getArray(column => column.Column)
+                            Columns = index.Value.Array.GetSort(value => value.Index).getArray(column => column.Column)
                         })
                     };
                 }
@@ -263,14 +265,15 @@ show index from `" + tableName + @"`;", CommandType.Text))
         {
             string tableName = table.Columns.Name, sql;
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
-                sqlStream.WriteNotNull("create table`");
-                sqlStream.WriteNotNull(tableName);
-                sqlStream.WriteNotNull("`(");
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
+                sqlStream.Write("create table`");
+                sqlStream.Write(tableName);
+                sqlStream.Write("`(");
                 bool isNext = false;
                 foreach (Column column in table.Columns.Columns)
                 {
@@ -282,11 +285,11 @@ show index from `" + tableName + @"`;", CommandType.Text))
                 if (primaryKey != null && primaryKey.Columns.length() != 0)
                 {
                     isNext = false;
-                    sqlStream.WriteNotNull(",primary key(");
+                    sqlStream.Write(",primary key(");
                     foreach (Column column in primaryKey.Columns)
                     {
                         if (isNext) sqlStream.Write(',');
-                        sqlStream.WriteNotNull(column.Name);
+                        sqlStream.Write(column.Name);
                         isNext = true;
                     }
                     sqlStream.Write(')');
@@ -297,8 +300,8 @@ show index from `" + tableName + @"`;", CommandType.Text))
                     {
                         if (columns != null && columns.Columns.length() != 0)
                         {
-                            if (columns.Type == ColumnCollectionType.UniqueIndex) sqlStream.WriteNotNull(@"unique index ");
-                            else sqlStream.WriteNotNull(@"
+                            if (columns.Type == ColumnCollectionType.UniqueIndex) sqlStream.Write(@"unique index ");
+                            else sqlStream.Write(@"
 index ");
                             AppendIndexName(sqlStream, tableName, columns);
                             sqlStream.Write('(');
@@ -307,7 +310,7 @@ index ");
                             {
                                 if (isNext) sqlStream.Write(',');
                                 sqlStream.Write('`');
-                                sqlStream.WriteNotNull(column.Name);
+                                sqlStream.Write(column.Name);
                                 sqlStream.Write('`');
                                 isNext = true;
                             }
@@ -315,12 +318,12 @@ index ");
                         }
                     }
                 }
-                sqlStream.WriteNotNull(");");
+                sqlStream.Write(");");
                 sql = sqlStream.ToString();
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -334,24 +337,24 @@ index ");
         private void appendColumn(CharStream sqlStream, Column column)
         {
             sqlStream.Write('`');
-            sqlStream.WriteNotNull(column.Name);
-            sqlStream.WriteNotNull("` ");
+            sqlStream.Write(column.Name);
+            sqlStream.Write("` ");
             if (column.DbType == SqlDbType.Text || column.DbType == SqlDbType.NText)
             {
-                if (column.Size <= 65535) sqlStream.WriteNotNull("TEXT");
-                else if (column.Size <= 16777215) sqlStream.WriteNotNull("MEDIUMTEXT");
-                else sqlStream.WriteNotNull("LONGTEXT");
-                sqlStream.WriteNotNull(column.DbType == SqlDbType.NText ? " UNICODE" : " ASCII");
+                if (column.Size <= 65535) sqlStream.Write("TEXT");
+                else if (column.Size <= 16777215) sqlStream.Write("MEDIUMTEXT");
+                else sqlStream.Write("LONGTEXT");
+                sqlStream.Write(column.DbType == SqlDbType.NText ? " UNICODE" : " ASCII");
             }
             else
             {
-                sqlStream.WriteNotNull(column.DbType.getSqlTypeName());
+                sqlStream.Write(column.DbType.getSqlTypeName());
                 if (column.DbType.isDecimalType() && column.Size != 0)
                 {
                     sqlStream.Write('(');
-                    AutoCSer.Extension.Number.ToString(column.Size >> 8, sqlStream);
+                    AutoCSer.Extensions.NumberExtension.ToString(column.Size >> 8, sqlStream);
                     sqlStream.Write(',');
-                    AutoCSer.Extension.Number.ToString((column.Size) & 0xff, sqlStream);
+                    AutoCSer.Extensions.NumberExtension.ToString((column.Size) & 0xff, sqlStream);
                     sqlStream.Write(')');
                 } 
                 if (column.DbType.isStringType())
@@ -359,21 +362,21 @@ index ");
                     if (column.Size != int.MaxValue)
                     {
                         sqlStream.Write('(');
-                        sqlStream.WriteNotNull(column.Size.toString());
+                        sqlStream.Write(column.Size.toString());
                         sqlStream.Write(')');
                     }
-                    sqlStream.WriteNotNull(column.DbType == SqlDbType.NChar || column.DbType == SqlDbType.NVarChar ? " UNICODE" : " ASCII");
+                    sqlStream.Write(column.DbType == SqlDbType.NChar || column.DbType == SqlDbType.NVarChar ? " UNICODE" : " ASCII");
                 }
             }
             if (column.DefaultValue != null)
             {
-                sqlStream.WriteNotNull(" default ");
-                sqlStream.WriteNotNull(column.DefaultValue);
+                sqlStream.Write(" default ");
+                sqlStream.Write(column.DefaultValue);
             }
-            if (!column.IsNull) sqlStream.WriteNotNull(" not null");
+            if (!column.IsNull) sqlStream.Write(" not null");
             if (!string.IsNullOrEmpty(column.Remark))
             {
-                sqlStream.WriteNotNull(" comment '");
+                sqlStream.Write(" comment '");
                 constantConverter.Convert(sqlStream, column.Remark);
                 sqlStream.Write('\'');
             }
@@ -387,26 +390,27 @@ index ");
         {
             string tableName = columnCollection.Name, sql;
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 foreach (Column column in columnCollection.Columns)
                 {
-                    sqlStream.WriteNotNull(@"
+                    sqlStream.Write(@"
 alter table `");
-                    sqlStream.WriteNotNull(tableName);
-                    sqlStream.WriteNotNull(@"` drop column ");
+                    sqlStream.Write(tableName);
+                    sqlStream.Write(@"` drop column ");
                     sqlStream.Write('`');
-                    sqlStream.WriteNotNull(column.Name);
-                    sqlStream.WriteNotNull("`;");
+                    sqlStream.Write(column.Name);
+                    sqlStream.Write("`;");
                 }
                 sql = sqlStream.ToString();
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -421,18 +425,19 @@ alter table `");
         {
             string tableName = columnCollection.Name, sql;
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
             bool isUpdateValue = false;
-            byte* buffer = null;
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 foreach (Column column in columnCollection.Columns)
                 {
-                    sqlStream.WriteNotNull(@"
+                    sqlStream.Write(@"
 alter table `");
-                    sqlStream.WriteNotNull(tableName);
-                    sqlStream.WriteNotNull(@"` add ");
+                    sqlStream.Write(tableName);
+                    sqlStream.Write(@"` add ");
                     if (!column.IsNull && column.DefaultValue == null)
                     {
                         column.DefaultValue = column.DbType.getDefaultValue();
@@ -444,18 +449,18 @@ alter table `");
                 }
                 if (isUpdateValue)
                 {
-                    sqlStream.WriteNotNull(@"
+                    sqlStream.Write(@"
 update `");
-                    sqlStream.WriteNotNull(tableName);
-                    sqlStream.WriteNotNull("` set ");
+                    sqlStream.Write(tableName);
+                    sqlStream.Write("` set ");
                     foreach (Column column in columnCollection.Columns)
                     {
                         if (column.UpdateValue != null)
                         {
                             if (!isUpdateValue) sqlStream.Write(',');
-                            sqlStream.WriteNotNull(column.Name);
+                            sqlStream.Write(column.Name);
                             sqlStream.Write('=');
-                            sqlStream.WriteNotNull(column.UpdateValue);
+                            sqlStream.Write(column.UpdateValue);
                             isUpdateValue = false;
                         }
                     }
@@ -465,7 +470,7 @@ update `");
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -484,33 +489,34 @@ update `");
             (Sql.Table<valueType, modelType> sqlTool, ref CreateSelectQuery<modelType> createQuery, ref SelectQuery<modelType> query)
         {
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
-                sqlStream.WriteNotNull("select ");
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
+                sqlStream.Write("select ");
                 if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
                 else sqlStream.Write('*');
-                sqlStream.WriteNotNull(" from `");
-                sqlStream.WriteNotNull(sqlTool.TableName);
+                sqlStream.Write(" from `");
+                sqlStream.Write(sqlTool.TableName);
                 sqlStream.Write('`');
                 sqlStream.Write(' ');
                 createQuery.WriteWhere(sqlTool, sqlStream, ref query);
                 createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
                 if ((createQuery.GetCount | query.SkipCount) != 0)
                 {
-                    sqlStream.WriteNotNull(" limit ");
-                    AutoCSer.Extension.Number.ToString(query.SkipCount, sqlStream);
+                    sqlStream.Write(" limit ");
+                    AutoCSer.Extensions.NumberExtension.ToString(query.SkipCount, sqlStream);
                     sqlStream.Write(',');
-                    AutoCSer.Extension.Number.ToString(createQuery.GetCount, sqlStream);
+                    AutoCSer.Extensions.NumberExtension.ToString(createQuery.GetCount, sqlStream);
                 }
                 sqlStream.Write(';');
                 query.Sql = sqlStream.ToString();
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -530,17 +536,18 @@ update `");
             query.MemberMap = DataModel.Model<modelType>.CopyMemberMap;
             if (memberMap != null && !memberMap.IsDefault) query.MemberMap.And(memberMap);
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 getByIdentity(sqlStream, sqlTool.TableName, value, query.MemberMap);
                 query.Sql = sqlStream.ToString();
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -556,15 +563,15 @@ update `");
         private void getByIdentity<modelType>(CharStream sqlStream, string tableName, modelType value, MemberMap<modelType> memberMap)
             where modelType : class
         {
-            sqlStream.WriteNotNull("select ");
+            sqlStream.Write("select ");
             DataModel.Model<modelType>.GetNames(sqlStream, memberMap, constantConverter);
-            sqlStream.WriteNotNull(" from `");
-            sqlStream.WriteNotNull(tableName);
-            sqlStream.WriteNotNull("` where ");
+            sqlStream.Write(" from `");
+            sqlStream.Write(tableName);
+            sqlStream.Write("` where ");
             constantConverter.ConvertNameToSqlStream(sqlStream, DataModel.Model<modelType>.Identity.FieldInfo.Name);
             sqlStream.Write('=');
-            AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
-            sqlStream.WriteNotNull(" limit 0,1;");
+            AutoCSer.Extensions.NumberExtension.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
+            sqlStream.Write(" limit 0,1;");
         }
         /// <summary>
         /// 查询对象
@@ -581,17 +588,18 @@ update `");
             query.MemberMap = DataModel.Model<modelType>.CopyMemberMap;
             if (memberMap != null && !memberMap.IsDefault) query.MemberMap.And(memberMap);
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 getByPrimaryKey(sqlStream, sqlTool.TableName, value, query.MemberMap);
                 query.Sql = sqlStream.ToString();
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -607,13 +615,13 @@ update `");
         private void getByPrimaryKey<modelType>(CharStream sqlStream, string tableName, modelType value, MemberMap<modelType> memberMap)
             where modelType : class
         {
-            sqlStream.WriteNotNull("select ");
+            sqlStream.Write("select ");
             DataModel.Model<modelType>.GetNames(sqlStream, memberMap, constantConverter);
-            sqlStream.WriteNotNull(" from `");
-            sqlStream.WriteNotNull(tableName);
-            sqlStream.WriteNotNull("` where ");
+            sqlStream.Write(" from `");
+            sqlStream.Write(tableName);
+            sqlStream.Write("` where ");
             DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, constantConverter);
-            sqlStream.WriteNotNull(" limit 0,1;");
+            sqlStream.Write(" limit 0,1;");
         }
         /// <summary>
         /// 更新数据
@@ -625,35 +633,36 @@ update `");
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns></returns>
-        internal override bool Update<valueType, modelType>
+        internal override ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
         {
             if (query.MemberMap == null) query.MemberMap = sqlTool.GetSelectMemberMap(memberMap);
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 if (DataModel.Model<modelType>.Identity != null)
                 {
                     if (!query.NotQuery)
                     {
                         getByIdentity(sqlStream, sqlTool.TableName, value, query.MemberMap);
                         query.Sql = sqlStream.ToString();
-                        sqlStream.ByteSize = 0;
+                        sqlStream.Data.CurrentIndex = 0;
                     }
-                    sqlStream.SimpleWriteNotNull(" update `");
-                    sqlStream.SimpleWriteNotNull(sqlTool.TableName);
-                    sqlStream.SimpleWriteNotNull("` set ");
+                    sqlStream.SimpleWrite(" update `");
+                    sqlStream.SimpleWrite(sqlTool.TableName);
+                    sqlStream.SimpleWrite("` set ");
                     DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, constantConverter, sqlTool);
-                    sqlStream.SimpleWriteNotNull(" where ");
+                    sqlStream.SimpleWrite(" where ");
                     constantConverter.ConvertNameToSqlStream(sqlStream, DataModel.Model<modelType>.Identity.FieldInfo.Name);
                     sqlStream.Write('=');
-                    AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
+                    AutoCSer.Extensions.NumberExtension.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
                     sqlStream.Write(';');
                     query.UpdateSql = sqlStream.ToString();
-                    return true;
+                    return ReturnType.Success;
                 }
                 if (DataModel.Model<modelType>.PrimaryKeys.Length != 0)
                 {
@@ -661,26 +670,26 @@ update `");
                     {
                         getByPrimaryKey(sqlStream, sqlTool.TableName, value, query.MemberMap);
                         query.Sql = sqlStream.ToString();
-                        sqlStream.ByteSize = 0;
+                        sqlStream.Data.CurrentIndex = 0;
                     }
-                    sqlStream.WriteNotNull(" update `");
-                    sqlStream.WriteNotNull(sqlTool.TableName);
-                    sqlStream.WriteNotNull("` set ");
+                    sqlStream.Write(" update `");
+                    sqlStream.Write(sqlTool.TableName);
+                    sqlStream.Write("` set ");
                     DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, constantConverter, sqlTool);
-                    sqlStream.WriteNotNull(" where ");
+                    sqlStream.Write(" where ");
                     DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, constantConverter);
                     sqlStream.Write(';');
                     query.UpdateSql = sqlStream.ToString();
-                    return true;
+                    return ReturnType.Success;
                 }
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
-            return false;
+            return ReturnType.NotFoundPrimaryKey;
         }
         /// <summary>
         /// 更新数据
@@ -693,28 +702,44 @@ update `");
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns>更新是否成功</returns>
-        internal override bool Update<valueType, modelType>
+        internal override ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
         {
             if (query.NotQuery)
             {
-                if (executeNonQuery(ref connection, query.UpdateSql) > 0)
+                ReturnValue<int> returnValue = executeNonQuery(ref connection, query.UpdateSql);
+                if (returnValue.ReturnType == ReturnType.Success)
                 {
-                    sqlTool.CallOnUpdated(value, null, memberMap);
-                    return true;
+                    if (returnValue.Value > 0)
+                    {
+                        sqlTool.CallOnUpdated(value, null, memberMap);
+                        return ReturnType.Success;
+                    }
+                    return ReturnType.NotFoundData;
                 }
+                return returnValue.ReturnType;
             }
             else
             {
                 GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = query.MemberMap, Sql = query.Sql };
-                valueType oldValue = AutoCSer.Emit.Constructor<valueType>.New();
-                if (Get(sqlTool, ref connection, oldValue, ref getQuery) && executeNonQuery(connection, query.UpdateSql) > 0 && Get(sqlTool, ref connection, value, ref getQuery))
+                valueType oldValue = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
+                ReturnType returnType = Get(sqlTool, ref connection, oldValue, ref getQuery);
+                if (returnType == ReturnType.Success)
                 {
-                    sqlTool.CallOnUpdated(value, oldValue, memberMap);
-                    return true;
+                    if (executeNonQuery(connection, query.UpdateSql) > 0)
+                    {
+                        returnType = Get(sqlTool, ref connection, value, ref getQuery);
+                        if (returnType == ReturnType.Success)
+                        {
+                            sqlTool.CallOnUpdated(value, oldValue, memberMap);
+                            return ReturnType.Success;
+                        }
+                        return returnType;
+                    }
+                    return ReturnType.NotFoundData;
                 }
+                return returnType;
             }
-            return false;
         }
         /// <summary>
         /// 更新数据
@@ -727,15 +752,19 @@ update `");
         /// <param name="memberMap">成员位图</param>
         /// <param name="query">查询信息</param>
         /// <returns>更新是否成功</returns>
-        internal override bool Update<valueType, modelType>
+        internal override ReturnType Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
         {
-            if (sqlTool.CallOnUpdate(value, memberMap) && executeNonQuery(transaction, query.UpdateSql) > 0)
+            if (sqlTool.CallOnUpdate(value, memberMap))
             {
-                sqlTool.CallOnUpdated(transaction, value, memberMap);
-                return true;
+                if (executeNonQuery(transaction, query.UpdateSql) > 0)
+                {
+                    sqlTool.CallOnUpdated(transaction, value, memberMap);
+                    return ReturnType.Success;
+                }
+                return ReturnType.ExecuteFailed;
             }
-            return false;
+            return ReturnType.EventCancel;
         }
 
         /// <summary>
@@ -750,44 +779,45 @@ update `");
         internal override void insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, MemberMap<modelType> memberMap, ref InsertQuery query)
         {
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 if (DataModel.Model<modelType>.Identity != null)
                 {
                     long identity;
                     if (sqlTool.Attribute.IsSetIdentity) DataModel.Model<modelType>.SetIdentity(value, identity = sqlTool.NextIdentity);
                     else sqlTool.Identity64 = identity = DataModel.Model<modelType>.GetIdentity(value);
-                    sqlStream.WriteNotNull("insert into`");
-                    sqlStream.WriteNotNull(sqlTool.TableName);
-                    sqlStream.WriteNotNull("`(");
+                    sqlStream.Write("insert into`");
+                    sqlStream.Write(sqlTool.TableName);
+                    sqlStream.Write("`(");
                     DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap, constantConverter);
-                    sqlStream.WriteNotNull(")values(");
+                    sqlStream.Write(")values(");
                     DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, constantConverter, sqlTool);
-                    sqlStream.WriteNotNull(");");
+                    sqlStream.Write(");");
                     query.InsertSql = sqlStream.ToString();
                     if (!query.NotQuery)
                     {
-                        sqlStream.ByteSize = 0;
+                        sqlStream.Data.CurrentIndex = 0;
                         getByIdentity(sqlStream, sqlTool.TableName, value, memberMap);
                         query.Sql = sqlStream.ToString();
                     }
                 }
                 else
                 {
-                    sqlStream.WriteNotNull("insert into`");
-                    sqlStream.WriteNotNull(sqlTool.TableName);
-                    sqlStream.WriteNotNull("`(");
+                    sqlStream.Write("insert into`");
+                    sqlStream.Write(sqlTool.TableName);
+                    sqlStream.Write("`(");
                     DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap, constantConverter);
-                    sqlStream.WriteNotNull(")values(");
+                    sqlStream.Write(")values(");
                     DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, constantConverter, sqlTool);
-                    sqlStream.WriteNotNull(");");
+                    sqlStream.Write(");");
                     query.InsertSql = sqlStream.ToString();
                     if (!query.NotQuery && DataModel.Model<modelType>.PrimaryKeys.Length != 0)
                     {
-                        sqlStream.ByteSize = 0;
+                        sqlStream.Data.CurrentIndex = 0;
                         getByPrimaryKey(sqlStream, sqlTool.TableName, value, memberMap);
                         query.Sql = sqlStream.ToString();
                     }
@@ -795,7 +825,7 @@ update `");
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
@@ -810,19 +840,25 @@ update `");
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+        internal override ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
         {
-            if (executeNonQuery(ref connection, query.InsertSql) > 0)
+            ReturnValue<int> returnValue = executeNonQuery(ref connection, query.InsertSql);
+            if (returnValue.ReturnType == ReturnType.Success)
             {
-                if ((DataModel.Model<modelType>.Identity != null || DataModel.Model<modelType>.PrimaryKeys.Length != 0) && !query.NotQuery)
+                if (returnValue.Value > 0)
                 {
-                    GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = DataModel.Model<modelType>.MemberMap, Sql = query.Sql };
-                    if (!Get(sqlTool, ref connection, value, ref getQuery)) return false;
+                    if ((DataModel.Model<modelType>.Identity != null || DataModel.Model<modelType>.PrimaryKeys.Length != 0) && !query.NotQuery)
+                    {
+                        GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = DataModel.Model<modelType>.MemberMap, Sql = query.Sql };
+                        ReturnType returnType = Get(sqlTool, ref connection, value, ref getQuery);
+                        if (returnType != ReturnType.Success) return returnType;
+                    }
+                    sqlTool.CallOnInserted(value);
+                    return ReturnType.Success;
                 }
-                sqlTool.CallOnInserted(value);
-                return true;
+                return ReturnType.ExecuteFailed;
             }
-            return false;
+            return returnValue.ReturnType;
         }
         /// <summary>
         /// 添加数据
@@ -834,14 +870,18 @@ update `");
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        internal override ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
         {
-            if (sqlTool.CallOnInsert(value) && executeNonQuery(transaction, query.InsertSql) > 0)
+            if (sqlTool.CallOnInsert(value))
             {
-                sqlTool.CallOnInserted(transaction, value);
-                return true;
+                if (executeNonQuery(transaction, query.InsertSql) > 0)
+                {
+                    sqlTool.CallOnInserted(transaction, value);
+                    return ReturnType.Success;
+                }
+                return ReturnType.ExecuteFailed;
             }
-            return false;
+            return ReturnType.EventCancel;
         }
 
         /// <summary>
@@ -853,7 +893,7 @@ update `");
         /// <param name="connection">SQL连接</param>
         /// <param name="array">数据数组</param>
         /// <returns></returns>
-        internal override SubArray<valueType> Insert<valueType, modelType>(Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
+        internal override ReturnValue<SubArray<valueType>> Insert<valueType, modelType>(Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
         {
             MemberMap<modelType> memberMap = MemberMap<modelType>.Default;
             InsertQuery query = new InsertQuery { NotQuery = true };
@@ -861,7 +901,7 @@ update `");
             foreach (valueType value in array)
             {
                 insert(sqlTool, value, memberMap, ref query);
-                if (Insert(sqlTool, ref connection, value, ref query)) newArray.UnsafeAdd(value);
+                if (Insert(sqlTool, ref connection, value, ref query) == ReturnType.Success) newArray.UnsafeAdd(value);
             }
             return new SubArray<valueType>(ref newArray);
         }
@@ -874,7 +914,7 @@ update `");
         /// <param name="transaction">事务操作</param>
         /// <param name="array">数据数组</param>
         /// <returns></returns>
-        internal override SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
+        internal override ReturnType Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
         {
             if (sqlTool.CallOnInsert(ref array))
             {
@@ -883,12 +923,12 @@ update `");
                 foreach (valueType value in array)
                 {
                     insert(sqlTool, value, memberMap, ref query);
-                    if (executeNonQuery(transaction, query.InsertSql) <= 0) return default(SubArray<valueType>);
+                    if (executeNonQuery(transaction, query.InsertSql) <= 0) return ReturnType.ExecuteFailed;
                 }
                 sqlTool.CallOnInserted(transaction, array);
-                return array;
+                return ReturnType.Success;
             }
-            return default(SubArray<valueType>);
+            return ReturnType.EventCancel;
         }
 
         /// <summary>
@@ -900,56 +940,57 @@ update `");
         /// <param name="value">删除数据</param>
         /// <param name="query">删除数据查询信息</param>
         /// <returns></returns>
-        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, ref InsertQuery query)
+        internal override ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, valueType value, ref InsertQuery query)
         {
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 if (DataModel.Model<modelType>.Identity != null)
                 {
-                    sqlStream.WriteNotNull("delete from `");
-                    sqlStream.WriteNotNull(sqlTool.TableName);
-                    sqlStream.WriteNotNull("` where ");
+                    sqlStream.Write("delete from `");
+                    sqlStream.Write(sqlTool.TableName);
+                    sqlStream.Write("` where ");
                     constantConverter.ConvertNameToSqlStream(sqlStream, DataModel.Model<modelType>.Identity.FieldInfo.Name);
                     sqlStream.Write('=');
-                    AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
+                    AutoCSer.Extensions.NumberExtension.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
                     sqlStream.Write(';');
                     query.InsertSql = sqlStream.ToString();
                     if (!query.NotQuery)
                     {
-                        sqlStream.ByteSize = 0;
+                        sqlStream.Data.CurrentIndex = 0;
                         getByIdentity(sqlStream, sqlTool.TableName, value, sqlTool.SelectMemberMap);
                         query.Sql = sqlStream.ToString();
                     }
-                    return true;
+                    return ReturnType.Success;
                 }
                 else if (DataModel.Model<modelType>.PrimaryKeys.Length != 0)
                 {
-                    sqlStream.WriteNotNull("delete from `");
-                    sqlStream.WriteNotNull(sqlTool.TableName);
-                    sqlStream.WriteNotNull("` where ");
+                    sqlStream.Write("delete from `");
+                    sqlStream.Write(sqlTool.TableName);
+                    sqlStream.Write("` where ");
                     DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, constantConverter);
                     sqlStream.Write(';');
                     query.InsertSql = sqlStream.ToString();
                     if (!query.NotQuery)
                     {
-                        sqlStream.ByteSize = 0;
+                        sqlStream.Data.CurrentIndex = 0;
                         getByPrimaryKey(sqlStream, sqlTool.TableName, value, sqlTool.SelectMemberMap);
                         query.Sql = sqlStream.ToString();
                     }
-                    return true;
+                    return ReturnType.Success;
                 }
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }
-            return false;
+            return ReturnType.NotFoundPrimaryKey;
         }
         /// <summary>
         /// 删除数据
@@ -961,26 +1002,37 @@ update `");
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+        internal override ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
         {
             if (query.NotQuery)
             {
-                if (executeNonQuery(ref connection, query.InsertSql) > 0)
+                ReturnValue<int> returnValue = executeNonQuery(ref connection, query.InsertSql);
+                if (returnValue.ReturnType == ReturnType.Success)
                 {
-                    sqlTool.CallOnDeleted(value);
-                    return true;
+                    if (returnValue.Value > 0)
+                    {
+                        sqlTool.CallOnDeleted(value);
+                        return ReturnType.Success;
+                    }
+                    return ReturnType.NotFoundData;
                 }
+                return returnValue.ReturnType;
             }
             else
             {
                 GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = sqlTool.SelectMemberMap, Sql = query.Sql };
-                if (Get(sqlTool, ref connection, value, ref getQuery) && executeNonQuery(connection, query.InsertSql) > 0)
+                ReturnType returnType = Get(sqlTool, ref connection, value, ref getQuery);
+                if (returnType == ReturnType.Success )
                 {
-                    sqlTool.CallOnDeleted(value);
-                    return true;
+                    if (executeNonQuery(connection, query.InsertSql) > 0)
+                    {
+                        sqlTool.CallOnDeleted(value);
+                        return ReturnType.Success;
+                    }
+                    return ReturnType.NotFoundData;
                 }
+                return returnType;
             }
-            return false;
         }
         /// <summary>
         /// 删除数据
@@ -992,14 +1044,18 @@ update `");
         /// <param name="value">添加数据</param>
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
-        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        internal override ReturnType Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
         {
-            if (sqlTool.CallOnDelete(value) && executeNonQuery(transaction, query.InsertSql) > 0)
+            if (sqlTool.CallOnDelete(value))
             {
-                sqlTool.CallOnDeleted(transaction, value);
-                return true;
+                if (executeNonQuery(transaction, query.InsertSql) > 0)
+                {
+                    sqlTool.CallOnDeleted(transaction, value);
+                    return ReturnType.Success;
+                }
+                return ReturnType.NotFoundData;
             }
-            return false;
+            return ReturnType.EventCancel;
         }
     }
 }

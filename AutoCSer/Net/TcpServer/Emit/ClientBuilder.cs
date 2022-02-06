@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpServer.Emit
 {
@@ -92,7 +92,11 @@ namespace AutoCSer.Net.TcpServer.Emit
                             {
                                 #region AutoCSer.Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName> _awaiter_ = new AutoCSer.Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName();
                                 awaiterReturnLocalBuilder = methodGenerator.DeclareLocal(method.MethodInfo.ReturnType);
-                                methodGenerator.Emit(OpCodes.Newobj, method.ReturnType == typeof(void) ? AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterConstructor : method.MethodInfo.ReturnType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null));
+                                if (method.ReturnType == typeof(void)) methodGenerator.call(AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.CreateAwaiterMethod);
+                                else
+                                {
+                                    methodGenerator.Emit(OpCodes.Newobj, method.MethodInfo.ReturnType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, EmptyArray<Type>.Array, null));
+                                }
                                 methodGenerator.Emit(OpCodes.Stloc_S, awaiterReturnLocalBuilder);
                                 #endregion
                                 awaiterReturnLabel = methodGenerator.DefineLabel();
@@ -293,9 +297,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                                         methodGenerator.Emit(OpCodes.Ldarg_0);
                                         methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
                                         methodGenerator.ldarg(parameters.Length);
-                                        //if (!method.IsClientAsynchronousCallback) methodGenerator.call(typeof(ClientCallback<>).MakeGenericType(method.ReturnType).GetMethod(ClientMetadata.ClientCallbackGetMethod.Name, BindingFlags.Public | BindingFlags.Static));
                                         if (!method.IsClientAsynchronousCallback) methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpClientCallbackGetMethod);
-                                        //methodGenerator.call(Metadata.ClientGetCallbackMethod.MakeGenericMethod(method.ReturnType, method.OutputParameterType.Type));
                                         methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ClientGetCallbackMethod);
                                         methodGenerator.Emit(OpCodes.Stloc_S, onOuputLocalBuilder);
                                         #endregion
@@ -568,7 +570,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                                             methodGenerator.Emit(OpCodes.Ldsfld, ClientMetadata.ReturnTypeStringsField);
                                             methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
                                             methodGenerator.Emit(OpCodes.Ldelem_Ref);
-                                            methodGenerator.Emit(OpCodes.Newobj, AutoCSer.Extension.EmitGenerator.StringExceptionConstructor);
+                                            methodGenerator.call(AutoCSer.Extensions.EmitGenerator.NewExceptionStringMethodInfo);
                                             methodGenerator.Emit(OpCodes.Throw);
                                             #endregion
                                         }
@@ -659,7 +661,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                                             methodGenerator.Emit(OpCodes.Ldsfld, ClientMetadata.ReturnTypeStringsField);
                                             methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
                                             methodGenerator.Emit(OpCodes.Ldelem_Ref);
-                                            methodGenerator.Emit(OpCodes.Newobj, AutoCSer.Extension.EmitGenerator.StringExceptionConstructor);
+                                            methodGenerator.call(AutoCSer.Extensions.EmitGenerator.NewExceptionStringMethodInfo);
                                             methodGenerator.Emit(OpCodes.Throw);
                                             #endregion
                                         }

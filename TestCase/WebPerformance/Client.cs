@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.WebPerformance
 {
@@ -133,7 +133,7 @@ namespace AutoCSer.TestCase.WebPerformance
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        protected volatile int receiveAsyncLock;
+        protected AutoCSer.Threading.SpinLock receiveAsyncLock;
 #endif
         /// <summary>
         /// 异步操作类型

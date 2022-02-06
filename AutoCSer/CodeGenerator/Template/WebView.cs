@@ -65,7 +65,7 @@ namespace AutoCSer.CodeGenerator.Template
 
             #region IF Attribute.IsAjax
             #region IF IsAwaitMethod
-            protected override /*AT:Async*/ void ajaxAsync(CharStream _js_)
+            protected override /*AT:Async*/ void ajaxAsync(AutoCSer.Memory.CharStream _js_)
             {
                 try
                 {
@@ -79,7 +79,7 @@ namespace AutoCSer.CodeGenerator.Template
             }
             #endregion IF IsAwaitMethod
             #region NOT IsAwaitMethod
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
                 /*AT:AjaxCode*/
             }
@@ -91,7 +91,7 @@ namespace AutoCSer.CodeGenerator.Template
             internal struct WebViewQuery
             {
                 #region IF LoadMethod.Parameters.Length
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 #endregion IF LoadMethod.Parameters.Length
                 #region LOOP LoadMethod.Parameters
                 #region IF XmlDocument

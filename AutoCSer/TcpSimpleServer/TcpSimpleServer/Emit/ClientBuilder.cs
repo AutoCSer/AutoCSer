@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpSimpleServer.Emit
 {
@@ -112,7 +112,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                 Label clientExceptionLabel = methodGenerator.DefineLabel();
                                 #region if (_isDisposed_ == 0)
                                 methodGenerator.Emit(OpCodes.Ldarg_0);
-                                methodGenerator.Emit(OpCodes.Ldfld, TcpSimpleServer.Emit.ClientMetadata.MethodClientIsDisposedField);
+                                methodGenerator.call(TcpSimpleServer.Emit.ClientMetadata.MethodClientGetIsDisposedMethod);
                                 methodGenerator.Emit(method.ParameterType == null && method.OutputParameterType == null ? OpCodes.Brtrue_S : OpCodes.Brtrue, clientExceptionLabel);
                                 #endregion
                                 LocalBuilder inputParameterLocalBuilder;
@@ -170,7 +170,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                         methodGenerator.Emit(OpCodes.Ldsfld, TcpServer.Emit.ClientMetadata.ReturnTypeStringsField);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldelem_Ref);
-                                        methodGenerator.Emit(OpCodes.Newobj, AutoCSer.Extension.EmitGenerator.StringExceptionConstructor);
+                                        methodGenerator.call(AutoCSer.Extensions.EmitGenerator.NewExceptionStringMethodInfo);
                                         methodGenerator.Emit(OpCodes.Throw);
                                         #endregion
                                     }
@@ -267,7 +267,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                         methodGenerator.Emit(OpCodes.Ldsfld, TcpServer.Emit.ClientMetadata.ReturnTypeStringsField);
                                         methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldelem_Ref);
-                                        methodGenerator.Emit(OpCodes.Newobj, AutoCSer.Extension.EmitGenerator.StringExceptionConstructor);
+                                        methodGenerator.call(AutoCSer.Extensions.EmitGenerator.NewExceptionStringMethodInfo);
                                         methodGenerator.Emit(OpCodes.Throw);
                                         #endregion
                                     }

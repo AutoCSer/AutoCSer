@@ -5,7 +5,7 @@ namespace AutoCSer.Deploy.ClientTask
     /// <summary>
     /// 自定义任务处理 任务信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class Custom : Task
     {
         /// <summary>
@@ -31,7 +31,7 @@ namespace AutoCSer.Deploy.ClientTask
         /// </summary>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal override DeployState Call(Timer timer)
+        internal override DeployResultData Call(Timer timer)
         {
             return timer.Server.CallCustomTask(this);
         }

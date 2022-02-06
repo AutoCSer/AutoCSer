@@ -1,5 +1,6 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.StateSearcher
 {
@@ -56,7 +57,7 @@ namespace AutoCSer.StateSearcher
         /// <summary>
         /// 状态数据
         /// </summary>
-        public Pointer.Size Data;
+        public AutoCSer.Memory.Pointer Data;
         /// <summary>
         /// 状态字符集合
         /// </summary>
@@ -73,7 +74,7 @@ namespace AutoCSer.StateSearcher
             state = bytes = nullPrefix = prefix = table = null;
             if (values.Length > 1)
             {
-                Data = new Pointer.Size();
+                Data = default(AutoCSer.Memory.Pointer);
                 byte* chars = stackalloc byte[256 >> 3];
                 this.chars = new MemoryMap((ulong*)chars, (256 >> 3) >> 3);
                 count(0, values.Length, 0);
@@ -90,7 +91,7 @@ namespace AutoCSer.StateSearcher
                     size += tableCount * charCount * sizeof(int);
                     tableType = 2;
                 }
-                Data = Unmanaged.Get(size, true, isStaticUnmanaged);
+                Data = isStaticUnmanaged ? Unmanaged.GetStaticPointer(size, true) : Unmanaged.GetPointer(size, true);
                 *Data.Int = stateCount;//状态数量[int]
                 state = Data.Byte + sizeof(int);//状态集合[stateCount*(前缀位置[int]+状态位置[int]+名称索引[int])]
                 bytes = state + (stateCount * 3) * sizeof(int);//字节查找表[256*byte]
@@ -115,7 +116,8 @@ namespace AutoCSer.StateSearcher
                 {
                     if (values[0].Key.Length <= 254)
                     {
-                        Data = Unmanaged.Get(sizeof(int) + sizeof(int) * 3 + 256 + 2, false, isStaticUnmanaged);
+                        int size = sizeof(int) + sizeof(int) * 3 + 256 + 2;
+                        Data = isStaticUnmanaged ? Unmanaged.GetStaticPointer(size, false) : Unmanaged.GetPointer(size, false);
                         *Data.Int = 1;//状态数量
                         state = Data.Byte + sizeof(int);
                         *(int*)state = sizeof(int) * 3 + sizeof(ushort);//前缀位置
@@ -123,12 +125,13 @@ namespace AutoCSer.StateSearcher
                         *(int*)(state + sizeof(int) * 2) = values[0].Value;//名称索引
                         prefix = Data.Byte + sizeof(int) * 4;
                         *(ushort*)prefix = (ushort)value.Length;
-                        AutoCSer.Memory.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
+                        AutoCSer.Memory.Common.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
                         *(ushort*)(prefix + 256) = 0;
                     }
                     else
                     {
-                        Data = Unmanaged.Get(sizeof(int) + sizeof(int) * 3 + 256 + 4 + 2 + value.Length, true, isStaticUnmanaged);
+                        int size = sizeof(int) + sizeof(int) * 3 + 256 + 4 + 2 + value.Length;
+                        Data = isStaticUnmanaged ? Unmanaged.GetStaticPointer(size, true) : Unmanaged.GetPointer(size, true);
                         *Data.Int = 1;//状态数量
                         state = Data.Byte + sizeof(int);
                         *(int*)state = sizeof(int) * 3 + 256 + 4 + sizeof(ushort);//前缀位置
@@ -136,7 +139,7 @@ namespace AutoCSer.StateSearcher
                         *(int*)(state + sizeof(int) * 2) = values[0].Value;//名称索引
                         prefix = Data.Byte + sizeof(int) * 4 + 256 + 4;
                         *(ushort*)prefix = (ushort)value.Length;
-                        AutoCSer.Memory.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
+                        AutoCSer.Memory.Common.SimpleCopyNotNull(valueFixed, prefix + sizeof(ushort), value.Length);
                     }
                 }
             }
@@ -249,7 +252,7 @@ namespace AutoCSer.StateSearcher
                             *(ushort*)(this.prefix - sizeof(ushort)) = (ushort)prefixSize;
                             fixed (byte* charFixed = values[start].Key)
                             {
-                                AutoCSer.Memory.SimpleCopyNotNull(charFixed + current + 1, this.prefix, prefixSize);
+                                AutoCSer.Memory.Common.SimpleCopyNotNull(charFixed + current + 1, this.prefix, prefixSize);
                                 this.prefix += (prefixSize + 3) & (int.MaxValue - 1);
                             }
                         }
@@ -272,9 +275,9 @@ namespace AutoCSer.StateSearcher
         /// <param name="states">状态集合</param>
         /// <param name="isStaticUnmanaged">是否固定内存申请</param>
         /// <returns>状态查找数据</returns>
-        internal static Pointer.Size Create(byte[][] states, bool isStaticUnmanaged)
+        internal static AutoCSer.Memory.Pointer Create(byte[][] states, bool isStaticUnmanaged)
         {
-            if (states.Length == 0) return default(Pointer.Size);
+            if (states.Length == 0) return default(AutoCSer.Memory.Pointer);
             int index = 0;
             KeyValue<byte[], int>[] strings = new KeyValue<byte[], int>[states.Length];
             foreach (byte[] name in states)
@@ -284,7 +287,7 @@ namespace AutoCSer.StateSearcher
                 ++index;
             }
             strings = strings.sort(compareHanlde);
-            return new ByteBuilder(check(strings) ? strings : NullValue<KeyValue<byte[], int>>.Array, isStaticUnmanaged).Data;
+            return new ByteBuilder(check(strings) ? strings : EmptyArray<KeyValue<byte[], int>>.Array, isStaticUnmanaged).Data;
         }
         /// <summary>
         /// 状态检测

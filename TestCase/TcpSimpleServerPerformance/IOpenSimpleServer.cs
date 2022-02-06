@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.TcpServerPerformance
     /// <summary>
     /// TCP 应答服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpOpenSimpleServer.Server(Host = "127.0.0.1", Port = 12107, SendBufferSize = SubBuffer.Size.Byte256, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenSimpleServer.Server(Host = "127.0.0.1", Port = 12107, SendBufferSize = AutoCSer.Memory.BufferSize.Byte256, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsJsonSerialize = true)]
     public interface IOpenSimpleServer
     {
         /// <summary>

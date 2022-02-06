@@ -11,6 +11,11 @@ namespace AutoCSer.Deploy
     internal sealed class DeployInfo
     {
         /// <summary>
+        /// 超时检查时间 1 小时
+        /// </summary>
+        internal const int TimeoutSeconds = 3600;
+
+        /// <summary>
         /// 客户端信息
         /// </summary>
         internal readonly ClientObject Client;
@@ -29,7 +34,11 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 任务集合
         /// </summary>
-        internal LeftArray<ClientTask.Task> Tasks;
+        internal LeftArray<ClientTask.Task> Tasks = new LeftArray<ClientTask.Task>(0);
+        /// <summary>
+        /// 发布时间用于超时检查
+        /// </summary>
+        internal long DeploySeconds;
         /// <summary>
         /// 部署信息
         /// </summary>
@@ -39,6 +48,8 @@ namespace AutoCSer.Deploy
         {
             Client = client;
             Index = index;
+            DeploySeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds;
+            client.Deploys.Add(index, this);
         }
         /// <summary>
         /// 启动部署
@@ -46,13 +57,13 @@ namespace AutoCSer.Deploy
         /// <param name="time"></param>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal DeployState Start(DateTime time, Timer timer)
+        internal DeployResultData Start(DateTime time, Timer timer)
         {
             if (Tasks.Length != 0 && Timer == null)
             {
                 (Timer = timer).DeployInfo = this;
                 if (time == default(DateTime)) return timer.Start();
-                AutoCSer.Threading.TimerTask.Default.Add(timer.StartTimer, time);
+                AutoCSer.Threading.SecondTimer.TaskArray.Append(timer.StartTimer, time, Threading.SecondTimerThreadMode.TinyBackgroundThreadPool);
                 return DeployState.Success;
             }
             return DeployState.Canceled;

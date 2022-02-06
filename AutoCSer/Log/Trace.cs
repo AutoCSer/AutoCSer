@@ -6,7 +6,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 输出调试信息
     /// </summary>
-    public static class Trace
+    //public static class Trace
     {
         /// <summary>
         /// 控制台输出

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.CacheServer.ShortPath.Parameter
 {
@@ -20,7 +21,7 @@ namespace AutoCSer.CacheServer.ShortPath.Parameter
         /// </summary>
         internal ShortPath.Node ShortPath
         {
-            get { return parent != null ? parent.ShortPath : new UnionType { Value = Parameter.Value }.ShortPath; }
+            get { return parent != null ? parent.ShortPath : new UnionType.ShortPath { Object = Parameter.Value }.Value; }
         }
         /// <summary>
         /// 查询节点

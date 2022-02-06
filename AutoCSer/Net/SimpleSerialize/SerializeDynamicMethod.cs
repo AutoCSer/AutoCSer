@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -33,7 +34,7 @@ namespace AutoCSer.Net.SimpleSerialize
 
             generator.Emit(OpCodes.Ldarg_0);
             generator.int32(fixedSize);
-            generator.call(AutoCSer.Extension.EmitGenerator.UnmanagedStreamPrepLengthMethod);
+            generator.call(AutoCSer.Extensions.EmitGenerator.UnmanagedStreamBasePrepSizeMethod);
         }
         /// <summary>
         /// 添加字段
@@ -49,14 +50,14 @@ namespace AutoCSer.Net.SimpleSerialize
             if (type.IsEnum)
             {
                 Type enumType = System.Enum.GetUnderlyingType(type);
-                if (enumType == typeof(int)) method = unmanagedStreamUnsafeWriteIntMethod;
-                else if (enumType == typeof(uint)) method = unmanagedStreamUnsafeWriteUIntMethod;
-                else if (enumType == typeof(byte)) method = unmanagedStreamUnsafeWriteByteMethod;
-                else if (enumType == typeof(ulong)) method = unmanagedStreamUnsafeWriteULongMethod;
-                else if (enumType == typeof(ushort)) method = unmanagedStreamUnsafeWriteUShortMethod;
-                else if (enumType == typeof(long)) method = unmanagedStreamUnsafeWriteLongMethod;
-                else if (enumType == typeof(short)) method = unmanagedStreamUnsafeWriteShortMethod;
-                else if (enumType == typeof(sbyte)) method = unmanagedStreamUnsafeWriteSByteMethod;
+                if (enumType == typeof(int)) method = ((Action<UnmanagedStream, int>)UnmanagedStream.UnsafeWrite).Method;
+                else if (enumType == typeof(uint)) method = ((Action<UnmanagedStream, uint>)UnmanagedStream.UnsafeWrite).Method;
+                else if (enumType == typeof(byte)) method = ((Action<UnmanagedStream, byte>)UnmanagedStream.UnsafeWrite).Method;
+                else if (enumType == typeof(ulong)) method = ((Action<UnmanagedStream, ulong>)UnmanagedStream.UnsafeWrite).Method;
+                else if (enumType == typeof(ushort)) method = ((Action<UnmanagedStream, ushort>)UnmanagedStream.UnsafeWrite).Method;
+                else if (enumType == typeof(long)) method = ((Action<UnmanagedStream, long>)UnmanagedStream.UnsafeWrite).Method;
+                else if (enumType == typeof(short)) method = ((Action<UnmanagedStream, short>)UnmanagedStream.UnsafeWrite).Method;
+                else if (enumType == typeof(sbyte)) method = ((Action<UnmanagedStream, sbyte>)UnmanagedStream.UnsafeWrite).Method;
             }
             else method = Serializer.GetSerializeMethod(type);
             generator.call(method);
@@ -70,11 +71,8 @@ namespace AutoCSer.Net.SimpleSerialize
             if (fixedFillSize != 0)
             {
                 generator.Emit(OpCodes.Ldarg_0);
-                generator.Emit(OpCodes.Dup);
-                generator.Emit(OpCodes.Ldfld, AutoCSer.Extension.EmitGenerator.UnmanagedStreamBaseByteSizeField);
                 generator.int32(fixedFillSize);
-                generator.Emit(OpCodes.Add);
-                generator.Emit(OpCodes.Stfld, AutoCSer.Extension.EmitGenerator.UnmanagedStreamBaseByteSizeField);
+                generator.call(AutoCSer.Extensions.EmitGenerator.UnmanagedStreamBaseUnsafeMoveSizeMethod);
             }
         }
 
@@ -86,62 +84,6 @@ namespace AutoCSer.Net.SimpleSerialize
         {
             generator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(typeof(delegateType));
-        }
-
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteByteMethod;
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteSByteMethod;
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteShortMethod;
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteUShortMethod;
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteIntMethod;
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteUIntMethod;
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteLongMethod;
-        /// <summary>
-        /// 非托管内存数据流写数据函数信息
-        /// </summary>
-        private static readonly MethodInfo unmanagedStreamUnsafeWriteULongMethod;
-
-        static SerializeDynamicMethod()
-        {
-            foreach (MethodInfo method in typeof(UnmanagedStream).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-            {
-                if (method.Name == "UnsafeWrite")
-                {
-                    ParameterInfo[] parameters = method.GetParameters();
-                    if (parameters.Length == 1)
-                    {
-                        Type type = parameters[0].ParameterType;
-                        if (type == typeof(int)) unmanagedStreamUnsafeWriteIntMethod = method;
-                        else if (type == typeof(uint)) unmanagedStreamUnsafeWriteUIntMethod = method;
-                        else if (type == typeof(byte)) unmanagedStreamUnsafeWriteByteMethod = method;
-                        else if (type == typeof(ulong)) unmanagedStreamUnsafeWriteULongMethod = method;
-                        else if (type == typeof(ushort)) unmanagedStreamUnsafeWriteUShortMethod = method;
-                        else if (type == typeof(long)) unmanagedStreamUnsafeWriteLongMethod = method;
-                        else if (type == typeof(short)) unmanagedStreamUnsafeWriteShortMethod = method;
-                        else if (type == typeof(sbyte)) unmanagedStreamUnsafeWriteSByteMethod = method;
-                    }
-                }
-            }
         }
     }
 }

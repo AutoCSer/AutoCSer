@@ -19,7 +19,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 完成状态
         /// </summary>
-        public bool IsCompleted { get { return false; } }
+        public bool IsCompleted { get; private set; }
         /// <summary>
         /// 回调处理
         /// </summary>
@@ -27,7 +27,8 @@ namespace AutoCSer.Net.TcpServer
         public override void Call(ref ReturnValue outputParameter)
         {
             this.outputParameter = outputParameter.Type;
-            if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();
+            IsCompleted = true;
+            if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null) continuation();
         }
         /// <summary>
         /// 回调处理
@@ -37,7 +38,8 @@ namespace AutoCSer.Net.TcpServer
         internal void Call(ReturnValue outputParameter)
         {
             this.outputParameter = outputParameter.Type;
-            if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();
+            IsCompleted = true;
+            if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null) continuation();
         }
         /// <summary>
         /// 获取返回值
@@ -84,7 +86,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 完成状态
         /// </summary>
-        public bool IsCompleted { get { return false; } }
+        public bool IsCompleted { get; private set; }
         /// <summary>
         /// 回调处理
         /// </summary>
@@ -92,7 +94,8 @@ namespace AutoCSer.Net.TcpServer
         public override void Call(ref ReturnValue<outputParameterType> outputParameter)
         {
             this.outputParameter = outputParameter;
-            if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();
+            IsCompleted = true;
+            if (continuation != null || System.Threading.Interlocked.CompareExchange(ref continuation, Common.EmptyAction, null) != null) continuation();
         }
         /// <summary>
         /// 获取返回值

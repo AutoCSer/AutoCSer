@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.WebView
 {
@@ -29,7 +30,7 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void WriteNotNull(byte[] html)
         {
-            Stream.WriteNotNull(html);
+            Stream.Write(html);
         }
         /// <summary>
         /// 输出 HTML

@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
@@ -67,7 +67,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isSynchronousVerifyMethod)
             : base(attribute, log, verify, isSynchronousVerifyMethod)
         {
-            if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + ServerAttribute.ServerName);
+            if (!attribute.IsServer) Log.Warn("配置未指明的 TCP 服务端 " + ServerAttribute.ServerName, LogLevel.Warn | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 停止服务监听
@@ -94,9 +94,9 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     {
                         if (tcpRegisterClient.Register(this))
                         {
-                            Log.Add(AutoCSer.Log.LogType.Info, ServerAttribute.ServerName + " 注册 " + Attribute.Host + ":" + Attribute.Port.toString() + " => " + Attribute.ClientRegisterHost + ":" + Attribute.ClientRegisterPort.toString());
+                            Log.Info(ServerAttribute.ServerName + " 注册 " + Attribute.Host + ":" + Attribute.Port.toString() + " => " + Attribute.ClientRegisterHost + ":" + Attribute.ClientRegisterPort.toString(), LogLevel.Info | LogLevel.AutoCSer);
                         }
-                        else Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部服务注册 " + ServerAttribute.ServerName + " 失败 ");
+                        else Log.Error("TCP 内部服务注册 " + ServerAttribute.ServerName + " 失败 ", LogLevel.Error | LogLevel.AutoCSer);
                     }
                     return true;
                 }
@@ -108,10 +108,13 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         internal override void GetSocket()
         {
-            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpInternalServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
-            if (verify == null) getSocket();
-            else getSocketVerify();
-            SocketTimeoutLink.TimerLink.Free(ref ReceiveVerifyCommandTimeout);
+            ReceiveVerifyCommandTimeout = new SocketTimeoutLink(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpInternalServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            try
+            {
+                if (verify == null) getSocket();
+                else getSocketVerify();
+            }
+            finally { SocketTimeoutLink.Free(ref ReceiveVerifyCommandTimeout); }
         }
         /// <summary>
         /// 获取客户端请求
@@ -136,14 +139,14 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                             }
                             return;
                         }
-                        ServerSocketTask.Task.Add(serverSocket);
+                        ServerSocketThreadArray.Default.CurrentThread.Add(serverSocket);
                     }
                     while (true);
                 }
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    AutoCSer.LogHelper.Exception(error);
                     Thread.Sleep(1);
                 }
             }
@@ -172,7 +175,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                             }
                             return;
                         }
-                        if (verify(serverSocket.Socket)) ServerSocketTask.Task.Add(serverSocket);
+                        if (verify(serverSocket.Socket)) ServerSocketThreadArray.Default.CurrentThread.Add(serverSocket);
                         else
                         {
 #if !DotNetStandard
@@ -187,7 +190,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    AutoCSer.LogHelper.Exception(error);
                     Thread.Sleep(1);
                 }
             }

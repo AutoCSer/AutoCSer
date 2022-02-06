@@ -21,7 +21,7 @@ namespace AutoCSer.Search
             /// <summary>
             /// 当前处理结果节点集合
             /// </summary>
-            public LeftArray<Node> Writer;
+            public LeftArray<Node> Writer = new LeftArray<Node>(0);
             /// <summary>
             /// 当前处理节点集合
             /// </summary>

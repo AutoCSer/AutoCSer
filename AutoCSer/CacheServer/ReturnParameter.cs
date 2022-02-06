@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer
     /// <summary>
     /// 返回值参数
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     public struct ReturnParameter
     {
@@ -68,9 +68,9 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="serializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             Parameter.SerializeReturnParameter(serializer.Stream);
         }
@@ -79,9 +79,9 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="deSerializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             Parameter.DeSerializeReturnParameter(deSerializer);
         }

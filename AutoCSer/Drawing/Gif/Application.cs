@@ -18,7 +18,7 @@ namespace AutoCSer.Drawing.Gif
         /// <summary>
         /// 应用程序自定义数据块集合
         /// </summary>
-        private LeftArray<SubArray<byte>> customDatas;
+        private LeftArray<SubArray<byte>> customDatas = new LeftArray<SubArray<byte>>(0);
         /// <summary>
         /// 应用程序自定义数据块
         /// </summary>

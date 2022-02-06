@@ -29,6 +29,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         Command,
         /// <summary>
+        /// 继续获取命令
+        /// </summary>
+        CommandAgain,
+        /// <summary>
         /// 获取数据
         /// </summary>
         Data,

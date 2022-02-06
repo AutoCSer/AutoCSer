@@ -7,9 +7,9 @@ using AutoCSer;
 #pragma warning disable
 namespace AutoCSer.TestCase.SqlModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false)]
         public partial class Class
         {
             /// <summary>
@@ -51,7 +51,7 @@ namespace AutoCSer.TestCase.SqlModel
                 {
                     if (!isEventCacheLoaded)
                     {
-                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extension.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
+                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extensions.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
                         isEventCacheLoaded = true;
                     }
                 }
@@ -189,9 +189,9 @@ namespace AutoCSer.TestCase.SqlModel
         }
 }namespace AutoCSer.TestCase.SqlModel
 {
-        [AutoCSer.Json.Serialize]
-        [AutoCSer.Json.Parse]
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false)]
+        [AutoCSer.JsonSerialize]
+        [AutoCSer.JsonDeSerialize]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false)]
         public partial class Student
         {
             /// <summary>
@@ -225,7 +225,7 @@ namespace AutoCSer.TestCase.SqlModel
                 {
                     if (!isEventCacheLoaded)
                     {
-                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extension.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
+                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extensions.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
                         isEventCacheLoaded = true;
                     }
                 }

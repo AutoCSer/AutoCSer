@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using AutoCSer.Metadata;
 using System.Reflection;
@@ -33,7 +33,7 @@ namespace AutoCSer.Sql.LogStream
             /// <summary>
             /// 加载数据缓存
             /// </summary>
-            private LeftArray<valueType> array;
+            private LeftArray<valueType> array = new LeftArray<valueType>(0);
             /// <summary>
             /// 自增标识客户端
             /// </summary>
@@ -48,7 +48,7 @@ namespace AutoCSer.Sql.LogStream
                 }
                 catch (Exception error)
                 {
-                    client.log.Add(AutoCSer.Log.LogType.Error, error);
+                    client.log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 this.error();
             }
@@ -61,7 +61,7 @@ namespace AutoCSer.Sql.LogStream
                 {
                     client.isLoaded = false;
                     AutoCSer.Threading.ThreadPool.TinyBackground.Start(client.onError);
-                    array.SetNull();
+                    array.SetEmpty();
                     if (keepCallback != null) keepCallback.Dispose();
                 }
             }
@@ -92,7 +92,7 @@ namespace AutoCSer.Sql.LogStream
                         }
                         catch (Exception error)
                         {
-                            client.log.Add(AutoCSer.Log.LogType.Error, error);
+                            client.log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                     }
                     this.error();

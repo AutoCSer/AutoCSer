@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net.Sockets;
 using AutoCSer.Log;
@@ -50,19 +50,19 @@ namespace AutoCSer.Net.TcpServer
         {
 
             CreateVersion = createVersion;
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
+            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, AutoCSer.Threading.ThreadTaskType.TcpClientSocketBaseCreate);
         }
         /// <summary>
         /// TCP 服务客户端套接字
         /// </summary>
         /// <param name="socket">TCP 内部服务客户端套接字</param>
         internal ClientSocket(ClientSocket socket)
-            : base(socket.ClientCreator, socket.ipAddress, socket.port, socket.MaxInputSize)
+            : base(socket.ClientCreator, socket.IpAddress, socket.Port, socket.MaxInputSize)
         {
             isSleep = true;
 
             CreateVersion = socket.CreateVersion + 1;
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
+            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, AutoCSer.Threading.ThreadTaskType.TcpClientSocketBaseCreate);
         }
         /// <summary>
         /// 释放命令索引池
@@ -221,50 +221,6 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="commandIndex">会话标识</param>
         internal abstract void CancelKeep(int commandIndex);
-        ///// <summary>
-        ///// 释放命令信息集合索引
-        ///// </summary>
-        ///// <param name="index">命令信息集合索引</param>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //internal void FreeIndex(int index)
-        //{
-        //    Monitor.Enter(CommandPool.ArrayLock);
-        //    CommandPool.Array[index].Command = null;
-        //    CommandPool.FreeExit(index);
-        //}
-        ///// <summary>
-        ///// 获取命令信息集合索引
-        ///// </summary>
-        ///// <param name="command">客户端命令</param>
-        //internal bool NewIndex(ClientCommand.Command command)
-        //{
-        //    object arrayLock = CommandPool.ArrayLock;
-        //    Monitor.Enter(arrayLock);
-        //    if (isClose)
-        //    {
-        //        Monitor.Exit(arrayLock);
-        //    }
-        //    else
-        //    {
-        //        int index;
-        //        try
-        //        {
-        //            index = CommandPool.GetIndexContinue();//不能写成一行，可能造成Pool先入栈然后被修改，导致索引溢出
-        //            CommandPool.Array[index].Command = command;
-        //        }
-        //        finally
-        //        {
-        //            Monitor.Exit(arrayLock);
-        //        }
-        //        if (index <= Server.CommandIndexAnd)
-        //        {
-        //            command.CommandIndex = (uint)index;
-        //            return true;
-        //        }
-        //        Log.add(AutoCSer.Log.LogType.Error, "活动会话数量过多");
-        //    }
-        //    return false;
-        //}
         /// <summary>
         /// 合并命令处理
         /// </summary>
@@ -273,11 +229,11 @@ namespace AutoCSer.Net.TcpServer
         {
             try
             {
-                byte[] dataArray = data.Array;
+                byte[] dataArray = data.GetFixedBuffer();
                 ClientCommand.Command command;
                 int receiveIndex = data.Start, receiveCount = data.EndIndex;
                 ReturnType type;
-                fixed (byte* dataFixed = data.Array)
+                fixed (byte* dataFixed = dataArray)
                 {
                     byte* start;
                     do
@@ -325,7 +281,7 @@ namespace AutoCSer.Net.TcpServer
             }
             catch (Exception error)
             {
-                Log.Add(AutoCSer.Log.LogType.Error, error);
+                Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             DisposeSocket();
         }
@@ -340,7 +296,7 @@ namespace AutoCSer.Net.TcpServer
             if (CommandPool == null)
             {
                 CommandPool = new CommandPool((Client)ClientCreator.CommandClient);
-                CommandPool.Array[ClientCommand.KeepCommand.MergeIndex].Command = new UnionType { Value = Sender.Outputs.Head }.ClientCommand;
+                CommandPool.Array[ClientCommand.KeepCommand.MergeIndex].Command = (ClientCommand.Command)Sender.Outputs.Head;
                 CommandPool.Array[ClientCommand.KeepCommand.CustomDataIndex].Command = new ClientCommand.CustomDataCommand(this, ClientCommand.KeepCommand.KeepCallbackCommandInfo);
             }
             return verifyMethod(ClientCreator.CommandClient);
@@ -352,10 +308,11 @@ namespace AutoCSer.Net.TcpServer
         /// <returns></returns>
         protected bool commandIdentityAsync(int count)
         {
+        START:
             int receiveSize = (receiveCount += count) - receiveIndex;
             if (receiveSize >= sizeof(uint))
             {
-                fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                fixed (byte* receiveDataFixed = ReceiveBuffer.GetFixedBuffer())
                 {
                     receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
                     byte* start = receiveDataStart + receiveIndex;
@@ -367,7 +324,7 @@ namespace AutoCSer.Net.TcpServer
                         {
                             if ((compressionDataSize = *(int*)(start + sizeof(uint))) < 0)
                             {
-                                if (receiveSize < (sizeof(uint) + sizeof(int) * 2)) return false;
+                                if (receiveSize < (sizeof(uint) + sizeof(int) * 2)) goto AGAIN;
                                 if ((compressionDataSize = -compressionDataSize) >= (dataSize = *(int*)(start + (sizeof(uint) + sizeof(int))))) return false;
                                 receiveIndex += (sizeof(uint) + sizeof(int) * 2);
                             }
@@ -378,11 +335,11 @@ namespace AutoCSer.Net.TcpServer
                                 receiveIndex += (sizeof(uint) + sizeof(int));
                             }
                             if (compressionDataSize <= receiveCount - receiveIndex) return isOnDataLoopFixed() && loop();
-                            bool isOnData = false;
-                            if (checkDataLoopFixed(ref isOnData))
+                            switch (checkDataLoopFixed())
                             {
-                                if (isOnData) return loop();
-                                return true;
+                                case 0: return true;
+                                case 1: return loop();
+                                default: return false;
                             }
                         }
                     }
@@ -394,20 +351,63 @@ namespace AutoCSer.Net.TcpServer
                     }
                 }
             }
-            return false;
+        AGAIN:
+            if ((count = receiveCommandIdentityAgain()) > 0) goto START;
+            return count == 0;
+        }
+        /// <summary>
+        /// 继续接受命令回调序号
+        /// </summary>
+        /// <returns></returns>
+        private int receiveCommandIdentityAgain()
+        {
+            Socket socket = this.Socket;
+            if (socket != null && ReceiveType != ClientSocketReceiveType.CommandIdentityAgain)
+            {
+                ReceiveType = ClientSocketReceiveType.CommandIdentityAgain;
+#if DOTNET2
+                socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
+                if (socketError == SocketError.Success) return 0;
+#else
+#if !DotNetStandard
+                receiveAsyncLock.EnterYield();
+#endif
+                receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
+                if (socket.ReceiveAsync(receiveAsyncEventArgs))
+                {
+#if !DotNetStandard
+                    receiveAsyncLock.Exit();
+#endif
+                    return 0;
+                }
+                if (receiveAsyncEventArgs.SocketError == SocketError.Success)
+                {
+                    int count = receiveAsyncEventArgs.BytesTransferred;
+                    if (count > 0)
+                    {
+#if !DotNetStandard
+                        receiveAsyncLock.Exit();
+#endif
+                        ++ReceiveCount;
+                        return count;
+                    }
+                }
+                else socketError = receiveAsyncEventArgs.SocketError;
+#endif
+            }
+            return -1;
         }
         /// <summary>
         /// 检查命令数据
         /// </summary>
-        /// <param name="isOnData">是否接收完数据执行</param>
-        /// <returns></returns>
-        private bool checkDataLoopFixed(ref bool isOnData)
+        /// <returns>0 表示成功并转移控制权，1 表示成功继续解析数据，2 表示失败</returns>
+        private int checkDataLoopFixed()
         {
             if (compressionDataSize <= receiveBufferSize)
             {
                 if (receiveIndex + compressionDataSize > receiveBufferSize)
                 {
-                    Memory.CopyNotNull(receiveDataStart + receiveIndex, receiveDataStart, receiveCount -= receiveIndex);
+                    AutoCSer.Memory.Common.CopyNotNull(receiveDataStart + receiveIndex, receiveDataStart, receiveCount -= receiveIndex);
                     receiveIndex = 0;
                 }
                 ReceiveType = ClientSocketReceiveType.Data;
@@ -419,18 +419,18 @@ namespace AutoCSer.Net.TcpServer
                 {
 #if DOTNET2
                     socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
-                    if (socketError == SocketError.Success) return true;
+                    if (socketError == SocketError.Success) return 0;
 #else
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    receiveAsyncLock.EnterYield();
 #endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
                     if (socket.ReceiveAsync(receiveAsyncEventArgs))
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
-                        return true;
+                        return 0;
                     }
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
@@ -438,10 +438,10 @@ namespace AutoCSer.Net.TcpServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            Interlocked.Exchange(ref receiveAsyncLock, 0);
+                            receiveAsyncLock.Exit();
 #endif
                             ++ReceiveCount;
-                            if (compressionDataSize <= (receiveCount += count) - receiveIndex) return isOnData = isOnDataLoopFixed();
+                            if (compressionDataSize <= (receiveCount += count) - receiveIndex) return isOnDataLoopFixed() ? 1 : 2;
                             goto RECEIVE;
                         }
                     }
@@ -466,18 +466,18 @@ namespace AutoCSer.Net.TcpServer
                 {
 #if DOTNET2
                     socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
-                    if (socketError == SocketError.Success) return true;
+                    if (socketError == SocketError.Success) return 0;
 #else
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    receiveAsyncLock.EnterYield();
 #endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount);
                     if (socket.ReceiveAsync(receiveAsyncEventArgs))
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
-                        return true;
+                        return 0;
                     }
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
@@ -485,10 +485,16 @@ namespace AutoCSer.Net.TcpServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            Interlocked.Exchange(ref receiveAsyncLock, 0);
+                            receiveAsyncLock.Exit();
 #endif
                             ++ReceiveCount;
-                            if (compressionDataSize == (receiveBigBufferCount += count)) return isOnData = isOnBigDataLoopFixed();
+                            if (compressionDataSize == (receiveBigBufferCount += count))
+                            {
+#if !DOTNET2
+                                receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
+#endif
+                                return isOnBigDataLoopFixed() ? 1 : 2;
+                            }
                             goto RECEIVEBIG;
                         }
                     }
@@ -496,7 +502,7 @@ namespace AutoCSer.Net.TcpServer
 #endif
                 }
             }
-            return false;
+            return 2;
         }
         /// <summary>
         /// 回调命令数据
@@ -561,7 +567,7 @@ namespace AutoCSer.Net.TcpServer
 #endif
             if (compressionDataSize <= (receiveCount += count) - receiveIndex)
             {
-                fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                fixed (byte* receiveDataFixed = ReceiveBuffer.GetFixedBuffer())
                 {
                     receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
                     return isOnDataLoopFixed() && loop();
@@ -575,13 +581,13 @@ namespace AutoCSer.Net.TcpServer
                 if (socketError == SocketError.Success) return true;
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterYield();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
@@ -590,7 +596,7 @@ namespace AutoCSer.Net.TcpServer
                     if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
                         ++ReceiveCount;
                         goto START;
@@ -625,13 +631,13 @@ namespace AutoCSer.Net.TcpServer
                         if (socketError == SocketError.Success) return true;
 #else
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        receiveAsyncLock.EnterYield();
 #endif
                         receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
                         if (socket.ReceiveAsync(receiveAsyncEventArgs))
                         {
 #if !DotNetStandard
-                            Interlocked.Exchange(ref receiveAsyncLock, 0);
+                            receiveAsyncLock.Exit();
 #endif
                             return true;
                         }
@@ -640,7 +646,7 @@ namespace AutoCSer.Net.TcpServer
                             if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                             {
 #if !DotNetStandard
-                                Interlocked.Exchange(ref receiveAsyncLock, 0);
+                                receiveAsyncLock.Exit();
 #endif
                                 ++ReceiveCount;
                                 return commandIdentityAsync(count);
@@ -661,13 +667,13 @@ namespace AutoCSer.Net.TcpServer
                     if (socketError == SocketError.Success) return true;
 #else
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    receiveAsyncLock.EnterYield();
 #endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize);
                     if (socket.ReceiveAsync(receiveAsyncEventArgs))
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
                         return true;
                     }
@@ -676,7 +682,7 @@ namespace AutoCSer.Net.TcpServer
                         if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                         {
 #if !DotNetStandard
-                            Interlocked.Exchange(ref receiveAsyncLock, 0);
+                            receiveAsyncLock.Exit();
 #endif
                             ++ReceiveCount;
                             goto START;
@@ -732,11 +738,11 @@ namespace AutoCSer.Net.TcpServer
                         if (isOnDataLoopFixed()) goto START;
                         return false;
                     }
-                    bool isOnData = false;
-                    if (checkDataLoopFixed(ref isOnData))
+                    switch (checkDataLoopFixed())
                     {
-                        if (isOnData) goto START;
-                        return true;
+                        case 0: return true;
+                        case 1: goto START;
+                        default: return false;
                     }
                 }
             }
@@ -747,7 +753,7 @@ namespace AutoCSer.Net.TcpServer
                 goto START;
             }
         COPY:
-            Memory.SimpleCopyNotNull64(receiveDataStart + receiveIndex, receiveDataStart, receiveCount = receiveSize);
+            AutoCSer.Memory.Common.SimpleCopyNotNull64(receiveDataStart + receiveIndex, receiveDataStart, receiveCount = receiveSize);
             receiveIndex = 0;
         RECEIVE:
             Socket socket = this.Socket;
@@ -759,13 +765,13 @@ namespace AutoCSer.Net.TcpServer
                 if (socketError == SocketError.Success) return true;
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterYield();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
@@ -774,7 +780,7 @@ namespace AutoCSer.Net.TcpServer
                     if ((receiveSize = (receiveCount += receiveAsyncEventArgs.BytesTransferred) - receiveIndex) >= sizeof(uint))
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
                         ++ReceiveCount;
                         goto ONRECEIVE;

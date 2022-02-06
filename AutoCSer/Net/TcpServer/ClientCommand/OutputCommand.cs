@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
 {
@@ -37,7 +38,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                     }
                     else
                     {
-                        fixed (byte* dataFixed = data.Array)
+                        fixed (byte* dataFixed = data.GetFixedBuffer())
                         {
                             byte* start = dataFixed + data.Start, end = start + data.Length;
                             if (SimpleSerialize.TypeDeSerializer<outputParameterType>.DeSerialize(start, ref OutputParameter.Value, end) == end) OutputParameter.Type = ReturnType.Success;
@@ -46,7 +47,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                 }
                 else
                 {
-                    if (Socket.ParseJson(ref data, ref OutputParameter.Value)) OutputParameter.Type = ReturnType.Success;
+                    if (Socket.DeSerializeJson(ref data, ref OutputParameter.Value)) OutputParameter.Type = ReturnType.Success;
                 }
             }
         }
@@ -66,18 +67,15 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         internal unsafe override CommandBase Build(ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
-            if ((buildInfo.SendBufferSize - stream.ByteSize) >= sizeof(int) + sizeof(uint))
+            if ((buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= sizeof(int) + sizeof(uint))
             {
                 CommandBase nextBuild = LinkNext;
                 int commandIndex = Socket.CommandPool.Push(this);
                 if (commandIndex != 0)
                 {
-                    byte* write = stream.CurrentData;
-                    *(int*)write = CommandInfo.Command;
-                    *(uint*)(write + sizeof(int)) = (uint)commandIndex | (uint)(CommandInfo.CommandFlags | CommandFlags.NullData);
+                    stream.Data.Write(CommandInfo.Command, (uint)commandIndex | (uint)(CommandInfo.CommandFlags | CommandFlags.NullData));
                     ++buildInfo.Count;
                     LinkNext = null;
-                    stream.ByteSize += sizeof(int) + sizeof(uint);
                     return nextBuild;
                 }
                 LinkNext = null;
@@ -129,7 +127,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             }
             catch (Exception error)
             {
-                Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                Socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             setTask();
         }
@@ -144,9 +142,9 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             {
                 switch (CommandInfo.TaskType)
                 {
-                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                    case ClientTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
-                    case ClientTaskType.TcpTask: ClientCallTask.Task.Add(this); return;
+                    case ClientTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolOnReceive)) AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                    case ClientTaskType.Timeout: AutoCSer.Threading.TaskSwitchThreadArray.Default.CurrentThread.Add(this); return;
+                    case ClientTaskType.TcpTask: ClientCallThreadArray.Default.CurrentThread.Add(this); return;
                     case ClientTaskType.TcpQueue: ClientCallQueue.Default.Add(this); return;
                 }
             }
@@ -186,7 +184,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             }
             catch (Exception error)
             {
-                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+                Socket.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
     }

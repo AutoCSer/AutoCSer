@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CacheServer.DataStructure.Value;
 using AutoCSer.CacheServer.DataStructure.MessageQueue;
 

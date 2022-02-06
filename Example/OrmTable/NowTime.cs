@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Example.OrmTable
 {
@@ -26,7 +26,7 @@ namespace AutoCSer.Example.OrmTable
         internal static void Test()
         {
             Append(new NowTime());
-            foreach (NowTime value in sqlTable.SelectQueue())
+            foreach (NowTime value in sqlTable.SelectQueue().Value)
             {
                 Console.WriteLine(value.toJson());
                 sqlTable.DeleteQueue(value.Id);

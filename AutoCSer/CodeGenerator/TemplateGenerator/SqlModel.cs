@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -315,7 +315,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             internal MemberIndex[] NextPrimaryKeys
             {
-                get { return PrimaryKeys.getSub(1, PrimaryKeys.Length - 1); }
+                get { return PrimaryKeys.AsSpan(1, PrimaryKeys.Length - 1).GetArray(); }
             }
             /// <summary>
             /// 自增成员
@@ -335,7 +335,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// WEB Path 类型集合
             /// </summary>
-            internal LeftArray<WebPathType> WebPaths;
+            internal LeftArray<WebPathType> WebPaths = new LeftArray<WebPathType>(0);
             /// <summary>
             /// WEB Path 类型集合
             /// </summary>
@@ -740,11 +740,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 MemberIndex identity = Identity = null;
                 int isIdentityCase = SqlStreamTypeCount = NowTimeArraySize = 0;
-                LeftArray<MemberIndex> members = default(LeftArray<MemberIndex>), primaryKeys = default(LeftArray<MemberIndex>), indexMembers = default(LeftArray<MemberIndex>);
-                LeftArray<CountMember> counterMembers = default(LeftArray<CountMember>);
-                LeftArray<NowTimeMember> nowTimeMembers = default(LeftArray<NowTimeMember>);
-                LeftArray<LogMember> logMembers = new LeftArray<LogMember>();
-                LeftArray<string> strings = default(LeftArray<string>);
+                LeftArray<MemberIndex> members = new LeftArray<MemberIndex>(0), primaryKeys = new LeftArray<MemberIndex>(0), indexMembers = new LeftArray<MemberIndex>(0);
+                LeftArray<CountMember> counterMembers = new LeftArray<CountMember>(0);
+                LeftArray<NowTimeMember> nowTimeMembers = new LeftArray<NowTimeMember>(0);
+                LeftArray<LogMember> logMembers = new LeftArray<LogMember>(0);
+                LeftArray<string> strings = new LeftArray<string>(0);
                 IsLogProxyMember = false;
                 foreach (MemberIndex member in MemberIndex.GetMembers(Type, Attribute.MemberFilters))
                 {
@@ -799,13 +799,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 if (Identity == null) Identity = identity;
-                if (Attribute.LogServerName == null) LogMembers = NullValue<LogMember>.Array;
+                if (Attribute.LogServerName == null) LogMembers = EmptyArray<LogMember>.Array;
                 else
                 {
                     LogMembers = logMembers.ToArray();
                     if (!Attribute.IsDefaultSerialize && Attribute.IsLogMemberMap)
                     {
-                        AutoCSer.BinarySerialize.SerializeAttribute dataSerialize = Type.Type.customAttribute<AutoCSer.BinarySerialize.SerializeAttribute>();
+                        AutoCSer.BinarySerializeAttribute dataSerialize = Type.Type.customAttribute<AutoCSer.BinarySerializeAttribute>();
                         if (dataSerialize != null && !dataSerialize.IsMemberMap) Messages.Message("数据库日志流处理类型 " + Type.FullName + " 序列化不支持成员位图");
                     }
                     foreach (LogMember member in LogMembers)
@@ -853,7 +853,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (indexMembers.Length == 0) indexMembers.Set(UpdateMembers);
                     else indexMembers.Add(UpdateMembers);
                 }
-                else UpdateMembers = NullValue<MemberIndex>.Array;
+                else UpdateMembers = EmptyArray<MemberIndex>.Array;
                 IndexMembers = indexMembers.ToArray();
                 create(true);
             }

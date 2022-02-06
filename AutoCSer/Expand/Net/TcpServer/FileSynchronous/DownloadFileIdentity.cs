@@ -7,7 +7,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
     /// <summary>
     /// 服务端返回下载文件信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class DownloadFileIdentity
     {
         /// <summary>

@@ -18,36 +18,36 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseDictionaryMethod { get; }
+        internal abstract Delegate JsonDeSerializeDictionaryMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseKeyValuePairMethod { get; }
+        internal abstract Delegate JsonDeSerializeKeyValuePairMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseListConstructorMethod { get; }
+        internal abstract MethodInfo JsonDeSerializeListConstructorMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseCollectionConstructorMethod { get; }
+        internal abstract MethodInfo JsonDeSerializeCollectionConstructorMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseEnumerableConstructorMethod { get; }
+        internal abstract MethodInfo JsonDeSerializeEnumerableConstructorMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseArrayConstructorMethod { get; }
+        internal abstract MethodInfo JsonDeSerializeArrayConstructorMethod { get; }
         
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeDictionaryMethod { get; }
+        internal abstract Delegate JsonSerializeDictionaryMethod { get; }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeKeyValuePairMethod { get; }
+        internal abstract Delegate JsonSerializeKeyValuePairMethod { get; }
     }
     /// <summary>
     /// 泛型类型元数据
@@ -65,59 +65,59 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseDictionaryMethod
+        internal override Delegate JsonDeSerializeDictionaryMethod
         {
-            get { return ((deSerializeDictionary)GenericType.JsonParser.dictionary<Type1, Type2>).Method; }
+            get { return (JsonDeSerializer.DeSerializeDelegate<Dictionary<Type1, Type2>>)JsonDeSerializer.Dictionary<Type1, Type2>; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseKeyValuePairMethod
+        internal override Delegate JsonDeSerializeKeyValuePairMethod
         {
-            get { return ((deSerializeKeyValuePair)GenericType.JsonParser.keyValuePairParse<Type1, Type2>).Method; }
+            get { return (JsonDeSerializer.DeSerializeDelegate<KeyValuePair<Type1, Type2>>)JsonDeSerializer.KeyValuePair<Type1, Type2>; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseListConstructorMethod
+        internal override MethodInfo JsonDeSerializeListConstructorMethod
         {
-            get { return ((deSerialize1)GenericType.JsonParser.listConstructor<Type1, Type2>).Method; }
+            get { return ((JsonDeSerializer.DeSerializeDelegate<Type1>)JsonDeSerializer.ListConstructor<Type1, Type2>).Method; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseCollectionConstructorMethod
+        internal override MethodInfo JsonDeSerializeCollectionConstructorMethod
         {
-            get { return ((deSerialize1)GenericType.JsonParser.collectionConstructor<Type1, Type2>).Method; }
+            get { return ((JsonDeSerializer.DeSerializeDelegate<Type1>)JsonDeSerializer.CollectionConstructor<Type1, Type2>).Method; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseEnumerableConstructorMethod
+        internal override MethodInfo JsonDeSerializeEnumerableConstructorMethod
         {
-            get { return ((deSerialize1)GenericType.JsonParser.enumerableConstructor<Type1, Type2>).Method; }
+            get { return ((JsonDeSerializer.DeSerializeDelegate<Type1>)JsonDeSerializer.EnumerableConstructor<Type1, Type2>).Method; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseArrayConstructorMethod
+        internal override MethodInfo JsonDeSerializeArrayConstructorMethod
         {
-            get { return ((deSerialize1)GenericType.JsonParser.arrayConstructor<Type1, Type2>).Method; }
+            get { return ((JsonDeSerializer.DeSerializeDelegate<Type1>)JsonDeSerializer.ArrayConstructor<Type1, Type2>).Method; }
         }
 
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeDictionaryMethod
+        internal override Delegate JsonSerializeDictionaryMethod
         {
-            get { return ((Action<Dictionary<Type1, Type2>>)GenericType.JsonSerializer.dictionary<Type1, Type2>).Method; }
+            get { return (Action<JsonSerializer, Dictionary<Type1, Type2>>)JsonSerializer.Dictionary<Type1, Type2>; }
         }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeKeyValuePairMethod
+        internal override Delegate JsonSerializeKeyValuePairMethod
         {
-            get { return ((Action<KeyValuePair<Type1, Type2>>)GenericType.JsonSerializer.keyValuePairSerialize<Type1, Type2>).Method; }
+            get { return (Action<JsonSerializer, KeyValuePair<Type1, Type2>>)JsonSerializer.KeyValuePairSerialize<Type1, Type2>; }
         }
     }
 }

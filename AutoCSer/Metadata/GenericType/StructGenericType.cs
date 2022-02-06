@@ -1,27 +1,37 @@
 ﻿using System;
 using System.Reflection;
 using AutoCSer.Threading;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Metadata
 {
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    internal abstract partial class StructGenericType
+    internal abstract partial class StructGenericType : AutoCSer.Metadata.GenericTypeBase
     {
+        /// <summary>
+        /// 获取可空数据函数
+        /// </summary>
+        internal abstract MethodInfo GetNullableValueMethod { get; }
+        /// <summary>
+        /// 获取是否存在数据函数
+        /// </summary>
+        internal abstract MethodInfo GetNullableHasValueMethod { get; }
+
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, StructGenericType> cache = new LockLastDictionary<Type, StructGenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, StructGenericType> cache = new LockLastDictionary<HashType, StructGenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
-        /// <typeparam name="Type"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static StructGenericType create<Type>() where Type : struct
+        private static StructGenericType create<T>() where T : struct
         {
-            return new StructGenericType<Type>();
+            return new StructGenericType<T>();
         }
         /// <summary>
         /// 创建泛型类型元数据 函数信息
@@ -32,14 +42,14 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static StructGenericType Get(Type type)
+        public static StructGenericType Get(HashType type)
         {
             StructGenericType value;
             if (!cache.TryGetValue(type, out value))
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(type).Invoke(null, null) }.StructGenericType;
+                    value = new UnionType.StructGenericType { Object = createMethod.MakeGenericMethod(type).Invoke(null, null) }.Value;
                     cache.Set(type, value);
                 }
                 finally { cache.Exit(); }
@@ -50,18 +60,41 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    /// <typeparam name="Type">泛型类型</typeparam>
-    internal sealed partial class StructGenericType<Type> : StructGenericType where Type : struct
+    /// <typeparam name="T">泛型类型</typeparam>
+    internal sealed partial class StructGenericType<T> : StructGenericType where T : struct
     {
         /// <summary>
-        /// 反序列化委托
+        /// 获取当前泛型类型
         /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerialize(ref Type value);
+        internal override Type CurrentType { get { return typeof(T); } }
+
         /// <summary>
-        /// 反序列化委托
+        /// 获取可空数据
         /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerializeNullable(ref Nullable<Type> value);
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static T getNullableValue(T? value)
+        {
+            return value.Value;
+        }
+        /// <summary>
+        /// 获取可空数据函数
+        /// </summary>
+        internal override MethodInfo GetNullableValueMethod { get { return ((Func<T?, T>)getNullableValue).Method; } }
+        /// <summary>
+        /// 获取是否存在数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private static bool getNullableHasValue(T? value)
+        {
+            return value.HasValue;
+        }
+        /// <summary>
+        /// 获取是否存在数据函数
+        /// </summary>
+        internal override MethodInfo GetNullableHasValueMethod { get { return ((Func<T?, bool>)getNullableHasValue).Method; } }
     }
 }

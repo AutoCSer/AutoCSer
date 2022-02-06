@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 #if !NOJIT
 using/**/System.Reflection.Emit;

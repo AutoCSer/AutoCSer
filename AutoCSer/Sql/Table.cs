@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -36,7 +36,7 @@ namespace AutoCSer.Sql
                         long identity = identity64;
                         if (value <= identity) return;
                         if (Interlocked.CompareExchange(ref identity64, value, identity) == identity) return;
-                        Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, "Id " + identity.toString() + " 被修改");
+                        Log.Debug("Id " + identity.toString() + " 被修改", LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                     }
                     while (true);
                 }
@@ -80,7 +80,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 日志处理
         /// </summary>
-        internal readonly AutoCSer.Log.ILog Log;
+        internal readonly AutoCSer.ILog Log;
         /// <summary>
         /// 缓存加载完毕事件
         /// </summary>
@@ -144,7 +144,7 @@ namespace AutoCSer.Sql
             IsOnlyQueue = attribute.IsOnlyQueue;
             if (attribute.OnLogStreamCount <= 0) attribute.OnLogStreamCount = TableAttribute.DefaultOnLogStreamCount;
             Client = connection.Client;
-            Log = connection.Log ?? AutoCSer.Log.Pub.Log;
+            Log = connection.Log ?? AutoCSer.LogHelper.Default;
             ignoreCase = connection.ClientAttribute.IgnoreCase;
             TableName = tableName;
             this.nowTimes = nowTimes;
@@ -199,7 +199,7 @@ namespace AutoCSer.Sql
                     {
                         exception = error;
                     }
-                    if (exception != null) Log.Add(AutoCSer.Log.LogType.Error, exception, "索引 " + TableName + "." + name + " 创建失败");
+                    if (exception != null) Log.Exception(exception, "索引 " + TableName + "." + name + " 创建失败", LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
         }
@@ -258,11 +258,22 @@ namespace AutoCSer.Sql
         /// <param name="time"></param>
         /// <param name="memberIndex"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         internal DateTime GetNowTime(DateTime time, int memberIndex)
         {
             NowTime nowTime = nowTimes[memberIndex];
             return nowTime == null ? time : nowTime.Next;
+        }
+        /// <summary>
+        /// 获取当前时间
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="time"></param>
+        /// <param name="memberIndex"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static DateTime GetNowTime(Table table, DateTime time, int memberIndex)
+        {
+            return table.GetNowTime(time, memberIndex);
         }
 
         /// <summary>
@@ -271,27 +282,27 @@ namespace AutoCSer.Sql
         /// <param name="sql">SQL 语句</param>
         /// <param name="reader">读取数据委托</param>
         /// <returns>是否成功</returns>
-        public bool CustomReader(string sql, Action<DbDataReader> reader)
+        public ReturnValue CustomReader(string sql, Action<DbDataReader> reader)
         {
             return IsOnlyQueue ? CustomReaderQueue(sql, reader) : Client.CustomReader(sql, reader, Log);
         }
         /// <summary>
         /// 同步执行 SQL 语句
         /// </summary>
-        internal sealed class SqlReader : Threading.LinkQueueTaskNode<SqlReader>
+        internal sealed class SqlReader : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table table;
+            private readonly Table table;
             /// <summary>
             /// SQL 语句
             /// </summary>
-            private string sql;
+            private readonly string sql;
             /// <summary>
             /// 读取数据委托
             /// </summary>
-            private Action<DbDataReader> reader;
+            private readonly Action<DbDataReader> reader;
             /// <summary>
             /// 获取数据等待锁
             /// </summary>
@@ -299,26 +310,18 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否操作成功
             /// </summary>
-            private bool isSuccess;
+            private ReturnValue returnValue;
             /// <summary>
             /// 同步获取数据
-            /// </summary>
-            internal SqlReader()
-            {
-                wait.Set(0);
-            }
-            /// <summary>
-            /// 设置数据
             /// </summary>
             /// <param name="table"></param>
             /// <param name="sql"></param>
             /// <param name="reader"></param>
-            internal void Set(Table table, string sql, Action<DbDataReader> reader)
+            internal SqlReader(Table table, string sql, Action<DbDataReader> reader)
             {
                 this.table = table;
                 this.sql = sql;
                 this.reader = reader;
-                isSuccess = false;
             }
             /// <summary>
             /// 执行任务
@@ -328,30 +331,25 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    isSuccess = table.CustomReaderQueue(ref connection, sql, reader);
+                    returnValue.ReturnType = table.CustomReaderQueue(ref connection, sql, reader);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                sql = null;
-                reader = null;
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待获取数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool Wait()
+            internal ReturnValue Wait()
             {
+                wait.Set(0);
+                table.AddQueue(this);
                 wait.Wait();
-                return isSuccess;
+                return returnValue;
             }
         }
         /// <summary>
@@ -360,16 +358,9 @@ namespace AutoCSer.Sql
         /// <param name="sql">SQL 语句</param>
         /// <param name="reader">读取数据委托</param>
         /// <returns></returns>
-        public bool CustomReaderQueue(string sql, Action<DbDataReader> reader)
+        public ReturnValue CustomReaderQueue(string sql, Action<DbDataReader> reader)
         {
-            SqlReader selecter = (SqlReader.YieldPool.Default.Pop() as SqlReader) ?? new SqlReader();
-            try
-            {
-                selecter.Set(this, sql, reader);
-                AddQueue(selecter);
-                return selecter.Wait();
-            }
-            finally { selecter.Push(); }
+            return new SqlReader(this, sql, reader).Wait();
         }
         /// <summary>
         /// 查询数据集合
@@ -379,7 +370,7 @@ namespace AutoCSer.Sql
         /// <param name="reader"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool CustomReaderQueue(ref DbConnection connection, string sql, Action<DbDataReader> reader)
+        internal ReturnType CustomReaderQueue(ref DbConnection connection, string sql, Action<DbDataReader> reader)
         {
             return Client.CustomReader(ref connection, sql, reader, Log, 0);
         }
@@ -393,7 +384,6 @@ namespace AutoCSer.Sql
         /// <param name="isAscii">是否ASCII</param>
         /// <param name="isNull">是否可以为null</param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe bool StringVerify(string memberName, string value, int length, bool isAscii, bool isNull)
         {
             if (!isNull && value == null)
@@ -418,37 +408,61 @@ namespace AutoCSer.Sql
                     }
                     if (nextLength < 0)
                     {
-                        Log.Add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 超长 " + length.toString());
+                        Log.Error(TableName + "." + memberName + " 超长 " + length.toString(), LogLevel.Error | LogLevel.AutoCSer);
                         return false;
                     }
                 }
                 else if (value.Length > length)
                 {
-                    Log.Add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 超长 " + value.Length.toString() + " > " + length.toString());
+                    Log.Error(TableName + "." + memberName + " 超长 " + value.Length.toString() + " > " + length.toString(), LogLevel.Error | LogLevel.AutoCSer);
                     return false;
                 }
             }
             return true;
         }
         /// <summary>
+        /// 字符串验证
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="memberName">成员名称</param>
+        /// <param name="value">成员值</param>
+        /// <param name="length">最大长度</param>
+        /// <param name="isAscii">是否ASCII</param>
+        /// <param name="isNull">是否可以为null</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static bool StringVerify(Table table, string memberName, string value, int length, bool isAscii, bool isNull)
+        {
+            return table.StringVerify(memberName, value, length, isAscii, isNull);
+        }
+        /// <summary>
         /// 成员值不能为null
         /// </summary>
         /// <param name="memberName">成员名称</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
         internal void NullVerify(string memberName)
         {
-            Log.Add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 不能为null");
+            Log.Error(TableName + "." + memberName + " 不能为null", LogLevel.Error | LogLevel.AutoCSer);
+        }
+        /// <summary>
+        /// 成员值不能为null
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="memberName">成员名称</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void NullVerify(Table table, string memberName)
+        {
+            table.NullVerify(memberName);
         }
 #if !NOJIT
         /// <summary>
         /// 数据库字符串验证函数
         /// </summary>
-        internal static readonly MethodInfo StringVerifyMethod = typeof(Table).GetMethod("StringVerify", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(string), typeof(string), typeof(int), typeof(bool), typeof(bool) }, null);
+        internal static readonly MethodInfo StringVerifyMethod = ((Func<Table, string, string, int, bool, bool, bool>)Table.StringVerify).Method;
         /// <summary>
         /// 数据库字段空值验证
         /// </summary>
-        internal static readonly MethodInfo NullVerifyMethod = typeof(Table).GetMethod("NullVerify", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(string) }, null);
+        internal static readonly MethodInfo NullVerifyMethod = ((Action<Table, string>)Table.NullVerify).Method;
 #endif
     }
     /// <summary>
@@ -510,6 +524,16 @@ namespace AutoCSer.Sql
             value.Or(memberMap);
             return value;
         }
+        /// <summary>
+        /// 条件表达式转换为 SQL 字符串
+        /// </summary>
+        /// <param name="where">查询条件</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public string GetWhere(Expression<Func<modelType, bool>> where)
+        {
+            return Client.GetWhere(where.Body);
+        }
 
         /// <summary>
         /// 释放资源
@@ -556,7 +580,7 @@ namespace AutoCSer.Sql
                 if (dbConnection == null)
                 {
                     IsError = true;
-                    Log.Add(AutoCSer.Log.LogType.Fatal, TableName + " 初始化失败");
+                    Log.Fatal(TableName + " 初始化失败", LogLevel.Fatal | LogLevel.AutoCSer);
                     return;
                 }
                 using (dbConnection)
@@ -593,11 +617,11 @@ namespace AutoCSer.Sql
                                 newColumns.Add(table.Columns.Columns);
                                 table.Columns.Columns = newColumns.ToArray();
                             }
-                            if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(sqlColumnNames.Get(value.Name.ToLower()), ignoreCase));
-                            else newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(sqlColumnNames.Get(value.Name), ignoreCase));
+                            if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(this, sqlColumnNames.Get(value.Name.ToLower()), ignoreCase, attribute.IsIgnoreMatchDateTime));
+                            else newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(this, sqlColumnNames.Get(value.Name), ignoreCase, attribute.IsIgnoreMatchDateTime));
                             if (newColumns.count() != 0)
                             {
-                                Log.Add(AutoCSer.Log.LogType.Error, "表格 " + memberTable.Columns.Name + " 字段类型不匹配 : " + newColumns.JoinString(",", value => value.Name));
+                                Log.Error("表格 " + memberTable.Columns.Name + " 字段类型不匹配 : " + newColumns.JoinString(",", value => value.Name), LogLevel.Error | LogLevel.AutoCSer);
                             }
                         }
                     }
@@ -940,42 +964,46 @@ namespace AutoCSer.Sql
         /// <param name="where">查询条件</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据库记录集合</returns>
-        public LeftArray<tableType> Select(Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
+        public ReturnValue<LeftArray<tableType>> Select(Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
         {
             if (IsOnlyQueue) return SelectQueue(where, memberMap);
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
-            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
-
-            SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
-            Client.GetSelectQuery(this, memberMap, ref createQuery, ref selectQuery);
-            DbConnection connection = null;
-            try
+            if (createQuery.Where.Type != WhereExpression.ConvertType.Unknown)
             {
-                LeftArray<tableType> array = SelectQueue(ref connection, ref selectQuery);
-                Client.FreeConnection(ref connection);
-                return array;
+                if (!createQuery.Where.IsWhereFalse)
+                {
+                    SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
+                    Client.GetSelectQuery(this, memberMap, ref createQuery, ref selectQuery);
+                    DbConnection connection = null;
+                    try
+                    {
+                        ReturnValue<LeftArray<tableType>> array = SelectQueue(ref connection, ref selectQuery);
+                        Client.FreeConnection(ref connection);
+                        return array;
+                    }
+                    catch (Exception error)
+                    {
+                        Client.CloseErrorConnection(ref connection);
+                        return error;
+                    }
+                }
+                return new LeftArray<tableType>(0);
             }
-            catch (Exception error)
-            {
-                Client.CloseErrorConnection(ref connection);
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-            }
-            return default(LeftArray<tableType>);
+            return ReturnType.UnknownWhereExpression;
         }
         /// <summary>
         /// 同步获取数据
         /// </summary>
-        internal sealed class Selecter : Threading.LinkQueueTaskNode<Selecter>
+        internal sealed class Selecter : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            internal Table<tableType, modelType> Table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            internal LeftArray<tableType> Value;
+            internal ReturnValue<LeftArray<tableType>> returnValue;
             /// <summary>
             /// 查询信息
             /// </summary>
@@ -987,9 +1015,10 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 同步获取数据
             /// </summary>
-            internal Selecter()
+            /// <param name="table"></param>
+            internal Selecter(Table<tableType, modelType> table)
             {
-                wait.Set(0);
+                this.table = table;
             }
             /// <summary>
             /// 执行任务
@@ -999,30 +1028,25 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    Value = Table.SelectQueue(ref connection, ref Query);
+                    returnValue = table.SelectQueue(ref connection, ref Query);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                Table = null;
-                Value.SetNull();
-                Query.Free();
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待获取数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal LeftArray<tableType> Wait()
+            internal ReturnValue<LeftArray<tableType>> Wait()
             {
+                wait.Set(0);
+                table.AddQueue(this);
                 wait.Wait();
-                return Value;
+                return returnValue;
             }
         }
         /// <summary>
@@ -1031,20 +1055,20 @@ namespace AutoCSer.Sql
         /// <param name="where">查询条件</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据库记录集合</returns>
-        public LeftArray<tableType> SelectQueue(Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
+        public ReturnValue<LeftArray<tableType>> SelectQueue(Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
         {
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
-            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
-
-            Selecter selecter = (Selecter.YieldPool.Default.Pop() as Selecter) ?? new Selecter();
-            try
+            if (createQuery.Where.Type != WhereExpression.ConvertType.Unknown)
             {
-                Client.GetSelectQuery(selecter.Table = this, memberMap, ref createQuery, ref selecter.Query);
-                AddQueue(selecter);
-                return selecter.Wait();
+                if (!createQuery.Where.IsWhereFalse)
+                {
+                    Selecter selecter = new Selecter(this);
+                    Client.GetSelectQuery(this, memberMap, ref createQuery, ref selecter.Query);
+                    return selecter.Wait();
+                }
+                return new LeftArray<tableType>(0);
             }
-            finally { selecter.Push(); }
+            return ReturnType.UnknownWhereExpression;
         }
         /// <summary>
         /// 获取数据库记录集合
@@ -1053,15 +1077,20 @@ namespace AutoCSer.Sql
         /// <param name="where">查询条件</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据库记录集合</returns>
-        internal LeftArray<tableType> SelectQueue(ref DbConnection connection, Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
+        internal ReturnValue<LeftArray<tableType>> SelectQueue(ref DbConnection connection, Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
         {
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
-            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
-
-            SelectQuery<modelType> query = default(SelectQuery<modelType>);
-            Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
-            return SelectQueue(ref connection, ref query);
+            if (createQuery.Where.Type != WhereExpression.ConvertType.Unknown)
+            {
+                if (!createQuery.Where.IsWhereFalse)
+                {
+                    SelectQuery<modelType> query = default(SelectQuery<modelType>);
+                    Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
+                    return SelectQueue(ref connection, ref query);
+                }
+                return new LeftArray<tableType>(0);
+            }
+            return ReturnType.UnknownWhereExpression;
         }
         /// <summary>
         /// 获取查询信息
@@ -1081,7 +1110,7 @@ namespace AutoCSer.Sql
         /// <param name="query"></param>
         /// <returns>数据集合</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal LeftArray<tableType> SelectQueue(ref DbConnection connection, ref SelectQuery<modelType> query)
+        internal ReturnValue<LeftArray<tableType>> SelectQueue(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
             return Client.Select(this, ref connection, ref query);
         }
@@ -1092,46 +1121,50 @@ namespace AutoCSer.Sql
         /// <param name="readValue">读取数据委托</param>
         /// <param name="where">查询条件</param>
         /// <returns>数据库记录集合</returns>
-        public LeftArray<tableType> Select(Func<DbDataReader, tableType> readValue, Expression<Func<modelType, bool>> where = null)
+        public ReturnValue<LeftArray<tableType>> Select(Func<DbDataReader, tableType> readValue, Expression<Func<modelType, bool>> where = null)
         {
             if (IsOnlyQueue) return SelectQueue(readValue, where);
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
-            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
-
-            SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
-            Client.GetSelectQuery(this, ref createQuery, ref selectQuery);
-            DbConnection connection = null;
-            try
+            if (createQuery.Where.Type != WhereExpression.ConvertType.Unknown)
             {
-                LeftArray<tableType> array = SelectQueue(readValue, ref connection, ref selectQuery);
-                Client.FreeConnection(ref connection);
-                return array;
+                if (!createQuery.Where.IsWhereFalse)
+                {
+                    SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
+                    Client.GetSelectQuery(this, ref createQuery, ref selectQuery);
+                    DbConnection connection = null;
+                    try
+                    {
+                        ReturnValue<LeftArray<tableType>> array = SelectQueue(readValue, ref connection, ref selectQuery);
+                        Client.FreeConnection(ref connection);
+                        return array;
+                    }
+                    catch (Exception error)
+                    {
+                        Client.CloseErrorConnection(ref connection);
+                        return error;
+                    }
+                }
+                return new LeftArray<tableType>(0);
             }
-            catch (Exception error)
-            {
-                Client.CloseErrorConnection(ref connection);
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-            }
-            return default(LeftArray<tableType>);
+            return ReturnType.UnknownWhereExpression;
         }
         /// <summary>
         /// 同步获取数据
         /// </summary>
-        internal sealed class CustomSelecter : Threading.LinkQueueTaskNode<CustomSelecter>
+        internal sealed class CustomSelecter : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 读取数据委托
             /// </summary>
-            private Func<DbDataReader, tableType> readValue;
+            private readonly Func<DbDataReader, tableType> readValue;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            internal LeftArray<tableType> Value;
+            internal ReturnValue<LeftArray<tableType>> returnValue;
             /// <summary>
             /// 查询信息
             /// </summary>
@@ -1143,16 +1176,9 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 同步获取数据
             /// </summary>
-            internal CustomSelecter()
-            {
-                wait.Set(0);
-            }
-            /// <summary>
-            /// 设置数据
-            /// </summary>
             /// <param name="table"></param>
             /// <param name="readValue"></param>
-            internal void Set(Table<tableType, modelType> table, Func<DbDataReader, tableType> readValue)
+            internal CustomSelecter(Table<tableType, modelType> table, Func<DbDataReader, tableType> readValue)
             {
                 this.table = table;
                 this.readValue = readValue;
@@ -1165,31 +1191,25 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    Value = table.SelectQueue(readValue, ref connection, ref Query);
+                    returnValue = table.SelectQueue(readValue, ref connection, ref Query);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                readValue = null;
-                Value.SetNull();
-                Query.Free();
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待获取数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal LeftArray<tableType> Wait()
+            internal ReturnValue<LeftArray<tableType>> Wait()
             {
+                wait.Set(0);
+                table.AddQueue(this);
                 wait.Wait();
-                return Value;
+                return returnValue;
             }
         }
         /// <summary>
@@ -1198,21 +1218,20 @@ namespace AutoCSer.Sql
         /// <param name="readValue">读取数据委托</param>
         /// <param name="where">查询条件</param>
         /// <returns>数据库记录集合，IsNull 表示失败</returns>
-        public LeftArray<tableType> SelectQueue(Func<DbDataReader, tableType> readValue, Expression<Func<modelType, bool>> where = null)
+        public ReturnValue<LeftArray<tableType>> SelectQueue(Func<DbDataReader, tableType> readValue, Expression<Func<modelType, bool>> where = null)
         {
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
-            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
-
-            CustomSelecter selecter = (CustomSelecter.YieldPool.Default.Pop() as CustomSelecter) ?? new CustomSelecter();
-            try
+            if (createQuery.Where.Type != WhereExpression.ConvertType.Unknown)
             {
-                selecter.Set(this, readValue);
-                Client.GetSelectQuery(this, ref createQuery, ref selecter.Query);
-                AddQueue(selecter);
-                return selecter.Wait();
+                if (!createQuery.Where.IsWhereFalse)
+                {
+                    CustomSelecter selecter = new CustomSelecter(this, readValue);
+                    Client.GetSelectQuery(this, ref createQuery, ref selecter.Query);
+                    return selecter.Wait();
+                }
+                return new LeftArray<tableType>(0);
             }
-            finally { selecter.Push(); }
+            return ReturnType.UnknownWhereExpression;
         }
         /// <summary>
         /// 查询数据集合
@@ -1222,7 +1241,7 @@ namespace AutoCSer.Sql
         /// <param name="query"></param>
         /// <returns>数据集合</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal LeftArray<tableType> SelectQueue(Func<DbDataReader, tableType> readValue, ref DbConnection connection, ref SelectQuery<modelType> query)
+        internal ReturnValue<LeftArray<tableType>> SelectQueue(Func<DbDataReader, tableType> readValue, ref DbConnection connection, ref SelectQuery<modelType> query)
         {
             return Client.Select(this, ref connection, ref query, readValue);
         }
@@ -1233,31 +1252,31 @@ namespace AutoCSer.Sql
         /// <param name="sql">SQL 语句</param>
         /// <param name="readValue">读取数据委托</param>
         /// <returns>数据库记录集合</returns>
-        public LeftArray<tableType> Select(string sql, Func<DbDataReader, tableType> readValue)
+        public ReturnValue<LeftArray<tableType>> Select(string sql, Func<DbDataReader, tableType> readValue)
         {
             return IsOnlyQueue ? SelectQueue(sql, readValue) : Client.Select(sql, readValue, Log);
         }
         /// <summary>
         /// 同步获取数据
         /// </summary>
-        internal sealed class SqlSelecter : Threading.LinkQueueTaskNode<SqlSelecter>
+        internal sealed class SqlSelecter : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// SQL 语句
             /// </summary>
-            private string sql;
+            private readonly string sql;
             /// <summary>
             /// 读取数据委托
             /// </summary>
-            private Func<DbDataReader, tableType> readValue;
+            private readonly Func<DbDataReader, tableType> readValue;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            internal LeftArray<tableType> Value;
+            internal ReturnValue<LeftArray<tableType>> returnValue;
             /// <summary>
             /// 获取数据等待锁
             /// </summary>
@@ -1265,17 +1284,10 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 同步获取数据
             /// </summary>
-            internal SqlSelecter()
-            {
-                wait.Set(0);
-            }
-            /// <summary>
-            /// 设置数据
-            /// </summary>
             /// <param name="table"></param>
             /// <param name="sql"></param>
             /// <param name="readValue"></param>
-            internal void Set(Table<tableType, modelType> table, string sql, Func<DbDataReader, tableType> readValue)
+            internal SqlSelecter(Table<tableType, modelType> table, string sql, Func<DbDataReader, tableType> readValue)
             {
                 this.table = table;
                 this.sql = sql;
@@ -1289,31 +1301,25 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    Value = table.SelectQueue(ref connection, sql, readValue);
+                    returnValue = table.SelectQueue(ref connection, sql, readValue);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                sql = null;
-                readValue = null;
-                Value.SetNull();
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待获取数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal LeftArray<tableType> Wait()
+            internal ReturnValue<LeftArray<tableType>> Wait()
             {
+                wait.Set(0);
+                table.AddQueue(this);
                 wait.Wait();
-                return Value;
+                return returnValue;
             }
         }
         /// <summary>
@@ -1322,16 +1328,9 @@ namespace AutoCSer.Sql
         /// <param name="sql">SQL 语句</param>
         /// <param name="readValue">读取数据委托</param>
         /// <returns>数据库记录集合</returns>
-        public LeftArray<tableType> SelectQueue(string sql, Func<DbDataReader, tableType> readValue)
+        public ReturnValue<LeftArray<tableType>> SelectQueue(string sql, Func<DbDataReader, tableType> readValue)
         {
-            SqlSelecter selecter = (SqlSelecter.YieldPool.Default.Pop() as SqlSelecter) ?? new SqlSelecter();
-            try
-            {
-                selecter.Set(this, sql, readValue);
-                AddQueue(selecter);
-                return selecter.Wait();
-            }
-            finally { selecter.Push(); }
+            return new SqlSelecter(this, sql, readValue).Wait();
         }
         /// <summary>
         /// 查询数据集合
@@ -1341,7 +1340,7 @@ namespace AutoCSer.Sql
         /// <param name="readValue"></param>
         /// <returns>数据集合</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal LeftArray<tableType> SelectQueue(ref DbConnection connection, string sql, Func<DbDataReader, tableType> readValue)
+        internal ReturnValue<LeftArray<tableType>> SelectQueue(ref DbConnection connection, string sql, Func<DbDataReader, tableType> readValue)
         {
             return Client.Select(ref connection, sql, readValue, Log);
         }
@@ -1352,11 +1351,11 @@ namespace AutoCSer.Sql
         /// <param name="identity">自增 Id</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
-        public tableType Get(long identity, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> Get(long identity, MemberMap<modelType> memberMap = null)
         {
             if (IsOnlyQueue) return GetQueue(identity, memberMap);
             GetQuery<modelType> getQuery = default(GetQuery<modelType>);
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
             DataModel.Model<modelType>.SetIdentity(value, identity);
             Client.GetByIdentity(this, value, memberMap, ref getQuery);
             return Get(value, ref getQuery);
@@ -1367,21 +1366,25 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         /// <param name="getQuery"></param>
         /// <returns></returns>
-        internal tableType Get(tableType value, ref GetQuery<modelType> getQuery)
+        internal ReturnValue<tableType> Get(tableType value, ref GetQuery<modelType> getQuery)
         {
             DbConnection connection = null;
             try
             {
-                bool isValue = Client.Get(this, ref connection, value, ref getQuery);
+                ReturnType returnType = Client.Get(this, ref connection, value, ref getQuery);
                 Client.FreeConnection(ref connection);
-                if (isValue) return value;
+                switch (returnType)
+                {
+                    case ReturnType.Success: return value;
+                    case ReturnType.NotFoundData: return (tableType)null;
+                }
+                return returnType;
             }
             catch (Exception error)
             {
                 Client.CloseErrorConnection(ref connection);
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                return error;
             }
-            return null;
         }
         /// <summary>
         /// 根据自增 Id 获取数据库记录
@@ -1390,23 +1393,23 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public tableType Get(int identity, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> Get(int identity, MemberMap<modelType> memberMap = null)
         {
             return Get((long)identity, memberMap);
         }
         /// <summary>
         /// 同步获取数据
         /// </summary>
-        internal sealed class Getter : Threading.LinkQueueTaskNode<Getter>
+        internal sealed class Getter : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            internal tableType Value;
+            internal ReturnValue<tableType> ReturnValue;
             /// <summary>
             /// 单条记录查询信息
             /// </summary>
@@ -1416,15 +1419,14 @@ namespace AutoCSer.Sql
             /// </summary>
             private AutoCSer.Threading.AutoWaitHandle wait;
             /// <summary>
-            /// 是否获取到数据
+            /// 设置数据
             /// </summary>
-            private bool isValue;
-            /// <summary>
-            /// 同步获取数据
-            /// </summary>
-            internal Getter()
+            /// <param name="table"></param>
+            /// <param name="value"></param>
+            internal Getter(Table<tableType, modelType> table, tableType value)
             {
-                wait.Set(0);
+                this.table = table;
+                ReturnValue.Value = value;
             }
             /// <summary>
             /// 执行任务
@@ -1434,42 +1436,31 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    isValue = table.Client.Get(table, ref connection, Value, ref Query);
+                    ReturnValue.ReturnType = table.Client.Get(table, ref connection, ReturnValue.Value, ref Query);
+                    switch (ReturnValue.ReturnType)
+                    {
+                        case ReturnType.Success: break;
+                        case ReturnType.NotFoundData: ReturnValue = (tableType)null; break;
+                        default: ReturnValue.Value = null; break;
+                    }
+                }
+                catch (Exception error)
+                {
+                    ReturnValue = error;
                 }
                 finally { wait.Set(); }
             }
             /// <summary>
-            /// 设置数据
-            /// </summary>
-            /// <param name="table"></param>
-            /// <param name="value"></param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, tableType value)
-            {
-                this.table = table;
-                Value = value;
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                Value = null;
-                isValue = false;
-                Query.Free();
-                YieldPool.Default.PushNotNull(this);
-            }
-            /// <summary>
-            /// 等待获取数据
+            /// 添加操作队列
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool Wait()
+            internal ReturnValue<tableType> Wait()
             {
+                wait.Set(0);
+                table.AddQueue(this);
                 wait.Wait();
-                return isValue;
+                return ReturnValue;
             }
         }
         /// <summary>
@@ -1478,20 +1469,13 @@ namespace AutoCSer.Sql
         /// <param name="identity">自增 Id</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
-        public tableType GetQueue(long identity, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> GetQueue(long identity, MemberMap<modelType> memberMap = null)
         {
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
             DataModel.Model<modelType>.SetIdentity(value, identity);
-            Getter getter = (Getter.YieldPool.Default.Pop() as Getter) ?? new Getter();
-            try
-            {
-                Client.GetByIdentity(this, value, memberMap, ref getter.Query);
-                getter.Set(this, value);
-                AddQueue(getter);
-                if (!getter.Wait()) return null;
-            }
-            finally { getter.Push(); }
-            return value;
+            Getter getter = new Getter(this, value);
+            Client.GetByIdentity(this, value, memberMap, ref getter.Query);
+            return getter.Wait();
         }
         /// <summary>
         /// 根据自增 Id 获取数据库记录
@@ -1500,7 +1484,7 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public tableType GetQueue(int identity, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> GetQueue(int identity, MemberMap<modelType> memberMap = null)
         {
             return GetQueue((long)identity, memberMap);
         }
@@ -1511,13 +1495,19 @@ namespace AutoCSer.Sql
         /// <param name="identity">自增 Id</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
-        public tableType GetQueue(ref DbConnection connection, long identity, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> GetQueue(ref DbConnection connection, long identity, MemberMap<modelType> memberMap = null)
         {
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
             DataModel.Model<modelType>.SetIdentity(value, identity);
             GetQuery<modelType> query = default(GetQuery<modelType>);
             Client.GetByIdentity(this, value, memberMap, ref query);
-            return Client.Get(this, ref connection, value, ref query) ? value : null;
+            ReturnType returnType = Client.Get(this, ref connection, value, ref query);
+            switch (returnType)
+            {
+                case ReturnType.Success: return value;
+                case ReturnType.NotFoundData: return (tableType)null;
+            }
+            return returnType;
         }
         /// <summary>
         /// 根据自增 Id 获取数据库记录
@@ -1527,7 +1517,7 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public tableType GetQueue(ref DbConnection connection, int identity, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> GetQueue(ref DbConnection connection, int identity, MemberMap<modelType> memberMap = null)
         {
             return GetQueue(ref connection, (long)identity, memberMap);
         }
@@ -1539,29 +1529,30 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <param name="memberMap">需要生成 SQL 语句的字段成员位图</param>
         /// <returns>添加是否成功</returns>
-        public bool Insert(tableType value, bool isIgnoreTransaction = true, MemberMap<modelType> memberMap = null)
+        public ReturnValue Insert(tableType value, bool isIgnoreTransaction = true, MemberMap<modelType> memberMap = null)
         {
             if (IsOnlyQueue) return InsertQueue(value, isIgnoreTransaction, memberMap);
             if (value != null)
             {
                 InsertQuery query = new InsertQuery { NotQuery = true };
-                if (Client.Insert(this, value, memberMap, ref query))
+                ReturnType returnType = Client.Insert(this, value, memberMap, ref query);
+                if (returnType == ReturnType.Success)
                 {
                     DbConnection connection = null;
                     try
                     {
-                        bool isValue = Client.Insert(this, ref connection, value, ref query, isIgnoreTransaction);
+                        returnType = Client.Insert(this, ref connection, value, ref query, isIgnoreTransaction);
                         Client.FreeConnection(ref connection);
-                        return isValue;
                     }
                     catch (Exception error)
                     {
                         Client.CloseErrorConnection(ref connection);
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        return error;
                     }
-               }
+                }
+                return returnType;
             }
-            return false;
+            return ReturnType.ArgumentNull;
         }
         /// <summary>
         /// 将数据添加到数据库
@@ -1570,30 +1561,34 @@ namespace AutoCSer.Sql
         /// <param name="transaction">事务操作</param>
         /// <param name="memberMap">需要生成 SQL 语句的字段成员位图</param>
         /// <returns>添加是否成功</returns>
-        public bool Insert(tableType value, Transaction transaction, MemberMap<modelType> memberMap = null)
+        public ReturnValue Insert(tableType value, Transaction transaction, MemberMap<modelType> memberMap = null)
         {
             if (transaction == null) return Insert(value, false, memberMap);
-            if (IsOnlyQueue) throw new InvalidOperationException(typeof(tableType).fullName() + " 队列操作不支持数据库事务");
-            if (value != null)
+            if (!IsOnlyQueue)
             {
-                InsertQuery query = new InsertQuery { NotQuery = true };
-                return Client.Insert(this, value, memberMap, ref query) && Client.Insert(this, transaction, value, ref query);
+                if (value != null)
+                {
+                    InsertQuery query = new InsertQuery { NotQuery = true };
+                    ReturnType returnType = Client.Insert(this, value, memberMap, ref query);
+                    return returnType == ReturnType.Success ? Client.Insert(this, transaction, value, ref query) : returnType;
+                }
+                return ReturnType.ArgumentNull;
             }
-            return false;
+            return ReturnType.QueueNotSupportSqlTransaction;
         }
         /// <summary>
         /// 同步添加数据
         /// </summary>
-        internal sealed class Inserter : Threading.LinkQueueTaskNode<Inserter>
+        internal sealed class Inserter : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            private tableType value;
+            private readonly tableType value;
             /// <summary>
             /// 添加数据查询信息
             /// </summary>
@@ -1605,17 +1600,22 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 添加数据是否成功
             /// </summary>
-            private bool isValue;
+            private ReturnValue returnValue;
             /// <summary>
             /// 同步获取数据
             /// </summary>
-            internal Inserter()
+            /// <param name="table"></param>
+            /// <param name="value"></param>
+            /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+            internal Inserter(Table<tableType, modelType> table, tableType value, bool isIgnoreTransaction)
             {
-                wait.Set(0);
+                this.table = table;
+                this.value = value;
+                this.isIgnoreTransaction = isIgnoreTransaction;
             }
             /// <summary>
             /// 执行任务
@@ -1625,46 +1625,30 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    isValue = table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction);
+                    returnValue.ReturnType = table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 设置数据
-            /// </summary>
-            /// <param name="table"></param>
-            /// <param name="value"></param>
-            /// <param name="query"></param>
-            /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, tableType value, ref InsertQuery query, bool isIgnoreTransaction)
-            {
-                this.table = table;
-                this.value = value;
-                this.query = query;
-                this.isIgnoreTransaction = isIgnoreTransaction;
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                value = null;
-                query.Clear();
-                isValue = false;
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待添加数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool Wait()
+            internal ReturnValue Wait(MemberMap<modelType> memberMap)
             {
-                wait.Wait();
-                return isValue;
+                ReturnType returnType = table.Client.Insert(table, value, memberMap, ref query);
+                if (returnType == ReturnType.Success)
+                {
+                    wait.Set(0);
+                    table.AddQueue(this);
+                    wait.Wait();
+                    return returnValue;
+                }
+                return returnType;
             }
         }
         /// <summary>
@@ -1674,43 +1658,29 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <param name="memberMap">需要生成 SQL 语句的字段成员位图</param>
         /// <returns>添加是否成功</returns>
-        public bool InsertQueue(tableType value, bool isIgnoreTransaction = false, MemberMap<modelType> memberMap = null)
+        public ReturnValue InsertQueue(tableType value, bool isIgnoreTransaction = false, MemberMap<modelType> memberMap = null)
         {
-            if (value != null)
-            {
-                InsertQuery query = new InsertQuery();
-                if (Client.Insert(this, value, memberMap, ref query))
-                {
-                    Inserter inserter = (Inserter.YieldPool.Default.Pop() as Inserter) ?? new Inserter();
-                    try
-                    {
-                        inserter.Set(this, value, ref query, isIgnoreTransaction);
-                        AddQueue(inserter);
-                        return inserter.Wait();
-                    }
-                    finally { inserter.Push(); }
-                }
-            }
-            return false;
+            if (value != null) return new Inserter(this, value, isIgnoreTransaction).Wait(memberMap);
+            return ReturnType.ArgumentNull;
         }
 
         /// <summary>
         /// 异步添加数据
         /// </summary>
-        internal sealed class AsynchronousInserter : Threading.LinkQueueTaskNode<AsynchronousInserter>
+        internal sealed class AsynchronousInserter : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            private tableType value;
+            private readonly tableType value;
             /// <summary>
             /// 添加数据回调
             /// </summary>
-            private Action<tableType> onInserted;
+            private readonly Action<ReturnValue<tableType>> onInserted;
             /// <summary>
             /// 添加数据查询信息
             /// </summary>
@@ -1718,52 +1688,53 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
-            /// <summary>
-            /// 执行任务
-            /// </summary>
-            /// <param name="connection"></param>
-            internal override void RunLinkQueueTask(ref DbConnection connection)
-            {
-                try
-                {
-                    if (table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction))
-                    {
-                        Action<tableType> onInserted = this.onInserted;
-                        if (onInserted != null)
-                        {
-                            this.onInserted = null;
-                            onInserted(value);
-                        }
-                    }
-                }
-                finally
-                {
-                    if (onInserted != null) onInserted(null);
-                }
-                table = null;
-                value = null;
-                onInserted = null;
-                query.Clear();
-                YieldPool.Default.PushNotNull(this);
-            }
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 设置数据
             /// </summary>
             /// <param name="table"></param>
             /// <param name="onInserted">添加数据回调</param>
             /// <param name="value"></param>
-            /// <param name="query"></param>
             /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, tableType value, ref Action<tableType> onInserted, ref InsertQuery query, bool isIgnoreTransaction)
+            internal AsynchronousInserter(Table<tableType, modelType> table, tableType value, Action<ReturnValue<tableType>> onInserted, bool isIgnoreTransaction)
             {
                 this.onInserted = onInserted;
                 this.table = table;
                 this.value = value;
-                this.query = query;
                 this.isIgnoreTransaction = isIgnoreTransaction;
-                onInserted = null;
+            }
+            /// <summary>
+            /// 执行任务
+            /// </summary>
+            /// <param name="connection"></param>
+            internal override void RunLinkQueueTask(ref DbConnection connection)
+            {
+                ReturnValue<tableType> returnValue = default(ReturnValue<tableType>);
+                try
+                {
+                    returnValue.ReturnType = table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction);
+                    if (returnValue.ReturnType == ReturnType.Success) returnValue.Value = value;
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
+                }
+                finally { onInserted(returnValue); }
+            }
+            /// <summary>
+            /// 添加队列操作
+            /// </summary>
+            /// <param name="memberMap"></param>
+            /// <returns></returns>
+            internal ReturnType AddQueue(MemberMap<modelType> memberMap)
+            {
+                ReturnType returnType = table.Client.Insert(table, value, memberMap, ref query);
+                if (returnType == ReturnType.Success)
+                {
+                    table.AddQueue(this);
+                    return ReturnType.Success;
+                }
+                return returnType;
             }
         }
         /// <summary>
@@ -1773,24 +1744,17 @@ namespace AutoCSer.Sql
         /// <param name="onInserted">添加数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <param name="memberMap">需要生成 SQL 语句的字段成员位图</param>
-        public void InsertQueue(tableType value, Action<tableType> onInserted, bool isIgnoreTransaction = false, MemberMap<modelType> memberMap = null)
+        public void InsertQueue(tableType value, Action<ReturnValue<tableType>> onInserted, bool isIgnoreTransaction = false, MemberMap<modelType> memberMap = null)
         {
+            ReturnType returnType = ReturnType.Unknown;
             try
             {
-                if (value != null)
-                {
-                    InsertQuery query = new InsertQuery();
-                    if (Client.Insert(this, value, memberMap, ref query))
-                    {
-                        AsynchronousInserter inserter = (AsynchronousInserter.YieldPool.Default.Pop() as AsynchronousInserter) ?? new AsynchronousInserter();
-                        inserter.Set(this, value, ref onInserted, ref query, isIgnoreTransaction);
-                        AddQueue(inserter);
-                    }
-                }
+                if (value != null) returnType = new AsynchronousInserter(this, value, onInserted, isIgnoreTransaction).AddQueue(memberMap);
+                else returnType = ReturnType.ArgumentNull;
             }
             finally
             {
-                if (onInserted != null) onInserted(null);
+                if (returnType != ReturnType.Success) onInserted(returnType);
             }
         }
 
@@ -1801,7 +1765,7 @@ namespace AutoCSer.Sql
         /// <returns>数据集合</returns>
         internal DataTable GetDataTable(ref SubArray<tableType> array)
         {
-            DataTable dataTable = new DataTable(TableName);
+            DataTable dataTable = new DataTable("["+ TableName + "]");
             foreach (KeyValue<string, Type> column in DataModel.Model<modelType>.ToArray.DataColumns) dataTable.Columns.Add(new DataColumn(column.Key, column.Value));
             foreach (tableType value in array)
             {
@@ -1819,7 +1783,7 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>添加是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public SubArray<tableType> Insert(tableType[] array, bool isIgnoreTransaction = true)
+        public ReturnValue<SubArray<tableType>> Insert(tableType[] array, bool isIgnoreTransaction = true)
         {
             return Insert(new SubArray<tableType>(array), isIgnoreTransaction);
         }
@@ -1830,7 +1794,7 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>添加是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public SubArray<tableType> Insert(LeftArray<tableType> array, bool isIgnoreTransaction = true)
+        public ReturnValue<SubArray<tableType>> Insert(LeftArray<tableType> array, bool isIgnoreTransaction = true)
         {
             return Insert(new SubArray<tableType>(ref array), isIgnoreTransaction);
         }
@@ -1840,25 +1804,30 @@ namespace AutoCSer.Sql
         /// <param name="array">待添加数据数组</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>添加是否成功</returns>
-        public SubArray<tableType> Insert(SubArray<tableType> array, bool isIgnoreTransaction = true)
+        public ReturnValue<SubArray<tableType>> Insert(SubArray<tableType> array, bool isIgnoreTransaction = true)
         {
             if (IsOnlyQueue) return InsertQueue(array, isIgnoreTransaction);
-            if (array.Count != 0 && Client.Insert(this, ref array))
+            if (array.Count != 0)
             {
-                DbConnection connection = null;
-                try
+                ReturnType returnType = Client.Insert(this, ref array);
+                if (returnType == ReturnType.Success)
                 {
-                    SubArray<tableType> newArray = Client.Insert(this, ref connection, ref array, isIgnoreTransaction);
-                    Client.FreeConnection(ref connection);
-                    return newArray;
+                    DbConnection connection = null;
+                    try
+                    {
+                        ReturnValue<SubArray<tableType>> returnValue = Client.Insert(this, ref connection, ref array, isIgnoreTransaction);
+                        Client.FreeConnection(ref connection);
+                        return returnValue;
+                    }
+                    catch (Exception error)
+                    {
+                        Client.CloseErrorConnection(ref connection);
+                        return error;
+                    }
                 }
-                catch (Exception error)
-                {
-                    Client.CloseErrorConnection(ref connection);
-                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-                }
+                return returnType;
             }
-            return default(SubArray<tableType>);
+            return new SubArray<tableType>();
         }
         /// <summary>
         /// 将数据添加到数据库
@@ -1867,7 +1836,7 @@ namespace AutoCSer.Sql
         /// <param name="transaction">事务操作</param>
         /// <returns>添加是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public SubArray<tableType> Insert(tableType[] array, Transaction transaction)
+        public ReturnValue<SubArray<tableType>> Insert(tableType[] array, Transaction transaction)
         {
             return Insert(new SubArray<tableType>(array), transaction);
         }
@@ -1878,7 +1847,7 @@ namespace AutoCSer.Sql
         /// <param name="transaction">事务操作</param>
         /// <returns>添加是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public SubArray<tableType> Insert(LeftArray<tableType> array, Transaction transaction)
+        public ReturnValue<SubArray<tableType>> Insert(LeftArray<tableType> array, Transaction transaction)
         {
             return Insert(new SubArray<tableType>(ref array), transaction);
         }
@@ -1888,29 +1857,38 @@ namespace AutoCSer.Sql
         /// <param name="array">待添加数据数组</param>
         /// <param name="transaction">事务操作</param>
         /// <returns>添加是否成功</returns>
-        public SubArray<tableType> Insert(SubArray<tableType> array, Transaction transaction)
+        public ReturnValue<SubArray<tableType>> Insert(SubArray<tableType> array, Transaction transaction)
         {
             if (transaction == null) return Insert(array, false);
-            if (IsOnlyQueue) throw new InvalidOperationException(typeof(tableType).fullName() + " 队列操作不支持数据库事务");
-            if (array.Count != 0 && Client.Insert(this, ref array))
+            if (!IsOnlyQueue)
             {
-                return Client.Insert(this, transaction, ref array);
+                if (array.Count != 0)
+                {
+                    ReturnType returnType = Client.Insert(this, ref array);
+                    if (returnType == ReturnType.Success)
+                    {
+                        returnType = Client.Insert(this, transaction, ref array);
+                        if (returnType == ReturnType.Success) return array;
+                    }
+                    return returnType;
+                }
+                return new SubArray<tableType>();
             }
-            return default(SubArray<tableType>);
+            return ReturnType.QueueNotSupportSqlTransaction;
         }
         /// <summary>
         /// 同步添加数据
         /// </summary>
-        internal sealed class Importer : Threading.LinkQueueTaskNode<Importer>
+        internal sealed class Importer : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象数组
             /// </summary>
-            private SubArray<tableType> array;
+            private ReturnValue<SubArray<tableType>> returnValue;
             /// <summary>
             /// 添加数据等待锁
             /// </summary>
@@ -1918,17 +1896,15 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
-            /// <summary>
-            /// 添加数据是否成功
-            /// </summary>
-            private SubArray<tableType> isValue;
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 同步获取数据
             /// </summary>
-            internal Importer()
+            internal Importer(Table<tableType, modelType> table, ref SubArray<tableType> array, bool isIgnoreTransaction)
             {
-                wait.Set(0);
+                this.table = table;
+                returnValue.Value = array;
+                this.isIgnoreTransaction = isIgnoreTransaction;
             }
             /// <summary>
             /// 执行任务
@@ -1938,43 +1914,25 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    isValue = table.Client.Insert(table, ref connection, ref array, isIgnoreTransaction);
+                    returnValue = table.Client.Insert(table, ref connection, ref returnValue.Value, isIgnoreTransaction);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 设置数据
-            /// </summary>
-            /// <param name="table"></param>
-            /// <param name="array"></param>
-            /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, ref SubArray<tableType> array, bool isIgnoreTransaction)
-            {
-                this.table = table;
-                this.array = array;
-                this.isIgnoreTransaction = isIgnoreTransaction;
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                array.SetNull();
-                isValue.SetNull();
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待添加数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal SubArray<tableType> Wait()
+            internal ReturnValue<SubArray<tableType>> Wait()
             {
+                wait.Set(0);
+                table.AddQueue(this);
                 wait.Wait();
-                return isValue;
+                return returnValue;
             }
         }
         /// <summary>
@@ -1984,7 +1942,7 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>添加是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public SubArray<tableType> InsertQueue(tableType[] array, bool isIgnoreTransaction = false)
+        public ReturnValue<SubArray<tableType>> InsertQueue(tableType[] array, bool isIgnoreTransaction = false)
         {
             return InsertQueue(new SubArray<tableType>(array), isIgnoreTransaction);
         }
@@ -1995,7 +1953,7 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>添加是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public SubArray<tableType> InsertQueue(LeftArray<tableType> array, bool isIgnoreTransaction = false)
+        public ReturnValue<SubArray<tableType>> InsertQueue(LeftArray<tableType> array, bool isIgnoreTransaction = false)
         {
             return InsertQueue(new SubArray<tableType>(ref array), isIgnoreTransaction);
         }
@@ -2005,31 +1963,26 @@ namespace AutoCSer.Sql
         /// <param name="array">待添加数据数组</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>添加是否成功</returns>
-        public SubArray<tableType> InsertQueue(SubArray<tableType> array, bool isIgnoreTransaction = false)
+        public ReturnValue<SubArray<tableType>> InsertQueue(SubArray<tableType> array, bool isIgnoreTransaction = false)
         {
-            if (array.Count != 0 && Client.Insert(this, ref array))
+            if (array.Count != 0)
             {
-                Importer inserter = (Importer.YieldPool.Default.Pop() as Importer) ?? new Importer();
-                try
-                {
-                    inserter.Set(this, ref array, isIgnoreTransaction);
-                    AddQueue(inserter);
-                    return inserter.Wait();
-                }
-                finally { inserter.Push(); }
+                ReturnType returnType = Client.Insert(this, ref array);
+                if (returnType == ReturnType.Success) return new Importer(this, ref array, isIgnoreTransaction).Wait();
+                return returnType;
             }
-            return default(SubArray<tableType>);
+            return new SubArray<tableType>();
         }
 
         /// <summary>
         /// 异步添加数据
         /// </summary>
-        internal sealed class AsynchronousImporter : Threading.LinkQueueTaskNode<AsynchronousImporter>
+        internal sealed class AsynchronousImporter : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象数组
             /// </summary>
@@ -2037,36 +1990,11 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 添加数据回调
             /// </summary>
-            private Action<SubArray<tableType>> onInserted;
+            private readonly Action<ReturnValue<SubArray<tableType>>> onInserted;
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
-            /// <summary>
-            /// 执行任务
-            /// </summary>
-            /// <param name="connection"></param>
-            internal override void RunLinkQueueTask(ref DbConnection connection)
-            {
-                try
-                {
-                    array = table.Client.Insert(table, ref connection, ref array, isIgnoreTransaction);
-                    Action<SubArray<tableType>> onInserted = this.onInserted;
-                    if (onInserted != null)
-                    {
-                        this.onInserted = null;
-                        onInserted(array);
-                    }
-                }
-                finally
-                {
-                    if (onInserted != null) onInserted(default(SubArray<tableType>));
-                }
-                table = null;
-                array.SetNull();
-                onInserted = null;
-                YieldPool.Default.PushNotNull(this);
-            }
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 设置数据
             /// </summary>
@@ -2075,13 +2003,29 @@ namespace AutoCSer.Sql
             /// <param name="array"></param>
             /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, ref SubArray<tableType> array, Action<SubArray<tableType>> onInserted, bool isIgnoreTransaction)
+            internal AsynchronousImporter(Table<tableType, modelType> table, ref SubArray<tableType> array, Action<ReturnValue<SubArray<tableType>>> onInserted, bool isIgnoreTransaction)
             {
                 this.onInserted = onInserted;
                 this.table = table;
                 this.array = array;
                 this.isIgnoreTransaction = isIgnoreTransaction;
-                onInserted = null;
+            }
+            /// <summary>
+            /// 执行任务
+            /// </summary>
+            /// <param name="connection"></param>
+            internal override void RunLinkQueueTask(ref DbConnection connection)
+            {
+                ReturnValue<SubArray<tableType>> returnValue = default(ReturnValue<SubArray<tableType>>);
+                try
+                {
+                    returnValue = table.Client.Insert(table, ref connection, ref array, isIgnoreTransaction);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
+                }
+                finally { onInserted(returnValue); }
             }
         }
         /// <summary>
@@ -2091,7 +2035,7 @@ namespace AutoCSer.Sql
         /// <param name="onInserted">添加数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void InsertQueue(tableType[] array, Action<SubArray<tableType>> onInserted, bool isIgnoreTransaction = false)
+        public void InsertQueue(tableType[] array, Action<ReturnValue<SubArray<tableType>>> onInserted, bool isIgnoreTransaction = false)
         {
             InsertQueue(new SubArray<tableType>(array), onInserted, isIgnoreTransaction);
         }
@@ -2102,7 +2046,7 @@ namespace AutoCSer.Sql
         /// <param name="onInserted">添加数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void InsertQueue(LeftArray<tableType> array, Action<SubArray<tableType>> onInserted, bool isIgnoreTransaction = false)
+        public void InsertQueue(LeftArray<tableType> array, Action<ReturnValue<SubArray<tableType>>> onInserted, bool isIgnoreTransaction = false)
         {
             InsertQueue(new SubArray<tableType>(ref array), onInserted, isIgnoreTransaction);
         }
@@ -2112,20 +2056,30 @@ namespace AutoCSer.Sql
         /// <param name="array">待添加数据数组</param>
         /// <param name="onInserted">添加数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
-        public void InsertQueue(SubArray<tableType> array, Action<SubArray<tableType>> onInserted, bool isIgnoreTransaction = false)
+        public void InsertQueue(SubArray<tableType> array, Action<ReturnValue<SubArray<tableType>>> onInserted, bool isIgnoreTransaction = false)
         {
+            ReturnType returnType = ReturnType.Unknown;
             try
             {
-                if (array.Count != 0 && Client.Insert(this, ref array))
+                if (array.Count != 0)
                 {
-                    AsynchronousImporter inserter = (AsynchronousImporter.YieldPool.Default.Pop() as AsynchronousImporter) ?? new AsynchronousImporter();
-                    inserter.Set(this, ref array, onInserted, isIgnoreTransaction);
-                    AddQueue(inserter);
+                    returnType = Client.Insert(this, ref array);
+                    if (returnType == ReturnType.Success)
+                    {
+                        returnType = ReturnType.Unknown;
+                        AddQueue(new AsynchronousImporter(this, ref array, onInserted, isIgnoreTransaction));
+                        returnType = ReturnType.Success;
+                    }
+                }
+                else
+                {
+                    returnType = ReturnType.Success;
+                    onInserted(new SubArray<tableType>());
                 }
             }
             finally
             {
-                if (onInserted != null) onInserted(default(SubArray<tableType>));
+                if (returnType != ReturnType.Success) onInserted(returnType);
             }
         }
 
@@ -2136,29 +2090,34 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">更新数据字段成员位图</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>更新是否成功</returns>
-        public bool Update(tableType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = true)
+        public ReturnValue Update(tableType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = true)
         {
             if (IsOnlyQueue) return UpdateQueue(value, memberMap, isIgnoreTransaction);
-            if (memberMap != null && value != null && DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
+            if (memberMap != null && value != null)
             {
-                UpdateQuery<modelType> updateQuery = new UpdateQuery<modelType> { NotQuery = true };
-                if (Client.Update(this, value, memberMap, ref updateQuery))
+                if (DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
                 {
-                    DbConnection connection = null;
-                    try
+                    UpdateQuery<modelType> updateQuery = new UpdateQuery<modelType> { NotQuery = true };
+                    ReturnType returnType = Client.Update(this, value, memberMap, ref updateQuery);
+                    if (returnType == ReturnType.Success)
                     {
-                        bool isValue = Client.Update(this, ref connection, value, memberMap, ref updateQuery, isIgnoreTransaction);
-                        Client.FreeConnection(ref connection);
-                        return isValue;
+                        DbConnection connection = null;
+                        try
+                        {
+                            returnType = Client.Update(this, ref connection, value, memberMap, ref updateQuery, isIgnoreTransaction);
+                            Client.FreeConnection(ref connection);
+                        }
+                        catch (Exception error)
+                        {
+                            Client.CloseErrorConnection(ref connection);
+                            return error;
+                        }
                     }
-                    catch (Exception error)
-                    {
-                        Client.CloseErrorConnection(ref connection);
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-                    }
+                    return returnType;
                 }
+                return ReturnType.VerifyError;
             }
-            return false;
+            return ReturnType.ArgumentNull;
         }
         /// <summary>
         /// 更新数据
@@ -2167,34 +2126,42 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">更新数据字段成员位图</param>
         /// <param name="transaction">事务操作</param>
         /// <returns>更新是否成功</returns>
-        public bool Update(tableType value, MemberMap<modelType> memberMap, Transaction transaction)
+        public ReturnValue Update(tableType value, MemberMap<modelType> memberMap, Transaction transaction)
         {
             if (transaction == null) return Update(value, memberMap, false);
-            if (IsOnlyQueue) throw new InvalidOperationException(typeof(tableType).fullName() + " 队列操作不支持数据库事务");
-            if (memberMap != null && value != null && DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
+            if (!IsOnlyQueue)
             {
-                UpdateQuery<modelType> updateQuery = new UpdateQuery<modelType> { NotQuery = true };
-                return Client.Update(this, value, memberMap, ref updateQuery) && Client.Update(this, transaction, value, memberMap, ref updateQuery);
+                if (memberMap != null && value != null)
+                {
+                    if (DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
+                    {
+                        UpdateQuery<modelType> updateQuery = new UpdateQuery<modelType> { NotQuery = true };
+                        ReturnType returnType = Client.Update(this, value, memberMap, ref updateQuery);
+                        return returnType == ReturnType.Success ? Client.Update(this, transaction, value, memberMap, ref updateQuery) : returnType;
+                    }
+                    return ReturnType.VerifyError;
+                }
+                return ReturnType.ArgumentNull;
             }
-            return false;
+            return ReturnType.QueueNotSupportSqlTransaction;
         }
         /// <summary>
         /// 同步更新数据
         /// </summary>
-        internal sealed class Updater : Threading.LinkQueueTaskNode<Updater>
+        internal sealed class Updater : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            private tableType value;
+            private readonly tableType value;
             /// <summary>
             /// 更新成员位图
             /// </summary>
-            private MemberMap<modelType> memberMap;
+            private readonly MemberMap<modelType> memberMap;
             /// <summary>
             /// 更新记录查询信息
             /// </summary>
@@ -2206,17 +2173,24 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 更新数据是否成功
             /// </summary>
-            private bool isValue;
+            private ReturnValue returnValue;
             /// <summary>
             /// 同步更新数据
             /// </summary>
-            internal Updater()
+            /// <param name="table"></param>
+            /// <param name="value"></param>
+            /// <param name="memberMap"></param>
+            /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+            internal Updater(Table<tableType, modelType> table, tableType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction)
             {
-                wait.Set(0);
+                this.table = table;
+                this.value = value;
+                this.memberMap = memberMap;
+                this.isIgnoreTransaction = isIgnoreTransaction;
             }
             /// <summary>
             /// 执行任务
@@ -2226,47 +2200,29 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    isValue = table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction);
+                    returnValue.ReturnType = table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 设置数据
-            /// </summary>
-            /// <param name="table"></param>
-            /// <param name="value"></param>
-            /// <param name="memberMap"></param>
-            /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, tableType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction)
-            {
-                this.table = table;
-                this.value = value;
-                this.memberMap = memberMap;
-                this.isIgnoreTransaction = isIgnoreTransaction;
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                value = null;
-                memberMap = null;
-                Query.Free();
-                isValue = false;
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待添加数据
             /// </summary>
             /// <returns></returns>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool Wait()
+            internal ReturnValue Wait()
             {
-                wait.Wait();
-                return isValue;
+                ReturnType returnType = table.Client.Update(table, value, memberMap, ref Query);
+                if (returnType == ReturnType.Success)
+                {
+                    wait.Set(0);
+                    table.AddQueue(this);
+                    wait.Wait();
+                    return returnValue;
+                }
+                return returnType;
             }
         }
         /// <summary>
@@ -2276,46 +2232,40 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">更新数据字段成员位图</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>更新是否成功</returns>
-        public bool UpdateQueue(tableType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = false)
+        public ReturnValue UpdateQueue(tableType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = false)
         {
-            if (memberMap != null && value != null && DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
+            if (memberMap != null && value != null)
             {
-                Updater updater = (Updater.YieldPool.Default.Pop() as Updater) ?? new Updater();
-                try
+                if (DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
                 {
-                    if (Client.Update(this, value, memberMap, ref updater.Query))
-                    {
-                        updater.Set(this, value, memberMap, isIgnoreTransaction);
-                        AddQueue(updater);
-                        return updater.Wait();
-                    }
+                    return new Updater(this, value, memberMap, isIgnoreTransaction).Wait();
                 }
-                finally { updater.Push(); }
+                return ReturnType.VerifyError;
             }
-            return false;
+            return ReturnType.ArgumentNull;
         }
 
         /// <summary>
         /// 异步更新数据
         /// </summary>
-        internal sealed class AsynchronousUpdater : Threading.LinkQueueTaskNode<AsynchronousUpdater>
+        internal sealed class AsynchronousUpdater : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            private tableType value;
+            private readonly tableType value;
+            /// <summary>
+            /// 更新数据成员位图
+            /// </summary>
+            private readonly MemberMap<modelType> memberMap;
             /// <summary>
             /// 更新数据回调
             /// </summary>
-            private Action<tableType> onUpdated;
-            /// <summary>
-            /// 更新成员位图
-            /// </summary>
-            private MemberMap<modelType> memberMap;
+            private readonly Action<ReturnValue<tableType>> onUpdated;
             /// <summary>
             /// 更新记录查询信息
             /// </summary>
@@ -2323,36 +2273,7 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
-            /// <summary>
-            /// 执行任务
-            /// </summary>
-            /// <param name="connection"></param>
-            internal override void RunLinkQueueTask(ref DbConnection connection)
-            {
-                try
-                {
-                    if (table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction))
-                    {
-                        Action<tableType> onUpdated = this.onUpdated;
-                        if (onUpdated != null)
-                        {
-                            this.onUpdated = null;
-                            onUpdated(value);
-                        }
-                    }
-                }
-                finally
-                {
-                    if (onUpdated != null) onUpdated(null);
-                }
-                table = null;
-                value = null;
-                onUpdated = null;
-                memberMap = null;
-                Query.Free();
-                YieldPool.Default.PushNotNull(this);
-            }
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 设置数据
             /// </summary>
@@ -2361,15 +2282,45 @@ namespace AutoCSer.Sql
             /// <param name="memberMap"></param>
             /// <param name="onUpdated"></param>
             /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, tableType value, MemberMap<modelType> memberMap, ref Action<tableType> onUpdated, bool isIgnoreTransaction)
+            internal AsynchronousUpdater(Table<tableType, modelType> table, tableType value, MemberMap<modelType> memberMap, Action<ReturnValue<tableType>> onUpdated, bool isIgnoreTransaction)
             {
                 this.onUpdated = onUpdated;
                 this.table = table;
-                this.value = value;
                 this.memberMap = memberMap;
+                this.value = value;
                 this.isIgnoreTransaction = isIgnoreTransaction;
-                onUpdated = null;
+            }
+            /// <summary>
+            /// 执行任务
+            /// </summary>
+            /// <param name="connection"></param>
+            internal override void RunLinkQueueTask(ref DbConnection connection)
+            {
+                ReturnValue<tableType> returnValue = default(ReturnValue<tableType>);
+                try
+                {
+                    returnValue.ReturnType = table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction);
+                    if (returnValue.ReturnType == ReturnType.Success) returnValue.Value = value;
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
+                }
+                finally { onUpdated(returnValue); }
+            }
+            /// <summary>
+            /// 添加操作队列
+            /// </summary>
+            /// <returns></returns>
+            internal ReturnType AddQueue()
+            {
+                ReturnType returnType = table.Client.Update(table, value, memberMap, ref Query);
+                if (returnType == ReturnType.Success)
+                {
+                    table.AddQueue(this);
+                    return ReturnType.Success;
+                }
+                return returnType;
             }
         }
         /// <summary>
@@ -2379,23 +2330,24 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">更新数据字段成员位图</param>
         /// <param name="onUpdated">更新数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
-        public void UpdateQueue(tableType value, MemberMap<modelType> memberMap, Action<tableType> onUpdated, bool isIgnoreTransaction = false)
+        public void UpdateQueue(tableType value, MemberMap<modelType> memberMap, Action<ReturnValue<tableType>> onUpdated, bool isIgnoreTransaction = false)
         {
+            ReturnType returnType = ReturnType.Unknown;
             try
             {
-                if (memberMap != null && value != null && DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
+                if (memberMap != null && value != null)
                 {
-                    AsynchronousUpdater updater = (AsynchronousUpdater.YieldPool.Default.Pop() as AsynchronousUpdater) ?? new AsynchronousUpdater();
-                    if (Client.Update(this, value, memberMap, ref updater.Query))
+                    if (DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, this))
                     {
-                        updater.Set(this, value, memberMap, ref onUpdated, isIgnoreTransaction);
-                        AddQueue(updater);
+                        returnType = new AsynchronousUpdater(this, value, memberMap, onUpdated, isIgnoreTransaction).AddQueue();
                     }
+                    else returnType = ReturnType.VerifyError;
                 }
+                else returnType = ReturnType.ArgumentNull;
             }
             finally
             {
-                if (onUpdated != null) onUpdated(null);
+                if (returnType != ReturnType.Success) onUpdated(returnType);
             }
         }
 
@@ -2405,29 +2357,30 @@ namespace AutoCSer.Sql
         /// <param name="value">待删除数据</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>删除是否成功</returns>
-        public bool Delete(tableType value, bool isIgnoreTransaction = true)
+        public ReturnValue Delete(tableType value, bool isIgnoreTransaction = true)
         {
             if (IsOnlyQueue) return DeleteQueue(value, isIgnoreTransaction);
             if (value != null)
             {
                 InsertQuery query = new InsertQuery { NotQuery = true };
-                if (Client.Delete(this, value, ref query))
+                ReturnType returnType = Client.Delete(this, value, ref query);
+                if (returnType == ReturnType.Success)
                 {
                     DbConnection connection = null;
                     try
                     {
-                        bool isValue = Client.Delete(this, ref connection, value, ref query, isIgnoreTransaction);
+                        returnType = Client.Delete(this, ref connection, value, ref query, isIgnoreTransaction);
                         Client.FreeConnection(ref connection);
-                        return isValue;
                     }
                     catch (Exception error)
                     {
                         Client.CloseErrorConnection(ref connection);
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        return error;
                     }
                 }
+                return returnType;
             }
-            return false;
+            return ReturnType.ArgumentNull;
         }
         /// <summary>
         /// 根据自增 Id 删除数据库数据
@@ -2435,12 +2388,15 @@ namespace AutoCSer.Sql
         /// <param name="identity">自增 Id</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>是否删除成功</returns>
-        public bool Delete(long identity, bool isIgnoreTransaction = true)
+        public ReturnValue Delete(long identity, bool isIgnoreTransaction = true)
         {
-            if (DataModel.Model<modelType>.Identity == null) throw new InvalidOperationException();
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
-            DataModel.Model<modelType>.SetIdentity(value, identity);
-            return Delete(value, isIgnoreTransaction);
+            if (DataModel.Model<modelType>.Identity != null)
+            {
+                tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
+                DataModel.Model<modelType>.SetIdentity(value, identity);
+                return Delete(value, isIgnoreTransaction);
+            }
+            return ReturnType.InvalidOperation;
         }
         /// <summary>
         /// 根据自增 Id 删除数据库数据
@@ -2449,7 +2405,7 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>是否删除成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Delete(int identity, bool isIgnoreTransaction = true)
+        public ReturnValue Delete(int identity, bool isIgnoreTransaction = true)
         {
             return Delete((long)identity, isIgnoreTransaction);
         }
@@ -2459,16 +2415,20 @@ namespace AutoCSer.Sql
         /// <param name="value">待删除数据</param>
         /// <param name="transaction">事务操作</param>
         /// <returns>删除是否成功</returns>
-        public bool Delete(tableType value, Transaction transaction)
+        public ReturnValue Delete(tableType value, Transaction transaction)
         {
             if (transaction == null) return Delete(value, false);
-            if (IsOnlyQueue) throw new InvalidOperationException(typeof(tableType).fullName() + " 队列操作不支持数据库事务");
-            if (value != null)
+            if (!IsOnlyQueue)
             {
-                InsertQuery query = new InsertQuery { NotQuery = true };
-                return Client.Delete(this, value, ref query) && Client.Delete(this, transaction, value, ref query);
+                if (value != null)
+                {
+                    InsertQuery query = new InsertQuery { NotQuery = true };
+                    ReturnType returnType = Client.Delete(this, value, ref query);
+                    return returnType == ReturnType.Success ? Client.Delete(this, transaction, value, ref query) : returnType;
+                }
+                return ReturnType.ArgumentNull;
             }
-            return false;
+            return ReturnType.QueueNotSupportSqlTransaction;
         }
         /// <summary>
         /// 根据自增 Id 删除数据库数据
@@ -2476,12 +2436,15 @@ namespace AutoCSer.Sql
         /// <param name="identity">自增 Id</param>
         /// <param name="transaction">事务操作</param>
         /// <returns>是否删除成功</returns>
-        public bool Delete(long identity, Transaction transaction)
+        public ReturnValue Delete(long identity, Transaction transaction)
         {
-            if (DataModel.Model<modelType>.Identity == null) throw new InvalidOperationException();
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
-            DataModel.Model<modelType>.SetIdentity(value, identity);
-            return Delete(value, transaction);
+            if (DataModel.Model<modelType>.Identity != null)
+            {
+                tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
+                DataModel.Model<modelType>.SetIdentity(value, identity);
+                return Delete(value, transaction);
+            }
+            return ReturnType.DataModelLessIdentity;
         }
         /// <summary>
         /// 根据自增 Id 删除数据库数据
@@ -2490,23 +2453,23 @@ namespace AutoCSer.Sql
         /// <param name="transaction">事务操作</param>
         /// <returns>是否删除成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Delete(int identity, Transaction transaction)
+        public ReturnValue Delete(int identity, Transaction transaction)
         {
             return Delete((long)identity, transaction);
         }
         /// <summary>
         /// 同步删除数据
         /// </summary>
-        internal sealed class Deletor : Threading.LinkQueueTaskNode<Deletor>
+        internal sealed class Deletor : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            private tableType value;
+            private readonly tableType value;
             /// <summary>
             /// 删除数据 SQL 语句
             /// </summary>
@@ -2518,17 +2481,23 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 删除数据是否成功
             /// </summary>
-            private bool isValue;
+            private ReturnValue returnValue;
             /// <summary>
-            /// 同步获取数据
+            /// 设置数据
             /// </summary>
-            internal Deletor()
+            /// <param name="table"></param>
+            /// <param name="value"></param>
+            /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal Deletor(Table<tableType, modelType> table, tableType value, bool isIgnoreTransaction)
             {
-                wait.Set(0);
+                this.table = table;
+                this.value = value;
+                this.isIgnoreTransaction = isIgnoreTransaction;
             }
             /// <summary>
             /// 执行任务
@@ -2538,46 +2507,30 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    isValue = table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction);
+                    returnValue.ReturnType = table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction);
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
                 }
                 finally { wait.Set(); }
-            }
-            /// <summary>
-            /// 设置数据
-            /// </summary>
-            /// <param name="table"></param>
-            /// <param name="value"></param>
-            /// <param name="query"></param>
-            /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, tableType value, ref InsertQuery query, bool isIgnoreTransaction)
-            {
-                this.table = table;
-                this.value = value;
-                this.query = query;
-                this.isIgnoreTransaction = isIgnoreTransaction;
-            }
-            /// <summary>
-            /// 释放对象
-            /// </summary>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Push()
-            {
-                table = null;
-                value = null;
-                query.Clear();
-                isValue = false;
-                YieldPool.Default.PushNotNull(this);
             }
             /// <summary>
             /// 等待删除数据
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal bool Wait()
+            internal ReturnValue Wait()
             {
-                wait.Wait();
-                return isValue;
+                ReturnType returnType = table.Client.Delete(table, value, ref query);
+                if (returnType == ReturnType.Success)
+                {
+                    wait.Set(0);
+                    table.AddQueue(this);
+                    wait.Wait();
+                    return returnValue;
+                }
+                return returnType;
             }
         }
         /// <summary>
@@ -2586,24 +2539,10 @@ namespace AutoCSer.Sql
         /// <param name="value">待删除数据</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>删除是否成功</returns>
-        public bool DeleteQueue(tableType value, bool isIgnoreTransaction = false)
+        public ReturnValue DeleteQueue(tableType value, bool isIgnoreTransaction = false)
         {
-            if (value != null)
-            {
-                InsertQuery query = new InsertQuery();
-                if (Client.Delete(this, value, ref query))
-                {
-                    Deletor deletor = (Deletor.YieldPool.Default.Pop() as Deletor) ?? new Deletor();
-                    try
-                    {
-                        deletor.Set(this, value, ref query, isIgnoreTransaction);
-                        AddQueue(deletor);
-                        return deletor.Wait();
-                    }
-                    finally { deletor.Push(); }
-                }
-            }
-            return false;
+            if (value != null) return new Deletor(this, value, isIgnoreTransaction).Wait();
+            return ReturnType.ArgumentNull;
         }
         /// <summary>
         /// 根据自增 Id 删除数据库数据
@@ -2611,12 +2550,15 @@ namespace AutoCSer.Sql
         /// <param name="identity">自增 Id</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>是否删除成功</returns>
-        public bool DeleteQueue(long identity, bool isIgnoreTransaction = false)
+        public ReturnValue DeleteQueue(long identity, bool isIgnoreTransaction = false)
         {
-            if (DataModel.Model<modelType>.Identity == null) throw new InvalidOperationException();
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
-            DataModel.Model<modelType>.SetIdentity(value, identity);
-            return DeleteQueue(value, isIgnoreTransaction);
+            if (DataModel.Model<modelType>.Identity != null)
+            {
+                tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
+                DataModel.Model<modelType>.SetIdentity(value, identity);
+                return DeleteQueue(value, isIgnoreTransaction);
+            }
+            return ReturnType.DataModelLessIdentity;
         }
         /// <summary>
         /// 根据自增 Id 删除数据库数据
@@ -2625,7 +2567,7 @@ namespace AutoCSer.Sql
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>是否删除成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool DeleteQueue(int identity, bool isIgnoreTransaction = false)
+        public ReturnValue DeleteQueue(int identity, bool isIgnoreTransaction = false)
         {
             return DeleteQueue((long)identity, isIgnoreTransaction);
         }
@@ -2633,20 +2575,20 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 异步删除数据
         /// </summary>
-        internal sealed class AsynchronousDeletor : Threading.LinkQueueTaskNode<AsynchronousDeletor>
+        internal sealed class AsynchronousDeletor : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 数据表格
             /// </summary>
-            private Table<tableType, modelType> table;
+            private readonly Table<tableType, modelType> table;
             /// <summary>
             /// 目标数据对象
             /// </summary>
-            private tableType value;
+            private readonly tableType value;
             /// <summary>
             /// 删除数据回调
             /// </summary>
-            private Action<tableType> onDeleted;
+            private readonly Action<ReturnValue<tableType>> onDeleted;
             /// <summary>
             /// 删除数据 SQL 语句
             /// </summary>
@@ -2654,52 +2596,52 @@ namespace AutoCSer.Sql
             /// <summary>
             /// 是否忽略应用程序事务
             /// </summary>
-            private bool isIgnoreTransaction;
-            /// <summary>
-            /// 执行任务
-            /// </summary>
-            /// <param name="connection"></param>
-            internal override void RunLinkQueueTask(ref DbConnection connection)
-            {
-                try
-                {
-                    if (table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction))
-                    {
-                        Action<tableType> onDeleted = this.onDeleted;
-                        if (onDeleted != null)
-                        {
-                            this.onDeleted = null;
-                            onDeleted(value);
-                        }
-                    }
-                }
-                finally
-                {
-                    if (onDeleted != null) onDeleted(null);
-                }
-                table = null;
-                value = null;
-                onDeleted = null;
-                query.Clear();
-                YieldPool.Default.PushNotNull(this);
-            }
+            private readonly bool isIgnoreTransaction;
             /// <summary>
             /// 设置数据
             /// </summary>
             /// <param name="table"></param>
             /// <param name="value"></param>
             /// <param name="onDeleted">删除数据回调</param>
-            /// <param name="query"></param>
             /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(Table<tableType, modelType> table, tableType value, ref Action<tableType> onDeleted, ref InsertQuery query, bool isIgnoreTransaction)
+            internal AsynchronousDeletor(Table<tableType, modelType> table, tableType value, Action<ReturnValue<tableType>> onDeleted, bool isIgnoreTransaction)
             {
                 this.onDeleted = onDeleted;
                 this.table = table;
                 this.value = value;
-                this.query = query;
                 this.isIgnoreTransaction = isIgnoreTransaction;
-                onDeleted = null;
+            }
+            /// <summary>
+            /// 执行任务
+            /// </summary>
+            /// <param name="connection"></param>
+            internal override void RunLinkQueueTask(ref DbConnection connection)
+            {
+                ReturnValue<tableType> returnValue = default(ReturnValue<tableType>);
+                try
+                {
+                    returnValue.ReturnType = table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction);
+                    if (returnValue.ReturnType == ReturnType.Success) returnValue.Value = value;
+                }
+                catch (Exception error)
+                {
+                    returnValue = error;
+                }
+                finally { onDeleted(returnValue); }
+            }
+            /// <summary>
+            /// 添加操作队列
+            /// </summary>
+            /// <returns></returns>
+            internal ReturnType AddQueue()
+            {
+                ReturnType returnType = table.Client.Delete(table, value, ref query);
+                if (returnType == ReturnType.Success)
+                {
+                    table.AddQueue(this);
+                    return ReturnType.Success;
+                }
+                return returnType;
             }
         }
         /// <summary>
@@ -2708,24 +2650,20 @@ namespace AutoCSer.Sql
         /// <param name="value">待删除数据</param>
         /// <param name="onDeleted">删除数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
-        public void DeleteQueue(tableType value, Action<tableType> onDeleted, bool isIgnoreTransaction = false)
+        public void DeleteQueue(tableType value, Action<ReturnValue<tableType>> onDeleted, bool isIgnoreTransaction = false)
         {
+            ReturnType returnType = ReturnType.Unknown;
             try
             {
                 if (value != null)
                 {
-                    InsertQuery query = new InsertQuery();
-                    if (Client.Delete(this, value, ref query))
-                    {
-                        AsynchronousDeletor deletor = (AsynchronousDeletor.YieldPool.Default.Pop() as AsynchronousDeletor) ?? new AsynchronousDeletor();
-                        deletor.Set(this, value, ref onDeleted, ref query, isIgnoreTransaction);
-                        AddQueue(deletor);
-                    }
+                    returnType = new AsynchronousDeletor(this, value, onDeleted, isIgnoreTransaction).AddQueue();
                 }
+                else returnType = ReturnType.ArgumentNull;
             }
             finally
             {
-                if (onDeleted != null) onDeleted(null);
+                if (returnType != ReturnType.Success) onDeleted(returnType);
             }
         }
         /// <summary>
@@ -2734,12 +2672,23 @@ namespace AutoCSer.Sql
         /// <param name="identity">自增 Id</param>
         /// <param name="onDeleted">删除数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
-        public void DeleteQueue(long identity, Action<tableType> onDeleted, bool isIgnoreTransaction = false)
+        public void DeleteQueue(long identity, Action<ReturnValue<tableType>> onDeleted, bool isIgnoreTransaction = false)
         {
-            if (DataModel.Model<modelType>.Identity == null) throw new InvalidOperationException();
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
-            DataModel.Model<modelType>.SetIdentity(value, identity);
-            DeleteQueue(value, onDeleted, isIgnoreTransaction);
+            ReturnType returnType = ReturnType.DataModelLessIdentity;
+            try
+            {
+                if (DataModel.Model<modelType>.Identity != null)
+                {
+                    tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
+                    DataModel.Model<modelType>.SetIdentity(value, identity);
+                    returnType = ReturnType.Success;
+                    DeleteQueue(value, onDeleted, isIgnoreTransaction);
+                }
+            }
+            finally
+            {
+                if (returnType != ReturnType.Success) onDeleted(returnType);
+            }
         }
         /// <summary>
         /// 删除数据
@@ -2748,7 +2697,7 @@ namespace AutoCSer.Sql
         /// <param name="onDeleted">删除数据回调</param>
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void DeleteQueue(int identity, Action<tableType> onDeleted, bool isIgnoreTransaction = false)
+        public void DeleteQueue(int identity, Action<ReturnValue<tableType>> onDeleted, bool isIgnoreTransaction = false)
         {
             DeleteQueue((long)identity, onDeleted, isIgnoreTransaction);
         }
@@ -2771,7 +2720,7 @@ namespace AutoCSer.Sql
         /// <param name="key">关键字</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns></returns>
-        public delegate tableType GetValue(ref DbConnection connection, keyType key, MemberMap<modelType> memberMap);
+        public delegate ReturnValue<tableType> GetValue(ref DbConnection connection, keyType key, MemberMap<modelType> memberMap);
         /// <summary>
         /// 设置关键字
         /// </summary>
@@ -2827,11 +2776,11 @@ namespace AutoCSer.Sql
         /// <param name="key">关键字</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
-        public tableType GetByPrimaryKey(keyType key, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> GetByPrimaryKey(keyType key, MemberMap<modelType> memberMap = null)
         {
             if (IsOnlyQueue) return GetByPrimaryKeyQueue(key, memberMap);
             GetQuery<modelType> getQuery = default(GetQuery<modelType>);
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
             SetPrimaryKey(value, key);
             Client.GetByPrimaryKey(this, value, memberMap, ref getQuery);
             return Get(value, ref getQuery);
@@ -2842,20 +2791,13 @@ namespace AutoCSer.Sql
         /// <param name="key">关键字</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
-        public tableType GetByPrimaryKeyQueue(keyType key, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> GetByPrimaryKeyQueue(keyType key, MemberMap<modelType> memberMap = null)
         {
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
             SetPrimaryKey(value, key);
-            Getter getter = (Getter.YieldPool.Default.Pop() as Getter) ?? new Getter();
-            try
-            {
-                Client.GetByPrimaryKey(this, value, memberMap, ref getter.Query);
-                getter.Set(this, value);
-                AddQueue(getter);
-                if (!getter.Wait()) return null;
-            }
-            finally { getter.Push(); }
-            return value;
+            Getter getter = new Getter(this, value);
+            Client.GetByPrimaryKey(this, value, memberMap, ref getter.Query);
+            return getter.Wait();
         }
         /// <summary>
         /// 根据关键字获取数据对象
@@ -2864,13 +2806,19 @@ namespace AutoCSer.Sql
         /// <param name="key">关键字</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
-        public tableType GetByPrimaryKeyQueue(ref DbConnection connection, keyType key, MemberMap<modelType> memberMap = null)
+        public ReturnValue<tableType> GetByPrimaryKeyQueue(ref DbConnection connection, keyType key, MemberMap<modelType> memberMap = null)
         {
-            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            tableType value = AutoCSer.Metadata.DefaultConstructor<tableType>.Constructor();
             SetPrimaryKey(value, key);
             GetQuery<modelType> query = default(GetQuery<modelType>);
             Client.GetByPrimaryKey(this, value, memberMap, ref query);
-            return Client.Get(this, ref connection, value, ref query) ? value : null;
+            ReturnType returnType = Client.Get(this, ref connection, value, ref query);
+            switch(returnType)
+            {
+                case ReturnType.Success: return value;
+                case ReturnType.NotFoundData: return (tableType)null;
+            }
+            return returnType;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 #if !DOTNET2
@@ -39,7 +39,7 @@ namespace AutoCSer.Metadata
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void copyTo(MemberMap other)
         {
-            if (map != null) Memory.SimpleCopyNotNull64(map, other.map = Type.GetMap(), Type.MemberMapSize);
+            if (map != null) AutoCSer.Memory.Common.SimpleCopyNotNull64(map, other.map = Type.GetMap(), Type.MemberMapSize);
         }
         /// <summary>
         /// 成员交集运算
@@ -47,7 +47,7 @@ namespace AutoCSer.Metadata
         /// <param name="other">成员位图</param>
         protected void and(MemberMap other)
         {
-            if (this.map == null) Memory.SimpleCopyNotNull64(other.map, this.map = Type.GetMap(), Type.MemberMapSize);
+            if (this.map == null) AutoCSer.Memory.Common.SimpleCopyNotNull64(other.map, this.map = Type.GetMap(), Type.MemberMapSize);
             else
             {
                 byte* write = this.map, end = this.map + Type.MemberMapSize, read = other.map;
@@ -72,7 +72,7 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 成员位图
     /// </summary>
-    public unsafe sealed partial class MemberMap<valueType>
+    public unsafe sealed partial class MemberMap<T>
     {
         /// <summary>
         /// 创建成员位图
@@ -83,12 +83,12 @@ namespace AutoCSer.Metadata
             /// <summary>
             /// 成员位图
             /// </summary>
-            private MemberMap<valueType> memberMap;
+            private MemberMap<T> memberMap;
             /// <summary>
             /// 创建成员位图
             /// </summary>
             /// <param name="memberMap">成员位图</param>
-            public Builder(MemberMap<valueType> memberMap)
+            public Builder(MemberMap<T> memberMap)
             {
                 this.memberMap = memberMap;
             }
@@ -98,14 +98,14 @@ namespace AutoCSer.Metadata
             /// <param name="isNew">是否创建成员</param>
             internal Builder(bool isNew)
             {
-                memberMap = isNew ? new MemberMap<valueType>() : null;
+                memberMap = isNew ? new MemberMap<T>() : null;
             }
             /// <summary>
             /// 成员位图
             /// </summary>
             /// <param name="value">创建成员位图</param>
             /// <returns>成员位图</returns>
-            public static implicit operator MemberMap<valueType>(Builder value)
+            public static implicit operator MemberMap<T>(Builder value)
             {
                 return value.memberMap;
             }
@@ -162,7 +162,7 @@ namespace AutoCSer.Metadata
             /// <param name="member"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public Builder Clear<returnType>(Expression<Func<valueType, returnType>> member)
+            public Builder Clear<returnType>(Expression<Func<T, returnType>> member)
             {
                 if (memberMap != null) memberMap.ClearMember(member);
                 return this;
@@ -174,7 +174,7 @@ namespace AutoCSer.Metadata
             /// <param name="member"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public Builder Set<returnType>(Expression<Func<valueType, returnType>> member)
+            public Builder Set<returnType>(Expression<Func<T, returnType>> member)
             {
                 if (memberMap != null) memberMap.SetMember(member);
                 return this;
@@ -205,7 +205,7 @@ namespace AutoCSer.Metadata
             /// <param name="memberMap"></param>
             /// <returns>成员索引是否有效</returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public bool IsMember(MemberMap<valueType> memberMap)
+            public bool IsMember(MemberMap<T> memberMap)
             {
                 return memberMap != null && Index != -1 && memberMap.IsMember(Index);
             }
@@ -214,7 +214,7 @@ namespace AutoCSer.Metadata
             /// </summary>
             /// <param name="memberMap"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void ClearMember(MemberMap<valueType> memberMap)
+            internal void ClearMember(MemberMap<T> memberMap)
             {
                 if (memberMap != null && Index != -1) memberMap.ClearMember(Index);
             }
@@ -223,7 +223,7 @@ namespace AutoCSer.Metadata
             /// </summary>
             /// <param name="memberMap"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void SetMember(MemberMap<valueType> memberMap)
+            internal void SetMember(MemberMap<T> memberMap)
             {
                 if (memberMap != null && Index != -1) memberMap.SetMember(Index);
             }
@@ -235,9 +235,9 @@ namespace AutoCSer.Metadata
             /// <param name="member"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            public static MemberIndex Create<returnType>(Expression<Func<valueType, returnType>> member)
+            public static MemberIndex Create<returnType>(Expression<Func<T, returnType>> member)
             {
-                int index = TypeInfo.GetMemberIndex(GetMemberName(member));
+                int index = MemberMapType.GetMemberIndex(GetMemberName(member));
                 return new MemberIndex(index >= 0 ? index : -1);
             }
 #endif
@@ -245,15 +245,15 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 默认成员位图
         /// </summary>
-        internal static readonly MemberMap<valueType> Default = new MemberMap<valueType>();
+        internal static readonly MemberMap<T> Default = new MemberMap<T>();
 
         /// <summary>
         /// 成员位图
         /// </summary>
         /// <returns>成员位图</returns>
-        internal MemberMap<valueType> Copy()
+        internal MemberMap<T> Copy()
         {
-            MemberMap<valueType> value = new MemberMap<valueType>();
+            MemberMap<T> value = new MemberMap<T>();
             copyTo(value);
             return value;
         }
@@ -262,7 +262,7 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <param name="other">成员位图</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void And(MemberMap<valueType> other)
+        internal void And(MemberMap<T> other)
         {
             if (other != null && !other.IsDefault) and(other);
         }
@@ -271,7 +271,7 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <param name="other">成员位图</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Xor(MemberMap<valueType> other)
+        internal void Xor(MemberMap<T> other)
         {
             if (other != null && !other.IsDefault) xor(other);
         }
@@ -279,15 +279,15 @@ namespace AutoCSer.Metadata
         /// 成员并集运算,忽略默认成员
         /// </summary>
         /// <param name="other">成员位图</param>
-        internal void Or(MemberMap<valueType> other)
+        internal void Or(MemberMap<T> other)
         {
             if (map == null) return;
             if (other == null || other.IsDefault)
             {
-                TypeInfo.Push(ref map);
+                MemberMapType.Push(ref map);
                 return;
             }
-            byte* write = this.map, end = this.map + TypeInfo.MemberMapSize, read = other.map;
+            byte* write = this.map, end = this.map + MemberMapType.MemberMapSize, read = other.map;
             *(ulong*)write |= *(ulong*)read;
             while ((write += sizeof(ulong)) != end) *(ulong*)write |= *(ulong*)(read += sizeof(ulong));
         }

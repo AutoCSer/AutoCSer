@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 #if !NOJIT
@@ -78,17 +78,13 @@ namespace AutoCSer.WebView
                 return dynamicMethod.CreateDelegate(typeof(delegateType));
             }
         }
-        ///// <summary>
-        ///// WEB视图成员清理函数信息
-        ///// </summary>
-        //private static readonly MethodInfo clearMethod = typeof(ClearMember).GetMethod("clear", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// WEB视图成员清理
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void clear<valueType>(valueType value)
+        internal static void Clear<valueType>(valueType value)
         {
             ClearMember<valueType>.Cleaner(value);
         }

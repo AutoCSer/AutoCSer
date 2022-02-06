@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.RandomObject
@@ -85,10 +85,6 @@ namespace AutoCSer.RandomObject
         {
             return Creator<valueType>.CreateNull(config);
         }
-        ///// <summary>
-        ///// 创建随机对象函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateMethod = typeof(MethodCache).GetMethod("create", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机成员对象
         /// </summary>
@@ -101,10 +97,6 @@ namespace AutoCSer.RandomObject
         {
             Creator<valueType>.MemberCreator(ref value, config);
         }
-        ///// <summary>
-        ///// 创建随机对象函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateMemberMethod = typeof(MethodCache).GetMethod("createMember", BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
         /// 创建随机数组
@@ -126,10 +118,6 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateArrayMethod = typeof(MethodCache).GetMethod("createArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -146,10 +134,6 @@ namespace AutoCSer.RandomObject
             while (length != 0) value[--length] = Creator<valueType>.CreateNull(config);
             return value;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateArrayNullMethod = typeof(MethodCache).GetMethod("createArrayNull", BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
         /// 创建可空随机对象
@@ -178,12 +162,8 @@ namespace AutoCSer.RandomObject
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal static LeftArray<valueType> createLeftArray<valueType>(Config config)
         {
-            return new LeftArray<valueType>(createArray<valueType>(config));
+            return new LeftArray<valueType>(createArray<valueType>(config) ?? EmptyArray<valueType>.Array);
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateLeftArrayMethod = typeof(MethodCache).GetMethod("createLeftArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -199,10 +179,6 @@ namespace AutoCSer.RandomObject
             value.Add(createArray<valueType>(config));
             return value;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateListArrayMethod = typeof(MethodCache).GetMethod("createListArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -215,12 +191,8 @@ namespace AutoCSer.RandomObject
             object historyValue = config.TryGetValue(typeof(ListArray<valueType>));
             if (historyValue != null) return (ListArray<valueType>)historyValue;
             valueType[] array = createArrayNull<valueType>(config);
-            return array == null ? null : config.SaveHistory(new ListArray<valueType>(array, true));
+            return array == null ? null : config.SaveHistory(new ListArray<valueType>(new LeftArray<valueType>(array)));
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateListArrayNullMethod = typeof(MethodCache).GetMethod("createListArrayNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -236,10 +208,6 @@ namespace AutoCSer.RandomObject
             value.AddRange(createArray<valueType>(config));
             return value;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateListMethod = typeof(MethodCache).GetMethod("createList", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -254,10 +222,6 @@ namespace AutoCSer.RandomObject
             valueType[] array = createArrayNull<valueType>(config);
             return array == null ? null : config.SaveHistory(new System.Collections.Generic.List<valueType>(array));
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateListNullMethod = typeof(MethodCache).GetMethod("createListNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -272,10 +236,6 @@ namespace AutoCSer.RandomObject
             if (historyValue != null) return (valueType)historyValue;
             return config.SaveHistory(Emit.EnumerableConstructor<valueType, argumentType>.Constructor(createArray<argumentType>(config)));
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateEnumerableConstructorMethod = typeof(MethodCache).GetMethod("createEnumerableConstructor", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -291,10 +251,6 @@ namespace AutoCSer.RandomObject
             valueType[] array = createArrayNull<valueType>(config);
             return array == null ? default(valueType) : config.SaveHistory(Emit.EnumerableConstructor<valueType, argumentType>.Constructor(createArray<argumentType>(config)));
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateEnumerableConstructorNullMethod = typeof(MethodCache).GetMethod("createEnumerableConstructorNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -317,10 +273,6 @@ namespace AutoCSer.RandomObject
             }
             return values;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateDictionaryMethod = typeof(MethodCache).GetMethod("createDictionary", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -347,10 +299,6 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateDictionaryNullMethod = typeof(MethodCache).GetMethod("createDictionaryNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -373,10 +321,6 @@ namespace AutoCSer.RandomObject
             }
             return values;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateSortedDictionaryMethod = typeof(MethodCache).GetMethod("createSortedDictionary", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -403,10 +347,6 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateSortedDictionaryNullMethod = typeof(MethodCache).GetMethod("createSortedDictionaryNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -429,10 +369,6 @@ namespace AutoCSer.RandomObject
             }
             return values;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateSortedListMethod = typeof(MethodCache).GetMethod("createSortedList", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -459,10 +395,6 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        ///// <summary>
-        ///// 创建随机数组函数信息
-        ///// </summary>
-        //internal static readonly MethodInfo CreateSortedListNullMethod = typeof(MethodCache).GetMethod("createSortedListNull", BindingFlags.Static | BindingFlags.NonPublic);
 
         static MethodCache()
         {

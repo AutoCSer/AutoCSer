@@ -380,6 +380,7 @@
     <Compile Include="Net\TcpServer\Callback.cs" />
     <Compile Include="Net\TcpServer\CallbackReturnValue.cs" />
     <Compile Include="Net\TcpServer\CheckSocketVersion.cs" />
+    <Compile Include="Net\TcpServer\ClientLazyLog.cs" />
     <Compile Include="Net\TcpServer\Client.cs" />
     <Compile Include="Net\TcpServer\ClientBase.cs" />
     <Compile Include="Net\TcpServer\ClientCallQueue.cs" />
@@ -529,6 +530,7 @@
     <Compile Include="Threading\ConfigLoader.cs" />
     <Compile Include="Threading\DoubleLink.cs" />
     <Compile Include="Threading\Interlocked.cs" />
+    <Compile Include="Threading\LazyEvent.cs" />
     <Compile Include="Threading\Link.cs" />
     <Compile Include="Threading\Link.AutoCSer.cs" />
     <Compile Include="Threading\LinkTask.cs" />

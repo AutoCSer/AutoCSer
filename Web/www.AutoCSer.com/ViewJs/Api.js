@@ -19,6 +19,22 @@ var AutoCSerAPI;
 (function (AutoCSerAPI) {
     var Ajax;
     (function (Ajax) {
+        var Example2 = (function () {
+            function Example2() {
+            }
+            Example2.GetCode = function (file, Callback) {
+                if (Callback === void 0) { Callback = null; }
+                AutoCSer.Pub.GetAjaxGet()('Example2.GetCode', { file: file }, Callback, true);
+            };
+            return Example2;
+        }());
+        Ajax.Example2 = Example2;
+    })(Ajax = AutoCSerAPI.Ajax || (AutoCSerAPI.Ajax = {}));
+})(AutoCSerAPI || (AutoCSerAPI = {}));
+var AutoCSerAPI;
+(function (AutoCSerAPI) {
+    var Ajax;
+    (function (Ajax) {
         var TestCase = (function () {
             function TestCase() {
             }

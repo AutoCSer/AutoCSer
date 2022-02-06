@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -25,7 +25,7 @@ namespace AutoCSer.Sql.Threading
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
         }
@@ -140,7 +140,7 @@ namespace AutoCSer.Sql.Threading
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
         }

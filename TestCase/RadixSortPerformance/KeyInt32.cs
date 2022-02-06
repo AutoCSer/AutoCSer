@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using Int = System.Int32;
 using IntKey = AutoCSer.TestCase.RadixSortPerformance.Key.Int32;
 

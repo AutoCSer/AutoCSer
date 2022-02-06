@@ -2,33 +2,34 @@
 using System.Reflection;
 using AutoCSer.Emit;
 using System.Collections.Generic;
+using AutoCSer.Metadata;
 
 namespace AutoCSer.RandomObject
 {
     /// <summary>
     /// 随机对象生成
     /// </summary>
-    /// <typeparam name="valueType"></typeparam>
-    public static class Creator<valueType> 
+    /// <typeparam name="T"></typeparam>
+    public static class Creator<T> 
     {
         /// <summary>
         /// 创建随机对象
         /// </summary>
         /// <param name="value"></param>
         /// <param name="config"></param>
-        internal delegate void creator(ref valueType value, Config config);
+        internal delegate void creator(ref T value, Config config);
         /// <summary>
         /// 基本类型随机数创建函数
         /// </summary>
-        private static readonly Func<valueType> defaultCreator;
+        private static readonly Func<T> defaultCreator;
         /// <summary>
         /// 随机对象创建函数
         /// </summary>
-        private static readonly Func<Config, valueType> configNullCreator;
+        private static readonly Func<Config, T> configNullCreator;
         /// <summary>
         /// 随机对象创建函数
         /// </summary>
-        private static readonly Func<Config, valueType> configCreator;
+        private static readonly Func<Config, T> configCreator;
         /// <summary>
         /// 随机对象创建函数
         /// </summary>
@@ -43,7 +44,7 @@ namespace AutoCSer.RandomObject
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static valueType Create(Config config = null)
+        public static T Create(Config config = null)
         {
             if (defaultCreator != null) return defaultCreator();
             if (configCreator != null)
@@ -56,9 +57,8 @@ namespace AutoCSer.RandomObject
                 }
                 finally { config.History.Clear(); }
             }
-            Func<valueType> creator = Constructor<valueType>.New;
-            if (creator == null) return default(valueType);
-            valueType value = creator();
+            if (DefaultConstructor<T>.Type == DefaultConstructorType.None) return default(T);
+            T value = DefaultConstructor<T>.Constructor();
             if (config == null) config = Config.Default;
             if (config.History == null) MemberCreator(ref value, config);
             else
@@ -76,24 +76,23 @@ namespace AutoCSer.RandomObject
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        internal static valueType CreateNull(Config config)
+        internal static T CreateNull(Config config)
         {
             if (defaultCreator != null) return defaultCreator();
             if (configNullCreator != null) return configNullCreator(config);
-            Func<valueType> creator = Constructor<valueType>.New;
-            if (creator == null) return default(valueType);
+            if (DefaultConstructor<T>.Type == DefaultConstructorType.None) return default(T);
             if (isValueType)
             {
-                valueType value = creator();
+                T value = DefaultConstructor<T>.Constructor();
                 MemberCreator(ref value, config);
                 return value;
             }
             else
             {
-                object historyValue = config.TryGetValue(typeof(valueType));
-                if (historyValue != null) return (valueType)historyValue;
-                if (AutoCSer.Random.Default.NextBit() == 0) return default(valueType);
-                valueType value = config.SaveHistory(creator());
+                object historyValue = config.TryGetValue(typeof(T));
+                if (historyValue != null) return (T)historyValue;
+                if (AutoCSer.Random.Default.NextBit() == 0) return default(T);
+                T value = config.SaveHistory(DefaultConstructor<T>.Constructor());
                 MemberCreator(ref value, config);
                 return value;
             }
@@ -103,106 +102,40 @@ namespace AutoCSer.RandomObject
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        internal static valueType CreateNotNull(Config config)
+        internal static T CreateNotNull(Config config)
         {
             if (defaultCreator != null) return defaultCreator();
             if (configNullCreator != null) return configNullCreator(config);
-            Func<valueType> creator = Constructor<valueType>.New;
-            if (creator == null) return default(valueType);
+            if (DefaultConstructor<T>.Type == AutoCSer.Metadata.DefaultConstructorType.None) return default(T);
             if (isValueType)
             {
-                valueType value = creator();
+                T value = DefaultConstructor<T>.Constructor();
                 MemberCreator(ref value, config);
                 return value;
             }
             else
             {
-                object historyValue = config.TryGetValue(typeof(valueType));
-                if (historyValue != null) return (valueType)historyValue;
-                valueType value = config.SaveHistory(creator());
+                object historyValue = config.TryGetValue(typeof(T));
+                if (historyValue != null) return (T)historyValue;
+                T value = config.SaveHistory(DefaultConstructor<T>.Constructor());
                 MemberCreator(ref value, config);
                 return value;
             }
         }
 
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumByte()
-        {
-            return Emit.EnumCast<valueType, byte>.FromInt(MethodCache.CreateByte());
-        }
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumSByte()
-        {
-            return Emit.EnumCast<valueType, sbyte>.FromInt(MethodCache.CreateSByte());
-        }
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumShort()
-        {
-            return Emit.EnumCast<valueType, short>.FromInt(MethodCache.CreateShort());
-        }
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumUShort()
-        {
-            return Emit.EnumCast<valueType, ushort>.FromInt(MethodCache.CreateUShort());
-        }
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumInt()
-        {
-            return Emit.EnumCast<valueType, int>.FromInt(MethodCache.CreateInt());
-        }
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumUInt()
-        {
-            return Emit.EnumCast<valueType, uint>.FromInt(MethodCache.CreateUInt());
-        }
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumLong()
-        {
-            return Emit.EnumCast<valueType, long>.FromInt(MethodCache.CreateLong());
-        }
-        /// <summary>
-        /// 创建随机枚举值
-        /// </summary>
-        /// <returns></returns>
-        private static valueType enumULong()
-        {
-            return Emit.EnumCast<valueType, ulong>.FromInt(MethodCache.CreateULong());
-        }
-
         static Creator()
         {
-            Type type = typeof(valueType);
+            Type type = typeof(T);
             MethodInfo method = MethodCache.GetMethod(type);
             if (method != null)
             {
-                defaultCreator = (Func<valueType>)Delegate.CreateDelegate(typeof(Func<valueType>), method);
+                defaultCreator = (Func<T>)Delegate.CreateDelegate(typeof(Func<T>), method);
                 return;
             }
             if ((method = MethodCache.GetConfigMethod(type)) != null)
             {
-                configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), method);
-                configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.GetConfigNullMethod(type));
+                configCreator = (Func<Config, T>)Delegate.CreateDelegate(typeof(Func<Config, T>), method);
+                configNullCreator = (Func<Config, T>)Delegate.CreateDelegate(typeof(Func<Config, T>), MethodCache.GetConfigNullMethod(type));
                 return;
             }
             if (type.IsArray)
@@ -213,22 +146,22 @@ namespace AutoCSer.RandomObject
                     //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateArrayNullMethod.MakeGenericMethod(elementType));
                     //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateArrayMethod.MakeGenericMethod(elementType));
                     AutoCSer.RandomObject.Metadata.GenericType GenericType = AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetElementType());
-                    configNullCreator = (Func<Config, valueType>)GenericType.CreateArrayNullDelegate;
-                    configCreator = (Func<Config, valueType>)GenericType.CreateArrayDelegate;
+                    configNullCreator = (Func<Config, T>)GenericType.CreateArrayNullDelegate;
+                    configCreator = (Func<Config, T>)GenericType.CreateArrayDelegate;
                 }
                 return;
             }
             if (type.IsEnum)
             {
                 Type enumType = System.Enum.GetUnderlyingType(type);
-                if (enumType == typeof(uint)) defaultCreator = enumUInt;
-                else if (enumType == typeof(byte)) defaultCreator = enumByte;
-                else if (enumType == typeof(ulong)) defaultCreator = enumULong;
-                else if (enumType == typeof(ushort)) defaultCreator = enumUShort;
-                else if (enumType == typeof(long)) defaultCreator = enumLong;
-                else if (enumType == typeof(short)) defaultCreator = enumShort;
-                else if (enumType == typeof(sbyte)) defaultCreator = enumSByte;
-                else defaultCreator = enumInt;
+                if (enumType == typeof(uint)) defaultCreator = Creator.EnumUInt<T>;
+                else if (enumType == typeof(byte)) defaultCreator = Creator.EnumByte<T>;
+                else if (enumType == typeof(ulong)) defaultCreator = Creator.EnumULong<T>;
+                else if (enumType == typeof(ushort)) defaultCreator = Creator.EnumUShort<T>;
+                else if (enumType == typeof(long)) defaultCreator = Creator.EnumLong<T>;
+                else if (enumType == typeof(short)) defaultCreator = Creator.EnumShort<T>;
+                else if (enumType == typeof(sbyte)) defaultCreator = Creator.EnumSByte<T>;
+                else defaultCreator = Creator.EnumInt<T>;
                 return;
             }
             if (type.IsGenericType)
@@ -236,13 +169,13 @@ namespace AutoCSer.RandomObject
                 Type genericType = type.GetGenericTypeDefinition();
                 if (genericType == typeof(Nullable<>))
                 {
-                    configNullCreator = configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateNullableMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    configNullCreator = configCreator = (Func<Config, T>)Delegate.CreateDelegate(typeof(Func<Config, T>), MethodCache.CreateNullableMethod.MakeGenericMethod(type.GetGenericArguments()));
                     return;
                 }
                 if (genericType == typeof(LeftArray<>))
                 {
                     //configNullCreator = configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateLeftArrayMethod.MakeGenericMethod(type.GetGenericArguments()));
-                    configNullCreator = configCreator = (Func<Config, valueType>)AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetGenericArguments()[0]).CreateLeftArrayDelegate;
+                    configNullCreator = configCreator = (Func<Config, T>)AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetGenericArguments()[0]).CreateLeftArrayDelegate;
                     return;
                 }
                 if (genericType == typeof(ListArray<>))
@@ -251,8 +184,8 @@ namespace AutoCSer.RandomObject
                     //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListArrayNullMethod.MakeGenericMethod(parameterTypes));
                     //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListArrayMethod.MakeGenericMethod(parameterTypes));
                     AutoCSer.RandomObject.Metadata.GenericType GenericType = AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetGenericArguments()[0]);
-                    configNullCreator = (Func<Config, valueType>)GenericType.CreateListArrayNullDelegate;
-                    configCreator = (Func<Config, valueType>)GenericType.CreateListArrayDelegate;
+                    configNullCreator = (Func<Config, T>)GenericType.CreateListArrayNullDelegate;
+                    configCreator = (Func<Config, T>)GenericType.CreateListArrayDelegate;
                     return;
                 }
                 if (genericType == typeof(List<>))
@@ -261,8 +194,8 @@ namespace AutoCSer.RandomObject
                     //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListNullMethod.MakeGenericMethod(parameterTypes));
                     //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListMethod.MakeGenericMethod(parameterTypes));
                     AutoCSer.RandomObject.Metadata.GenericType GenericType = AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetGenericArguments()[0]);
-                    configNullCreator = (Func<Config, valueType>)GenericType.CreateListNullDelegate;
-                    configCreator = (Func<Config, valueType>)GenericType.CreateListDelegate;
+                    configNullCreator = (Func<Config, T>)GenericType.CreateListNullDelegate;
+                    configCreator = (Func<Config, T>)GenericType.CreateListDelegate;
                     return;
                 }
 #if DOTNET2
@@ -275,8 +208,8 @@ namespace AutoCSer.RandomObject
                     //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateEnumerableConstructorNullMethod.MakeGenericMethod(parameterTypes));
                     //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateEnumerableConstructorMethod.MakeGenericMethod(parameterTypes));
                     AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(new Type[] { type, type.GetGenericArguments()[0] });
-                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateEnumerableConstructorNullDelegate;
-                    configCreator = (Func<Config, valueType>)GenericType2.CreateEnumerableConstructorDelegate;
+                    configNullCreator = (Func<Config, T>)GenericType2.CreateEnumerableConstructorNullDelegate;
+                    configCreator = (Func<Config, T>)GenericType2.CreateEnumerableConstructorDelegate;
                     return;
                 }
                 if (genericType == typeof(Dictionary<,>))
@@ -285,8 +218,8 @@ namespace AutoCSer.RandomObject
                     //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateDictionaryNullMethod.MakeGenericMethod(parameterTypes));
                     //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateDictionaryMethod.MakeGenericMethod(parameterTypes));
                     AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(type.GetGenericArguments());
-                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateDictionaryNullDelegate;
-                    configCreator = (Func<Config, valueType>)GenericType2.CreateDictionaryDelegate;
+                    configNullCreator = (Func<Config, T>)GenericType2.CreateDictionaryNullDelegate;
+                    configCreator = (Func<Config, T>)GenericType2.CreateDictionaryDelegate;
                     return;
                 }
                 if (genericType == typeof(SortedDictionary<,>))
@@ -295,8 +228,8 @@ namespace AutoCSer.RandomObject
                     //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedDictionaryNullMethod.MakeGenericMethod(parameterTypes));
                     //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedDictionaryMethod.MakeGenericMethod(parameterTypes));
                     AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(type.GetGenericArguments());
-                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateSortedDictionaryNullDelegate;
-                    configCreator = (Func<Config, valueType>)GenericType2.CreateSortedDictionaryDelegate;
+                    configNullCreator = (Func<Config, T>)GenericType2.CreateSortedDictionaryNullDelegate;
+                    configCreator = (Func<Config, T>)GenericType2.CreateSortedDictionaryDelegate;
                     return;
                 }
                 if (genericType == typeof(SortedList<,>))
@@ -305,8 +238,8 @@ namespace AutoCSer.RandomObject
                     //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedListNullMethod.MakeGenericMethod(parameterTypes));
                     //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedListMethod.MakeGenericMethod(parameterTypes));
                     AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(type.GetGenericArguments());
-                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateSortedListNullDelegate;
-                    configCreator = (Func<Config, valueType>)GenericType2.CreateSortedListDelegate;
+                    configNullCreator = (Func<Config, T>)GenericType2.CreateSortedListNullDelegate;
+                    configCreator = (Func<Config, T>)GenericType2.CreateSortedListDelegate;
                     return;
                 }
             }

@@ -6,14 +6,13 @@ namespace AutoCSer.CacheServer
     /// <summary>
     /// 定时触发 缓存 扩展
     /// </summary>
-    internal sealed class OnTime : Date.NowTime.OnTime
+    //internal sealed class OnTime : Date.NowTime.OnTime
     {
         /// <summary>
         /// 触发定时任务
         /// </summary>
         internal override void OnTimer()
         {
-            for (FileStreamWriter writer = FileStreamWriter.Writers.End; writer != null; writer = writer.DoubleLinkPrevious) writer.OnTimer();
             Cache.MessageQueue.DistributionFileReader.OnTimer();
             //if (CacheTimeout.Timeouts.End != null)
             //{

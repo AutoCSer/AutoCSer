@@ -32,16 +32,16 @@ namespace AutoCSer.Example.WebView
                     return names;
                 }
             }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i3 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i4 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i5 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i6 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i7 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i8 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i9 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i10 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i3 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i4 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i5 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i6 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i7 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i8 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i9 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i10 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
             protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
             {
                 switch (callIndex)
@@ -83,7 +83,7 @@ namespace AutoCSer.Example.WebView
                         return;
                 }
             }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.Memory.UnmanagedStream responseStream)
             {
                 switch (call.CallMethodIndex)
                 {
@@ -216,14 +216,14 @@ namespace AutoCSer.Example.WebView
         internal partial class LoadView
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{IsView:");
+                _js_.Write(@"{IsView:");
                     {
                         bool _value1_ = IsView;
-                                    _js_.WriteJson((bool)_value1_);
+                                    _js_.WriteWebViewJson((bool)_value1_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -233,35 +233,35 @@ namespace AutoCSer.Example.WebView
         internal partial class LoadViewQuery
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Sum:");
+                _js_.Write(@"{Sum:");
                     {
                         int _value1_ = Sum;
-                                    _js_.WriteJson((int)_value1_);
+                                    _js_.WriteWebViewJson((int)_value1_);
                     }
-                    _js_.WriteNotNull(@",query:");
+                    _js_.Write(@",query:");
                     {
                         AutoCSer.Example.WebView.LoadViewQuery.WebViewQuery _value1_ = query;
-                            _js_.WriteNotNull(@"{left:");
+                            _js_.Write(@"{left:");
                     {
                         int _value2_ = _value1_.left;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",right:");
+                    _js_.Write(@",right:");
                     {
                         int _value2_ = _value1_.right;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 public int left;
                 public int right;
             }
@@ -293,35 +293,35 @@ namespace AutoCSer.Example.WebView
         internal partial class LoadViewQueryName
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Sum:");
+                _js_.Write(@"{Sum:");
                     {
                         int _value1_ = Sum;
-                                    _js_.WriteJson((int)_value1_);
+                                    _js_.WriteWebViewJson((int)_value1_);
                     }
-                    _js_.WriteNotNull(@",parameter:");
+                    _js_.Write(@",parameter:");
                     {
                         AutoCSer.Example.WebView.LoadViewQueryName.WebViewQuery _value1_ = parameter;
-                            _js_.WriteNotNull(@"{left:");
+                            _js_.Write(@"{left:");
                     {
                         int _value2_ = _value1_.left;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",right:");
+                    _js_.Write(@",right:");
                     {
                         int _value2_ = _value1_.right;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 public int left;
                 public int right;
             }
@@ -353,79 +353,79 @@ namespace AutoCSer.Example.WebView
         internal partial class ReView
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{IsMobileReView:");
+                _js_.Write(@"{IsMobileReView:");
                     {
                         bool _value1_ = IsMobileReView;
-                                    _js_.WriteJson((bool)_value1_);
+                                    _js_.WriteWebViewJson((bool)_value1_);
                     }
-                    _js_.WriteNotNull(@",IsReView:");
+                    _js_.Write(@",IsReView:");
                     {
                         bool _value1_ = IsReView;
-                                    _js_.WriteJson((bool)_value1_);
+                                    _js_.WriteWebViewJson((bool)_value1_);
                     }
-                    _js_.WriteNotNull(@",OutputData:");
+                    _js_.Write(@",OutputData:");
                     {
                         AutoCSer.Example.WebView.Symbol.ViewOnlyData _value1_ = OutputData;
-                            _js_.WriteNotNull(@"{Value1:");
+                            _js_.Write(@"{Value1:");
                     {
                         int _value2_ = _value1_.Value1;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",Value2:");
+                    _js_.Write(@",Value2:");
                     {
                         int _value2_ = _value1_.Value2;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",ViewOnly:");
+                    _js_.Write(@",ViewOnly:");
                     {
                         bool _value2_ = _value1_.ViewOnly;
-                                    _js_.WriteJson((bool)_value2_);
+                                    _js_.WriteWebViewJson((bool)_value2_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@",ReViewData:");
+                    _js_.Write(@",ReViewData:");
                     {
                         AutoCSer.Example.WebView.Symbol.ViewOnlyData _value1_ = ReViewData;
-                            _js_.WriteNotNull(@"{Value1:");
+                            _js_.Write(@"{Value1:");
                     {
                         int _value2_ = _value1_.Value1;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",Value2:");
+                    _js_.Write(@",Value2:");
                     {
                         int _value2_ = _value1_.Value2;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",ViewOnly:");
+                    _js_.Write(@",ViewOnly:");
                     {
                         bool _value2_ = _value1_.ViewOnly;
-                                    _js_.WriteJson((bool)_value2_);
+                                    _js_.WriteWebViewJson((bool)_value2_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@",ViewOnlyData:");
+                    _js_.Write(@",ViewOnlyData:");
                     {
                         AutoCSer.Example.WebView.Symbol.ViewOnlyData _value1_ = ViewOnlyData;
-                            _js_.WriteNotNull(@"{Value1:");
+                            _js_.Write(@"{Value1:");
                     {
                         int _value2_ = _value1_.Value1;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",Value2:");
+                    _js_.Write(@",Value2:");
                     {
                         int _value2_ = _value1_.Value2;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",ViewOnly:");
+                    _js_.Write(@",ViewOnly:");
                     {
                         bool _value2_ = _value1_.ViewOnly;
-                                    _js_.WriteJson((bool)_value2_);
+                                    _js_.WriteWebViewJson((bool)_value2_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -450,14 +450,14 @@ namespace AutoCSer.Example.WebView
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{ServerData:");
+                _js_.Write(@"{ServerData:");
                     {
                         int _value1_ = ServerData;
-                                    _js_.WriteJson((int)_value1_);
+                                    _js_.WriteWebViewJson((int)_value1_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -467,32 +467,32 @@ namespace AutoCSer.Example.WebView
         internal partial class Expression
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{ServerData:");
+                _js_.Write(@"{ServerData:");
                     {
                         AutoCSer.Example.WebView.Template.Expression.Data _value1_ = ServerData;
-                            _js_.WriteNotNull(@"{Value:");
+                            _js_.Write(@"{Value:");
                     {
                         string _value2_ = _value1_.Value;
                         if (_value2_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value2_);
+                                    _js_.WriteWebViewJson(_value2_);
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@",Value:");
+                    _js_.Write(@",Value:");
                     {
                         string _value1_ = Value;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value1_);
+                                    _js_.WriteWebViewJson(_value1_);
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -502,32 +502,32 @@ namespace AutoCSer.Example.WebView
         internal partial class If
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{False:");
+                _js_.Write(@"{False:");
                     {
                         string _value1_ = False;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value1_);
+                                    _js_.WriteWebViewJson(_value1_);
                         }
                     }
-                    _js_.WriteNotNull(@",String:");
+                    _js_.Write(@",String:");
                     {
                         string _value1_ = String;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value1_);
+                                    _js_.WriteWebViewJson(_value1_);
                         }
                     }
-                    _js_.WriteNotNull(@",True:");
+                    _js_.Write(@",True:");
                     {
                         bool _value1_ = True;
-                                    _js_.WriteJson((bool)_value1_);
+                                    _js_.WriteWebViewJson((bool)_value1_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -537,15 +537,15 @@ namespace AutoCSer.Example.WebView
         internal partial class Loop
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{LoopData:");
+                _js_.Write(@"{LoopData:");
                     {
                         System.Collections.Generic.IEnumerable<AutoCSer.Example.WebView.Template.Loop.TestData> _value1_ = LoopData;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"[");
+                            _js_.Write(@"[");
                     {
                         int _loopIndex1_ = _loopIndex_;
                         _loopIndex_ = 0;
@@ -554,24 +554,24 @@ namespace AutoCSer.Example.WebView
                             if (_loopIndex_ == 0)
                             {
                                 _js_.Write('"');
-                                _js_.WriteNotNull("Value");
+                                _js_.Write("Value");
                                 _js_.Write('"');
                             }
                             _js_.Write(',');
-                                _js_.WriteNotNull(@"[");
+                                _js_.Write(@"[");
                     {
                         int _value3_ = _value2_.Value;
-                                    _js_.WriteJson((int)_value3_);
+                                    _js_.WriteWebViewJson((int)_value3_);
                     }
-                    _js_.WriteNotNull(@"]");
+                    _js_.Write(@"]");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
                     }
-                    _js_.WriteNotNull(@"].FormatView()");
+                    _js_.Write(@"].FormatView()");
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -597,27 +597,27 @@ namespace AutoCSer.Example.WebView
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Mark:");
+                _js_.Write(@"{Mark:");
                     {
                         string _value1_ = Mark;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value1_);
+                                    _js_.WriteWebViewJson(_value1_);
                         }
                     }
-                    _js_.WriteNotNull(@",NoMarkValue:");
+                    _js_.Write(@",NoMarkValue:");
                     {
                         string _value1_ = NoMarkValue;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value1_);
+                                    _js_.WriteWebViewJson(_value1_);
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -627,41 +627,41 @@ namespace AutoCSer.Example.WebView
         internal partial class Value
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Data1:");
+                _js_.Write(@"{Data1:");
                     {
                         AutoCSer.Example.WebView.Template.Value.Test1 _value1_ = Data1;
-                            _js_.WriteNotNull(@"{String1:");
+                            _js_.Write(@"{String1:");
                     {
                         string _value2_ = _value1_.String1;
                         if (_value2_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value2_);
+                                    _js_.WriteWebViewJson(_value2_);
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@",Data2:");
+                    _js_.Write(@",Data2:");
                     {
                         AutoCSer.Example.WebView.Template.Value.Test2 _value1_ = Data2;
                         if (_value1_ == null) _js_.WriteJsonNull();
                         else
                         {
-                            _js_.WriteNotNull(@"{String2:");
+                            _js_.Write(@"{String2:");
                     {
                         string _value2_ = _value1_.String2;
                         if (_value2_ == null) _js_.WriteJsonNull();
                         else
                         {
-                                    _js_.WriteJson(_value2_);
+                                    _js_.WriteWebViewJson(_value2_);
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                         }
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
         }
@@ -671,35 +671,35 @@ namespace AutoCSer.Example.WebView
         internal partial class ViewAsynchronous
         {
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Sum:");
+                _js_.Write(@"{Sum:");
                     {
                         int _value1_ = Sum;
-                                    _js_.WriteJson((int)_value1_);
+                                    _js_.WriteWebViewJson((int)_value1_);
                     }
-                    _js_.WriteNotNull(@",query:");
+                    _js_.Write(@",query:");
                     {
                         AutoCSer.Example.WebView.ViewAsynchronous.WebViewQuery _value1_ = query;
-                            _js_.WriteNotNull(@"{left:");
+                            _js_.Write(@"{left:");
                     {
                         int _value2_ = _value1_.left;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@",right:");
+                    _js_.Write(@",right:");
                     {
                         int _value2_ = _value1_.right;
-                                    _js_.WriteJson((int)_value2_);
+                                    _js_.WriteWebViewJson((int)_value2_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 public int left;
                 public int right;
             }
@@ -1084,45 +1084,45 @@ namespace AutoCSer.Example.WebView
                 string[] names = new string[20];
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[20];
                 names[0] = "Asynchronous.Add";
-                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsPost = true, IsAsynchronous = true };
+                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsPost = true, IsAsynchronous = true };
                 names[1] = "BoxSerialize.Inc";
-                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsPost = true };
+                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsPost = true };
                 names[2] = "Get.Add";
-                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304 };
+                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304 };
                 names[3] = "Name.AddName";
-                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsPost = true };
+                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsPost = true };
                 names[4] = "AddFullName";
-                infos[4] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsPost = true };
+                infos[4] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsPost = true };
                 names[5] = "Post.Add";
-                infos[5] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true };
+                infos[5] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true };
                 names[6] = "Post.Mul";
-                infos[6] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true };
+                infos[6] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true };
                 names[7] = "RefOut.Add";
-                infos[7] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsPost = true };
+                infos[7] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsPost = true };
                 names[8] = "/LoadView.html";
-                infos[8] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[8] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[9] = "/LoadViewQuery.html";
-                infos[9] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[9] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[10] = "/LoadViewQueryName.html";
-                infos[10] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[10] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[11] = "/Symbol/ReView.html";
-                infos[11] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 11, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[11] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 11, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[12] = "/Template/Client.html";
-                infos[12] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 12, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[12] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 12, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[13] = "/Template/Expression.html";
-                infos[13] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 13, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[13] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 13, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[14] = "/Template/If.html";
-                infos[14] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 14, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[14] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 14, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[15] = "/Template/Loop.html";
-                infos[15] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 15, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[15] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 15, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[16] = "/Template/NoMark.html";
-                infos[16] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 16, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[16] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 16, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[17] = "/Template/Value.html";
-                infos[17] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 17, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[17] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 17, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[18] = "/ViewAsynchronous.html";
-                infos[18] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 18, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[18] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 18, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[20 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
-                infos[20 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 20 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
+                infos[20 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 20 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.Memory.BufferSize.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
                 CompileJsonSerialize(new System.Type[] { typeof(_p1), typeof(_p3), typeof(_p5), null }, new System.Type[] { typeof(_p2), typeof(_p4), typeof(_p6), null });
             }

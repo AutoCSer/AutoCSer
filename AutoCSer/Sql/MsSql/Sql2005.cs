@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Threading;
 
 namespace AutoCSer.Sql.MsSql
@@ -43,36 +44,36 @@ namespace AutoCSer.Sql.MsSql
             where valueType : class, modelType
             where modelType : class
         {
-            sqlStream.SimpleWriteNotNull("select ");
+            sqlStream.SimpleWrite("select ");
             if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
             else sqlStream.Write('*');
-            sqlStream.SimpleWriteNotNull(" from[");
-            sqlStream.SimpleWriteNotNull(sqlTool.TableName);
-            sqlStream.WriteNotNull("]with(nolock)where ");
-            sqlStream.SimpleWriteNotNull(keyName);
-            sqlStream.SimpleWriteNotNull(" in(select ");
-            sqlStream.SimpleWriteNotNull(keyName);
-            sqlStream.SimpleWriteNotNull(" from(select ");
-            sqlStream.SimpleWriteNotNull(keyName);
-            sqlStream.WriteNotNull(",row_number()over(");
+            sqlStream.SimpleWrite(" from[");
+            sqlStream.SimpleWrite(sqlTool.TableName);
+            sqlStream.Write("]with(nolock)where ");
+            sqlStream.SimpleWrite(keyName);
+            sqlStream.SimpleWrite(" in(select ");
+            sqlStream.SimpleWrite(keyName);
+            sqlStream.SimpleWrite(" from(select ");
+            sqlStream.SimpleWrite(keyName);
+            sqlStream.Write(",row_number()over(");
             int startIndex = sqlStream.Length;
             createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
             string fieldName, fieldSqlName;
             query.GetIndex(out fieldName, out fieldSqlName);
             int count = sqlStream.Length - startIndex;
-            sqlStream.SimpleWriteNotNull(")as ");
-            sqlStream.SimpleWriteNotNull(orderOverName);
-            sqlStream.SimpleWriteNotNull(" from[");
-            sqlStream.SimpleWriteNotNull(sqlTool.TableName);
-            sqlStream.SimpleWriteNotNull("]with(nolock)");
+            sqlStream.SimpleWrite(")as ");
+            sqlStream.SimpleWrite(orderOverName);
+            sqlStream.SimpleWrite(" from[");
+            sqlStream.SimpleWrite(sqlTool.TableName);
+            sqlStream.SimpleWrite("]with(nolock)");
             sqlTool.Client.GetSql(createQuery.Where.Expression, sqlStream, ref query);
             if (query.IndexFieldName == null) query.SetIndex(fieldName, fieldSqlName);
-            sqlStream.SimpleWriteNotNull(")as T where ");
-            sqlStream.SimpleWriteNotNull(orderOverName);
-            sqlStream.SimpleWriteNotNull(" between ");
-            AutoCSer.Extension.Number.ToString(query.SkipCount, sqlStream);
-            sqlStream.SimpleWriteNotNull(" and ");
-            AutoCSer.Extension.Number.ToString(query.SkipCount + createQuery.GetCount - 1, sqlStream);
+            sqlStream.SimpleWrite(")as T where ");
+            sqlStream.SimpleWrite(orderOverName);
+            sqlStream.SimpleWrite(" between ");
+            AutoCSer.Extensions.NumberExtension.ToString(query.SkipCount, sqlStream);
+            sqlStream.SimpleWrite(" and ");
+            AutoCSer.Extensions.NumberExtension.ToString(query.SkipCount + createQuery.GetCount - 1, sqlStream);
             sqlStream.Write(')');
             if (count != 0) sqlStream.Write(sqlStream.Char + startIndex, count);
         }
@@ -90,26 +91,26 @@ namespace AutoCSer.Sql.MsSql
             where valueType : class, modelType
             where modelType : class
         {
-            sqlStream.WriteNotNull("select * from(select ");
+            sqlStream.Write("select * from(select ");
             if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
             else sqlStream.Write('*');
-            sqlStream.WriteNotNull(",row_number()over(");
+            sqlStream.Write(",row_number()over(");
             createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
             string fieldName, fieldSqlName;
             query.GetIndex(out fieldName, out fieldSqlName);
-            sqlStream.SimpleWriteNotNull(")as ");
-            sqlStream.SimpleWriteNotNull(orderOverName);
-            sqlStream.SimpleWriteNotNull(" from[");
-            sqlStream.SimpleWriteNotNull(sqlTool.TableName);
-            sqlStream.SimpleWriteNotNull("]with(nolock)");
+            sqlStream.SimpleWrite(")as ");
+            sqlStream.SimpleWrite(orderOverName);
+            sqlStream.SimpleWrite(" from[");
+            sqlStream.SimpleWrite(sqlTool.TableName);
+            sqlStream.SimpleWrite("]with(nolock)");
             sqlTool.Client.GetSql(createQuery.Where.Expression, sqlStream, ref query);
             if (query.IndexFieldName == null) query.SetIndex(fieldName, fieldSqlName);
-            sqlStream.SimpleWriteNotNull(")as T where ");
-            sqlStream.SimpleWriteNotNull(orderOverName);
-            sqlStream.SimpleWriteNotNull(" between ");
-            AutoCSer.Extension.Number.ToString(query.SkipCount, sqlStream);
-            sqlStream.SimpleWriteNotNull(" and ");
-            AutoCSer.Extension.Number.ToString(query.SkipCount + createQuery.GetCount - 1, sqlStream);
+            sqlStream.SimpleWrite(")as T where ");
+            sqlStream.SimpleWrite(orderOverName);
+            sqlStream.SimpleWrite(" between ");
+            AutoCSer.Extensions.NumberExtension.ToString(query.SkipCount, sqlStream);
+            sqlStream.SimpleWrite(" and ");
+            AutoCSer.Extensions.NumberExtension.ToString(query.SkipCount + createQuery.GetCount - 1, sqlStream);
         }
         /// <summary>
         /// 查询对象集合
@@ -125,19 +126,19 @@ namespace AutoCSer.Sql.MsSql
             where valueType : class, modelType
             where modelType : class
         {
-            sqlStream.SimpleWriteNotNull("select ");
+            sqlStream.SimpleWrite("select ");
             int count = query.SkipCount + createQuery.GetCount;
             if (count != 0)
             {
-                sqlStream.SimpleWriteNotNull("top ");
-                AutoCSer.Extension.Number.ToString(count, sqlStream);
+                sqlStream.SimpleWrite("top ");
+                AutoCSer.Extensions.NumberExtension.ToString(count, sqlStream);
                 sqlStream.Write(' ');
             }
             if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
             else sqlStream.Write('*');
-            sqlStream.SimpleWriteNotNull(" from [");
-            sqlStream.SimpleWriteNotNull(sqlTool.TableName);
-            sqlStream.SimpleWriteNotNull("]with(nolock)");
+            sqlStream.SimpleWrite(" from [");
+            sqlStream.SimpleWrite(sqlTool.TableName);
+            sqlStream.SimpleWrite("]with(nolock)");
             createQuery.WriteWhere(sqlTool, sqlStream, ref query);
             createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
         }
@@ -154,11 +155,12 @@ namespace AutoCSer.Sql.MsSql
             (Sql.Table<valueType, modelType> sqlTool, ref CreateSelectQuery<modelType> createQuery, ref SelectQuery<modelType> query)
         {
             CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
-            if (sqlStream == null) sqlStream = new CharStream(null, 0);
-            byte* buffer = null;
+            if (sqlStream == null) sqlStream = new CharStream(default(AutoCSer.Memory.Pointer));
+            AutoCSer.Memory.Pointer buffer = default(AutoCSer.Memory.Pointer);
             try
             {
-                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                buffer = UnmanagedPool.Default.GetPointer();
+                sqlStream.Reset(ref buffer);
                 if (query.SkipCount != 0 && createQuery.IsOrder)
                 {
                     if (DataModel.Model<modelType>.PrimaryKeys.Length == 1) selectKeys(sqlTool, ref createQuery, ref query, constantConverter.ConvertName(DataModel.Model<modelType>.PrimaryKeys[0].FieldInfo.Name), sqlStream);
@@ -170,7 +172,7 @@ namespace AutoCSer.Sql.MsSql
             }
             finally
             {
-                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer); 
+                UnmanagedPool.Default.Push(ref buffer);
                 sqlStream.Dispose();
                 Interlocked.Exchange(ref this.sqlStream, sqlStream);
             }

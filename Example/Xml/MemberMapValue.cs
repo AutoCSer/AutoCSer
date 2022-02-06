@@ -23,7 +23,7 @@ namespace AutoCSer.Example.Xml
         /// <param name="serializer">XML 序列化</param>
         [AutoCSer.Xml.Custom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void ToXml(AutoCSer.Xml.Serializer serializer)
+        internal void ToXml(AutoCSer.XmlSerializer serializer)
         {
             if (MemberMap == null || MemberMap.IsDefault) serializer.TypeSerialize(Value);
             else
@@ -39,14 +39,14 @@ namespace AutoCSer.Example.Xml
         /// <summary>
         /// 自定义反序列化函数
         /// </summary>
-        /// <param name="parser">XML 解析</param>
+        /// <param name="xmlDeSerializer">XML 解析</param>
         [AutoCSer.Xml.Custom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void ParseXml(AutoCSer.Xml.Parser parser)
+        internal void ParseXml(AutoCSer.XmlDeSerializer xmlDeSerializer)
         {
             if (MemberMap == null) MemberMap = AutoCSer.Metadata.MemberMap<valueType>.NewEmpty();
-            parser.MemberMap = MemberMap;
-            parser.TypeParse(ref Value);
+            xmlDeSerializer.MemberMap = MemberMap;
+            xmlDeSerializer.TypeDeSerialize(ref Value);
         }
     }
     /// <summary>
@@ -76,8 +76,8 @@ namespace AutoCSer.Example.Xml
 #endif
             MemberMapValue value = new MemberMapValue { Value = new MemberMapValue<MemberMap> { MemberMap = serializeMemberMap, Value = new MemberMap { Value1 = 1, Value2 = 2, Value3 = 3 } } };
 
-            string xml = AutoCSer.Xml.Serializer.Serialize(value);
-            MemberMapValue newValue = AutoCSer.Xml.Parser.Parse<MemberMapValue>(xml);
+            string xml = AutoCSer.XmlSerializer.Serialize(value);
+            MemberMapValue newValue = AutoCSer.XmlDeSerializer.DeSerialize<MemberMapValue>(xml);
 
             return newValue != null && newValue.Value.Value != null && newValue.Value.Value.Value1 == 1 && newValue.Value.Value.Value2 == 2 && newValue.Value.Value.Value3 == 0;
         }

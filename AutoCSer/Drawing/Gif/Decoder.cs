@@ -138,7 +138,7 @@ namespace AutoCSer.Drawing.Gif
         {
             if (++currentData < dataEnd)
             {
-                SubArray<byte> comment = default(SubArray<byte>);
+                SubArray<byte> comment = new SubArray<byte>();
                 if (getBlocks(ref comment))
                 {
                     dataBlock.Set(ref comment);
@@ -159,7 +159,7 @@ namespace AutoCSer.Drawing.Gif
                 int startIndex = (int)(currentData - dataPoint);
                 if ((currentData += 12) < dataEnd)
                 {
-                    LeftArray<SubArray<byte>> customDatas = default(LeftArray<SubArray<byte>>);
+                    LeftArray<SubArray<byte>> customDatas = new LeftArray<SubArray<byte>>(0);
                     if (getBlockList(ref customDatas))
                     {
                         dataBlock.Set(new Application(new SubArray<byte> { Array = data, Start = startIndex + 1, Length = 8 }, new SubArray<byte> { Array = data, Start = startIndex + 9, Length = 3 }, customDatas));
@@ -263,9 +263,9 @@ namespace AutoCSer.Drawing.Gif
                     for (int index = 0; index != count; ++index)
                     {
                         SubArray<byte> subArray = array[index];
-                        fixed (byte* subArrayFixed = subArray.Array)
+                        fixed (byte* subArrayFixed = subArray.GetFixedBuffer())
                         {
-                            AutoCSer.Memory.CopyNotNull(subArrayFixed + subArray.Start, currentData, subArray.Length);
+                            AutoCSer.Memory.Common.CopyNotNull(subArrayFixed + subArray.Start, currentData, subArray.Length);
                         }
                         currentData += subArray.Length;
                     }

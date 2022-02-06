@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.SqlModel.Member
     /// <summary>
     /// 时间范围（自定义组合字段，映射到数据库表格的多个字段）
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     [AutoCSer.Sql.Column]
     public struct DateRange : AutoCSer.Sql.IVerify
     {

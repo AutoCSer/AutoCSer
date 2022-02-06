@@ -54,10 +54,10 @@ namespace AutoCSer.Example.WebView.Ajax
             {
                 #region FORM + JSON 支持
                 NameValueCollection form = new NameValueCollection();
-                form.Add("j", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 1, right = 2 }));
+                form.Add("j", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 1, right = 2 }));
                 webClient.Headers.Add("Referer", WebConfig.HttpDomain);
                 string json = Encoding.UTF8.GetString(webClient.UploadValues(addUrl, form));
-                if (AutoCSer.Json.Parser.Parse<AddReturn>(json).Return != 1 + 2)
+                if (AutoCSer.JsonDeSerializer.DeSerialize<AddReturn>(json).Return != 1 + 2)
                 {
                     return false;
                 }
@@ -65,10 +65,10 @@ namespace AutoCSer.Example.WebView.Ajax
 
                 #region FORM + XML 支持
                 form = new NameValueCollection();
-                form.Add("x", AutoCSer.Xml.Serializer.Serialize(new AddParameter { left = 2, right = 3 }));
+                form.Add("x", AutoCSer.XmlSerializer.Serialize(new AddParameter { left = 2, right = 3 }));
                 webClient.Headers.Add("Referer", WebConfig.HttpDomain);
                 json = Encoding.UTF8.GetString(webClient.UploadValues(addUrl, form));
-                if (AutoCSer.Json.Parser.Parse<AddReturn>(json).Return != 2 + 3)
+                if (AutoCSer.JsonDeSerializer.DeSerialize<AddReturn>(json).Return != 2 + 3)
                 {
                     return false;
                 }
@@ -77,8 +77,8 @@ namespace AutoCSer.Example.WebView.Ajax
                 #region POST + JSON 支持
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
                 webClient.Headers.Add("Referer", WebConfig.HttpDomain);
-                json = webClient.UploadString(mulUrl, "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 3, right = 5 }));
-                if (AutoCSer.Json.Parser.Parse<AddReturn>(json).Return != 3 * 5)
+                json = webClient.UploadString(mulUrl, "POST", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 3, right = 5 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<AddReturn>(json).Return != 3 * 5)
                 {
                     return false;
                 }
@@ -87,8 +87,8 @@ namespace AutoCSer.Example.WebView.Ajax
                 #region POST + XML 支持
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/xml; charset=utf-8");
                 webClient.Headers.Add("Referer", WebConfig.HttpDomain);
-                json = webClient.UploadString(mulUrl, "POST", AutoCSer.Xml.Serializer.Serialize(new AddParameter { left = 5, right = 8 }));
-                if (AutoCSer.Json.Parser.Parse<AddReturn>(json).Return != 5 * 8)
+                json = webClient.UploadString(mulUrl, "POST", AutoCSer.XmlSerializer.Serialize(new AddParameter { left = 5, right = 8 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<AddReturn>(json).Return != 5 * 8)
                 {
                     return false;
                 }

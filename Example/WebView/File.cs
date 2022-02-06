@@ -35,7 +35,7 @@ namespace AutoCSer.Example.WebView
             using (WebClient webClient = new WebClient())
             {
                 byte[] data = webClient.DownloadData(WebConfig.HttpDomain + "File/Download");
-                if (!AutoCSer.Memory.equal(data, System.IO.File.ReadAllBytes(fileName)))
+                if (!AutoCSer.Memory.Common.equal(data, System.IO.File.ReadAllBytes(fileName)))
                 {
                     return false;
                 }

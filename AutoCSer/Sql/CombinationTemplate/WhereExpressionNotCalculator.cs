@@ -1,5 +1,5 @@
 ﻿using System;
-/*Type:ulong,calculateNotULong;long,calculateNotLong;uint,calculateNotUInt;int,calculateNotInt;ushort,calculateNotUShort;short,calculateNotShort;byte,calculateNotByte;sbyte,calculateNotSByte*/
+/*ulong,ULong;long,Long;uint,UInt;int,Int;ushort,UShort;short,Short;byte,Byte;sbyte,SByte*/
 
 namespace AutoCSer.Sql
 {
@@ -13,9 +13,9 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static object /*Type[1]*/calculateNotULong/*Type[1]*/(object value)
+        private static object calculateNotULong(object value)
         {
-            return ~(/*Type[0]*/ulong/*Type[0]*/)value;
+            return ~(ulong)value;
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 #if !NOJIT
@@ -79,7 +79,7 @@ namespace AutoCSer.Sql.ColumnGroup
                 generator.Emit(OpCodes.Ldarg_2);
                 generator.int32(index);
                 generator.Emit(OpCodes.Ldelem_Ref);
-                generator.Emit(OpCodes.Call, GetTypeVerifyer(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).VerifyMethod);
                 generator.Emit(OpCodes.Brtrue_S, end);
             }
             else if (field.DataType == typeof(string) || field.IsUnknownJson)
@@ -125,90 +125,20 @@ namespace AutoCSer.Sql.ColumnGroup
         }
 #endif
         /// <summary>
-        /// 类型调用函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, MethodInfo> typeVerifyers = new AutoCSer.Threading.LockLastDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 类型委托调用函数信息
-        /// </summary>
-        /// <param name="type">数组类型</param>
-        /// <returns>类型委托调用函数信息</returns>
-        public static MethodInfo GetTypeVerifyer(Type type)
-        {
-            MethodInfo method;
-            if (typeVerifyers.TryGetValue(type, out method)) return method;
-            typeVerifyers.Set(type, method = verifyMethod.MakeGenericMethod(type));
-            return method;
-        }
-        /// <summary>
-        /// 数据验证
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="sqlTool"></param>
-        /// <param name="columnName"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static bool verify<valueType>(valueType value, Table sqlTool, string columnName)
-        {
-            return Column<valueType>.Verifyer.Verify(value, sqlTool, columnName);
-        }
-        /// <summary>
-        /// 数据验证函数信息
-        /// </summary>
-        private static readonly MethodInfo verifyMethod = typeof(Verifyer).GetMethod("verify", BindingFlags.Static | BindingFlags.NonPublic);
-        /// <summary>
         /// 获取列名委托
         /// </summary>
         /// <param name="names"></param>
         /// <param name="name"></param>
         internal delegate void GetName(ref LeftArray<string> names, string name);
         /// <summary>
-        /// 获取列名委托集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, GetName> getColumnNameMethods = new AutoCSer.Threading.LockLastDictionary<Type, GetName>();
-        /// <summary>
-        /// 获取列名委托
-        /// </summary>
-        /// <param name="type">数据列类型</param>
-        /// <returns>获取列名委托</returns>
-        public static GetName GetColumnNames(Type type)
-        {
-            GetName getColumnName;
-            if (getColumnNameMethods.TryGetValue(type, out getColumnName)) return getColumnName;
-            getColumnName = (GetName)Delegate.CreateDelegate(typeof(GetName), getColumnNamesMethod.MakeGenericMethod(type));
-            getColumnNameMethods.Set(type, getColumnName);
-            return getColumnName;
-        }
-        /// <summary>
         /// 获取列名集合
         /// </summary>
         /// <param name="names">列名集合</param>
         /// <param name="name">列名前缀</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void getColumnNames<valueType>(ref LeftArray<string> names, string name)
+        internal static void GetColumnNames<valueType>(ref LeftArray<string> names, string name)
         {
             names.Add(Column<valueType>.Verifyer.GetColumnNames(name));
-        }
-        /// <summary>
-        /// 获取列名集合函数信息
-        /// </summary>
-        private static readonly MethodInfo getColumnNamesMethod = typeof(Verifyer).GetMethod("getColumnNames", BindingFlags.Static | BindingFlags.NonPublic);
-
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            typeVerifyers.Clear();
-            getColumnNameMethods.Clear();
-        }
-        static Verifyer()
-        {
-            AutoCSer.Pub.ClearCaches += clearCache;
         }
     }
     /// <summary>
@@ -224,7 +154,7 @@ namespace AutoCSer.Sql.ColumnGroup
             /// <summary>
             /// 数据列名集合
             /// </summary>
-            private static readonly AutoCSer.Threading.LockEquatableLastDictionary<HashString, string[]> columnNames;
+            private static readonly AutoCSer.Threading.LockDictionary<HashString, string[]> columnNames;
             /// <summary>
             /// 获取列名集合
             /// </summary>
@@ -234,24 +164,16 @@ namespace AutoCSer.Sql.ColumnGroup
             {
                 string[] names;
                 HashString nameKey = name;
-                if (columnNames.TryGetValue(ref nameKey, out names)) return names;
+                if (columnNames.TryGetValue(nameKey, out names)) return names;
                 LeftArray<string> nameList = new LeftArray<string>(verifyFields.Length);
                 foreach (Field field in verifyFields)
                 {
-                    if (field.IsSqlColumn) ColumnGroup.Verifyer.GetColumnNames(field.FieldInfo.FieldType)(ref nameList, name + "_" + field.FieldInfo.Name);
+
+                    if (field.IsSqlColumn) ((ColumnGroup.Verifyer.GetName)AutoCSer.Sql.Metadata.GenericType.Get(field.FieldInfo.FieldType).VerifyerGetColumnNamesMethod)(ref nameList, name + "_" + field.FieldInfo.Name);
                     else nameList.Add(name + "_" + field.FieldInfo.Name);
                 }
-                columnNames.Set(ref nameKey, names = nameList.ToArray());
+                columnNames.Set(nameKey, names = nameList.ToArray());
                 return names;
-            }
-            /// <summary>
-            /// 清除缓存数据
-            /// </summary>
-            /// <param name="count">保留缓存数据数量</param>
-            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            private static void clearCache(int count)
-            {
-                columnNames.Clear();
             }
 
             /// <summary>
@@ -342,7 +264,7 @@ namespace AutoCSer.Sql.ColumnGroup
                     LeftArray<Field> verifyFields = Fields.getFind(value => value.IsVerify);
                     if (verifyFields.Length != 0)
                     {
-                        columnNames = new AutoCSer.Threading.LockEquatableLastDictionary<HashString, string[]>();
+                        columnNames = new AutoCSer.Threading.LockDictionary<HashString, string[]>();
                         int index = 0;
                         Verifyer.verifyFields = verifyFields.ToArray();
 #if NOJIT
@@ -353,7 +275,7 @@ namespace AutoCSer.Sql.ColumnGroup
                         foreach (Field member in Verifyer.verifyFields) dynamicMethod.Push(member, index++);
                         verifyer = (Func<valueType, Table, string[], bool>)dynamicMethod.Create<Func<valueType, Table, string[], bool>>();
 #endif
-                        AutoCSer.Pub.ClearCaches += clearCache;
+                        AutoCSer.Memory.Common.AddClearCache(columnNames.Clear, typeof(Verifyer), 60 * 60);
                     }
                 }
             }

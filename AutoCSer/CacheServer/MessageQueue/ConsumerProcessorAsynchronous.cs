@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CacheServer.MessageQueue
 {
@@ -55,7 +55,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// </summary>
         private void messageStart()
         {
-            messageTime = Date.NowTime.Now;
+            messageTime = AutoCSer.Threading.SecondTimer.Now;
             isSetDequeueIdentity = 0;
             nextMessage();
         }
@@ -86,7 +86,7 @@ namespace AutoCSer.CacheServer.MessageQueue
                     }
                     catch (Exception error)
                     {
-                        consumer.Log.Add(Log.LogType.Error, error);
+                        consumer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         if (identity != this.identity) return;
                         Thread.Sleep(1);
                         goto START;
@@ -109,12 +109,12 @@ namespace AutoCSer.CacheServer.MessageQueue
         {
             if (++messageIndex == messages.Length) messageIndex = 0;
             ++identity;
-            if (messageTime == Date.NowTime.Now && --sendClientCount != 0) isSetDequeueIdentity = 1;
+            if (messageTime == AutoCSer.Threading.SecondTimer.Now && --sendClientCount != 0) isSetDequeueIdentity = 1;
             else
             {
                 isSetDequeueIdentity = 0;
                 consumer.SetDequeueIdentity(identity);
-                messageTime = Date.NowTime.Now;
+                messageTime = AutoCSer.Threading.SecondTimer.Now;
                 sendClientCount = ((uint)messages.Length >> 1) | 1U;
             }
             nextMessage();

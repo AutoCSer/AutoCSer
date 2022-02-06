@@ -34,14 +34,10 @@
   <ItemGroup>
     <Compile Include="Comparor.cs" />
     <Compile Include="MemberDynamicMethod.cs" />
-    <Compile Include="Metadata\UnionType.cs" />
+    <Compile Include="Metadata\UnionType\GenericType.cs" />
     <Compile Include="Metadata\GenericType.cs" />
     <Compile Include="MethodCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

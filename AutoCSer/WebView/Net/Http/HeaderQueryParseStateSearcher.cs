@@ -28,7 +28,7 @@ namespace AutoCSer.Net.Http
         /// 名称查找器
         /// </summary>
         /// <param name="data">数据起始位置</param>
-        internal HeaderQueryParseStateSearcher(Pointer data)
+        internal HeaderQueryParseStateSearcher(AutoCSer.Memory.Pointer data)
         {
             if (data.Data == null)
             {

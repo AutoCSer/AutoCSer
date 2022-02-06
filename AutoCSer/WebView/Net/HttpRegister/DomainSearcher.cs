@@ -25,7 +25,7 @@ namespace AutoCSer.Net.HttpRegister
         /// ASCII字节搜索器
         /// </summary>
         /// <param name="data">数据起始位置</param>
-        public DomainSearcher(ref Pointer.Size data)
+        public DomainSearcher(ref AutoCSer.Memory.Pointer data)
         {
             int stateCount = *data.Int;
             State = data.Byte + sizeof(int);
@@ -89,7 +89,7 @@ namespace AutoCSer.Net.HttpRegister
         //[MethodImpl((MethodImplOptions)AutoCSer.pub.MethodImplOptionsAggressiveInlining)]
         //public int Search(ref subArray<byte> data)
         //{
-        //    fixed (byte* dataFixed = data.array)
+        //    fixed (byte* dataFixed = data.GetFixedBuffer())
         //    {
         //        byte* start = dataFixed + data.StartIndex;
         //        return Search(start, start + data.Count);

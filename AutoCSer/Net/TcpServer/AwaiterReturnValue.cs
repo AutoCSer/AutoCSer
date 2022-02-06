@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValue<returnType>
 #if NOJIT
@@ -45,7 +45,7 @@ namespace AutoCSer.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     [AutoCSer.Metadata.BoxSerialize]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValueBox<returnType>
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false)]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValueReference<returnType>
 #if NOJIT
@@ -124,7 +124,7 @@ namespace AutoCSer.Net.TcpServer
     /// await 返回值包装
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false)]
     [AutoCSer.Metadata.BoxSerialize]
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AwaiterReturnValueBoxReference<returnType>

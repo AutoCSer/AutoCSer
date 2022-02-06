@@ -40,7 +40,6 @@
     <Compile Include="HttpFileTestType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketAsyncEventArgsPool.cs" />
-    <Compile Include="UnionType.cs" />
   </ItemGroup>
 
   <ItemGroup>

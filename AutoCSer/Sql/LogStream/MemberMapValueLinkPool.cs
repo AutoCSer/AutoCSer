@@ -13,7 +13,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
+        private readonly static int maxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(valueType));
         /// <summary>
         /// 是否需要释放资源
         /// </summary>
@@ -25,7 +25,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -56,7 +56,7 @@ namespace AutoCSer.Sql.LogStream
                     value.MemberMapValueLink = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -67,23 +67,23 @@ namespace AutoCSer.Sql.LogStream
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static valueType Pop()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+            popLock.EnterYield();
             valueType headValue;
             do
             {
                 if ((headValue = head) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     return null;
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref head, headValue.MemberMapValueLink, headValue) == headValue)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0); 
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref count);
                     headValue.MemberMapValueLink = null;
                     return headValue;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -110,7 +110,7 @@ namespace AutoCSer.Sql.LogStream
                     end.MemberMapValueLink = headValue;
                     if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPush);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -162,7 +162,7 @@ namespace AutoCSer.Sql.LogStream
         }
         static MemberMapValueLinkPool()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(MemberMapValueLinkPool<valueType>));
         }
     }
 }

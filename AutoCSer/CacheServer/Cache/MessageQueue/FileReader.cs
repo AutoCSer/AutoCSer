@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CacheServer.Cache.MessageQueue
 {
@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 默认配置
         /// </summary>
-        private static readonly ReaderConfig defaultConfig = ConfigLoader.GetUnion(typeof(ReaderConfig)).ReaderConfig ?? new ReaderConfig();
+        private static readonly ReaderConfig defaultConfig = (ReaderConfig)AutoCSer.Configuration.Common.Get(typeof(ReaderConfig)) ?? new ReaderConfig();
 
         /// <summary>
         /// 消息队列节点
@@ -253,7 +253,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         {
             if (compressionBuffer.Buffer == null) return false;
             int bufferIndex = compressionBuffer.StartIndex, bufferSize = bufferIndex + dataSize;
-            fixed (byte* bigBufferFixed = compressionBuffer.Buffer)
+            fixed (byte* bigBufferFixed = compressionBuffer.GetFixedBuffer())
             {
                 do
                 {

@@ -2,8 +2,9 @@
 using AutoCSer.Metadata;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -13,8 +14,8 @@ namespace AutoCSer.Json
     /// <summary>
     /// 类型序列化
     /// </summary>
-    /// <typeparam name="valueType">目标类型</typeparam>
-    internal unsafe static partial class TypeSerializer<valueType>
+    /// <typeparam name="T">目标类型</typeparam>
+    internal unsafe static partial class TypeSerializer<T>
     {
         /// <summary>
         /// 成员转换
@@ -22,20 +23,20 @@ namespace AutoCSer.Json
 #if NOJIT
         private static readonly Action<MemberMap, Serializer, object, CharStream> memberMapSerializer;
 #else
-        private static readonly Action<MemberMap, Serializer, valueType, CharStream> memberMapSerializer;
+        private static readonly Action<MemberMap, JsonSerializer, T, CharStream> memberMapSerializer;
 #endif
         /// <summary>
         /// 成员转换
         /// </summary>
-        private static readonly Action<Serializer, valueType> memberSerializer;
+        private static readonly Action<JsonSerializer, T> memberSerializer;
         /// <summary>
         /// 转换委托
         /// </summary>
-        private static readonly Action<Serializer, valueType> defaultSerializer;
+        private static readonly Action<JsonSerializer, T> defaultSerializer;
         /// <summary>
         /// JSON序列化类型配置
         /// </summary>
-        private static readonly SerializeAttribute attribute;
+        private static readonly JsonSerializeAttribute attribute;
 #if AutoCSer
         /// <summary>
         /// 客户端视图类型名称
@@ -51,7 +52,7 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        internal static void Serialize(Serializer jsonSerializer, ref valueType value)
+        internal static void Serialize(JsonSerializer jsonSerializer, ref T value)
         {
             if (isValueType) StructSerialize(jsonSerializer, ref value);
             else serialize(jsonSerializer, value);
@@ -61,7 +62,7 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        internal static void Serialize(Serializer jsonSerializer, valueType value)
+        internal static void Serialize(JsonSerializer jsonSerializer, T value)
         {
             if (isValueType) StructSerialize(jsonSerializer, ref value);
             else serialize(jsonSerializer, value);
@@ -72,7 +73,7 @@ namespace AutoCSer.Json
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void StructSerialize(Serializer jsonSerializer, ref valueType value)
+        internal static void StructSerialize(JsonSerializer jsonSerializer, ref T value)
         {
             if (defaultSerializer == null) MemberSerialize(jsonSerializer, ref value);
             else defaultSerializer(jsonSerializer, value);
@@ -83,7 +84,7 @@ namespace AutoCSer.Json
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void StructSerialize(Serializer jsonSerializer, valueType value)
+        internal static void StructSerialize(JsonSerializer jsonSerializer, T value)
         {
             if (defaultSerializer == null) MemberSerialize(jsonSerializer, ref value);
             else defaultSerializer(jsonSerializer, value);
@@ -94,7 +95,7 @@ namespace AutoCSer.Json
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void serialize(Serializer jsonSerializer, valueType value)
+        private static void serialize(JsonSerializer jsonSerializer, T value)
         {
             if (value == null) jsonSerializer.CharStream.WriteJsonNull();
             else ClassSerialize(jsonSerializer, value);
@@ -104,7 +105,7 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        internal static void ClassSerialize(Serializer jsonSerializer, valueType value)
+        internal static void ClassSerialize(JsonSerializer jsonSerializer, T value)
         {
             if (defaultSerializer == null)
             {
@@ -121,7 +122,7 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        internal static void MemberSerialize(Serializer jsonSerializer, ref valueType value)
+        internal static void MemberSerialize(JsonSerializer jsonSerializer, ref T value)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             SerializeConfig config = jsonSerializer.Config;
@@ -129,21 +130,21 @@ namespace AutoCSer.Json
             byte isView;
             if (viewClientTypeName != null && config.IsViewClientType)
             {
-                jsonStream.SimpleWriteNotNull(viewClientTypeName);
+                jsonStream.SimpleWrite(viewClientTypeName);
                 isView = 1;
             }
             else
             {
 #endif
-            jsonStream.PrepLength(2);
-            jsonStream.UnsafeWrite('{');
+            jsonStream.PrepCharSize(2);
+            jsonStream.Data.Write('{');
 #if AutoCSer
                 isView = 0;
             }
 #endif
             MemberMap memberMap = config.MemberMap;
             if (memberMap == null) memberSerializer(jsonSerializer, value);
-            else if (memberMap.Type == MemberMap<valueType>.TypeInfo)
+            else if (object.ReferenceEquals(memberMap.Type, MemberMap<T>.MemberMapType))
             {
                 config.MemberMap = null;
                 try
@@ -162,8 +163,7 @@ namespace AutoCSer.Json
             else
 #endif
             {
-                *(int*)jsonStream.GetPrepSizeCurrent(2) = '}' + (')' << 16);
-                jsonStream.ByteSize += 2 * sizeof(char);
+                *(int*)jsonStream.GetBeforeMove(2 * sizeof(char)) = '}' + (')' << 16);
             }
         }
         /// <summary>
@@ -171,12 +171,12 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="array">数组对象</param>
-        internal static void Array(Serializer jsonSerializer, valueType[] array)
+        internal static void Array(JsonSerializer jsonSerializer, T[] array)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             jsonStream.Write('[');
             byte isFirst = 1;
-            foreach (valueType value in array)
+            foreach (T value in array)
             {
                 if (isFirst == 0) jsonStream.Write(',');
                 else isFirst = 0;
@@ -189,7 +189,7 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="array">数组对象</param>
-        internal static void StructArray(Serializer jsonSerializer, valueType[] array)
+        internal static void StructArray(JsonSerializer jsonSerializer, T[] array)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             jsonStream.Write('[');
@@ -205,14 +205,14 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="values">枚举集合</param>
-        internal static void Enumerable(Serializer jsonSerializer, IEnumerable<valueType> values)
+        internal static void Enumerable(JsonSerializer jsonSerializer, IEnumerable<T> values)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             jsonStream.Write('[');
             byte isFirst = 1;
             if (isValueType)
             {
-                foreach (valueType value in values)
+                foreach (T value in values)
                 {
                     if (isFirst == 0) jsonStream.Write(',');
                     StructSerialize(jsonSerializer, value);
@@ -221,7 +221,7 @@ namespace AutoCSer.Json
             }
             else
             {
-                foreach (valueType value in values)
+                foreach (T value in values)
                 {
                     if (isFirst == 0) jsonStream.Write(',');
                     serialize(jsonSerializer, value);
@@ -235,19 +235,12 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        internal static void KeyValuePair<dictionaryValueType>(Serializer jsonSerializer, KeyValuePair<valueType, dictionaryValueType> value)
+        internal static void KeyValuePair<dictionaryValueType>(JsonSerializer jsonSerializer, KeyValuePair<T, dictionaryValueType> value)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
-            byte* data = (byte*)jsonStream.GetPrepSizeCurrent(21);
-            *(long*)data = '{' + ('"' << 16) + ((long)'K' << 32) + ((long)'e' << 48);
-            *(long*)(data + sizeof(long)) = 'y' + ('"' << 16) + ((long)':' << 32);
-            jsonStream.ByteSize += 7 * sizeof(char);
-            TypeSerializer<valueType>.Serialize(jsonSerializer, value.Key);
-            data = (byte*)jsonStream.GetPrepSizeCurrent(12);
-            *(long*)data = ',' + ('"' << 16) + ((long)'V' << 32) + ((long)'a' << 48);
-            *(long*)(data + sizeof(long)) = 'l' + ('u' << 16) + ((long)'e' << 32) + ((long)'"' << 48);
-            *(char*)(data + sizeof(long) * 2) = ':';
-            jsonStream.ByteSize += 9 * sizeof(char);
+            jsonStream.WriteJsonKeyValueKey(21);
+            TypeSerializer<T>.Serialize(jsonSerializer, value.Key);
+            jsonStream.WriteJsonKeyValueValue();
             TypeSerializer<dictionaryValueType>.Serialize(jsonSerializer, value.Value);
             jsonStream.Write('}');
         }
@@ -256,17 +249,17 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="dictionary">数据对象</param>
-        internal static void Dictionary<dictionaryValueType>(Serializer jsonSerializer, Dictionary<valueType, dictionaryValueType> dictionary)
+        internal static void Dictionary<dictionaryValueType>(JsonSerializer jsonSerializer, Dictionary<T, dictionaryValueType> dictionary)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             byte isFirst = 1;
             if (jsonSerializer.Config.IsDictionaryToObject)
             {
                 jsonStream.Write('{');
-                foreach (KeyValuePair<valueType, dictionaryValueType> value in dictionary)
+                foreach (KeyValuePair<T, dictionaryValueType> value in dictionary)
                 {
                     if (isFirst == 0) jsonStream.Write(',');
-                    TypeSerializer<valueType>.Serialize(jsonSerializer, value.Key);
+                    TypeSerializer<T>.Serialize(jsonSerializer, value.Key);
                     jsonStream.Write(':');
                     TypeSerializer<dictionaryValueType>.Serialize(jsonSerializer, value.Value);
                     isFirst = 0;
@@ -276,7 +269,7 @@ namespace AutoCSer.Json
             else
             {
                 jsonStream.Write('[');
-                foreach (KeyValuePair<valueType, dictionaryValueType> value in dictionary)
+                foreach (KeyValuePair<T, dictionaryValueType> value in dictionary)
                 {
                     if (isFirst == 0) jsonStream.Write(',');
                     KeyValuePair(jsonSerializer, value);
@@ -290,14 +283,14 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="dictionary">字典</param>
-        internal static void StringDictionary(Serializer jsonSerializer, Dictionary<string, valueType> dictionary)
+        internal static void StringDictionary(JsonSerializer jsonSerializer, Dictionary<string, T> dictionary)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             jsonStream.Write('{');
             byte isFirst = 1;
             if (isValueType)
             {
-                foreach (KeyValuePair<string, valueType> value in dictionary)
+                foreach (KeyValuePair<string, T> value in dictionary)
                 {
                     if (isFirst == 0) jsonStream.Write(',');
                     jsonStream.WriteJsonDictionaryKey(value.Key);
@@ -308,7 +301,7 @@ namespace AutoCSer.Json
             }
             else
             {
-                foreach (KeyValuePair<string, valueType> value in dictionary)
+                foreach (KeyValuePair<string, T> value in dictionary)
                 {
                     if (isFirst == 0) jsonStream.Write(',');
                     jsonStream.WriteJsonDictionaryKey(value.Key);
@@ -321,71 +314,52 @@ namespace AutoCSer.Json
         }
 
         /// <summary>
-        /// 不支持多维数组
-        /// </summary>
-        /// <param name="jsonSerializer">对象转换JSON字符串</param>
-        /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void arrayManyRank(Serializer jsonSerializer, valueType value)
-        {
-            jsonSerializer.CharStream.WriteJsonArray();
-        }
-        /// <summary>
         /// 枚举转换字符串
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void enumToString(Serializer jsonSerializer, valueType value)
+        internal static void EnumToString(JsonSerializer jsonSerializer, T value)
         {
-            jsonSerializer.EnumToString(value);
-        }
-        /// <summary>
-        /// 不支持对象转换null
-        /// </summary>
-        /// <param name="jsonSerializer">对象转换JSON字符串</param>
-        /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void toNull(Serializer jsonSerializer, valueType value)
-        {
-            jsonSerializer.CharStream.WriteJsonNull();
+            string stringValue = value.ToString();
+            char charValue = stringValue[0];
+            if ((uint)(charValue - '1') < 9 || charValue == '-') jsonSerializer.CharStream.SimpleWrite(stringValue);
+            else jsonSerializer.CharStream.WriteQuote(stringValue);
         }
 
         static TypeSerializer()
         {
-            Type type = typeof(valueType);
-            MethodInfo methodInfo = Serializer.GetSerializeMethod(type);
+            Type type = typeof(T);
+            MethodInfo methodInfo = JsonSerializer.GetSerializeMethod(type);
             if (methodInfo != null)
             {
-                defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), methodInfo);
+                defaultSerializer = (Action<JsonSerializer, T>)Delegate.CreateDelegate(typeof(Action<JsonSerializer, T>), methodInfo);
                 isValueType = true;
                 return;
             }
             if (type.IsArray)
             {
-                //if (type.GetArrayRank() == 1) defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetArray(type.GetElementType()));
                 if (type.GetArrayRank() == 1)
                 {
                     Type elementType = type.GetElementType();
                     if (elementType.IsValueType && (!elementType.IsGenericType || elementType.GetGenericTypeDefinition() != typeof(Nullable<>)))
                     {
-                        defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), StructGenericType.Get(elementType).JsonSerializeStructArrayMethod);
+                        defaultSerializer = (Action<JsonSerializer, T>)StructGenericType.Get(elementType).JsonSerializeStructArrayMethod;
                     }
-                    else defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType.Get(elementType).JsonSerializeArrayMethod);
+                    else defaultSerializer = (Action<JsonSerializer, T>)GenericType.Get(elementType).JsonSerializeArrayMethod;
                 }
-                else defaultSerializer = arrayManyRank;
+                else defaultSerializer = (Action<JsonSerializer, T>)GenericType.Get(type).JsonSerializeNotSupportDelegate;
                 isValueType = true;
                 return;
             }
             if (type.IsEnum)
             {
-                defaultSerializer = enumToString;
+                defaultSerializer = EnumToString;
                 isValueType = true;
                 return;
             }
-            if (type.IsInterface || type.IsPointer || typeof(Delegate).IsAssignableFrom(type))
+            if (type.isSerializeNotSupport())
             {
-                defaultSerializer = toNull;
+                defaultSerializer = (Action<JsonSerializer, T>)GenericType.Get(type).JsonSerializeNotSupportDelegate;
                 isValueType = true;
                 return;
             }
@@ -394,21 +368,19 @@ namespace AutoCSer.Json
                 Type genericType = type.GetGenericTypeDefinition();
                 if (genericType == typeof(Dictionary<,>))
                 {
-                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetDictionary(type));
+                    defaultSerializer = (Action<JsonSerializer, T>)SerializeMethodCache.GetDictionary(type);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(Nullable<>))
                 {
-                    //defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetNullable(type));
-                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), StructGenericType.Get(type.GetGenericArguments()[0]).JsonSerializeNullableMethod);
+                    defaultSerializer = (Action<JsonSerializer, T>)StructGenericType.Get(type.GetGenericArguments()[0]).JsonSerializeNullableMethod;
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(KeyValuePair<,>))
                 {
-                    //defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetKeyValuePair(type));
-                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType2.Get(type.GetGenericArguments()).JsonSerializeKeyValuePairMethod);
+                    defaultSerializer = (Action<JsonSerializer, T>)GenericType2.Get(type.GetGenericArguments()).JsonSerializeKeyValuePairMethod;
                     isValueType = true;
                     return;
                 }
@@ -420,60 +392,63 @@ namespace AutoCSer.Json
 #if NOJIT
                     defaultSerializer = new CustomSerializer(methodInfo).Serialize;
 #else
-                    DynamicMethod dynamicMethod = new DynamicMethod("CustomJsonSerializer", null, new Type[] { typeof(Serializer), type }, type, true);
+                    DynamicMethod dynamicMethod = new DynamicMethod("CustomJsonSerializer", null, new Type[] { typeof(JsonSerializer), type }, type, true);
                     ILGenerator generator = dynamicMethod.GetILGenerator();
                     generator.Emit(OpCodes.Ldarga_S, 1);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.call(methodInfo);
                     generator.Emit(OpCodes.Ret);
-                    defaultSerializer = (Action<Serializer, valueType>)dynamicMethod.CreateDelegate(typeof(Action<Serializer, valueType>));
+                    defaultSerializer = (Action<JsonSerializer, T>)dynamicMethod.CreateDelegate(typeof(Action<JsonSerializer, T>));
 #endif
                 }
-                else defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), methodInfo);
-                isValueType = true;
-            }
-            else if ((methodInfo = SerializeMethodCache.GetIEnumerable(type)) != null)
-            {
-                defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), methodInfo);
+                else defaultSerializer = (Action<JsonSerializer, T>)Delegate.CreateDelegate(typeof(Action<JsonSerializer, T>), methodInfo);
                 isValueType = true;
             }
             else
             {
-                Type attributeType;
-                attribute = type.customAttribute<SerializeAttribute>(out attributeType) ?? (type.Name[0] == '<' ? SerializeAttribute.AnonymousTypeMember : Serializer.AllMemberAttribute);
-                if (type.IsValueType) isValueType = true;
-                else if (attribute != Serializer.AllMemberAttribute && attributeType != type)
+                Delegate enumerableDelegate = SerializeMethodCache.GetIEnumerable(type);
+                if (enumerableDelegate != null)
                 {
-                    for (Type baseType = type.BaseType; baseType != typeof(object); baseType = baseType.BaseType)
+                    defaultSerializer = (Action<JsonSerializer, T>)enumerableDelegate;
+                    isValueType = true;
+                }
+                else
+                {
+                    Type attributeType;
+                    attribute = type.customAttribute<JsonSerializeAttribute>(out attributeType) ?? (type.Name[0] == '<' ? JsonSerializeAttribute.AnonymousTypeMember : JsonSerializer.AllMemberAttribute);
+                    if (type.IsValueType) isValueType = true;
+                    else if (attribute != JsonSerializer.AllMemberAttribute && attributeType != type)
                     {
-                        SerializeAttribute baseAttribute = baseType.customAttribute<SerializeAttribute>();
-                        if (baseAttribute != null)
+                        for (Type baseType = type.BaseType; baseType != typeof(object); baseType = baseType.BaseType)
                         {
-                            if (baseAttribute.IsBaseType)
+                            JsonSerializeAttribute baseAttribute = baseType.customAttribute<JsonSerializeAttribute>();
+                            if (baseAttribute != null)
                             {
-                                methodInfo = SerializeMethodCache.BaseSerializeMethod.MakeGenericMethod(baseType, type);
-                                defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), methodInfo);
-                                return;
+                                if (baseAttribute.IsBaseType)
+                                {
+                                    methodInfo = SerializeMethodCache.BaseSerializeMethod.MakeGenericMethod(baseType, type);
+                                    defaultSerializer = (Action<JsonSerializer, T>)Delegate.CreateDelegate(typeof(Action<JsonSerializer, T>), methodInfo);
+                                    return;
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
-                }
-                LeftArray<FieldIndex> fields = SerializeMethodCache.GetFields(MemberIndexGroup<valueType>.GetFields(attribute.MemberFilters), attribute);
-                LeftArray<KeyValue<PropertyIndex, MethodInfo>> properties = SerializeMethodCache.GetProperties(MemberIndexGroup<valueType>.GetProperties(attribute.MemberFilters), attribute);
-                bool isBox = false;
-                if (type.IsValueType && fields.Length + properties.Length == 1)
-                {
-                    BoxSerializeAttribute boxSerialize = AutoCSer.Metadata.TypeAttribute.GetAttribute<BoxSerializeAttribute>(type);
-                    if (boxSerialize != null && boxSerialize.IsJson) isBox = true;
-                }
+                    LeftArray<FieldIndex> fields = SerializeMethodCache.GetFields(MemberIndexGroup<T>.GetFields(attribute.MemberFilters), attribute);
+                    LeftArray<KeyValue<PropertyIndex, MethodInfo>> properties = SerializeMethodCache.GetProperties(MemberIndexGroup<T>.GetProperties(attribute.MemberFilters), attribute);
+                    bool isBox = false;
+                    if (type.IsValueType && fields.Length + properties.Length == 1)
+                    {
+                        BoxSerializeAttribute boxSerialize = AutoCSer.Metadata.TypeAttribute.GetAttribute<BoxSerializeAttribute>(type);
+                        if (boxSerialize != null && boxSerialize.IsJson) isBox = true;
+                    }
 #if AutoCSer
-                AutoCSer.WebView.ClientTypeAttribute clientType = isBox ? null : AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.WebView.ClientTypeAttribute>(type);
-                if (clientType != null)
-                {
-                    if (clientType.MemberName == null) viewClientTypeName = "new " + clientType.GetClientName(type) + "({";
-                    else viewClientTypeName = clientType.GetClientName(type) + ".Get({";
-                }
+                    AutoCSer.WebView.ClientTypeAttribute clientType = isBox ? null : AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.WebView.ClientTypeAttribute>(type);
+                    if (clientType != null)
+                    {
+                        if (clientType.MemberName == null) viewClientTypeName = "new " + clientType.GetClientName(type) + "({";
+                        else viewClientTypeName = clientType.GetClientName(type) + ".Get({";
+                    }
 #endif
 #if NOJIT
                     if (isBox) defaultSerializer = memberSerializer = new FieldPropertySerializer(ref fields, ref properties).SerializeBox;
@@ -483,30 +458,31 @@ namespace AutoCSer.Json
                         memberMapSerializer = new MemberMapSerializer(ref fields, ref properties).Serialize;
                     } 
 #else
-                SerializeMemberDynamicMethod dynamicMethod = new SerializeMemberDynamicMethod(type);
-                SerializeMemberMapDynamicMethod memberMapDynamicMethod = isBox ? default(SerializeMemberMapDynamicMethod) : new SerializeMemberMapDynamicMethod(type);
-                foreach (FieldIndex member in fields)
-                {
-                    if (isBox) dynamicMethod.PushBox(member);
-                    else
+                    SerializeMemberDynamicMethod dynamicMethod = new SerializeMemberDynamicMethod(type);
+                    SerializeMemberMapDynamicMethod memberMapDynamicMethod = isBox ? default(SerializeMemberMapDynamicMethod) : new SerializeMemberMapDynamicMethod(type);
+                    foreach (FieldIndex member in fields)
                     {
-                        dynamicMethod.Push(member);
-                        memberMapDynamicMethod.Push(member);
+                        if (isBox) dynamicMethod.PushBox(member);
+                        else
+                        {
+                            dynamicMethod.Push(member);
+                            memberMapDynamicMethod.Push(member);
+                        }
                     }
-                }
-                foreach (KeyValue<PropertyIndex, MethodInfo> member in properties)
-                {
-                    if (isBox) dynamicMethod.PushBox(member.Key, member.Value);
-                    else
+                    foreach (KeyValue<PropertyIndex, MethodInfo> member in properties)
                     {
-                        dynamicMethod.Push(member.Key, member.Value);
-                        memberMapDynamicMethod.Push(member.Key, member.Value);
+                        if (isBox) dynamicMethod.PushBox(member.Key, member.Value);
+                        else
+                        {
+                            dynamicMethod.Push(member.Key, member.Value);
+                            memberMapDynamicMethod.Push(member.Key, member.Value);
+                        }
                     }
-                }
-                memberSerializer = (Action<Serializer, valueType>)dynamicMethod.Create<Action<Serializer, valueType>>();
-                if (isBox) defaultSerializer = memberSerializer;
-                else memberMapSerializer = (Action<MemberMap, Serializer, valueType, CharStream>)memberMapDynamicMethod.Create<Action<MemberMap, Serializer, valueType, CharStream>>();
+                    memberSerializer = (Action<JsonSerializer, T>)dynamicMethod.Create<Action<JsonSerializer, T>>();
+                    if (isBox) defaultSerializer = memberSerializer;
+                    else memberMapSerializer = (Action<MemberMap, JsonSerializer, T, CharStream>)memberMapDynamicMethod.Create<Action<MemberMap, JsonSerializer, T, CharStream>>();
 #endif
+                }
             }
         }
     }

@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading;
 using System.Collections.Specialized;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Net.WebClient;
 
 namespace AutoCSer.OpenAPI
@@ -85,7 +85,7 @@ Content-Type: ".getBytes();
         /// <returns>返回内容,失败为null</returns>
         public unsafe string Upload(string url, Encoding encoding, byte[] data, string filename, byte[] contentType, KeyValue<byte[], byte[]>[] form)
         {
-            string header = "multipart/form-data; boundary=----fastCSharpBoundary" + ((ulong)Date.NowTime.Set().Ticks).toHex();
+            string header = "multipart/form-data; boundary=----fastCSharpBoundary" + ((ulong)AutoCSer.Threading.SecondTimer.SetNow().Ticks).toHex();
             int size = 40 + contentDispositionData.Length + filename.Length + filenameData.Length + filename.Length + data.Length + 46 + form.Length * (contentDispositionData.Length + 5 + 42) + (contentType == null ? 5 : (contentTypeData.Length + contentType.Length + 4));
             foreach (KeyValue<byte[], byte[]> keyValue in form) size += keyValue.Key.Length + keyValue.Value.Length;
             byte[] body = new byte[size];
@@ -99,30 +99,30 @@ Content-Type: ".getBytes();
                 }
                 foreach (KeyValue<byte[], byte[]> keyValue in form)
                 {
-                    AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
+                    AutoCSer.Extensions.MemoryExtensionOpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
                     write += contentDispositionData.Length;
                     if (keyValue.Key.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(keyValue.Key, write, keyValue.Key.Length);
+                        AutoCSer.Memory.Common.SimpleCopyNotNull64(keyValue.Key, write, keyValue.Key.Length);
                         write += keyValue.Key.Length;
                     }
                     *write++ = (byte)'"';
                     *(int*)write = 0x0a0d0a0d;
-                    AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(keyValue.Value, write += sizeof(int), keyValue.Value.Length);
+                    AutoCSer.Extensions.MemoryExtensionOpenAPI.CopyNotNull(keyValue.Value, write += sizeof(int), keyValue.Value.Length);
                     write += keyValue.Value.Length;
                     *(short*)write = 0x0a0d;
                     write += sizeof(short);
-                    AutoCSer.Memory.SimpleCopyNotNull64(bodyFixed, write, 40);
+                    AutoCSer.Memory.Common.SimpleCopyNotNull64(bodyFixed, write, 40);
                     write += 40;
                 }
-                AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
+                AutoCSer.Extensions.MemoryExtensionOpenAPI.CopyNotNull(contentDispositionData, write, contentDispositionData.Length);
                 write += contentDispositionData.Length;
                 fixed (char* filenameFixed = filename)
                 {
                     for (char* start = filenameFixed, end = filenameFixed + filename.Length; start != end; *write++ = (byte)*start++) ;
                     if (filenameData.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(filenameData, write, filenameData.Length);
+                        AutoCSer.Memory.Common.SimpleCopyNotNull64(filenameData, write, filenameData.Length);
                         write += filenameData.Length;
                     }
                     for (char* start = filenameFixed, end = filenameFixed + filename.Length; start != end; *write++ = (byte)*start++) ;
@@ -132,22 +132,22 @@ Content-Type: ".getBytes();
                 {
                     if (contentTypeData.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(contentTypeData, write, contentTypeData.Length);
+                        AutoCSer.Memory.Common.SimpleCopyNotNull64(contentTypeData, write, contentTypeData.Length);
                         write += contentTypeData.Length;
                     }
                     if (contentType.Length != 0)
                     {
-                        AutoCSer.Memory.SimpleCopyNotNull64(contentType, write, contentType.Length);
+                        AutoCSer.Memory.Common.SimpleCopyNotNull64(contentType, write, contentType.Length);
                         write += contentType.Length;
                     }
                 }
                 *(int*)write = 0x0a0d0a0d;
                 write += sizeof(int);
-                AutoCSer.Extension.Memory_OpenAPI.CopyNotNull(data, write, data.Length);
+                AutoCSer.Extensions.MemoryExtensionOpenAPI.CopyNotNull(data, write, data.Length);
                 write += data.Length;
                 *(short*)write = 0x0a0d;
                 write += sizeof(short);
-                AutoCSer.Memory.SimpleCopyNotNull64(bodyFixed, write, 40);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(bodyFixed, write, 40);
                 *(int*)(write + 40) = (int)('-' + ('-' << 8) + 0x0a0d0000);
             }
             Request request = new Request

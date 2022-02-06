@@ -17,6 +17,6 @@ namespace AutoCSer.Web.DeployClient.Project
         /// <summary>
         /// XML 解析参数
         /// </summary>
-        internal static readonly AutoCSer.Xml.ParseConfig XmlConfig = new AutoCSer.Xml.ParseConfig { BootNodeName = "Project" };
+        internal static readonly AutoCSer.Xml.DeSerializeConfig XmlConfig = new AutoCSer.Xml.DeSerializeConfig { BootNodeName = "Project" };
     }
 }

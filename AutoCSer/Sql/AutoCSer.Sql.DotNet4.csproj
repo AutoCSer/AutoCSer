@@ -230,6 +230,8 @@
     <Compile Include="NowTime.cs" />
     <Compile Include="NowTimeType.cs" />
     <Compile Include="OnTime.cs" />
+    <Compile Include="ReturnType.cs" />
+    <Compile Include="ReturnValue.cs" />
     <Compile Include="SelectQuery.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableAttribute.cs" />

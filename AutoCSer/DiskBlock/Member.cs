@@ -75,7 +75,7 @@ namespace AutoCSer.DiskBlock
             {
                 if ((state = clientBuffer.Value.State) == MemberState.Remote)
                 {
-                    deSerializeState = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<valueType>(ref clientBuffer.Value.Buffer, ref value).State;
+                    deSerializeState = AutoCSer.BinaryDeSerializer.DeSerialize<valueType>(ref clientBuffer.Value.Buffer, ref value).State;
                     if (deSerializeState != BinarySerialize.DeSerializeState.Success)
                     {
                         value = null;
@@ -146,7 +146,7 @@ namespace AutoCSer.DiskBlock
         /// <param name="blockIndex">磁盘块编号</param>
         /// <param name="bufferSize">序列化缓冲区大小</param>
         /// <returns></returns>
-        public unsafe bool Set(valueType value, int blockIndex, SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte4)
+        public unsafe bool Set(valueType value, int blockIndex, AutoCSer.Memory.BufferSize bufferSize = AutoCSer.Memory.BufferSize.Kilobyte4)
         {
             if (value == null)
             {
@@ -156,7 +156,7 @@ namespace AutoCSer.DiskBlock
             Server.TcpInternalClient client = ClientPool.Get(blockIndex);
             if (client != null)
             {
-                BinarySerialize.Serializer serializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer();
+                BinarySerializer serializer = BinarySerializer.YieldPool.Default.Pop() ?? new BinarySerializer();
                 SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
                 SubBuffer.Pool.GetPool(bufferSize).Get(ref buffer);
                 try
@@ -191,15 +191,15 @@ namespace AutoCSer.DiskBlock
         /// <param name="size"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private unsafe AppendBuffer getAppendBuffer(ref valueType value, BinarySerialize.Serializer serializer, ref SubBuffer.PoolBufferFull buffer, out int size)
+        private unsafe AppendBuffer getAppendBuffer(ref valueType value, BinarySerializer serializer, ref SubBuffer.PoolBufferFull buffer, out int size)
         {
-            fixed (byte* bufferFixed = buffer.Buffer)
+            fixed (byte* bufferFixed = buffer.GetFixedBuffer())
             {
                 byte* start = bufferFixed + buffer.StartIndex;
                 serializer.SerializeNotNull(ref value, start, buffer.PoolBuffer.Pool.Size, ClientConfig.BinarySerializeConfig);
-                size = serializer.Stream.ByteSize;
+                size = serializer.Stream.Data.CurrentIndex;
                 if (serializer.Stream.Data.Data == start) return new AppendBuffer { Buffer = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = size }, Index = size == Size ? Index : 0 };
-                else return new AppendBuffer { Buffer = new SubArray<byte> { Array = serializer.Stream.GetArray(), Length = size }, Index = size == Size ? Index : 0 };
+                else return new AppendBuffer { Buffer = new SubArray<byte> { Array = serializer.Stream.Data.GetArray(), Length = size }, Index = size == Size ? Index : 0 };
             }
         }
     }

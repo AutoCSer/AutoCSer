@@ -26,7 +26,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ParameterGenericType> cache = new LockLastDictionary<Type, ParameterGenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, ParameterGenericType> cache = new LockLastDictionary<HashType, ParameterGenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -54,7 +54,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(outputParameterType).Invoke(null, null) }.ParameterGenericType;
+                    value = new UnionType.ParameterGenericType { Object = createMethod.MakeGenericMethod(outputParameterType).Invoke(null, null) }.Value;
                     cache.Set(outputParameterType, value);
                 }
                 finally { cache.Exit(); }
@@ -69,6 +69,11 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
     internal sealed partial class ParameterGenericType<parameterType> : ParameterGenericType
         where parameterType : struct
     {
+        /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(parameterType); } }
+
         /// <summary>
         /// TCP调用并返回参数值
         /// </summary>
@@ -210,5 +215,19 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         {
             get { return ((ServerSocketSenderPushCommand)ServerSocketSender.Push<parameterType>).Method; }
         }
+
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="data">数据</param>
+        /// <param name="value">目标对象</param>
+        /// <param name="isSimpleSerialize"></param>
+        /// <returns>是否成功</returns>
+        internal delegate bool ServerSocketSenderDeSerialize(ServerSocketSenderBase socket, ref SubArray<byte> data, ref parameterType value, bool isSimpleSerialize);
+        /// <summary>
+        /// TCP 服务器端同步调用套接字发送对象通过函数验证处理
+        /// </summary>
+        internal override MethodInfo ServerSocketSenderDeSerializeMethod { get { return ((ServerSocketSenderDeSerialize)ServerSocketSenderBase.DeSerialize<parameterType>).Method; } }
     }
 }

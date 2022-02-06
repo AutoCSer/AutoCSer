@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql.Cache.Whole
 {
@@ -95,19 +95,19 @@ namespace AutoCSer.Sql.Cache.Whole
             ListArray<valueType> list;
             if (groups.TryGetValue(key, out list))
             {
-                int index = Array.LastIndexOf(list.Array, value, list.Length - 1);
+                int index = Array.LastIndexOf(list.Array.Array, value, list.Array.Length - 1);
                 if (index != -1)
                 {
-                    if (list.Length != 1)
+                    if (list.Array.Length != 1)
                     {
-                        if (isRemoveEnd) list.RemoveAtEnd(index);
+                        if (isRemoveEnd) list.Array.TryRemoveAtToEnd(index);
                         else list.RemoveAt(index);
                     }
                     else groups.Remove(key);
                     return;
                 }
             }
-            cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 删除数据
@@ -127,7 +127,7 @@ namespace AutoCSer.Sql.Cache.Whole
         public int Count(keyType key)
         {
             ListArray<valueType> list;
-            return groups.TryGetValue(key, out list) ? list.Length : 0;
+            return groups.TryGetValue(key, out list) ? list.Array.Length : 0;
         }
         /// <summary>
         /// 获取匹配数量
@@ -141,7 +141,7 @@ namespace AutoCSer.Sql.Cache.Whole
             if (groups.TryGetValue(key, out list))
             {
                 if (isValue == null) throw new ArgumentNullException();
-                return new LeftArray<valueType>(list).GetCount(isValue);
+                return list.Array.GetCount(isValue);
                 //Threading.ListArrayCountTask<valueType> task = new Threading.ListArrayCountTask<valueType>(list, isValue);
                 //cache.SqlTable.AddQueue(task);
                 //return task.Wait();
@@ -157,7 +157,7 @@ namespace AutoCSer.Sql.Cache.Whole
         public valueType[] GetArray(keyType key)
         {
             ListArray<valueType> list;
-            return groups.TryGetValue(key, out list) ? new SubArray<valueType>(list).GetArray() : NullValue<valueType>.Array;
+            return groups.TryGetValue(key, out list) ? new SubArray<valueType>(list).GetArray() : EmptyArray<valueType>.Array;
         }
     }
 }

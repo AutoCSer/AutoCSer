@@ -12,36 +12,33 @@ namespace AutoCSer
         /// <summary>
         /// 创建HASH表
         /// </summary>
-        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="T">数据类型</typeparam>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static HashSet<valueType> CreateOnly<valueType>() where valueType : class
+        public static HashSet<T> CreateOnly<T>() where T : class
         {
-            return new HashSet<valueType>();
+            return new HashSet<T>();
         }
         /// <summary>
         /// 创建HASH表
         /// </summary>
-        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="T">数据类型</typeparam>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static HashSet<valueType> CreateAny<valueType>()
+        public static HashSet<T> CreateAny<T>()
         {
 #if __IOS__
-            return new HashSet<valueType>(EqualityComparer.comparer<valueType>.Default);
+            return new HashSet<T>(AutoCSer.IOS.EqualityComparer<T>.Default);
 #else
-            return new HashSet<valueType>();
+            return new HashSet<T>();
 #endif
         }
         /// <summary>
         /// 创建HASH表
         /// </summary>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static HashSet<int> CreateInt()
         {
 #if __IOS__
-            return new HashSet<int>(EqualityComparer.Int);
+            return new HashSet<int>(AutoCSer.IOS.IntComparer.Default);
 #else
             return new HashSet<int>();
 #endif
@@ -50,11 +47,10 @@ namespace AutoCSer
         /// 创建HASH表
         /// </summary>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static HashSet<SubString> CreateSubString()
         {
 #if __IOS__
-            return new HashSet<SubString>(EqualityComparer.SubString);
+            return new HashSet<SubString>(AutoCSer.IOS.SubStringComparer.Default);
 #else
             return new HashSet<SubString>();
 #endif
@@ -63,37 +59,37 @@ namespace AutoCSer
         /// 创建HASH表
         /// </summary>
         /// <returns>HASH表</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static HashSet<HashString> CreateHashString()
         {
 #if __IOS__
-            return new HashSet<HashString>(EqualityComparer.HashString);
+            return new HashSet<HashString>(AutoCSer.IOS.HashStringComparer.Default);
 #else
             return new HashSet<HashString>();
 #endif
         }
     }
     /// <summary>
-    /// 创建 HashSet
+    /// 创建 HashSet表
     /// </summary>
-    /// <typeparam name="valueType">数据类型</typeparam>
-    public static class HashSetCreator<valueType>
+    /// <typeparam name="T">数据类型</typeparam>
+    public static class HashSetCreator<T> where T : IEquatable<T>
     {
+#if __IOS__
         /// <summary>
         /// 是否值类型
         /// </summary>
-        private static readonly bool isValueType = typeof(valueType).IsValueType;
+        private static readonly bool isValueType = typeof(T).IsValueType;
+#endif
         /// <summary>
-        /// 创建字典
+        /// 创建 HashSet 表
         /// </summary>
-        /// <returns>字典</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static HashSet<valueType> Create()
+        /// <returns>HashSet 表</returns>
+        public static HashSet<T> Create()
         {
 #if __IOS__
-            if (isValueType) return new HashSet<valueType>(EqualityComparer.Comparer<valueType>.Default);
+            if (isValueType) return new HashSet<T>(AutoCSer.IOS.EquatableComparer<T>.Default);
 #endif
-            return new HashSet<valueType>();
+            return new HashSet<T>();
         }
     }
 }

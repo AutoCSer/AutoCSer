@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 
@@ -60,7 +60,7 @@ namespace AutoCSer.DiskBlock
         /// <summary>
         /// 文件流缓冲区大小
         /// </summary>
-        private SubBuffer.Size bufferSize;
+        private AutoCSer.Memory.BufferSize bufferSize;
         /// <summary>
         /// 磁盘块编号
         /// </summary>
@@ -79,7 +79,7 @@ namespace AutoCSer.DiskBlock
         /// <param name="bufferSize">文件流缓冲区大小</param>
         /// <param name="log">日志处理</param>
         /// <param name="isDataCache">是否建立数据缓存</param>
-        public File(string fileName, int index, int maxFlushSize = 1 << 20, int cacheSize = 100 << 20, SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte4, ILog log = null, bool isDataCache = true)
+        public File(string fileName, int index, int maxFlushSize = 1 << 20, int cacheSize = 100 << 20, AutoCSer.Memory.BufferSize bufferSize = AutoCSer.Memory.BufferSize.Kilobyte4, ILog log = null, bool isDataCache = true)
             : base(index, cacheSize, log, isDataCache)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException("fileName is null");
@@ -113,7 +113,7 @@ namespace AutoCSer.DiskBlock
                 }
                 fixed (byte* dataFixed = data)
                 {
-                    if (((*(int*)dataFixed ^ Pub.PuzzleValue) | (*(int*)(dataFixed + sizeof(int)) ^ (int)AutoCSer.IO.FileHead.DiskBlockFile) | (*(int*)(dataFixed + sizeof(int) * 2) ^ index)) != 0)
+                    if (((*(int*)dataFixed ^ Common.PuzzleValue) | (*(int*)(dataFixed + sizeof(int)) ^ (int)AutoCSer.IO.FileHead.DiskBlockFile) | (*(int*)(dataFixed + sizeof(int) * 2) ^ index)) != 0)
                     {
                         Dispose();
                         throw new FileLoadException(this.fileName);
@@ -176,7 +176,7 @@ namespace AutoCSer.DiskBlock
                         }
                         catch (Exception error)
                         {
-                            log.Add(LogType.Error, error);
+                            log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                         head = head.Error();
                     }
@@ -283,7 +283,7 @@ namespace AutoCSer.DiskBlock
                         }
                         catch (Exception error)
                         {
-                            log.Add(LogType.Error, error);
+                            log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                         if (head == null) break;
                         head = head.Error();
@@ -303,7 +303,7 @@ namespace AutoCSer.DiskBlock
                         }
                         catch (Exception error)
                         {
-                            log.Add(LogType.Error, error);
+                            log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                             while (waitFlushRequest != null) waitFlushRequest = waitFlushRequest.Error();
                         }
                     }

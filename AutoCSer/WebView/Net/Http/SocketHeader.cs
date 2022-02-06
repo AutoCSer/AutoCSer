@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.Http
@@ -82,21 +82,22 @@ namespace AutoCSer.Net.Http
                 }
 #else
                 receiveAsyncEventArgs.SocketError = SocketError.Success;
-                while (Interlocked.CompareExchange(ref httpSocket.ReceiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                httpSocket.ReceiveAsyncLock.EnterSleepFlag();
                 receiveAsyncEventArgs.SetBuffer(Buffer.StartIndex, ReceiveBufferSize);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
+                    httpSocket.ReceiveAsyncLock.SleepFlag = 0;
                     ReceiveTimeout.Push(httpSocket, socket);
-                    Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                    httpSocket.ReceiveAsyncLock.Exit();
                     return;
                 }
-                Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                httpSocket.ReceiveAsyncLock.ExitSleepFlag();
                 if (onReceive()) return;
 #endif
             }
             catch (Exception error)
             {
-                httpSocket.Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                httpSocket.Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             //if (isHeader == 0) 
                 httpSocket.HeaderError();
@@ -114,10 +115,10 @@ namespace AutoCSer.Net.Http
                 {
                     HeaderEndIndex = receiveIndex;
                     if (searchEnd()) return;
-                    fixed (byte* bufferFixed = Buffer.Buffer)
+                    fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
                     {
                         byte* start = bufferFixed + Buffer.StartIndex;
-                        Memory.CopyNotNull(start + receiveIndex, start, receiveCount = receiveSize);
+                        AutoCSer.Memory.Common.CopyNotNull(start + receiveIndex, start, receiveCount = receiveSize);
                     }
                     HeaderEndIndex -= receiveIndex;
                     receiveIndex = 0;
@@ -133,21 +134,22 @@ namespace AutoCSer.Net.Http
                     return;
                 }
 #else
-                while (Interlocked.CompareExchange(ref httpSocket.ReceiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                httpSocket.ReceiveAsyncLock.EnterSleepFlag();
                 receiveAsyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, ReceiveBufferSize - receiveCount);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
+                    httpSocket.ReceiveAsyncLock.SleepFlag = 0;
                     KeepAliveReceiveTimeout.Push(httpSocket, socket);
-                    Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                    httpSocket.ReceiveAsyncLock.Exit();
                     return;
                 }
-                Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                httpSocket.ReceiveAsyncLock.ExitSleepFlag();
                 if (onReceive()) return;
 #endif
             }
             catch (Exception error)
             {
-                httpSocket.Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                httpSocket.Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             //if (isHeader == 0) 
             httpSocket.HeaderError();
@@ -189,7 +191,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                httpSocket.Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             //if (isHeader == 0) 
                 httpSocket.HeaderError();
@@ -233,15 +235,16 @@ namespace AutoCSer.Net.Http
                         return true;
                     }
 #else
-                        while (Interlocked.CompareExchange(ref httpSocket.ReceiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        httpSocket.ReceiveAsyncLock.EnterSleepFlag();
                         receiveAsyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, ReceiveBufferSize - receiveCount);
                         if (socket.ReceiveAsync(receiveAsyncEventArgs))
                         {
+                            httpSocket.ReceiveAsyncLock.SleepFlag = 0;
                             ReceiveTimeout.Push(httpSocket, socket);
-                            Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                            httpSocket.ReceiveAsyncLock.Exit();
                             return true;
                         }
-                        Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
+                        httpSocket.ReceiveAsyncLock.ExitSleepFlag();
                         goto START;
 #endif
                 }
@@ -260,7 +263,7 @@ namespace AutoCSer.Net.Http
             int searchEndIndex = receiveCount - sizeof(int);
             if (HeaderEndIndex <= searchEndIndex)
             {
-                fixed (byte* dataFixed = Buffer.Buffer)
+                fixed (byte* dataFixed = Buffer.GetFixedBuffer())
                 {
                     byte* bufferStart = dataFixed + Buffer.StartIndex, start = bufferStart + HeaderEndIndex, searchEnd = bufferStart + searchEndIndex, end = bufferStart + receiveCount;
                     *end = 13;

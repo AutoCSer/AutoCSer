@@ -42,7 +42,7 @@ namespace AutoCSer.Drawing.Gif
         /// <summary>
         /// 文本数据块集合
         /// </summary>
-        internal LeftArray<SubArray<byte>> TextData;
+        internal LeftArray<SubArray<byte>> TextData = new LeftArray<SubArray<byte>>(0);
         /// <summary>
         /// 文本数据
         /// </summary>

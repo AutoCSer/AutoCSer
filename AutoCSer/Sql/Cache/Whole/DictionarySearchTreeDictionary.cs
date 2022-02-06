@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 
 namespace AutoCSer.Sql.Cache.Whole
@@ -79,7 +79,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             AutoCSer.SearchTree.Dictionary<sortType, valueType> tree;
             if (!groups.TryGetValue(key, out tree)) groups.Add(key, tree = new AutoCSer.SearchTree.Dictionary<sortType, valueType>());
-            if (!tree.Set(getSort(value), value)) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            if (!tree.Set(getSort(value), value)) cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 更新数据
@@ -99,7 +99,7 @@ namespace AutoCSer.Sql.Cache.Whole
                     AutoCSer.SearchTree.Dictionary<sortType, valueType> tree;
                     if (!groups.TryGetValue(key, out tree) || !tree.Remove(oldSortKey) || !tree.Set(sortKey, cacheValue))
                     {
-                        cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                        cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -121,7 +121,7 @@ namespace AutoCSer.Sql.Cache.Whole
             {
                 if (tree.Count == 0) groups.Remove(key);
             }
-            else cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 删除数据
@@ -162,7 +162,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 return task.Wait(out count);
             }
             count = 0;
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
         /// <summary>
         /// 获取数据集合
@@ -190,7 +190,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 cache.SqlTable.AddQueue(task);
                 return task.Wait();
             }
-            return default(LeftArray<valueType>);
+            return new LeftArray<valueType>(0);
         }
     }
 }

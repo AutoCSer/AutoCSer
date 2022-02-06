@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.TcpInternalClientPerformance
 {
@@ -28,7 +28,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
                 using (processWait)
 #endif
                 {
-                    mapPointer = AutoCSer.Unmanaged.GetSize64((Count + 7) >> 3);
+                    mapPointer = AutoCSer.Memory.Unmanaged.GetPointer8((Count + 7) >> 3, false);
                     try
                     {
                         addMap = new AutoCSer.MemoryMap(mapPointer.Byte);
@@ -39,7 +39,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
                         }
                         while (true);
                     }
-                    finally { AutoCSer.Unmanaged.Free(ref mapPointer); }
+                    finally { AutoCSer.Memory.Unmanaged.Free(ref mapPointer); }
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// <summary>
         /// 验证位图
         /// </summary>
-        private static Pointer.Size mapPointer;
+        private static AutoCSer.Memory.Pointer mapPointer;
         /// <summary>
         /// 验证位图
         /// </summary>
@@ -136,7 +136,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// <param name="count">测试数量</param>
         internal static void Start(TestType type, int count)
         {
-            if (type != TestType.ClientSynchronous) AutoCSer.Memory.Clear(mapPointer.ULong, mapPointer.GetSize() >> 3);
+            if (type != TestType.ClientSynchronous) mapPointer.Clear();
             waitCount = LoopCount = count;
             ErrorCount = 0;
             TestType = type;

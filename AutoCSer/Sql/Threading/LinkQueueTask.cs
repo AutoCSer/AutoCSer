@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +29,7 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 任务队列访问锁
         /// </summary>
-        private int queueLock;
+        private AutoCSer.Threading.SpinLock queueLock;
         /// <summary>
         /// 是否启动线程
         /// </summary>
@@ -50,14 +50,14 @@ namespace AutoCSer.Sql.Threading
         /// <param name="value"></param>
         internal void Add(LinkQueueTaskNode value)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPush);
+            queueLock.EnterYield();
             if (head == null) head = end = value;
             else
             {
                 end.LinkNext = value;
                 end = value;
             }
-            System.Threading.Interlocked.Exchange(ref queueLock, 0);
+            queueLock.Exit();
             if (System.Threading.Interlocked.CompareExchange(ref isThread, 1, 0) == 0)
             {
                 try
@@ -66,7 +66,7 @@ namespace AutoCSer.Sql.Threading
                 }
                 catch (Exception error)
                 {
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     run();
                 }
             }
@@ -81,17 +81,17 @@ namespace AutoCSer.Sql.Threading
             DbConnection connection = null;
             do
             {
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
+                queueLock.EnterYield();
                 LinkQueueTaskNode value = head;
                 head = end = null;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                queueLock.Exit();
                 if (value == null)
                 {
                     System.Threading.Thread.Sleep(0);
-                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
+                    queueLock.EnterYield();
                     value = head;
                     head = end = null;
-                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    queueLock.Exit();
                     if (value == null)
                     {
                         client.FreeConnection(ref connection);
@@ -114,8 +114,8 @@ namespace AutoCSer.Sql.Threading
                     }
                     catch (Exception error)
                     {
-                        client.CloseErrorConnection(ref connection);
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                        client.ResetErrorConnection(ref connection);
+                        AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
                 while (value != null);

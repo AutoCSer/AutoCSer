@@ -27,7 +27,7 @@ namespace AutoCSer.WebView.Poll
         internal AutoCSer.Net.HttpDomainServer.SessionId New(long timeoutTicks)
         {
             SessionId.New();
-            Timeout = Date.NowTime.Now.AddTicks(timeoutTicks);
+            Timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks);
             return SessionId;
         }
         /// <summary>
@@ -37,10 +37,10 @@ namespace AutoCSer.WebView.Poll
         /// <returns>会话标识</returns>
         internal AutoCSer.Net.HttpDomainServer.SessionId Get(long timeoutTicks)
         {
-            if (Timeout <= Date.NowTime.Now)
+            if (Timeout <= AutoCSer.Threading.SecondTimer.Now)
             {
                 SessionId.New();
-                Timeout = Date.NowTime.Now.AddTicks(timeoutTicks);
+                Timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks);
             }
             return SessionId;
         }
@@ -52,7 +52,7 @@ namespace AutoCSer.WebView.Poll
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool Check(string verify)
         {
-            return Timeout > Date.NowTime.Now && SessionId.CheckHex(verify);
+            return Timeout > AutoCSer.Threading.SecondTimer.Now && SessionId.CheckHex(verify);
         }
         /// <summary>
         /// 清除数据

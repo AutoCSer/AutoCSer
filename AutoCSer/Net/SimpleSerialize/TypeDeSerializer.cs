@@ -57,7 +57,7 @@ namespace AutoCSer.Net.SimpleSerialize
         /// <summary>
         /// 预编译
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void Compile() { }
 
         static TypeDeSerializer()

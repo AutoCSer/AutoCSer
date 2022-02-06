@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer
@@ -92,7 +93,7 @@ namespace AutoCSer.CacheServer
             {
                 snapshot = new Snapshot.Cache(Cache, false);
                 snapshotSize = snapshot.NextSize();
-                timeout = Date.Now.AddTicks(timeoutTicks);
+                timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks);
                 if (snapshotSize != 0)
                 {
                     step = CacheGetStep.Snapshot;
@@ -132,15 +133,15 @@ namespace AutoCSer.CacheServer
                         snapshotSize = snapshot.NextSize();
                     }
                     while (snapshotSize != 0 && snapshot.TryCopyTo(stream));
-                    timeout = Date.Now.AddTicks(timeoutTicks);
-                    *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = stream.ByteSize - startIndex;
+                    timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks);
+                    *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = stream.Data.CurrentIndex - startIndex;
                     if (snapshotSize != 0)
                     {
                         if (!onCache.Callback(new CacheReturnParameter { Getter = this }))
                         {
                             error();
-                            *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = AutoCSer.BinarySerialize.Serializer.NullValue;
-                            stream.ByteSize = startIndex;
+                            *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = AutoCSer.BinarySerializer.NullValue;
+                            stream.Data.CurrentIndex = startIndex;
                         }
                         return;
                     }
@@ -156,22 +157,22 @@ namespace AutoCSer.CacheServer
                         currentQueue = currentQueue.LinkNext;
                     }
                     while (currentQueue != null && currentQueue.TryCopyTo(stream));
-                    timeout = Date.Now.AddTicks(timeoutTicks);
-                    *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = stream.ByteSize - startIndex;
+                    timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks);
+                    *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = stream.Data.CurrentIndex - startIndex;
                     if (currentQueue != null)
                     {
                         if (!onCache.Callback(new CacheReturnParameter { Getter = this }))
                         {
                             error();
-                            *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = AutoCSer.BinarySerialize.Serializer.NullValue;
-                            stream.ByteSize = startIndex;
+                            *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = AutoCSer.BinarySerializer.NullValue;
+                            stream.Data.CurrentIndex = startIndex;
                         }
                         return;
                     }
                     Cache.TcpServer.CallQueue.Add(new ServerCall.CacheGetterGetQueue(this));
                     return;
                 case CacheGetStep.Loaded: stream.Write(0); return;
-                case CacheGetStep.Error: stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue); return;
+                case CacheGetStep.Error: stream.Write(AutoCSer.BinarySerializer.NullValue); return;
             }
         }
         /// <summary>
@@ -188,7 +189,7 @@ namespace AutoCSer.CacheServer
             else
             {
                 currentQueue = queue.GetClear();
-                timeout = Date.Now.AddTicks(timeoutTicks);
+                timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks);
                 if (onCache.Callback(new CacheReturnParameter { Getter = this })) return;
                 error();
             }
@@ -210,7 +211,7 @@ namespace AutoCSer.CacheServer
                     return false;
                 case CacheGetStep.Error: return false;
                 default:
-                    if (Date.Now <= timeout)
+                    if (AutoCSer.Threading.SecondTimer.Now <= timeout)
                     {
                         buffer.Reference();
                         queue.Push(buffer);

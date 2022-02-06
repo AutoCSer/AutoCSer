@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AutoCSer.TestCase.TcpInternalClientPerformance
@@ -6,9 +7,13 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
     /// <summary>
     /// 测试服务配置
     /// </summary>
-    [AutoCSer.Config.Type]
-    internal static class Config
+    internal sealed class Config : AutoCSer.Configuration.Root
     {
+        /// <summary>
+        /// 主配置类型集合
+        /// </summary>
+        public override IEnumerable<Type> MainTypes { get { yield return typeof(Config); } }
+
         /// <summary>
         /// 测试服务 IP 地址配置文件，用于非换回地址测试
         /// </summary>
@@ -16,7 +21,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// <summary>
         /// 测试服务 TCP 服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer.ServerName)]
+        [AutoCSer.Configuration.Member(AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer.ServerName)]
         public static AutoCSer.Net.TcpInternalServer.ServerAttribute InternalServerAttribute
         {
             get

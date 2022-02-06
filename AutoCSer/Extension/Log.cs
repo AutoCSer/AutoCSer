@@ -3,35 +3,13 @@ using AutoCSer.Log;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Extension
+namespace AutoCSer.LogExtension
 {
     /// <summary>
     /// 日志扩展
     /// </summary>
-    public static partial class Log
+    //public static partial class Log
     {
-        /// <summary>
-        /// 判断是否支持任意类型
-        /// </summary>
-        /// <param name="log">日志处理</param>
-        /// <param name="type">日志类型</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static bool IsAnyType(this ILog log, AutoCSer.Log.LogType type)
-        {
-            return (log.Type & type) != 0;
-        }
-        /// <summary>
-        /// 判断是否支持所有类型
-        /// </summary>
-        /// <param name="log">日志处理</param>
-        /// <param name="type">日志类型</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static bool IsAllType(this ILog log, AutoCSer.Log.LogType type)
-        {
-            return (log.Type & type) == type;
-        }
         /// <summary>
         /// 添加日志
         /// </summary>

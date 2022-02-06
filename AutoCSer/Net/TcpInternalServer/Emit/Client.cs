@@ -72,7 +72,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 客户端</returns>
-        public static interfaceType Create(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<interfaceType, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null, Action<TcpServer.ClientSocketEventParameter> waitConnectedOnCheckSocketVersion = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+        public static interfaceType Create(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<interfaceType, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null, Action<TcpServer.ClientSocketEventParameter> waitConnectedOnCheckSocketVersion = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.ILog log = null)
         {
             if (errorString != null) throw new Exception(errorString);
             if (clientType == null) throw new InvalidCastException();
@@ -84,7 +84,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             {
                 if (attribute.IsAuto) client._TcpClient_.TryCreateSocket();
             }
-            else client._WaitConnected_ = client._TcpClient_.CreateWaitConnected(waitConnectedOnCheckSocketVersion);
+            else client._TcpClient_.CreateWaitConnected(out client._WaitConnected_, waitConnectedOnCheckSocketVersion);
             return interfaceClient;
         }
 
@@ -99,7 +99,6 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
                 defaultServerAttribute = builder.DefaultServerAttribute;
 
                 Method<ServerAttribute, TcpServer.MethodAttribute, ServerSocketSender>.ClientBuilder clientBuilder = new Method<ServerAttribute, TcpServer.MethodAttribute, ServerSocketSender>.ClientBuilder { Metadata = ClientMetadata.Default };
-                //clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, typeof(Client<interfaceType>).GetMethod("GetCommand", BindingFlags.Static | BindingFlags.Public));
                 clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, ((Func<int, TcpServer.CommandInfo>)Client<interfaceType>.GetCommand).Method);
                 commands = clientBuilder.Commands;
                 maxTimeoutSeconds = clientBuilder.MaxTimeoutSeconds;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator

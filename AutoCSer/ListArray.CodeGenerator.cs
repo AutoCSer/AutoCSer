@@ -9,7 +9,7 @@ namespace fastCSharp
     /// 单向动态数组
     /// </summary>
     /// <typeparam name="valueType">数据类型</typeparam>
-    public partial class ListArray<valueType> : IList<valueType>
+    //public partial class ListArray<valueType> : IList<valueType>
     {
         /// <summary>
         /// 数据数量

@@ -60,7 +60,7 @@ namespace AutoCSer.Net.Packet
         /// <param name="data">数据</param>
         public Ethernet(ref SubArray<byte> data)
         {
-            this.data = data.Length >= HeaderSize ? data : default(SubArray<byte>);
+            this.data = data.Length >= HeaderSize ? data : new SubArray<byte>();
         }
     }
 }

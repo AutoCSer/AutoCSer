@@ -29,8 +29,11 @@ module AutoCSer.Web.Include {
             this.file = file;
             this.mode = mode;
             this.buttons = [button];
-            if (type == 'Example') AutoCSerAPI.Ajax.Example.GetCode(file, AutoCSer.Pub.ThisFunction(this, this.onGetCode));
-            else AutoCSerAPI.Ajax.TestCase.GetCode(file, AutoCSer.Pub.ThisFunction(this, this.onGetCode));
+            switch (type) {
+                case 'Example': AutoCSerAPI.Ajax.Example.GetCode(file, AutoCSer.Pub.ThisFunction(this, this.onGetCode)); break;
+                case 'Example2': AutoCSerAPI.Ajax.Example2.GetCode(file, AutoCSer.Pub.ThisFunction(this, this.onGetCode)); break;
+                default: AutoCSerAPI.Ajax.TestCase.GetCode(file, AutoCSer.Pub.ThisFunction(this, this.onGetCode)); break;
+            }
         }
         private onGetCode(Value: AutoCSer.IHttpRequestReturn) {
             if (this.code = Value.__AJAXRETURN__) {

@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="ArrayHeap.cs" />
     <Compile Include="Buffer.cs" />
     <Compile Include="BufferCount.cs" />
     <Compile Include="CacheGetStep.cs" />
@@ -45,6 +46,7 @@
     <Compile Include="Cache\Lock\QueueTaskThread\TryEnter.cs" />
     <Compile Include="Cache\MessageQueue\DistributionConfig.cs" />
     <Compile Include="Cache\MessageQueue\DistributionFileReader.cs" />
+    <Compile Include="Cache\MessageQueue\DistributionFileReaderTimeout.cs" />
     <Compile Include="Cache\MessageQueue\DistributionMessageItem.cs" />
     <Compile Include="Cache\MessageQueue\DistributionMessageState.cs" />
     <Compile Include="Cache\MessageQueue\Distributor.cs" />
@@ -60,9 +62,8 @@
     <Compile Include="Cache\Value\Bitmap.cs" />
     <Compile Include="Cache\MessageQueue\Buffer.cs" />
     <Compile Include="Cache\MessageQueue\BufferCount.cs" />
-    <Compile Include="Cache\MessageQueue\ConfigLoader.cs" />
     <Compile Include="Cache\MessageQueue\ReaderConfig.cs" />
-    <Compile Include="Cache\MessageQueue\UnionType.cs" />
+    <Compile Include="Cache\MessageQueue\UnionType\Distributor.cs" />
     <Compile Include="Cache\MessageQueue\PacketIndex.cs" />
     <Compile Include="Cache\MessageQueue\FileWriter.cs" />
     <Compile Include="Cache\MessageQueue\FileReader.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="Cache\Constructor.cs" />
     <Compile Include="Cache\Lock\Node.cs" />
     <Compile Include="Cache\Lock\LinkNode.cs" />
-    <Compile Include="Cache\Value\UnionType.cs" />
     <Compile Include="CombinationTemplateConfig.cs" />
     <Compile Include="CombinationTemplate\Client.cs" />
     <Compile Include="CombinationTemplate\IntegerUpdater.cs" />
@@ -110,10 +110,10 @@
     <Compile Include="DataStructure\Parameter\QueryBoolValueAsynchronous.cs" />
     <Compile Include="DataStructure\Parameter\Value.cs" />
     <Compile Include="IdentityReturnParameter.cs" />
-    <Compile Include="Extension\CacheServer.cs" />
+    <Compile Include="Extensions\CacheServer.cs" />
     <Compile Include="DataStructure\Value\NET4.5\Binary.cs" />
     <Compile Include="DataStructure\Value\NET4.5\Json.cs" />
-    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extensions\MemoryExtension.CacheServer.cs" />
     <Compile Include="FileBackup.cs" />
     <Compile Include="FileBuffers.cs" />
     <Compile Include="Lock\AsynchronousManager.cs" />
@@ -128,7 +128,6 @@
     <Compile Include="MessageQueue\Abstract\DistributionConsumerStreamProcessor.cs" />
     <Compile Include="MessageQueue\ConsumerStream.cs" />
     <Compile Include="MessageQueue\ConsumerStreamProcessor.cs" />
-    <Compile Include="MessageQueue\ConfigLoader.cs" />
     <Compile Include="MessageQueue\ConsumerConfig.cs" />
     <Compile Include="MessageQueue\DistributionConsumer.cs" />
     <Compile Include="MessageQueue\DistributionConsumerAsynchronous.cs" />
@@ -137,7 +136,6 @@
     <Compile Include="MessageQueue\DistributionConsumerProcessorAsynchronous.cs" />
     <Compile Include="MessageQueue\DistributionConsumerStream.cs" />
     <Compile Include="MessageQueue\DistributionConsumerStreamProcessor.cs" />
-    <Compile Include="MessageQueue\UnionType.cs" />
     <Compile Include="MessageQueue\Consumer.cs" />
     <Compile Include="MessageQueue\ConsumerAsynchronous.cs" />
     <Compile Include="MessageQueue\Abstract\Consumer.cs" />
@@ -145,7 +143,8 @@
     <Compile Include="MessageQueue\ConsumerProcessorAsynchronous.cs" />
     <Compile Include="MessageQueue\Abstract\ConsumerProcessor.cs" />
     <Compile Include="Metadata\GenericType.cs" />
-    <Compile Include="Metadata\UnionType.cs" />
+    <Compile Include="Metadata\UnionType\GenericType.cs" />
+    <Compile Include="NET4.5\StaticRoute.cs" />
     <Compile Include="OperationParameter\ShortPathOperationNode.cs" />
     <Compile Include="OperationParameter\ShortPathQueryNode.cs" />
     <Compile Include="OperationUpdater\Integer.cs" />
@@ -209,7 +208,6 @@
     <Compile Include="FileReader.cs" />
     <Compile Include="FileStreamWriter.cs" />
     <Compile Include="LoadData.cs" />
-    <Compile Include="OnTime.cs" />
     <Compile Include="OperationParameter\NodeParser.cs" />
     <Compile Include="Cache\Array.cs" />
     <Compile Include="Cache\Dictionary.cs" />
@@ -227,7 +225,6 @@
     <Compile Include="Cache\Value\Link.cs" />
     <Compile Include="Cache\Value\SearchTreeDictionary.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="ConfigLoader.cs" />
     <Compile Include="ClientDataStructure.cs" />
     <Compile Include="DataStructureItem.cs" />
     <Compile Include="DataStructure\Abstract\Array.cs" />
@@ -293,9 +290,9 @@
     <Compile Include="Snapshot\Value\Dictionary.cs" />
     <Compile Include="Snapshot\Value\HashSet.cs" />
     <Compile Include="Snapshot\Value\Link.cs" />
-    <Compile Include="NET4.5\StaticRoute.cs" />
     <Compile Include="StaticRoute.cs" />
-    <Compile Include="UnionType.cs" />
+    <Compile Include="UnionType\ClientDataStructure.cs" />
+    <Compile Include="UnionType\ShortPath.cs" />
     <Compile Include="ValueData\BinarySerializer.cs" />
     <Compile Include="ValueData\Decimal.cs" />
     <Compile Include="DataStructure\Array.cs" />
@@ -317,15 +314,16 @@
     <Compile Include="ValueData\DataType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueData\SetData.cs" />
-    <Compile Include="ValueData\UnionType.cs" />
+    <Compile Include="ValueData\UnionType\ByteArray.cs" />
+    <Compile Include="ValueData\UnionType\Decimal.cs" />
+    <Compile Include="ValueData\UnionType\Guid.cs" />
+    <Compile Include="ValueData\UnionType\String.cs" />
+    <Compile Include="ValueData\UnionType\BinarySerializer.cs" />
     <Compile Include="OperationUpdater\Data.cs" />
     <Compile Include="OperationUpdater\UpdateData.cs" />
     <Compile Include="OperationUpdater\UpdateOperationData.cs" />
     <Compile Include="{AutoCSer.CacheServer}.AutoCSer.cs" />
     <Compile Include="{AutoCSer.CacheServer}.CombinationTemplate.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.NetStandard.csproj" />

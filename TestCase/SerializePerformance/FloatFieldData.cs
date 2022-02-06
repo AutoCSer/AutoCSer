@@ -6,7 +6,7 @@ namespace AutoCSer.TestCase.SerializePerformance
     /// <summary>
     /// 浮点数字段测试数据
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     class FloatFieldData : FieldData
     {
         public float Float;

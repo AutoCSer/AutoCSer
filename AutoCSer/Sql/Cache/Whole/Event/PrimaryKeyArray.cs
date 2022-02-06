@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 
@@ -84,7 +84,12 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="query">查询信息</param>
         internal override void Reset(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            foreach (valueType value in SqlTable.SelectQueue(ref connection, ref query)) insert(value);
+            ReturnValue<LeftArray<valueType>> valueArray = SqlTable.SelectQueue(ref connection, ref query);
+            if (valueArray.ReturnType == ReturnType.Success)
+            {
+                foreach (valueType value in valueArray.Value) insert(value);
+            }
+            else SqlTable.Log.Fatal(typeof(valueType).fullName() + " 数据加载失败 " + valueArray.ReturnType.ToString(), LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 添加数据
@@ -102,7 +107,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="value">新增的数据</param>
         private void onInserted(valueType value)
         {
-            valueType newValue = AutoCSer.Emit.Constructor<valueType>.New();
+            valueType newValue = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor();
             AutoCSer.MemberCopy.Copyer<modelType>.Copy(newValue, value, MemberMap);
             insert(newValue);
             callOnInserted(newValue);
@@ -121,7 +126,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 update(cacheValue, value, oldValue, memberMap);
                 callOnUpdated(cacheValue, value, oldValue, memberMap);
             }
-            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 删除数据
@@ -131,7 +136,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         {
             dictionaryArray.Remove(GetKey(value), out value);
             if (value != null) callOnDeleted(value); 
-            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
         }
     }
     /// <summary>

@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
     /// 下载数据
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public struct DownloadData
     {
         /// <summary>
@@ -25,7 +25,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
         internal DownloadData(SynchronousState state)
         {
             State = state;
-            Data = default(SubArray<byte>);
+            Data = new SubArray<byte>();
         }
         /// <summary>
         /// 设置下载数据

@@ -7,7 +7,7 @@ namespace AutoCSer
     /// 指针(因为指针无法静态初始化)
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    public unsafe partial struct Pointer : IEquatable<Pointer>
+    //public unsafe partial struct Pointer : IEquatable<Pointer>
     {
         /// <summary>
         /// 带长度的指针
@@ -91,6 +91,17 @@ namespace AutoCSer
             {
                 Data = data;
                 ByteSize = size;
+            }
+            /// <summary>
+            /// 获取指针并清除
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal void* GetDataClearOnly()
+            {
+                void* data = Data;
+                Data = null;
+                return data;
             }
         }
         /// <summary>

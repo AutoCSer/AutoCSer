@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net.Mail;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Email
 {
@@ -21,7 +21,7 @@ namespace AutoCSer.Email
         /// <summary>
         /// 日志处理
         /// </summary>
-        private AutoCSer.Log.ILog log;
+        private AutoCSer.ILog log;
         /// <summary>
         /// 回调委托
         /// </summary>
@@ -41,7 +41,7 @@ namespace AutoCSer.Email
         private void send(object sender, AsyncCompletedEventArgs e)
         {
             Action<Exception> callback = this.callback;
-            AutoCSer.Log.ILog log = this.log;
+            AutoCSer.ILog log = this.log;
             message.Dispose();
             this.callback = null;
             this.log = null;
@@ -55,7 +55,7 @@ namespace AutoCSer.Email
                 }
                 catch (Exception error)
                 {
-                    log.Add(Log.LogType.Debug | Log.LogType.Info, error);
+                    log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace AutoCSer.Email
         /// <param name="onSend">邮件发送回调</param>
         /// <param name="log">日志处理</param>
         /// <returns>电子邮件发送器</returns>
-        internal void Send(MailMessage message, SmtpClient smtpClient, Action<Exception> onSend, AutoCSer.Log.ILog log)
+        internal void Send(MailMessage message, SmtpClient smtpClient, Action<Exception> onSend, AutoCSer.ILog log)
         {
             this.message = message;
             this.log = log;

@@ -13,7 +13,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ReturnParameterGenericType> cache = new LockLastDictionary<Type, ReturnParameterGenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, ReturnParameterGenericType> cache = new LockLastDictionary<HashType, ReturnParameterGenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -43,7 +43,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(returnType, outputParameterType).Invoke(null, null) }.ReturnParameterGenericType;
+                    value = new UnionType.ReturnParameterGenericType { Object = createMethod.MakeGenericMethod(returnType, outputParameterType).Invoke(null, null) }.Value;
                     cache.Set(outputParameterType, value);
                 }
                 finally { cache.Exit(); }
@@ -59,6 +59,11 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
     internal sealed partial class ReturnParameterGenericType<returnType, outputParameterType> : ReturnParameterGenericType
         where outputParameterType : struct, IReturnParameter<returnType>
     {
+        /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(outputParameterType); } }
+
         /// <summary>
         /// 获取异步回调
         /// </summary>

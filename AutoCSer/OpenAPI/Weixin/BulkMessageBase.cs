@@ -27,7 +27,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        protected void toJson(AutoCSer.Json.Serializer serializer)
+        protected void toJson(AutoCSer.JsonSerializer serializer)
         {
             serializer.CustomWriteNextName("msgtype");
             serializer.CallSerialize(msgtype.ToString());

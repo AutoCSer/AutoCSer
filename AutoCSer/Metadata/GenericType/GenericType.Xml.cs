@@ -11,98 +11,13 @@ namespace AutoCSer.Metadata
     internal abstract partial class GenericType
     {
         /// <summary>
-        /// XML 反数据序列化 实例
+        /// 获取 XML 反序列化函数信息
         /// </summary>
-        internal static readonly AutoCSer.Xml.Parser XmlParser = new AutoCSer.Xml.Parser();
-        /// <summary>
-        /// XML 数据序列化 实例
-        /// </summary>
-        internal static readonly AutoCSer.Xml.Serializer XmlSerializer = new AutoCSer.Xml.Serializer();
-
+        internal abstract MethodInfo XmlDeSerializeTypeMethod { get; }
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumByteMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumSByteMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumUShortMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumShortMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumUIntMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumIntMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo XmlParseEnumULongMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo XmlParseEnumLongMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumByteFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumSByteFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumUShortFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumShortFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumUIntFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo XmlParseEnumIntFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo XmlParseEnumULongFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo XmlParseEnumLongFlagsMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo XmlParseTypeMethod { get; }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo XmlParseArrayMethod { get; }
+        internal abstract Delegate XmlDeSerializeArrayMethod { get; }
 
         /// <summary>
         /// 获取 XML 序列化函数信息
@@ -119,154 +34,30 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlSerializeStructArrayMethod { get; }
+        internal abstract Delegate XmlSerializeStructArrayMethod { get; }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlSerializeArrayMethod { get; }
+        internal abstract Delegate XmlSerializeArrayMethod { get; }
     }
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal sealed partial class GenericType<Type> : GenericType
+    internal sealed partial class GenericType<T> : GenericType
     {
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumByteMethod
+        internal override MethodInfo XmlDeSerializeTypeMethod
         {
-            get { return ((deSerialize)GenericType.XmlParser.enumByte<Type>).Method; }
+            get { return ((AutoCSer.XmlDeSerializer.DeSerializeDelegate<T>)XmlDeSerializer.TypeDeSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取 XML 反序列化函数信息
         /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumSByteMethod
+        internal override Delegate XmlDeSerializeArrayMethod
         {
-            get { return ((deSerialize)GenericType.XmlParser.enumSByte<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumUShortMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumUShort<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumShortMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumShort<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumUIntMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumUInt<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumIntMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumInt<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo XmlParseEnumULongMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumULong<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo XmlParseEnumLongMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumLong<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumByteFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumByteFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumSByteFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumSByteFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumUShortFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumUShortFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumShortFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumShortFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumUIntFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumUIntFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo XmlParseEnumIntFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumIntFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo XmlParseEnumULongFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumULongFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo XmlParseEnumLongFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.enumLongFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo XmlParseTypeMethod
-        {
-            get { return ((deSerialize)GenericType.XmlParser.typeParse<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 XML 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo XmlParseArrayMethod
-        {
-            get { return ((deSerializeArray)GenericType.XmlParser.array<Type>).Method; }
+            get { return (AutoCSer.XmlDeSerializer.DeSerializeDelegate<T[]>)XmlDeSerializer.Array<T>; }
         }
 
         /// <summary>
@@ -274,35 +65,35 @@ namespace AutoCSer.Metadata
         /// </summary>
         internal override MethodInfo XmlSerializeClassMethod
         {
-            get { return ((Action<Type>)GenericType.XmlSerializer.classSerialize<Type>).Method; }
+            get { return ((Action<XmlSerializer, T>)XmlSerializer.ClassSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
         internal override MethodInfo XmlSerializeStructMethod
         {
-            get { return ((Action<Type>)GenericType.XmlSerializer.structSerialize<Type>).Method; }
+            get { return ((Action<XmlSerializer, T>)XmlSerializer.StructSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
         internal override MethodInfo XmlSerializeEnumToStringMethod
         {
-            get { return ((Action<Type>)GenericType.XmlSerializer.enumToString<Type>).Method; }
+            get { return ((Action<XmlSerializer, T>)XmlSerializer.EnumToString<T>).Method; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlSerializeStructArrayMethod
+        internal override Delegate XmlSerializeStructArrayMethod
         {
-            get { return ((Action<Type[]>)GenericType.XmlSerializer.structArray<Type>).Method; }
+            get { return (Action<XmlSerializer, T[]>)XmlSerializer.StructArray<T>; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlSerializeArrayMethod
+        internal override Delegate XmlSerializeArrayMethod
         {
-            get { return ((Action<Type[]>)GenericType.XmlSerializer.array<Type>).Method; }
+            get { return (Action<XmlSerializer, T[]>)XmlSerializer.Array<T>; }
         }
     }
 }

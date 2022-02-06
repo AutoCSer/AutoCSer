@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.HtmlTitle
@@ -99,7 +99,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// 取消调用
         /// </summary>
         /// <param name="log"></param>
-        internal void CancelQueue(AutoCSer.Log.ILog log)
+        internal void CancelQueue(AutoCSer.ILog log)
         {
             Uri value = this;
             do
@@ -115,7 +115,7 @@ namespace AutoCSer.Net.HtmlTitle
                 }
                 catch (Exception error)
                 {
-                    log.Add(Log.LogType.Error, error);
+                    log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             while (value != null);

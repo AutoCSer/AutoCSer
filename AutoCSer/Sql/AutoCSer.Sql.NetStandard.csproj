@@ -33,24 +33,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Cache\Counter\MemberQueueCustom.cs" />
     <Compile Include="Cache\Counter\MemberQueueList.cs" />
-    <Compile Include="Cache\Counter\NET4.5\MemberQueue.cs" />
     <Compile Include="Cache\Counter\NET4.5\MemberQueueCustom.cs" />
     <Compile Include="Cache\Counter\NET4.5\MemberQueueList.cs" />
     <Compile Include="Cache\Counter\NET4.5\Queue.cs" />
     <Compile Include="Cache\Counter\NET4.5\QueueDictionary.cs" />
     <Compile Include="Cache\Counter\NET4.5\QueueList.cs" />
     <Compile Include="Cache\ICustom.cs" />
-    <Compile Include="Cache\LazyOrderArray.cs" />
+    <Compile Include="Cache\Counter\MemberQueueCustom.cs" />
+    <Compile Include="Cache\Counter\NET4.5\MemberQueue.cs" />
     <Compile Include="Cache\Whole\Client\IdentityMemberCache.cs" />
     <Compile Include="Cache\Whole\DictionaryList.cs" />
     <Compile Include="Cache\Whole\DictionarySearchTreeDictionary.cs" />
     <Compile Include="Cache\Whole\DictionarySearchTreeDictionaryWhere.cs" />
     <Compile Include="Cache\Whole\Event\NET4.5\IdentityTree.cs" />
-    <Compile Include="Cache\Whole\MemberArrayLazyOrderArray.cs" />
-    <Compile Include="Cache\Whole\MemberLazyOrderArray.cs" />
-    <Compile Include="Cache\Whole\MemberLazyOrderArrayWhere.cs" />
     <Compile Include="Cache\Whole\NET4.5\ArraySearchTreeDictionary.cs" />
     <Compile Include="Cache\Whole\NET4.5\DictionarySearchTreeDictionary.cs" />
     <Compile Include="Cache\Whole\NET4.5\MemberArrayLazyOrderArray.cs" />
@@ -58,30 +54,42 @@
     <Compile Include="Cache\Whole\NET4.5\SearchTreeDictionary.cs" />
     <Compile Include="Cache\Whole\Timer.cs" />
     <Compile Include="Cache\Whole\TimerWhere.cs" />
-    <Compile Include="ClientKind.cs" />
+    <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionNotCalculator.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionNegateCalculator.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionFloatCalculator.cs" />
     <Compile Include="CombinationTemplate\WhereExpressionCalculator.cs" />
     <Compile Include="CombinationTemplate\WhereExpressionComparator.cs" />
-    <Compile Include="CombinationTemplate\WhereExpressionFloatCalculator.cs" />
-    <Compile Include="CombinationTemplate\WhereExpressionNegateCalculator.cs" />
-    <Compile Include="CombinationTemplate\WhereExpressionNotCalculator.cs" />
+    <Compile Include="DataReaderJsonSerialize.cs" />
     <Compile Include="Emit\CastType.cs" />
     <Compile Include="Emit\NullableConstructor.cs" />
-    <Compile Include="Extension\EmitGenerator.Sql.cs" />
-    <Compile Include="Extension\Expression.cs" />
-    <Compile Include="Extension\SqlTable.cs" />
-    <Compile Include="Extension\Type.Sql.cs" />
+    <Compile Include="Excel\Client.cs" />
+    <Compile Include="Excel\Connection.cs" />
+    <Compile Include="Excel\DataModel\Setter.cs" />
+    <Compile Include="Excel\DataReader.cs" />
+    <Compile Include="Excel\DbType.cs" />
+    <Compile Include="Excel\Intermixed.cs" />
+    <Compile Include="Excel\Provider.cs" />
+    <Compile Include="Excel\ProviderAttribute.cs" />
+    <Compile Include="ExpressionCall\ExpressionCall.cs" />
+    <Compile Include="ExpressionCall\ExpressionCallDateDiffType.cs" />
+    <Compile Include="Extensions\EmitGenerator.Sql.cs" />
+    <Compile Include="Extensions\ExpressionExtension.Sql.cs" />
+    <Compile Include="Extensions\SqlTableExtension.cs" />
+    <Compile Include="Extensions\TypeExtension.Sql.cs" />
     <Compile Include="Lock.cs" />
+    <Compile Include="LogStream\Callback.cs" />
     <Compile Include="LogStream\NET4.5\IdentityClient.cs" />
     <Compile Include="LogStream\NET4.5\QueueClient.cs" />
     <Compile Include="LogStream\QueueClient.cs" />
     <Compile Include="MemberCacheAttribute.cs" />
     <Compile Include="MemberCacheLinkAttribute.cs" />
     <Compile Include="MemberCacheLinkWait.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
     <Compile Include="Metadata\MemberMapValue.cs" />
     <Compile Include="Metadata\MemberMapValueJsonSerializeConfig.cs" />
+    <Compile Include="Metadata\UnionType\GenericType.cs" />
     <Compile Include="NET4.5\LogAttribute.cs" />
-    <Compile Include="NowTimeType.cs" />
-    <Compile Include="PrimaryKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AnyCancel.cs" />
     <Compile Include="Cache\Copy.cs" />
@@ -101,6 +109,7 @@
     <Compile Include="Cache\Counter\Type.cs" />
     <Compile Include="Cache\DictionaryArray.cs" />
     <Compile Include="Cache\IdentityArray.cs" />
+    <Compile Include="Cache\LazyOrderArray.cs" />
     <Compile Include="Cache\Table.cs" />
     <Compile Include="Cache\Whole\ArrayList.cs" />
     <Compile Include="Cache\Whole\ArraySearchTreeDictionary.cs" />
@@ -124,18 +133,22 @@
     <Compile Include="Cache\Whole\Event\PrimaryKey.cs" />
     <Compile Include="Cache\Whole\Event\Type.cs" />
     <Compile Include="Cache\Whole\Member.cs" />
+    <Compile Include="Cache\Whole\MemberArrayLazyOrderArray.cs" />
     <Compile Include="Cache\Whole\MemberArrayList.cs" />
     <Compile Include="Cache\Whole\MemberCache.cs" />
     <Compile Include="Cache\Whole\MemberCacheCounter.cs" />
     <Compile Include="Cache\Whole\MemberDictionary.cs" />
     <Compile Include="Cache\Whole\MemberDictionaryList.cs" />
     <Compile Include="Cache\Whole\MemberDictionaryListWhere.cs" />
+    <Compile Include="Cache\Whole\MemberLazyOrderArray.cs" />
+    <Compile Include="Cache\Whole\MemberLazyOrderArrayWhere.cs" />
     <Compile Include="Cache\Whole\MemberList.cs" />
     <Compile Include="Cache\Whole\MemberListWhere.cs" />
     <Compile Include="Cache\Whole\MemberOrderList.cs" />
     <Compile Include="Cache\Whole\SearchTreeDictionary.cs" />
     <Compile Include="Cache\Whole\SearchTreeDictionaryWhere.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="ClientKind.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="ColumnBuilder.cs" />
@@ -166,16 +179,13 @@
     <Compile Include="DataModel\Updater.cs" />
     <Compile Include="DataModel\Verifyer.cs" />
     <Compile Include="DataReader.cs" />
-    <Compile Include="DataReaderJsonSerialize.cs" />
     <Compile Include="DbType.cs" />
-    <Compile Include="ExpressionCall.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="GetQuery.cs" />
     <Compile Include="IgnoreMemberAttribute.cs" />
     <Compile Include="InsertQuery.cs" />
     <Compile Include="IVerify.cs" />
     <Compile Include="LogAttribute.cs" />
-    <Compile Include="LogStream\Callback.cs" />
     <Compile Include="LogStream\Client.cs" />
     <Compile Include="LogStream\IdentityClient.cs" />
     <Compile Include="LogStream\IMemberMapValueLink.cs" />
@@ -195,7 +205,9 @@
     <Compile Include="MsSql\Sql2000.cs" />
     <Compile Include="MsSql\Sql2005.cs" />
     <Compile Include="NowTime.cs" />
-    <Compile Include="OnTime.cs" />
+    <Compile Include="NowTimeType.cs" />
+    <Compile Include="ReturnType.cs" />
+    <Compile Include="ReturnValue.cs" />
     <Compile Include="SelectQuery.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableAttribute.cs" />
@@ -218,7 +230,16 @@
     <Compile Include="Threading\SearchTreeDictionaryFindTask.cs" />
     <Compile Include="Threading\SearchTreeDictionaryPageTask.cs" />
     <Compile Include="Transaction.cs" />
-    <Compile Include="UnionType.cs" />
+    <Compile Include="UnionType\BinaryExpression.cs" />
+    <Compile Include="UnionType\ConditionalExpression.cs" />
+    <Compile Include="UnionType\ConstantExpression.cs" />
+    <Compile Include="UnionType\MemberExpression.cs" />
+    <Compile Include="UnionType\MethodCallExpression.cs" />
+    <Compile Include="UnionType\OleDbCommand.cs" />
+    <Compile Include="UnionType\OleDbConnection.cs" />
+    <Compile Include="UnionType\SqlCommand.cs" />
+    <Compile Include="UnionType\SqlConnection.cs" />
+    <Compile Include="UnionType\UnaryExpression.cs" />
     <Compile Include="UpdateMemberMap.cs" />
     <Compile Include="UpdateQuery.cs" />
     <Compile Include="WaitSetValue.cs" />
@@ -228,8 +249,8 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="System.Data.OleDb" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>

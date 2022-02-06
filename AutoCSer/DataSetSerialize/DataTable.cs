@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.DataSetSerialize
 {
     /// <summary>
     /// 数据表格
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false)]
     public sealed class DataTable
     {
         /// <summary>
@@ -143,7 +143,7 @@ namespace AutoCSer.DataSetSerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static byte[] Serialize(System.Data.DataTable table)
         {
-            return AutoCSer.BinarySerialize.Serializer.Serialize((DataTable)table);
+            return AutoCSer.BinarySerializer.Serialize((DataTable)table);
         }
         /// <summary>
         /// DataTable包装
@@ -265,7 +265,7 @@ namespace AutoCSer.DataSetSerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static System.Data.DataTable DeSerialize(byte[] data)
         {
-            return (System.Data.DataTable)AutoCSer.BinarySerialize.DeSerializer.DeSerialize<DataTable>(data);
+            return (System.Data.DataTable)AutoCSer.BinaryDeSerializer.DeSerialize<DataTable>(data);
         }
         /// <summary>
         /// 类型集合

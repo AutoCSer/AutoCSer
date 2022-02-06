@@ -3,7 +3,7 @@ using AutoCSer.Metadata;
 using System.Threading;
 using System.Linq.Expressions;
 using System.Data.Common;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.LogStream
@@ -30,13 +30,13 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         private byte[] waitMap;
         /// <summary>
+        /// 等待加载成员位图访问锁
+        /// </summary>
+        private AutoCSer.Threading.SpinLock waitMapLock;
+        /// <summary>
         /// 等待加载成员数量
         /// </summary>
         private int waitCount;
-        /// <summary>
-        /// 等待加载成员位图访问锁
-        /// </summary>
-        private int waitMapLock;
         /// <summary>
         /// 日志回调委托索引
         /// </summary>
@@ -90,18 +90,18 @@ namespace AutoCSer.Sql.LogStream
         {
             if ((uint)memberIndex < waitMap.Length << 3)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref waitMapLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLogStreamLoadMember);
-                if ((waitMap[memberIndex >> 3] & (1 << (int)(memberIndex & 7))) == 0) System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
+                waitMapLock.EnterYield();
+                if ((waitMap[memberIndex >> 3] & (1 << (int)(memberIndex & 7))) == 0) waitMapLock.Exit();
                 else
                 {
                     waitMap[memberIndex >> 3] ^= (byte)(1 << (int)(memberIndex & 7));
                     if (--waitCount == 0)
                     {
-                        System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
+                        waitMapLock.Exit();
                         loaded();
                         waitMap = null;
                     }
-                    else System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
+                    else waitMapLock.Exit();
                 }
             }
         }
@@ -120,13 +120,13 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         protected void loadCount()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref waitMapLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLogStreamLoadMember);
+            waitMapLock.EnterYield();
             if (--waitCount == 0)
             {
-                System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
+                waitMapLock.Exit();
                 loaded();
             }
-            else System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
+            else waitMapLock.Exit();
         }
         /// <summary>
         /// 开始处理日志
@@ -170,7 +170,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 日志数据
         /// </summary>
-        [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+        [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
         public struct Data
         {
@@ -265,7 +265,7 @@ namespace AutoCSer.Sql.LogStream
         /// <param name="table"></param>
         /// <param name="memberIndexs"></param>
         public Log(Table<valueType, modelType> table, params int[] memberIndexs)
-            : base(table, memberIndexs ?? NullValue<int>.Array)
+            : base(table, memberIndexs ?? EmptyArray<int>.Array)
         {
             onLogs = new Net.TcpServer.ServerCallback<Data>[table.Attribute.MaxLogStreamCount <= 0 ? TableAttribute.DefaultLogStreamCount : table.Attribute.MaxLogStreamCount];
             insertLog.Type = updateLog.Type = updateMemberMapLog.Type = deleteLog.Type = AutoCSer.Net.TcpServer.ReturnType.Success;

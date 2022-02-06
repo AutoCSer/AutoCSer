@@ -41,8 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ajax\Code.cs" />
+    <Compile Include="Ajax\Example2.cs" />
     <Compile Include="Ajax\Example.cs" />
     <Compile Include="Ajax\TestCase.cs" />
+    <Compile Include="WebConfig.cs" />
     <Compile Include="FileServer.cs" />
     <Compile Include="HttpDomain.cs" />
     <Compile Include="LocationIndex.cs" />
@@ -50,7 +52,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search.cs" />
-    <Compile Include="WebConfig.cs" />
+    <Compile Include="WebViewConfig.cs" />
     <Compile Include="WebServer.cs" />
     <Compile Include="WebView\Template.cs" />
     <Compile Include="{AutoCSer.Web}.AutoCSer.cs" />
@@ -58,8 +60,12 @@
   <ItemGroup>
     <Content Include="Android\Index.page.html" />
     <Content Include="Android\Index.page.js" />
+    <Content Include="Beian.png" />
     <Content Include="CacheServer\MessageQueue.page.html" />
     <Content Include="CacheServer\Index.page.html" />
+    <Content Include="AutoCSer2.page.html" />
+    <Content Include="Include\GetCode2.html" />
+    <Content Include="Include\GetCode2.js" />
     <Content Include="Log.page.html" />
     <Content Include="Search.page.html" />
     <Content Include="CodeGenerator.page.html" />
@@ -141,7 +147,8 @@
     <Content Include="WebView\View.page.html" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Download\AutoCSer.Example.zip" />
+    <None Include="Download\AutoCSer.zip" />
+    <None Include="Download\AutoCSer2.Example.zip" />
     <None Include="Hyper-v\Hyper-v.auto.bat" />
     <None Include="Hyper-v\Hyper-v.off.bat" />
   </ItemGroup>
@@ -169,10 +176,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(ProjectDir)..\..\AutoCser\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\AutoCser\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)..\..\AutoCser\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if exist "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" @(TypeScriptCompile ->'"%(fullpath)"', ' ')</PreBuildEvent>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q
+if exist "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" @(TypeScriptCompile ->'"%(fullpath)"', ' ')</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

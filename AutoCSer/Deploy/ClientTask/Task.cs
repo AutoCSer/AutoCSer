@@ -17,6 +17,6 @@ namespace AutoCSer.Deploy.ClientTask
         /// </summary>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal abstract DeployState Call(Timer timer);
+        internal abstract DeployResultData Call(Timer timer);
     }
 }

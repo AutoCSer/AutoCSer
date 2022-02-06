@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -22,12 +22,12 @@ namespace AutoCSer.OpenAPI.Weixin
         /// </summary>
         /// <param name="serializer"></param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        [AutoCSer.Json.SerializeCustom]
-        private unsafe void toJson(AutoCSer.Json.Serializer serializer)
+        [AutoCSer.JsonSerializeCustom]
+        private unsafe void toJson(AutoCSer.JsonSerializer serializer)
         {
             if (card_ext.signature == null)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "卡券扩展 签名为空");
+                AutoCSer.LogHelper.Debug("卡券扩展 签名为空", LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                 serializer.CharStream.WriteJsonObject();
             }
             else
@@ -35,7 +35,7 @@ namespace AutoCSer.OpenAPI.Weixin
                 serializer.CustomWriteFirstName("card_id");
                 serializer.CallSerialize(card_id);
                 serializer.CustomWriteNextName("card_ext");
-                serializer.CallSerialize(AutoCSer.Json.Serializer.Serialize(card_ext));
+                serializer.CallSerialize(AutoCSer.JsonSerializer.Serialize(card_ext));
                 serializer.CustomObjectEnd();
             }
         }

@@ -94,13 +94,13 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
                                     fileStream.BeginRead(buffer, 0, readSize = (int)Math.Min(fileStream.Length - index, bufferSize), onReadFirst, this);
                                 }
                             }
-                            else client.IClient.UploadAll(Path.Combine(path, name), fileInfo.LastWriteTimeUtc, default(SubArray<byte>), onUploadedAll);
+                            else client.IClient.UploadAll(Path.Combine(path, name), fileInfo.LastWriteTimeUtc, new SubArray<byte>(), onUploadedAll);
                             state = SynchronousState.Asynchronous;
                         }
                     }
                     else
                     {
-                        client.IClient.UploadAll(Path.Combine(path, name), fileInfo.LastWriteTimeUtc, default(SubArray<byte>), onUploadedAll);
+                        client.IClient.UploadAll(Path.Combine(path, name), fileInfo.LastWriteTimeUtc, new SubArray<byte>(), onUploadedAll);
                         state = SynchronousState.Asynchronous;
                     }
                 }

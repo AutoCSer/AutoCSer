@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using AutoCSer.Log;
 
@@ -141,10 +141,42 @@ namespace AutoCSer.Net.TcpServer
                 this.commandPool = commandPool;
             }
             /// <summary>
-            /// 超时事件
+            /// 超时事件（不允许阻塞）
             /// </summary>
             /// <param name="seconds">超时秒计数</param>
             internal override void OnTimeout(uint seconds)
+            {
+                AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(new Timeout(commandPool, seconds), Threading.ThreadTaskType.TcpClientCommandPoolTimeout);
+            }
+        }
+        /// <summary>
+        /// 超时事件
+        /// </summary>
+        internal sealed class Timeout
+        {
+            /// <summary>
+            /// 客户端命令池
+            /// </summary>
+            private readonly CommandPool commandPool;
+            /// <summary>
+            /// 超时秒计数
+            /// </summary>
+            private readonly uint seconds;
+            /// <summary>
+            /// 超时事件
+            /// </summary>
+            /// <param name="commandPool"></param>
+            /// <param name="seconds"></param>
+            internal Timeout(CommandPool commandPool, uint seconds)
+            {
+                this.commandPool = commandPool;
+                this.seconds = seconds;
+            }
+            /// <summary>
+            /// 超时事件
+            /// </summary>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal void OnTimeout()
             {
                 commandPool.onTimeout(seconds);
             }
@@ -230,17 +262,13 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         private int freeEndIndex;
         /// <summary>
-        /// 空闲命令结束位置访问锁
-        /// </summary>
-        private int freeEndIndexLock;
-        /// <summary>
         /// 是否输出过错误日志 活动会话数量过多
         /// </summary>
         private int isErrorLog;
         /// <summary>
-        /// 是否正在处理超时
+        /// 空闲命令结束位置访问锁
         /// </summary>
-        private int isTimeout;
+        private AutoCSer.Threading.SleepFlagSpinLock freeEndIndexLock;
         private readonly ulong pad30, pad31, pad32, pad33, pad34, pad35, pad36;
         /// <summary>
         /// 客户端命令池
@@ -305,7 +333,7 @@ namespace AutoCSer.Net.TcpServer
                         if (isErrorLog == 0)
                         {
                             isErrorLog = 1;
-                            client.Log.Add(LogType.Error, "TCP 客户端活动会话数量过多");
+                            client.Log.Error("TCP 客户端活动会话数量过多", LogLevel.Error | LogLevel.AutoCSer);
                         }
                         return 0;
                     }
@@ -319,29 +347,21 @@ namespace AutoCSer.Net.TcpServer
                 }
                 while (--index != 0);
                 arrays[arrayCount++] = array;
-                while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-                {
-                    if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                    else System.Threading.Thread.Sleep(0);
-                }
+                freeEndIndexLock.Enter();
                 arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = commandCount;
                 freeEndIndex = (commandCount += 1 << maxArrayBitSize) - 1;
-                System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                freeEndIndexLock.Exit();
             }
             else
             {
                 CommandLink[] array = new CommandLink[1 << ++bitSize];
                 for (int index = commandCount, endIndex = commandCount << 1; index != endIndex; ++index) array[index].Next = index + 1;
-                while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-                {
-                    if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                    else System.Threading.Thread.Sleep(0);
-                }
+                freeEndIndexLock.Enter();
                 Array.CopyTo(array, 0);
                 arrays[0] = Array = array;
                 array[freeEndIndex].Next = commandCount;
                 freeEndIndex = arraySizeAnd = (commandCount <<= 1) - 1;
-                System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                freeEndIndexLock.Exit();
             }
             freeIndex = (currentIndex < (1 << maxArrayBitSize) ? Array : pushArray)[currentIndex & arraySizeAnd].Next;
             return currentIndex;
@@ -359,48 +379,40 @@ namespace AutoCSer.Net.TcpServer
             int arrayIndex = index >> bitSize;
             if (arrayIndex == 0)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-                {
-                    if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                    else System.Threading.Thread.Sleep(0);
-                }
+                freeEndIndexLock.Enter();
                 switch (Array[index].Get(commandCount, out command, ref timeoutSeconds))
                 {
                     case 0:
                         arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = index;
                         freeEndIndex = index;
-                        System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                        freeEndIndexLock.Exit();
                         if (timeout != null) timeout.TryDecrement(timeoutSeconds);
                         return command;
                     case 1:
-                        System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                        freeEndIndexLock.Exit();
                         keepCallbackCommand = command;
                         keepCallbackCommandIndex = index;
                         return command;
-                    default: System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0); return null;
+                    default: freeEndIndexLock.Exit(); return null;
                 }
             }
             if (arrayIndex != getArrayIndex) getArray = arrays[getArrayIndex = arrayIndex];
             int commandIndex = index & arraySizeAnd;
-            while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-            {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                else System.Threading.Thread.Sleep(0);
-            }
+            freeEndIndexLock.Enter();
             switch (getArray[commandIndex].Get(commandCount, out command, ref timeoutSeconds))
             {
                 case 0:
                     arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = index;
                     freeEndIndex = index;
-                    System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                    freeEndIndexLock.Exit();
                     if (timeout != null) timeout.TryDecrement(timeoutSeconds);
                     return command;
                 case 1:
-                    System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                    freeEndIndexLock.Exit();
                     keepCallbackCommand = command;
                     keepCallbackCommandIndex = index;
                     return command;
-                default: System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0); return null;
+                default: freeEndIndexLock.Exit(); return null;
             }
         }
         /// <summary>
@@ -410,15 +422,11 @@ namespace AutoCSer.Net.TcpServer
         internal void Cancel(int index)
         {
             int arrayIndex = index >> bitSize, commandIndex = index & arraySizeAnd;
-            while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-            {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                else System.Threading.Thread.Sleep(0);
-            }
+            freeEndIndexLock.Enter();
             uint timeoutSeconds = arrays[arrayIndex][commandIndex].Cancel(commandCount);
             arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = index;
             freeEndIndex = index;
-            System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+            freeEndIndexLock.Exit();
             if (timeout != null) timeout.TryDecrement(timeoutSeconds);
         }
         /// <summary>
@@ -429,17 +437,13 @@ namespace AutoCSer.Net.TcpServer
         internal void CancelKeep(int index, ClientCommand.Command command)
         {
             int arrayIndex = index >> bitSize, commandIndex = index & arraySizeAnd;
-            while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-            {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                else System.Threading.Thread.Sleep(0);
-            }
+            freeEndIndexLock.Enter();
             if (arrays[arrayIndex][commandIndex].CancelKeep(command, commandCount))
             {
                 arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = index;
                 freeEndIndex = index;
             }
-            System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+            freeEndIndexLock.Exit();
         }
         /// <summary>
         /// 释放所有命令
@@ -452,11 +456,7 @@ namespace AutoCSer.Net.TcpServer
         {
             DisposeTimeout();
             bool isNext = false;
-            while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-            {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                else System.Threading.Thread.Sleep(0);
-            }
+            freeEndIndexLock.EnterSleepFlag();
             try
             {
                 foreach (CommandLink[] array in arrays)
@@ -500,7 +500,7 @@ namespace AutoCSer.Net.TcpServer
                     }
                 }
             }
-            finally { System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0); }
+            finally { freeEndIndexLock.ExitSleepFlag(); }
             return head;
         }
         /// <summary>
@@ -511,14 +511,9 @@ namespace AutoCSer.Net.TcpServer
         {
             int startIndex = ClientCommand.KeepCommand.CommandPoolIndex, index = 0;
             ClientCommand.CommandBase head = null, end = null;
-            while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0)
-            {
-                if (isTimeout == 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                else System.Threading.Thread.Sleep(0);
-            }
+            freeEndIndexLock.EnterSleepFlag();
             try
             {
-                isTimeout = 1;
                 foreach (CommandLink[] array in arrays)
                 {
                     if (index != 0)
@@ -564,8 +559,7 @@ namespace AutoCSer.Net.TcpServer
             }
             finally
             {
-                isTimeout = 0;
-                System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                freeEndIndexLock.ExitSleepFlag();
                 if (head != null) ClientCommand.CommandBase.CancelLink(head, ReturnType.Timeout);
                 client.CallOnTimeout();
             }

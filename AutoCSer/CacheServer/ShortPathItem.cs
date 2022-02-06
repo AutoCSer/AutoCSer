@@ -49,7 +49,7 @@ namespace AutoCSer.CacheServer
                 packet = this.packet;
                 return node;
             }
-            packet = NullValue<byte>.Array;
+            packet = EmptyArray<byte>.Array;
             return null;
         }
     }

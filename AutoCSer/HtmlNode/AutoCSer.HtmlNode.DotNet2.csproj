@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CanNonRoundTagName.cs" />
-    <Compile Include="Extension\String.cs" />
+    <Compile Include="Extensions\StringExtension.HtmlNode.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="FilterType.cs" />
     <Compile Include="FormatString.cs" />

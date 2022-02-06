@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql.Cache.Whole.Event
 {

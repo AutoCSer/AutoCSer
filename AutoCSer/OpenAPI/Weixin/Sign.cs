@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Security.Cryptography;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
+using AutoCSer.Memory;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -27,7 +28,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <summary>
         /// 签名数据是否需要Utf8编码
         /// </summary>
-        private static Pointer isUtf8;
+        private static AutoCSer.Memory.Pointer isUtf8;
         /// <summary>
         /// 数据缓冲区池索引编号
         /// </summary>
@@ -130,7 +131,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="key"></param>
         private unsafe static void concat(string[] values, ref SubBuffer.PoolBufferFull buffer, int length, string key)
         {
-            fixed (byte* bufferFixed = buffer.Buffer)
+            fixed (byte* bufferFixed = buffer.GetFixedBuffer())
             {
                 byte* write = bufferFixed + buffer.StartIndex, end = write + length;
                 int isValue = 0, index = 0;
@@ -142,14 +143,14 @@ namespace AutoCSer.OpenAPI.Weixin
                     {
                         if (isValue == 0) isValue = 1;
                         else *write++ = (byte)'&';
-                        fixed (char* nameFixed = name) AutoCSer.Extension.StringExtension.WriteBytesNotNull(nameFixed, name.Length, write);
+                        fixed (char* nameFixed = name) AutoCSer.Extensions.StringExtension.WriteBytes(nameFixed, name.Length, write);
                         write += name.Length;
                         *write++ = (byte)'=';
                         fixed (char* valueFixed = valueString)
                         {
                             if (utf8Map.Get(index) == 0)
                             {
-                                AutoCSer.Extension.StringExtension.WriteBytesNotNull(valueFixed, valueString.Length, write);
+                                AutoCSer.Extensions.StringExtension.WriteBytes(valueFixed, valueString.Length, write);
                                 write += valueString.Length;
                             }
                             else write += System.Text.Encoding.UTF8.GetBytes(valueFixed, valueString.Length, write, (int)(end - write));
@@ -160,7 +161,7 @@ namespace AutoCSer.OpenAPI.Weixin
                 if (isValue != 0) *write++ = (byte)'&';
                 *(int*)write = 'k' + ('e' << 8) + ('y' << 16) + ('=' << 24);
                 write += sizeof(int);
-                fixed (char* keyFixed = key) AutoCSer.Extension.StringExtension.WriteBytesNotNull(keyFixed, key.Length, write);
+                fixed (char* keyFixed = key) AutoCSer.Extensions.StringExtension.WriteBytes(keyFixed, key.Length, write);
             }
         }
         /// <summary>
@@ -206,14 +207,14 @@ namespace AutoCSer.OpenAPI.Weixin
                 setSign = signField == null ? Emit.Property.SetProperty<valueType, string>(signProperty) : AutoCSer.Emit.Field.UnsafeSetField<valueType, string>(signField);
                 if (count == 0)
                 {
-                    names = NullValue<string>.Array;
+                    names = EmptyArray<string>.Array;
                     valueGetter = empty;
                 }
                 else
                 {
                     members.Array.sort(SignAttribute.NameCompare);
                     names = new string[memberCount = count];
-                    isUtf8 = new Pointer { Data = Unmanaged.GetStatic(((count + 31) >> 5) << 2, true) };
+                    isUtf8 = Unmanaged.GetStaticPointer(((count + 31) >> 5) << 2, true);
 #if NOJIT
                     signer signer = new signer(members.Array.Length);
 #else

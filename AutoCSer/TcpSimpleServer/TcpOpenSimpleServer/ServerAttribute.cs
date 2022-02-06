@@ -20,12 +20,12 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 8KB。
         /// </summary>
-        public SubBuffer.Size SendBufferSize = SubBuffer.Size.Kilobyte8;
+        public AutoCSer.Memory.BufferSize SendBufferSize = AutoCSer.Memory.BufferSize.Kilobyte8;
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override SubBuffer.Size GetSendBufferSize { get { return SendBufferSize; } }
+        internal override AutoCSer.Memory.BufferSize GetSendBufferSize { get { return SendBufferSize; } }
         /// <summary>
         /// 服务器端发送数据缓冲区最大字节数
         /// </summary>
@@ -45,9 +45,9 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         [AutoCSer.Metadata.Ignore]
         internal override int GetMaxInputSize { get { return MaxInputSize; } }
         /// <summary>
-        /// 客户端保持连接心跳包间隔时间默认为 59 秒，对于频率稳定可靠的服务类型可以设置为 0 禁用心跳包。
+        /// 客户端保持连接心跳包间隔时间默认为 60 秒，对于频率稳定可靠的服务类型可以设置为 0 禁用心跳包。
         /// </summary>
-        public int CheckSeconds = 59;
+        public int CheckSeconds = 60;
         /// <summary>
         /// 客户端保持连接心跳包间隔时间
         /// </summary>
@@ -115,7 +115,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <returns>TCP 调用服务器端配置信息</returns>
         public static ServerAttribute GetConfig(string serviceName, Type type = null)
         {
-            return GetConfig(serviceName, type, new UnionType { Value = AutoCSer.Config.Loader.GetObject(typeof(ServerAttribute), serviceName) }.ServerAttribute);
+            return GetConfig(serviceName, type, (ServerAttribute)AutoCSer.Configuration.Common.Get(typeof(ServerAttribute), serviceName));
         }
     }
 }

@@ -20,7 +20,7 @@ namespace AutoCSer.Net.TcpOpenServer
         internal ClientSocketSender(ClientSocket socket)
             : base(socket)
         {
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, AutoCSer.Threading.Thread.CallType.TcpOpenClientSocketSenderBuildOutput);
+            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, AutoCSer.Threading.ThreadTaskType.TcpOpenClientSocketSenderBuildOutput);
             //BuildOutputMainWaitHandle.Set(0);
             //BuildOutputOtherWaitHandle.Set(0);
             //SendLock = new object();

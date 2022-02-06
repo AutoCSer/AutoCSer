@@ -20,7 +20,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <summary>
         /// 文件缓存队列访问锁
         /// </summary>
-        private readonly object fileLock = new object();
+        private AutoCSer.Threading.SleepFlagSpinLock fileLock;
         /// <summary>
         /// 删除文件缓存
         /// </summary>
@@ -28,9 +28,9 @@ namespace AutoCSer.Net.HttpDomainServer
         private void remove(ref FileCacheKey path)
         {
             FileCache file;
-            Monitor.Enter(fileLock);
+            fileLock.Enter();
             if (files.Remove(ref path, out file)) freeCacheSize += file.Size;
-            Monitor.Exit(fileLock);
+            fileLock.Exit();
         }
         /// <summary>
         /// 获取文件缓存
@@ -40,9 +40,9 @@ namespace AutoCSer.Net.HttpDomainServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private FileCache get(ref FileCacheKey path)
         {
-            Monitor.Enter(fileLock);
+            fileLock.Enter();
             FileCache file = files.Get(ref path, null);
-            Monitor.Exit(fileLock);
+            fileLock.Exit();
             return file;
         }
         /// <summary>
@@ -55,9 +55,10 @@ namespace AutoCSer.Net.HttpDomainServer
         private byte get(ref FileCacheKey path, out FileCache fileCache, bool isCopyPath)
         {
             byte isNewFileCache = 0;
-            Monitor.Enter(fileLock);
+            fileLock.Enter();
             if ((fileCache = files.Get(ref path, null)) == null)
             {
+                fileLock.SleepFlag = 1;
                 byte isLock = 0;
                 try
                 {
@@ -69,11 +70,11 @@ namespace AutoCSer.Net.HttpDomainServer
                 }
                 finally
                 {
-                    Monitor.Exit(fileLock);
+                    fileLock.ExitSleepFlag();
                     if (isNewFileCache == 0 && isLock != 0) fileCache.PulseAll();
                 }
             }
-            else Monitor.Exit(fileLock);
+            else fileLock.Exit();
             return 0;
         }
         /// <summary>
@@ -84,9 +85,9 @@ namespace AutoCSer.Net.HttpDomainServer
         private void removeOnly(ref FileCacheKey path)
         {
             FileCache fileCache;
-            Monitor.Enter(fileLock);
+            fileLock.Enter();
             files.Remove(ref path, out fileCache);
-            Monitor.Exit(fileLock);
+            fileLock.Exit();
         }
         /// <summary>
         /// 设置文件缓存
@@ -96,7 +97,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <param name="fileSize"></param>
         private void set(ref FileCacheKey path, FileCache fileCache, int fileSize)
         {
-            Monitor.Enter(fileLock);
+            fileLock.EnterSleepFlag();
             try
             {
                 fileCache.Size = fileSize;
@@ -108,7 +109,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 }
                 else if (oldFileCache != fileCache) freeCacheSize += oldFileCache.Size;
             }
-            finally { Monitor.Exit(fileLock); }
+            finally { fileLock.ExitSleepFlag(); }
         }
         /// <summary>
         /// 清除文件缓存
@@ -116,13 +117,17 @@ namespace AutoCSer.Net.HttpDomainServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Clear()
         {
-            Monitor.Enter(fileLock);
+            fileLock.Enter();
             try
             {
-                if (files.Count != 0) files = new FifoPriorityQueue<FileCacheKey, FileCache>();
+                if (files.Count != 0)
+                {
+                    fileLock.SleepFlag = 1;
+                    files = new FifoPriorityQueue<FileCacheKey, FileCache>();
+                }
                 freeCacheSize = maxCacheSize;
             }
-            finally { Monitor.Exit(fileLock); }
+            finally { fileLock.ExitSleepFlag(); }
         }
 
         /// <summary>
@@ -195,9 +200,8 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
+        private static void clearCache()
         {
             foreach (FileCacheQueue queue in queues) queue.Clear();
         }
@@ -205,7 +209,7 @@ namespace AutoCSer.Net.HttpDomainServer
         {
             queues = new FileCacheQueue[256];
             for (int index = 256; index != 0; queues[--index] = new FileCacheQueue()) ;
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(FileCacheQueue), 0);
         }
     }
 }

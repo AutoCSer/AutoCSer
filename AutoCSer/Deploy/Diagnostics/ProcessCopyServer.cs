@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Net;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
@@ -42,7 +42,7 @@ namespace AutoCSer.Diagnostics
             {
                 try
                 {
-                    foreach (ProcessCopyer copyer in AutoCSer.BinarySerialize.DeSerializer.DeSerialize<ProcessCopyer[]>(File.ReadAllBytes(cacheFile)))
+                    foreach (ProcessCopyer copyer in AutoCSer.BinaryDeSerializer.DeSerialize<ProcessCopyer[]>(File.ReadAllBytes(cacheFile)))
                     {
                         if (copyer.Guard(this)) guards.Add(copyer.ProcessId, copyer);
                         else saveCacheLock = 1;
@@ -51,7 +51,7 @@ namespace AutoCSer.Diagnostics
                 catch (Exception error)
                 {
                     saveCacheLock = 1;
-                    tcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    tcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 if (saveCacheLock != 0) server.CallQueueLink.Add(new ProcessCopySaveCache(this));
             }
@@ -72,11 +72,11 @@ namespace AutoCSer.Diagnostics
             try
             {
                 if (guards.Count == 0) File.Delete(cacheFile);
-                else File.WriteAllBytes(cacheFile, AutoCSer.BinarySerialize.Serializer.Serialize(guards.Values.getArray()));
+                else File.WriteAllBytes(cacheFile, AutoCSer.BinarySerializer.Serialize(guards.Values.getArray()));
             }
             catch (Exception error)
             {
-                server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally
             {

@@ -1,4 +1,4 @@
-﻿using AutoCSer.Extension;
+﻿using AutoCSer.Extensions;
 using System;
 using System.IO;
 using System.Threading;
@@ -8,7 +8,7 @@ namespace AutoCSer.Deploy.ClientTask
     /// <summary>
     /// 写文件 exe/dll/pdb 并运行程序 任务信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class Run : Task
     {
         /// <summary>
@@ -37,7 +37,7 @@ namespace AutoCSer.Deploy.ClientTask
         /// </summary>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal override DeployState Call(Timer timer)
+        internal override DeployResultData Call(Timer timer)
         {
             FileInfo runFileInfo = new FileInfo(Path.Combine(ServerPath, FileName));
             if (runFileInfo.Exists)

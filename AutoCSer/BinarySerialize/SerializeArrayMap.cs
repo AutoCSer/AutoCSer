@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.BinarySerialize
 {
@@ -30,11 +31,10 @@ namespace AutoCSer.BinarySerialize
         {
             int length = ((arrayLength + (31 + 32)) >> 5) << 2;
             Bit = 1U << 31;
-            stream.PrepLength(length);
-            Write = stream.CurrentData;
+            Write = stream.GetBeforeMove(length);
             Map = 0;
             *(int*)Write = arrayLength;
-            stream.ByteSize += length;
+
         }
         /// <summary>
         /// 数组位图
@@ -46,11 +46,10 @@ namespace AutoCSer.BinarySerialize
         {
             int length = ((arrayLength + (31 + 32)) >> 5) << 2;
             Bit = 1U << 31;
-            stream.PrepLength(length + prepLength);
-            Write = stream.CurrentData;
+            Write = stream.GetPrepSizeCurrent(length + prepLength);
             Map = 0;
             *(int*)Write = arrayLength;
-            stream.ByteSize += length;
+            stream.Data.CurrentIndex += length;
         }
         /// <summary>
         /// 添加数据
@@ -91,12 +90,10 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 位图写入结束
         /// </summary>
-        /// <param name="stream">序列化数据流</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void End(UnmanagedStream stream)
+        public void End()
         {
             if (Bit != 1U << 31) *(uint*)(Write + sizeof(int)) = Map;
-            //stream.PrepLength();
         }
     }
 }

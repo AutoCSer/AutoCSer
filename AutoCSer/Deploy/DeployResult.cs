@@ -18,6 +18,10 @@ namespace AutoCSer.Deploy
         /// </summary>
         public DeployState State;
         /// <summary>
+        /// 返回数据
+        /// </summary>
+        public byte[] Data;
+        /// <summary>
         /// 远程状态
         /// </summary>
         public ReturnType ReturnType;

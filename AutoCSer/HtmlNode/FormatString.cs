@@ -27,7 +27,7 @@ namespace AutoCSer.HtmlNode
             set
             {
                 FormatHtml = value;
-                FormatText.SetNull();
+                FormatText.SetEmpty();
             }
         }
         /// <summary>
@@ -47,7 +47,7 @@ namespace AutoCSer.HtmlNode
             set
             {
                 FormatText = value;
-                FormatHtml.SetNull();
+                FormatHtml.SetEmpty();
             }
         }
     }

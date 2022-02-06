@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// TCP 内部服务客户端代理对象
         /// </summary>
-        private readonly clientType client;
+        public readonly clientType MethodClient;
         /// <summary>
         /// 验证委托
         /// </summary>
@@ -48,7 +48,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         public Client(clientType client, ServerAttribute attribute, ILog log, Func<clientType, bool> verifyMethod = null)
             : base(attribute, log)
         {
-            this.client = client;
+            this.MethodClient = client;
             this.verifyMethod = verifyMethod;
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <returns></returns>
         internal override bool CallVerifyMethod()
         {
-            return verifyMethod == null || verifyMethod(client);
+            return verifyMethod == null || verifyMethod(MethodClient);
         }
     }
 }

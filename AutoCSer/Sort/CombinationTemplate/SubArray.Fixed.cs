@@ -1,12 +1,12 @@
 ﻿using System;
-/*Type:ulong;long;uint;int;ushort;short;byte;sbyte;double;float;char;DateTime*/
+/*ulong;long;uint;int;ushort;short;byte;sbyte;double;float;char;DateTime*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数组子串扩展
     /// </summary>
-    public static unsafe partial class SubArray
+    public static unsafe partial class SubArrayExtension
     {
         /// <summary>
         /// 逆转数组
@@ -14,9 +14,9 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <returns>翻转后的新数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/[] getReverse(this SubArray</*Type[0]*/ulong/*Type[0]*/> array)
+        public static ulong[] getReverse(this SubArray<ulong> array)
         {
-            if (array.Length == 0) return NullValue</*Type[0]*/ulong/*Type[0]*/>.Array;
+            if (array.Length == 0) return EmptyArray<ulong>.Array;
             return FixedArray.GetReverse(array.Array, array.Start, array.Length);
         }
         /// <summary>
@@ -25,7 +25,7 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <returns>翻转后的新数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> reverse(this SubArray</*Type[0]*/ulong/*Type[0]*/> array)
+        public static SubArray<ulong> reverse(this SubArray<ulong> array)
         {
             if (array.Length > 1) FixedArray.Reverse(array.Array, array.Start, array.Length);
             return array;
@@ -36,14 +36,13 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <param name="value">匹配数据</param>
         /// <returns>匹配位置,失败为-1</returns>
-        public static int indexOf(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, /*Type[0]*/ulong/*Type[0]*/ value)
+        public static int indexOf(this SubArray<ulong> array, ulong value)
         {
             if (array.Length != 0)
             {
-                fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+                fixed (ulong* valueFixed = array.GetFixedBuffer())
                 {
-                    /*Type[0]*/
-                    ulong/*Type[0]*/* start = valueFixed + array.Start, index = FixedArray.IndexOf(start, array.Length, value);
+                    ulong* start = valueFixed + array.Start, index = FixedArray.IndexOf(start, array.Length, value);
                     if (index != null) return (int)(index - start);
                 }
             }
@@ -55,14 +54,13 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>匹配位置,失败为-1</returns>
-        public static int indexOf(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, bool> isValue)
+        public static int indexOf(this SubArray<ulong> array, Func<ulong, bool> isValue)
         {
             if (array.Length != 0)
             {
-                fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+                fixed (ulong* valueFixed = array.GetFixedBuffer())
                 {
-                    /*Type[0]*/
-                    ulong/*Type[0]*/* start = valueFixed + array.Start, index = FixedArray.IndexOf(start, array.Length, isValue);
+                    ulong* start = valueFixed + array.Start, index = FixedArray.IndexOf(start, array.Length, isValue);
                     if (index != null) return (int)(index - valueFixed);
                 }
             }
@@ -74,19 +72,18 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <param name="isValue">数据匹配器</param>
         /// <param name="index">起始位置</param>
-        /// <returns>第一个匹配值,失败为default(/*Type[0]*/ulong/*Type[0]*/)</returns>
-        public static /*Type[0]*/ulong/*Type[0]*/ firstOrDefault(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, bool> isValue, int index)
+        /// <returns>第一个匹配值,失败为default(ulong)</returns>
+        public static ulong firstOrDefault(this SubArray<ulong> array, Func<ulong, bool> isValue, int index)
         {
             if ((uint)index < (uint)array.Length)
             {
-                fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+                fixed (ulong* valueFixed = array.GetFixedBuffer())
                 {
-                    /*Type[0]*/
-                    ulong/*Type[0]*/* valueIndex = FixedArray.IndexOf(valueFixed + array.Start + index, array.Length - index, isValue);
+                    ulong* valueIndex = FixedArray.IndexOf(valueFixed + array.Start + index, array.Length - index, isValue);
                     if (valueIndex != null) return *valueIndex;
                 }
             }
-            return default(/*Type[0]*/ulong/*Type[0]*/);
+            return default(ulong);
         }
         /// <summary>
         /// 获取匹配数量
@@ -94,14 +91,13 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>匹配数量</returns>
-        public static int count(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, bool> isValue)
+        public static int count(this SubArray<ulong> array, Func<ulong, bool> isValue)
         {
             if (array.Length == 0) return 0;
             int value = 0;
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+            fixed (ulong* valueFixed = array.GetFixedBuffer())
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = valueFixed + array.Start, end = start + array.Length;
+                ulong* start = valueFixed + array.Start, end = start + array.Length;
                 do
                 {
                     if (isValue(*start)) ++value;
@@ -116,14 +112,13 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <param name="value">新值</param>
         /// <param name="isValue">数据匹配器</param>
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> replaceFirst(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, /*Type[0]*/ulong/*Type[0]*/ value, Func</*Type[0]*/ulong/*Type[0]*/, bool> isValue)
+        public static SubArray<ulong> replaceFirst(this SubArray<ulong> array, ulong value, Func<ulong, bool> isValue)
         {
             if (array.Length != 0)
             {
-                fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+                fixed (ulong* valueFixed = array.GetFixedBuffer())
                 {
-                    /*Type[0]*/
-                    ulong/*Type[0]*/* valueIndex = FixedArray.IndexOf(valueFixed + array.Start, array.Length, isValue);
+                    ulong* valueIndex = FixedArray.IndexOf(valueFixed + array.Start, array.Length, isValue);
                     if (valueIndex != null) *valueIndex = value;
                 }
             }
@@ -135,19 +130,18 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>匹配集合</returns>
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> find(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, bool> isValue)
+        public static SubArray<ulong> find(this SubArray<ulong> array, Func<ulong, bool> isValue)
         {
             if (array.Length == 0) return array;
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+            fixed (ulong* valueFixed = array.GetFixedBuffer())
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* write = valueFixed + array.Start, start = write, end = write + array.Length;
+                ulong* write = valueFixed + array.Start, start = write, end = write + array.Length;
                 do
                 {
                     if (isValue(*start)) *write++ = *start;
                 }
                 while (++start != end);
-                return new SubArray</*Type[0]*/ulong/*Type[0]*/> { Array = array.Array, Start = array.Start, Length = (int)(write - valueFixed) - array.Start };
+                return new SubArray<ulong> { Array = array.Array, Start = array.Start, Length = (int)(write - valueFixed) - array.Start };
             }
         }
         /// <summary>
@@ -157,9 +151,9 @@ namespace AutoCSer.Extension
         /// <param name="isValue">数据匹配器</param>
         /// <returns>匹配集合</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static LeftArray</*Type[0]*/ulong/*Type[0]*/> getFind(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, bool> isValue)
+        public static LeftArray<ulong> getFind(this SubArray<ulong> array, Func<ulong, bool> isValue)
         {
-            return array.Length == 0 ? default(LeftArray</*Type[0]*/ulong/*Type[0]*/>) : FixedArray.GetFind(array.Array, array.Start, array.Length, isValue);
+            return array.Length == 0 ? new LeftArray<ulong>(0) : FixedArray.GetFind(array.Array, array.Start, array.Length, isValue);
         }
         /// <summary>
         /// 获取匹配数组
@@ -167,18 +161,18 @@ namespace AutoCSer.Extension
         /// <param name="array">数组数据</param>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>匹配数组</returns>
-        public static /*Type[0]*/ulong/*Type[0]*/[] getFindArray(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, bool> isValue)
+        public static ulong[] getFindArray(this SubArray<ulong> array, Func<ulong, bool> isValue)
         {
-            if (array.Length == 0) return NullValue</*Type[0]*/ulong/*Type[0]*/>.Array;
+            if (array.Length == 0) return EmptyArray<ulong>.Array;
             int length = ((array.Length + 63) >> 6) << 3;
-            UnmanagedPool pool = UnmanagedPool.GetDefaultPool(length);
-            Pointer.Size data = pool.GetSize64(length);
+            AutoCSer.Memory.UnmanagedPool pool = AutoCSer.Memory.UnmanagedPool.GetPool(length);
+            AutoCSer.Memory.Pointer data = pool.GetMinSize(length);
             try
             {
-                Memory.ClearUnsafe(data.ULong, length >> 3);
+                AutoCSer.Memory.Common.Clear(data.ULong, length >> 3);
                 return FixedArray.GetFindArray(array.Array, array.Start, array.Length, isValue, new MemoryMap(data.Data));
             }
-            finally { pool.PushOnly(ref data); }
+            finally { pool.Push(ref data); }
         }
         /// <summary>
         /// 数组类型转换
@@ -187,16 +181,14 @@ namespace AutoCSer.Extension
         /// <param name="subArray">数据数组</param>
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数组</returns>
-        public static /*Type[0]*/ulong/*Type[0]*/[] getArray<valueType>(this SubArray<valueType> subArray, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getValue)
+        public static ulong[] getArray<valueType>(this SubArray<valueType> subArray, Func<valueType, ulong> getValue)
         {
-            if (subArray.Length == 0) return NullValue</*Type[0]*/ulong/*Type[0]*/>.Array;
+            if (subArray.Length == 0) return EmptyArray<ulong>.Array;
             valueType[] array = subArray.Array;
-            /*Type[0]*/
-            ulong/*Type[0]*/[] newValues = new /*Type[0]*/ulong/*Type[0]*/[subArray.Length];
-            fixed (/*Type[0]*/ulong/*Type[0]*/* newValueFixed = newValues)
+            ulong[] newValues = new ulong[subArray.Length];
+            fixed (ulong* newValueFixed = newValues)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* write = newValueFixed;
+                ulong* write = newValueFixed;
                 int index = subArray.Start, endIndex = index + subArray.Length;
                 do
                 {
@@ -213,14 +205,13 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <param name="getValue">数据获取器</param>
         /// <returns>目标数组</returns>
-        public static valueType[] getArray<valueType>(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Func</*Type[0]*/ulong/*Type[0]*/, valueType> getValue)
+        public static valueType[] getArray<valueType>(this SubArray<ulong> array, Func<ulong, valueType> getValue)
         {
-            if (array.Length == 0) return NullValue<valueType>.Array;
+            if (array.Length == 0) return EmptyArray<valueType>.Array;
             valueType[] newValues = new valueType[array.Length];
-            fixed (/*Type[0]*/ulong/*Type[0]*/* arrayFixed = array.Array)
+            fixed (ulong* arrayFixed = array.GetFixedBuffer())
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = arrayFixed + array.Start, end = start + array.Length;
+                ulong* start = arrayFixed + array.Start, end = start + array.Length;
                 int index = 0;
                 do
                 {
@@ -236,13 +227,13 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <param name="method">调用函数</param>
         /// <returns>数据数组</returns>
-        public static SubArray</*Type[0]*/ulong/*Type[0]*/> each(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, Action</*Type[0]*/ulong/*Type[0]*/> method)
+        public static SubArray<ulong> each(this SubArray<ulong> array, Action<ulong> method)
         {
             if (array.Length != 0)
             {
-                fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+                fixed (ulong* valueFixed = array.GetFixedBuffer())
                 {
-                    for (/*Type[0]*/ulong/*Type[0]*/* start = valueFixed + array.Start, end = start + array.Length; start != end; method(*start++)) ;
+                    for (ulong* start = valueFixed + array.Start, end = start + array.Length; start != end; method(*start++)) ;
                 }
             }
             return array;
@@ -253,17 +244,16 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <param name="value">最大值</param>
         /// <returns>是否存在最大值</returns>
-        public static bool Max(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool Max(this SubArray<ulong> array, out ulong value)
         {
             if (array.Length == 0)
             {
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                value = ulong.MinValue;
                 return false;
             }
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+            fixed (ulong* valueFixed = array.GetFixedBuffer())
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = valueFixed + array.Start, end = start + array.Length;
+                ulong* start = valueFixed + array.Start, end = start + array.Length;
                 for (value = *start; ++start != end; )
                 {
                     if (*start > value) value = *start;
@@ -278,10 +268,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最大值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ Max(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong Max(this SubArray<ulong> array, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return Max(array, out value) ? value : nullValue;
         }
         /// <summary>
@@ -292,11 +281,11 @@ namespace AutoCSer.Extension
         /// <param name="getKey">数据获取器</param>
         /// <param name="value">最大值</param>
         /// <returns>是否存在最大值</returns>
-        public static bool MaxKey<valueType>(this SubArray<valueType> subArray, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool MaxKey<valueType>(this SubArray<valueType> subArray, Func<valueType, ulong> getKey, out ulong value)
         {
             if (subArray.Length == 0)
             {
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                value = ulong.MinValue;
                 return false;
             }
             valueType[] array = subArray.Array;
@@ -304,8 +293,7 @@ namespace AutoCSer.Extension
             value = getKey(array[index]);
             while (++index != endIndex)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/ nextKey = getKey(array[index]);
+                ulong nextKey = getKey(array[index]);
                 if (nextKey > value) value = nextKey;
             }
             return true;
@@ -319,10 +307,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最大值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ MaxKey<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong MaxKey<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return MaxKey(array, getKey, out value) ? value : nullValue;
         }
         /// <summary>
@@ -333,7 +320,7 @@ namespace AutoCSer.Extension
         /// <param name="getKey">数据获取器</param>
         /// <param name="value">最大值</param>
         /// <returns>是否存在最大值</returns>
-        public static bool Max<valueType>(this SubArray<valueType> subArray, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out valueType value)
+        public static bool Max<valueType>(this SubArray<valueType> subArray, Func<valueType, ulong> getKey, out valueType value)
         {
             if (subArray.Length == 0)
             {
@@ -342,13 +329,11 @@ namespace AutoCSer.Extension
             }
             valueType[] array = subArray.Array;
             int index = subArray.Start, endIndex = index + subArray.Length;
-            /*Type[0]*/
-            ulong/*Type[0]*/ maxKey = getKey(value = array[index]);
+            ulong maxKey = getKey(value = array[index]);
             while (++index != endIndex)
             {
                 valueType nextValue = array[index];
-                /*Type[0]*/
-                ulong/*Type[0]*/ nextKey = getKey(nextValue);
+                ulong nextKey = getKey(nextValue);
                 if (nextKey > maxKey)
                 {
                     maxKey = nextKey;
@@ -366,7 +351,7 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最大值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType Max<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, valueType nullValue)
+        public static valueType Max<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, valueType nullValue)
         {
             valueType value;
             return Max(array, getKey, out value) ? value : nullValue;
@@ -377,17 +362,16 @@ namespace AutoCSer.Extension
         /// <param name="array">数据数组</param>
         /// <param name="value">最小值</param>
         /// <returns>是否存在最小值</returns>
-        public static bool Min(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool Min(this SubArray<ulong> array, out ulong value)
         {
             if (array.Length == 0)
             {
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                value = ulong.MinValue;
                 return false;
             }
-            fixed (/*Type[0]*/ulong/*Type[0]*/* valueFixed = array.Array)
+            fixed (ulong* valueFixed = array.GetFixedBuffer())
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/* start = valueFixed + array.Start, end = start + array.Length;
+                ulong* start = valueFixed + array.Start, end = start + array.Length;
                 for (value = *start; ++start != end; )
                 {
                     if (*start < value) value = *start;
@@ -402,10 +386,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最小值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ Min(this SubArray</*Type[0]*/ulong/*Type[0]*/> array, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong Min(this SubArray<ulong> array, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return Min(array, out value) ? value : nullValue;
         }
         /// <summary>
@@ -416,11 +399,11 @@ namespace AutoCSer.Extension
         /// <param name="getKey">数据获取器</param>
         /// <param name="value">最小值</param>
         /// <returns>是否存在最小值</returns>
-        public static bool MinKey<valueType>(this SubArray<valueType> subArray, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out /*Type[0]*/ulong/*Type[0]*/ value)
+        public static bool MinKey<valueType>(this SubArray<valueType> subArray, Func<valueType, ulong> getKey, out ulong value)
         {
             if (subArray.Length == 0)
             {
-                value = /*Type[0]*/ulong/*Type[0]*/.MinValue;
+                value = ulong.MinValue;
                 return false;
             }
             valueType[] array = subArray.Array;
@@ -428,8 +411,7 @@ namespace AutoCSer.Extension
             value = getKey(array[index]);
             while (++index != endIndex)
             {
-                /*Type[0]*/
-                ulong/*Type[0]*/ nextKey = getKey(array[index]);
+                ulong nextKey = getKey(array[index]);
                 if (nextKey < value) value = nextKey;
             }
             return true;
@@ -443,10 +425,9 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最小值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/ MinKey<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, /*Type[0]*/ulong/*Type[0]*/ nullValue)
+        public static ulong MinKey<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, ulong nullValue)
         {
-            /*Type[0]*/
-            ulong/*Type[0]*/ value;
+            ulong value;
             return MinKey(array, getKey, out value) ? value : nullValue;
         }
         /// <summary>
@@ -457,7 +438,7 @@ namespace AutoCSer.Extension
         /// <param name="getKey">数据获取器</param>
         /// <param name="value">最小值</param>
         /// <returns>是否存在最小值</returns>
-        public static bool Min<valueType>(this SubArray<valueType> subArray, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, out valueType value)
+        public static bool Min<valueType>(this SubArray<valueType> subArray, Func<valueType, ulong> getKey, out valueType value)
         {
             if (subArray.Length == 0)
             {
@@ -466,13 +447,11 @@ namespace AutoCSer.Extension
             }
             valueType[] array = subArray.Array;
             int index = subArray.Start, endIndex = index + subArray.Length;
-            /*Type[0]*/
-            ulong/*Type[0]*/ minKey = getKey(value = array[index]);
+            ulong minKey = getKey(value = array[index]);
             while (++index != endIndex)
             {
                 valueType nextValue = array[index];
-                /*Type[0]*/
-                ulong/*Type[0]*/ nextKey = getKey(nextValue);
+                ulong nextKey = getKey(nextValue);
                 if (nextKey < minKey)
                 {
                     minKey = nextKey;
@@ -490,7 +469,7 @@ namespace AutoCSer.Extension
         /// <param name="nullValue">默认空值</param>
         /// <returns>最小值,失败返回默认空值</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType Min<valueType>(this SubArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey, valueType nullValue)
+        public static valueType Min<valueType>(this SubArray<valueType> array, Func<valueType, ulong> getKey, valueType nullValue)
         {
             valueType value;
             return Min(array, getKey, out value) ? value : nullValue;

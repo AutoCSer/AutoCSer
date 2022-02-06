@@ -8,7 +8,7 @@ namespace AutoCSer.RandomObject.Metadata
     /// <summary>
     /// 引用泛型类型元数据
     /// </summary>
-    internal abstract partial class GenericType
+    internal abstract partial class GenericType : AutoCSer.Metadata.GenericTypeBase
     {
         /// <summary>
         /// 创建随机对象
@@ -50,16 +50,16 @@ namespace AutoCSer.RandomObject.Metadata
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, GenericType> cache = new LockLastDictionary<Type, GenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, GenericType> cache = new LockLastDictionary<HashType, GenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
-        /// <typeparam name="Type"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static GenericType create<Type>()
+        private static GenericType create<T>()
         {
-            return new GenericType<Type>();
+            return new GenericType<T>();
         }
         /// <summary>
         /// 创建泛型类型元数据 函数信息
@@ -70,14 +70,14 @@ namespace AutoCSer.RandomObject.Metadata
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static GenericType Get(Type type)
+        public static GenericType Get(HashType type)
         {
             GenericType value;
             if (!cache.TryGetValue(type, out value))
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(type).Invoke(null, null) }.GenericType;
+                    value = new UnionType.GenericType { Object = createMethod.MakeGenericMethod(type).Invoke(null, null) }.Value;
                     cache.Set(type, value);
                 }
                 finally { cache.Exit(); }
@@ -88,77 +88,82 @@ namespace AutoCSer.RandomObject.Metadata
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    /// <typeparam name="Type">泛型类型</typeparam>
-    internal sealed partial class GenericType<Type> : GenericType
+    /// <typeparam name="T">泛型类型</typeparam>
+    internal sealed partial class GenericType<T> : GenericType
     {
+        /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(T); } }
+
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override MethodInfo CreateMethod
         {
-            get { return ((Func<AutoCSer.RandomObject.Config, Type>)AutoCSer.RandomObject.MethodCache.create<Type>).Method; }
+            get { return ((Func<AutoCSer.RandomObject.Config, T>)AutoCSer.RandomObject.MethodCache.create<T>).Method; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         /// <param name="value"></param>
         /// <param name="config"></param>
-        private delegate void createMember(ref Type value, AutoCSer.RandomObject.Config config);
+        private delegate void createMember(ref T value, AutoCSer.RandomObject.Config config);
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override MethodInfo CreateMemberMethod
         {
-            get { return ((createMember)AutoCSer.RandomObject.MethodCache.createMember<Type>).Method; }
+            get { return ((createMember)AutoCSer.RandomObject.MethodCache.createMember<T>).Method; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override Delegate CreateArrayDelegate
         {
-            get { return (Func<AutoCSer.RandomObject.Config, Type[]>)AutoCSer.RandomObject.MethodCache.createArray<Type>; }
+            get { return (Func<AutoCSer.RandomObject.Config, T[]>)AutoCSer.RandomObject.MethodCache.createArray<T>; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override Delegate CreateArrayNullDelegate
         {
-            get { return (Func<AutoCSer.RandomObject.Config, Type[]>)AutoCSer.RandomObject.MethodCache.createArrayNull<Type>; }
+            get { return (Func<AutoCSer.RandomObject.Config, T[]>)AutoCSer.RandomObject.MethodCache.createArrayNull<T>; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override Delegate CreateLeftArrayDelegate
         {
-            get { return (Func<AutoCSer.RandomObject.Config, LeftArray<Type>>)AutoCSer.RandomObject.MethodCache.createLeftArray<Type>; }
+            get { return (Func<AutoCSer.RandomObject.Config, LeftArray<T>>)AutoCSer.RandomObject.MethodCache.createLeftArray<T>; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override Delegate CreateListArrayDelegate
         {
-            get { return (Func<AutoCSer.RandomObject.Config, ListArray<Type>>)AutoCSer.RandomObject.MethodCache.createListArray<Type>; }
+            get { return (Func<AutoCSer.RandomObject.Config, ListArray<T>>)AutoCSer.RandomObject.MethodCache.createListArray<T>; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override Delegate CreateListArrayNullDelegate
         {
-            get { return (Func<AutoCSer.RandomObject.Config, ListArray<Type>>)AutoCSer.RandomObject.MethodCache.createListArrayNull<Type>; }
+            get { return (Func<AutoCSer.RandomObject.Config, ListArray<T>>)AutoCSer.RandomObject.MethodCache.createListArrayNull<T>; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override Delegate CreateListDelegate
         {
-            get { return (Func<AutoCSer.RandomObject.Config, List<Type>>)AutoCSer.RandomObject.MethodCache.createList<Type>; }
+            get { return (Func<AutoCSer.RandomObject.Config, List<T>>)AutoCSer.RandomObject.MethodCache.createList<T>; }
         }
         /// <summary>
         /// 创建随机对象
         /// </summary>
         internal override Delegate CreateListNullDelegate
         {
-            get { return (Func<AutoCSer.RandomObject.Config, List<Type>>)AutoCSer.RandomObject.MethodCache.createListNull<Type>; }
+            get { return (Func<AutoCSer.RandomObject.Config, List<T>>)AutoCSer.RandomObject.MethodCache.createListNull<T>; }
         }
     }
 }

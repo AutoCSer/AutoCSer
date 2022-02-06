@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.QQ
 {
@@ -43,15 +43,15 @@ namespace AutoCSer.OpenAPI.QQ
                     OpenId openId = new OpenId();
                     try
                     {
-                        if (AutoCSer.Json.Parser.Parse(formatJson(json), ref openId)) isJson = true;
+                        if (AutoCSer.JsonDeSerializer.DeSerialize(formatJson(json), ref openId)) isJson = true;
                     }
                     catch (Exception error)
                     {
                         isError = true;
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, json);
+                        AutoCSer.LogHelper.Exception(error, json, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                     if (isJson && openId.openid != null) return openId;
-                    if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, json);
+                    if (!isError) AutoCSer.LogHelper.Debug(json, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                 }
             }
             return default(OpenId);

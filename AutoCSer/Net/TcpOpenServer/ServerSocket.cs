@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
@@ -86,7 +86,7 @@ namespace AutoCSer.Net.TcpOpenServer
             if (Sender != null) Sender.Close();
         }
         /// <summary>
-        /// TCP 内部服务端套接字任务处理
+        /// TCP 服务端套接字任务处理
         /// </summary>
         internal void Start()
         {
@@ -111,24 +111,24 @@ namespace AutoCSer.Net.TcpOpenServer
             {
                 IsVerifyMethod = true;
                 receiveCount = receiveIndex = 0;
-                ReceiveType = TcpServer.ServerSocketReceiveType.Command;
+                ReceiveType = TcpServer.ServerSocketReceiveType.CommandAgain;
 #if DOTNET2
                 Socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, Socket);
                 if (socketError == SocketError.Success) return;
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterNotCheckSleepFlag();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex, receiveBufferSize);
                 if (Socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref receiveAsyncLock, 0);
+                receiveAsyncLock.Exit();
 #endif
 #endif
             }
@@ -136,7 +136,7 @@ namespace AutoCSer.Net.TcpOpenServer
             {
                 IsVerifyMethod = false;
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = AutoCSer.Threading.SecondTimer.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = Socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, Socket);
                 if (socketError == SocketError.Success)
@@ -146,24 +146,27 @@ namespace AutoCSer.Net.TcpOpenServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterSleepFlag();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex, receiveBufferSize);
                 if (Socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
+#if !DotNetStandard
+                    receiveAsyncLock.SleepFlag = 0;
+#endif
                     Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref receiveAsyncLock, 0);
+                receiveAsyncLock.ExitSleepFlag();
 #endif
 #endif
             }
 #if !DOTNET2
-            ServerSocketTask.Task.Add(this); 
+            ServerSocketThreadArray.Default.CurrentThread.Add(this); 
 #endif
         }
 #if DOTNET2
@@ -184,6 +187,7 @@ namespace AutoCSer.Net.TcpOpenServer
 #if DOTNET2
             receiveAsyncEventArgs = async;
 #endif
+            LastReceiveTime = AutoCSer.Threading.SecondTimer.Now;
             try
             {
                 switch (ReceiveType)
@@ -197,14 +201,17 @@ namespace AutoCSer.Net.TcpOpenServer
                         if (isVerifyCommand()) return;
                         break;
                     case TcpServer.ServerSocketReceiveType.VerifyData: if (verifyDataAsync()) return; break;
-                    case TcpServer.ServerSocketReceiveType.Command: if (isCommand()) return; break;
+                    case TcpServer.ServerSocketReceiveType.Command:
+                    case TcpServer.ServerSocketReceiveType.CommandAgain:
+                        if (isCommand()) return;
+                        break;
                     case TcpServer.ServerSocketReceiveType.Data: if (dataAsync()) return; break;
                     case TcpServer.ServerSocketReceiveType.BigData: if (bigDataAsync()) return; break;
                 }
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             Close();
         }
@@ -218,7 +225,7 @@ namespace AutoCSer.Net.TcpOpenServer
             if (socket != null)
             {
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = AutoCSer.Threading.SecondTimer.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
                 if (socketError == SocketError.Success)
@@ -228,19 +235,22 @@ namespace AutoCSer.Net.TcpOpenServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterSleepFlag();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex, receiveBufferSize);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
+#if !DotNetStandard
+                    receiveAsyncLock.SleepFlag = 0;
+#endif
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref receiveAsyncLock, 0);
+                receiveAsyncLock.ExitSleepFlag();
 #endif
                 return isVerifyCommand();
 #endif
@@ -259,7 +269,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 return isCommand();
             }
 #if DOTNET2
-            Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)receiveAsyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 receiveCount = socket.EndReceive(receiveAsyncEventArgs, out socketError);
@@ -272,7 +282,7 @@ namespace AutoCSer.Net.TcpOpenServer
 #endif
                     if (receiveCount >= (sizeof(int) * 2 + sizeof(uint)))
                     {
-                        fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                        fixed (byte* receiveDataFixed = ReceiveBuffer.GetFixedBuffer())
                         {
                             if (*(int*)(receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex) == Server.VerifyCommandIdentity)
                             {
@@ -293,12 +303,12 @@ namespace AutoCSer.Net.TcpOpenServer
                                     }
                                 }
                             }
-                            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+                            else if (Server.Log.IsAnyLevel(LogLevel.Info))
                             {
 #if !DOTNET2
                             Socket socket = Socket;
 #endif
-                                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
+                                Server.Log.Info(socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
                             }
                         }
                     }
@@ -326,13 +336,13 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (doVerifyCommand()) return true;
                 }
                 else if (nextSize > 0 && isReceiveVerifyData()) return true;
-                if (!IsVerifyMethod && Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+                if (!IsVerifyMethod && Server.Log.IsAnyLevel(LogLevel.Info))
                 {
                     Socket socket = Socket;
-                    Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
+                    Server.Log.Info(socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
                 }
             }
-            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + dataSize.toString() + " > " + maxVerifyDataSize.toString());
+            else if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("TCP 验证函数接收数据长度超限 " + dataSize.toString() + " > " + maxVerifyDataSize.toString(), LogLevel.Debug | LogLevel.AutoCSer);
             return false;
         }
         /// <summary>
@@ -354,19 +364,22 @@ namespace AutoCSer.Net.TcpOpenServer
                 }
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterSleepFlag();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
+#if !DotNetStandard
+                    receiveAsyncLock.SleepFlag = 0;
+#endif
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref receiveAsyncLock, 0);
+                receiveAsyncLock.ExitSleepFlag();
 #endif
                 return isVerifyData();
 #endif
@@ -385,10 +398,10 @@ namespace AutoCSer.Net.TcpOpenServer
             Server.CancelReceiveVerifyCommandTimeout(this);
 #endif
             if (isVerifyData()) return true;
-            if (!IsVerifyMethod && Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+            if (!IsVerifyMethod && Server.Log.IsAnyLevel(LogLevel.Info))
             {
                 Socket socket = Socket;
-                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Info(socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }
@@ -398,10 +411,10 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <returns></returns>
         private bool isVerifyData()
         {
-            if (Date.NowTime.Now < receiveTimeout)
+            if (AutoCSer.Threading.SecondTimer.Now < receiveTimeout)
             {
 #if DOTNET2
-                Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
+                Socket socket = (Socket)receiveAsyncEventArgs.AsyncState;
                 if (socket == Socket)
                 {
                     int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
@@ -427,10 +440,10 @@ namespace AutoCSer.Net.TcpOpenServer
                 socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
-            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
+            else if (Server.Log.IsAnyLevel(LogLevel.Info))
             {
                 Socket socket = Socket;
-                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Info(socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()), LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }
@@ -479,18 +492,18 @@ namespace AutoCSer.Net.TcpOpenServer
                 if (socketError == SocketError.Success) return true;
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterNotCheckSleepFlag();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex, receiveBufferSize);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                Interlocked.Exchange(ref receiveAsyncLock, 0);
+                receiveAsyncLock.Exit();
 #endif
                 return isCommand();
 #endif
@@ -505,7 +518,7 @@ namespace AutoCSer.Net.TcpOpenServer
         private bool isCommand()
         {
 #if DOTNET2
-            Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)receiveAsyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 receiveCount += socket.EndReceive(receiveAsyncEventArgs, out socketError);
@@ -516,7 +529,7 @@ namespace AutoCSer.Net.TcpOpenServer
             {
                 receiveCount += receiveAsyncEventArgs.BytesTransferred;
 #endif
-                    fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                    fixed (byte* receiveDataFixed = ReceiveBuffer.GetFixedBuffer())
                     {
                         receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
                         return loop(true);
@@ -559,7 +572,7 @@ namespace AutoCSer.Net.TcpOpenServer
                                     dataSize = compressionDataSize;
                                     if (dataSize > maxMergeInputSize)
                                     {
-                                        if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxMergeInputSize.toString() + "]");
+                                        if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxMergeInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                         return false;
                                     }
                                     receiveIndex += sizeof(int) + sizeof(uint);
@@ -570,13 +583,12 @@ namespace AutoCSer.Net.TcpOpenServer
                                     if ((dataSize = *(int*)(start + (sizeof(int) + sizeof(uint)))) <= (compressionDataSize = -compressionDataSize) || compressionDataSize == 0) return false;
                                     if (dataSize > maxMergeInputSize)
                                     {
-                                        if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxMergeInputSize.toString() + "]");
+                                        if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxMergeInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                         return false;
                                     }
                                     receiveIndex += sizeof(int) * 2 + sizeof(uint);
                                     break;
                                 }
-                                if (isCommand) return false;
                                 goto COPY;
                             case TcpServer.Server.CancelKeepCommandIndex - TcpServer.Server.MinCommandIndex:
                                 if (receiveSize >= (sizeof(int) * 2 + sizeof(uint)))
@@ -587,7 +599,6 @@ namespace AutoCSer.Net.TcpOpenServer
                                     isCommand = false;
                                     goto START;
                                 }
-                                if (isCommand) return false;
                                 goto COPY;
                             case TcpServer.Server.CustomDataCommandIndex - TcpServer.Server.MinCommandIndex:
                                 if (receiveSize >= (sizeof(int) * 2 + sizeof(uint)))
@@ -596,12 +607,12 @@ namespace AutoCSer.Net.TcpOpenServer
                                     {
                                         if ((dataSize = compressionDataSize) > maxInputSize)
                                         {
-                                            if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]");
+                                            if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                             return false;
                                         }
                                         if ((customDataSize = *(int*)(start + sizeof(int))) < 0 || (uint)(dataSize - customDataSize) >= 4)
                                         {
-                                            Server.Log.Add(Log.LogType.Error, "客户端自定义数据解析错误");
+                                            Server.Log.Error("客户端自定义数据解析错误", LogLevel.Error | LogLevel.AutoCSer);
                                             return false;
                                         }
                                         receiveIndex += sizeof(int) * 2 + sizeof(uint);
@@ -612,19 +623,18 @@ namespace AutoCSer.Net.TcpOpenServer
                                         if ((dataSize = *(int*)(start + (sizeof(int) * 2 + sizeof(uint)))) <= (compressionDataSize = -compressionDataSize) || compressionDataSize == 0) return false;
                                         if (dataSize > maxInputSize)
                                         {
-                                            if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]");
+                                            if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                             return false;
                                         }
                                         if ((customDataSize = *(int*)(start + sizeof(int))) < 0 || (uint)(dataSize - customDataSize) >= 4)
                                         {
-                                            Server.Log.Add(Log.LogType.Error, "客户端自定义数据解析错误");
+                                            Server.Log.Error("客户端自定义数据解析错误", LogLevel.Error | LogLevel.AutoCSer);
                                             return false;
                                         }
                                         receiveIndex += sizeof(int) * 3 + sizeof(uint);
                                         break;
                                     }
                                 }
-                                if (isCommand) return false;
                                 goto COPY;
                             default:
                                 if (((CommandIndex = *(uint*)(start + sizeof(int))) & (uint)TcpServer.CommandFlags.NullData) == 0)
@@ -635,7 +645,7 @@ namespace AutoCSer.Net.TcpOpenServer
                                         {
                                             if ((dataSize = compressionDataSize) > maxInputSize)
                                             {
-                                                if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]");
+                                                if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                                 return false;
                                             }
                                             receiveIndex += (sizeof(int) * 2 + sizeof(uint));
@@ -647,7 +657,7 @@ namespace AutoCSer.Net.TcpOpenServer
                                             {
                                                 if (dataSize > maxInputSize)
                                                 {
-                                                    if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]");
+                                                    if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                                     return false;
                                                 }
                                                 receiveIndex += (sizeof(int) * 3 + sizeof(uint));
@@ -656,7 +666,6 @@ namespace AutoCSer.Net.TcpOpenServer
                                             return false;
                                         }
                                     }
-                                    if (isCommand) return false;
                                     goto COPY;
                                 }
                                 if (command != TcpServer.Server.RemoteExpressionCommandIndex && command != TcpServer.Server.RemoteExpressionNodeIdCommandIndex)
@@ -666,7 +675,7 @@ namespace AutoCSer.Net.TcpOpenServer
                                     isCommand = false;
                                     goto START;
                                 }
-                                Server.Log.Add(Log.LogType.Error, "远程表达式服务端节点类型数据解析错误 " + command.toString());
+                                Server.Log.Error("远程表达式服务端节点类型数据解析错误 " + command.toString(), LogLevel.Error | LogLevel.AutoCSer);
                                 return false;
                         }
                         if (compressionDataSize <= receiveCount - receiveIndex)
@@ -691,34 +700,36 @@ namespace AutoCSer.Net.TcpOpenServer
                     }
                     return false;
                 }
-                else if (isCommand) return false;
-                COPY:
-                Memory.SimpleCopyNotNull64(receiveDataStart + receiveIndex, receiveDataStart, receiveCount = receiveSize);
-                receiveIndex = 0;
+            COPY:
+                if (!isCommand)
+                {
+                    AutoCSer.Memory.Common.SimpleCopyNotNull64(receiveDataStart + receiveIndex, receiveDataStart, receiveCount = receiveSize);
+                    receiveIndex = 0;
+                }
             }
             Socket socket = Socket;
-            if (socket != null)
+            if (socket != null && (ReceiveType != TcpServer.ServerSocketReceiveType.CommandAgain || !isCommand))
             {
-                ReceiveType = TcpServer.ServerSocketReceiveType.Command;
+                ReceiveType = isCommand ? TcpServer.ServerSocketReceiveType.CommandAgain : TcpServer.ServerSocketReceiveType.Command;
 #if DOTNET2
                 socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
                 if (socketError == SocketError.Success) return true;
 #else
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterNotCheckSleepFlag();
 #endif
                 receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
                 if (socket.ReceiveAsync(receiveAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
                 if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     receiveCount += receiveAsyncEventArgs.BytesTransferred;
                     isCommand = true;
@@ -740,7 +751,7 @@ namespace AutoCSer.Net.TcpOpenServer
             {
                 if (receiveIndex + compressionDataSize > receiveBufferSize)
                 {
-                    Memory.CopyNotNull(receiveDataStart + receiveIndex, receiveDataStart, receiveCount -= receiveIndex);
+                    AutoCSer.Memory.Common.CopyNotNull(receiveDataStart + receiveIndex, receiveDataStart, receiveCount -= receiveIndex);
                     receiveIndex = 0;
                 }
                 ReceiveType = TcpServer.ServerSocketReceiveType.Data;
@@ -759,21 +770,24 @@ namespace AutoCSer.Net.TcpOpenServer
                     }
 #else
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    receiveAsyncLock.EnterSleepFlag();
 #endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
                     if (socket.ReceiveAsync(receiveAsyncEventArgs))
                     {
+#if !DotNetStandard
+                        receiveAsyncLock.SleepFlag = 0;
+#endif
                         Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
                         return true;
                     }
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.ExitSleepFlag();
 #endif
                         if (compressionDataSize <= (receiveCount += receiveAsyncEventArgs.BytesTransferred) - receiveIndex) return isDoCommand = isDoCommandLoop();
                         goto RECEIVE;
@@ -803,21 +817,24 @@ namespace AutoCSer.Net.TcpOpenServer
                     }
 #else
 #if !DotNetStandard
-                    while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                    receiveAsyncLock.EnterSleepFlag();
 #endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount);
                     if (socket.ReceiveAsync(receiveAsyncEventArgs))
                     {
+#if !DotNetStandard
+                        receiveAsyncLock.SleepFlag = 0;
+#endif
                         Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.Exit();
 #endif
                         return true;
                     }
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.ExitSleepFlag();
 #endif
                         if (compressionDataSize == (receiveBigBufferCount += receiveAsyncEventArgs.BytesTransferred)) return isDoCommand = isDoCommandBig();
                         goto BIGRECEIVE;
@@ -836,7 +853,7 @@ namespace AutoCSer.Net.TcpOpenServer
         {
 #if DOTNET2
             if (!receiveAsyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
-            Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)receiveAsyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
@@ -852,7 +869,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (compressionDataSize <= (receiveCount += count) - receiveIndex)
                     {
                         ReceiveSizeLessCount = 0;
-                        fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                        fixed (byte* receiveDataFixed = ReceiveBuffer.GetFixedBuffer())
                         {
                             receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
                             if (isDoCommandLoop() && loop(false)) return true;
@@ -875,19 +892,22 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (socket != null)
                     {
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        receiveAsyncLock.EnterSleepFlag();
 #endif
                         receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount);
                         if (socket.ReceiveAsync(receiveAsyncEventArgs))
                         {
+#if !DotNetStandard
+                            receiveAsyncLock.SleepFlag = 0;
+#endif
                             Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                            Interlocked.Exchange(ref receiveAsyncLock, 0);
+                            receiveAsyncLock.Exit();
 #endif
                             return true;
                         }
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.ExitSleepFlag();
 #endif
                         goto CHECK;
                     }
@@ -910,7 +930,7 @@ namespace AutoCSer.Net.TcpOpenServer
         {
 #if DOTNET2
             if (!receiveAsyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
-            Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
+            Socket socket = (Socket)receiveAsyncEventArgs.AsyncState;
             if (socket == Socket)
             {
                 int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
@@ -946,19 +966,22 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (socket != null)
                     {
 #if !DotNetStandard
-                        while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                        receiveAsyncLock.EnterSleepFlag();
 #endif
                         receiveAsyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize);
                         if (socket.ReceiveAsync(receiveAsyncEventArgs))
                         {
+#if !DotNetStandard
+                            receiveAsyncLock.SleepFlag = 0;
+#endif
                             Server.PushReceiveVerifyCommandTimeout(this, Socket);
 #if !DotNetStandard
-                            Interlocked.Exchange(ref receiveAsyncLock, 0);
+                            receiveAsyncLock.Exit();
 #endif
                             return true;
                         }
 #if !DotNetStandard
-                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+                        receiveAsyncLock.ExitSleepFlag();
 #endif
                         goto CHECK;
                     }
@@ -1080,7 +1103,7 @@ namespace AutoCSer.Net.TcpOpenServer
             {
                 try
                 {
-                    byte[] dataArray = data.Array;
+                    byte[] dataArray = data.GetFixedBuffer();
                     fixed (byte* dataFixed = dataArray)
                     {
                         int receiveIndex = data.Start, receiveSize;
@@ -1108,7 +1131,7 @@ namespace AutoCSer.Net.TcpOpenServer
                                     }
                                     if ((customDataSize = *(int*)(start + sizeof(int))) < 0 || (uint)(dataSize - customDataSize) >= 4)
                                     {
-                                        Server.Log.Add(Log.LogType.Error, "客户端自定义数据解析错误");
+                                        Server.Log.Error("客户端自定义数据解析错误", LogLevel.Error | LogLevel.AutoCSer);
                                         DisposeSocket();
                                         return;
                                     }
@@ -1127,7 +1150,7 @@ namespace AutoCSer.Net.TcpOpenServer
                                     }
                                     if (dataSize > maxInputSize)
                                     {
-                                        if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]");
+                                        if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                         DisposeSocket();
                                         return;
                                     }
@@ -1147,7 +1170,7 @@ namespace AutoCSer.Net.TcpOpenServer
                                         }
                                         if (dataSize > maxInputSize)
                                         {
-                                            if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]");
+                                            if (Server.Log.IsAnyLevel(LogLevel.Debug)) Server.Log.Debug("输入数据超长 dataSize[" + dataSize.toString() + "] > maxInputSize[" + maxInputSize.toString() + "]", LogLevel.Debug | LogLevel.AutoCSer);
                                             DisposeSocket();
                                             return;
                                         }
@@ -1169,7 +1192,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             DisposeSocket();

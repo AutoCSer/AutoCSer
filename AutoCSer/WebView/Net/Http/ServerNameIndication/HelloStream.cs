@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.Http.ServerNameIndication
 {
@@ -140,7 +140,7 @@ namespace AutoCSer.Net.Http.ServerNameIndication
                     SubArray<byte> domain = getDomain();
                     if (domain.Length != 0)
                     {
-                        HttpRegister.SslCertificate certificate = new AutoCSer.Net.Http.UnionType { Value = Socket.Server }.SslServer.GetCertificate(ref domain);
+                        HttpRegister.SslCertificate certificate = new AutoCSer.Net.Http.UnionType.SslServer { Object = Socket.Server }.Value.GetCertificate(ref domain);
                         if (certificate != null)
                         {
                             Socket.SslStream = certificate.CreateSslStream(this);
@@ -151,7 +151,7 @@ namespace AutoCSer.Net.Http.ServerNameIndication
             }
             catch (Exception error)
             {
-                Socket.Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                Socket.Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             Socket.HeaderError();
         }
@@ -161,7 +161,7 @@ namespace AutoCSer.Net.Http.ServerNameIndication
         /// <returns></returns>
         private unsafe SubArray<byte> getDomain()
         {
-            fixed (byte* bufferFixed = Socket.Header.Buffer.Buffer)
+            fixed (byte* bufferFixed = Socket.Header.Buffer.GetFixedBuffer())
             {
                 byte* start = bufferFixed + readIndex;
                 if (*start == (byte)MessageType.Handshake && start[1] == 3 && start[5] == (byte)HandshakeType.ClientHello)
@@ -190,13 +190,13 @@ namespace AutoCSer.Net.Http.ServerNameIndication
                                                 while (extensionsIndex < helloSize)
                                                 {
                                                     int extensionIndex = extensionsIndex + ((int)start[extensionsIndex + sizeof(ushort)] << 8) + start[extensionsIndex + (sizeof(ushort) + 1)] + 4;
-                                                    if ((uint)endIndex < (uint)extensionIndex || extensionIndex < extensionsIndex) return default(SubArray<byte>);
+                                                    if ((uint)endIndex < (uint)extensionIndex || extensionIndex < extensionsIndex) return new SubArray<byte>();
                                                     if (*(ushort*)(start + extensionsIndex) == 0)
                                                     {//Server Name
                                                         for (extensionsIndex += 4; extensionsIndex < extensionIndex;)
                                                         {
                                                             int serverNameEndIndex = extensionsIndex + ((int)start[extensionsIndex] << 8) + start[extensionsIndex + 1] + 2;
-                                                            if ((uint)extensionIndex < (uint)serverNameEndIndex || serverNameEndIndex < extensionsIndex) return default(SubArray<byte>);
+                                                            if ((uint)extensionIndex < (uint)serverNameEndIndex || serverNameEndIndex < extensionsIndex) return new SubArray<byte>();
                                                             if (start[extensionsIndex + 2] == 0)
                                                             {//Host Name
                                                                 return new SubArray<byte>(Socket.Header.Buffer.Buffer, Socket.Header.Buffer.StartIndex + extensionsIndex + 5, ((int)start[extensionsIndex + 3] << 8) + start[extensionsIndex + 4]);
@@ -215,7 +215,7 @@ namespace AutoCSer.Net.Http.ServerNameIndication
                     }
                 }
             }
-            return default(SubArray<byte>);
+            return new SubArray<byte>();
         }
         /// <summary>
         /// 刷新流中的数据

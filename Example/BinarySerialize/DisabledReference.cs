@@ -5,7 +5,7 @@ namespace AutoCSer.Example.BinarySerialize
     /// <summary>
     /// 禁用循环引用 示例
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false)]
     class DisabledReference
     {
         /// <summary>
@@ -18,8 +18,8 @@ namespace AutoCSer.Example.BinarySerialize
             DisabledReference value = new DisabledReference();
             DisabledReference[] array = new DisabledReference[] { value, value };//在数组中引用两次
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(array);
-            DisabledReference[] newArray = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<DisabledReference[]>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(array);
+            DisabledReference[] newArray = AutoCSer.BinaryDeSerializer.DeSerialize<DisabledReference[]>(data);
 
             return newArray != null && newArray.Length == 2 && newArray[0] != null && newArray[1] != null && newArray[0] != newArray[1];
         }

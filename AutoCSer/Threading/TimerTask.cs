@@ -8,7 +8,7 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 定时任务
     /// </summary>
-    public sealed class TimerTask : IDisposable
+    //public sealed class TimerTask : IDisposable
     {
         /// <summary>
         /// 已排序任务
@@ -48,7 +48,7 @@ namespace AutoCSer.Threading
         /// <param name="type">调用类型</param>
         /// <param name="threadType">定时任务线程模式</param>
         /// <param name="runTime">执行时间</param>
-        private void add(object value, Thread.CallType type, TimerTaskThreadType threadType, DateTime runTime)
+        private void add(object value, Thread.ThreadTaskType type, TimerTaskThreadType threadType, DateTime runTime)
         {
             long runTimeTicks = runTime.Ticks;
             TimerTaskInfo taskInfo = new TimerTaskInfo { Value = value, CallType = type, ThreadType = threadType };
@@ -69,7 +69,7 @@ namespace AutoCSer.Threading
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Add(Action run, DateTime runTime, TimerTaskThreadType threadType = TimerTaskThreadType.ThreadPool)
         {
-            if (run != null) add(run, Thread.CallType.Action, threadType, runTime);
+            if (run != null) add(run, Thread.ThreadTaskType.Action, threadType, runTime);
         }
         /// <summary>
         /// 触发定时任务
@@ -97,7 +97,7 @@ namespace AutoCSer.Threading
                         {
                             int index = taskHeap.Heap.Int[1];
                             long ticks = taskHeap.Array[index].Key;
-                            if (ticks <= Date.NowTime.Set().Ticks)
+                            if (ticks <= AutoCSer.Threading.SecondTimer.SetNow().Ticks)
                             {
                                 taskInfo = taskHeap.Array[index].Value;
                                 taskHeap.RemoveTop();

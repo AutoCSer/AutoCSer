@@ -5,7 +5,7 @@ namespace AutoCSer.OpenAPI.Weixin
     /// <summary>
     /// 统一下单参数 https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1
     /// </summary>
-    [AutoCSer.Xml.Serialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
+    [AutoCSer.XmlSerialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
     public sealed class AppPrePayIdQuery : PrePayIdQueryBase
     {
         /// <summary>

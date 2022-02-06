@@ -28,7 +28,7 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 匹配数据集合
         /// </summary>
-        private LeftArray<valueType> array;
+        private LeftArray<valueType> array = new LeftArray<valueType>(0);
         /// <summary>
         /// 获取匹配记录集合
         /// </summary>

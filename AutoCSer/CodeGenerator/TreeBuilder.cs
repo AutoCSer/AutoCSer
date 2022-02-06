@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CodeGenerator
@@ -182,7 +182,7 @@ namespace AutoCSer.CodeGenerator
             /// <summary>
             /// 子节点集合
             /// </summary>
-            private LeftArray<Node> childs;
+            private LeftArray<Node> childs = new LeftArray<Node>(0);
             /// <summary>
             /// 设置子节点集合
             /// </summary>
@@ -232,7 +232,7 @@ namespace AutoCSer.CodeGenerator
                 }
                 catch (Exception error)
                 {
-                    Messages.Add(error);
+                    Messages.Exception(error);
                 }
             }
             return null;
@@ -371,7 +371,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 当前节点集合
         /// </summary>
-        private LeftArray<KeyValue<nodeType, bool>> nodes = new LeftArray<KeyValue<nodeType, bool>>();
+        private LeftArray<KeyValue<nodeType, bool>> nodes = new LeftArray<KeyValue<nodeType, bool>>(0);
         /// <summary>
         /// 清除节点
         /// </summary>

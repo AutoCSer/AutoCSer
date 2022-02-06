@@ -5,7 +5,7 @@ namespace AutoCSer.Example.BinarySerialize
     /// <summary>
     /// 禁用成员位图 示例
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false)]
     class DisabledMemberMap
     {
         /// <summary>
@@ -40,8 +40,8 @@ namespace AutoCSer.Example.BinarySerialize
 #endif
             AutoCSer.BinarySerialize.SerializeConfig serializeMemberMapConfig = new AutoCSer.BinarySerialize.SerializeConfig { MemberMap = serializeMemberMap };
 
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value, serializeMemberMapConfig);
-            DisabledMemberMap newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<DisabledMemberMap>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value, serializeMemberMapConfig);
+            DisabledMemberMap newValue = AutoCSer.BinaryDeSerializer.DeSerialize<DisabledMemberMap>(data);
 
             return newValue != null && newValue.Value1 == 1 && newValue.Value2 == 2 && newValue.Value3 == 3;
         }

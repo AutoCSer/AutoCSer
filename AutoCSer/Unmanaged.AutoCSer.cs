@@ -8,7 +8,7 @@ namespace AutoCSer
     /// <summary>
     /// 非托管内存
     /// </summary>
-    public unsafe static partial class Unmanaged
+    //public unsafe static partial class Unmanaged
     {
         /// <summary>
         /// 申请非托管内存

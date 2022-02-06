@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CacheServer.DataStructure.Value;
 
 namespace AutoCSer.TestCase.CacheClientPerformance

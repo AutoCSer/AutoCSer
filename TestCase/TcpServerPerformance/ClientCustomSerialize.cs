@@ -20,8 +20,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// 对象序列化
         /// </summary>
         /// <param name="serializer">对象序列化器</param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
-        private unsafe void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        [AutoCSer.BinarySerializeCustom]
+        private unsafe void serialize(AutoCSer.BinarySerializer serializer)
         {
             Output.Serialize(serializer);
         }
@@ -29,8 +29,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        [AutoCSer.BinarySerializeCustom]
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             if (deSerializer.GetBuffer(ref Buffer))
             {

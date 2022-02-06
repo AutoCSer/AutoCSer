@@ -7,22 +7,22 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 链表节点
     /// </summary>
-    /// <typeparam name="valueType"></typeparam>
-    public abstract partial class Link<valueType>
-        where valueType : Link<valueType>
+    /// <typeparam name="T"></typeparam>
+    public abstract partial class Link<T>
+        where T : Link<T>
     {
         /// <summary>
         /// 下一个节点
         /// </summary>
-        internal valueType LinkNext;
+        internal T LinkNext;
         /// <summary>
         /// 获取并清除下一个节点
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal valueType GetLinkNextClear()
+        internal T GetLinkNextClear()
         {
-            valueType value = LinkNext;
+            T value = LinkNext;
             LinkNext = null;
             return value;
         }
@@ -30,41 +30,47 @@ namespace AutoCSer.Threading
         /// 缓存对象链表（用于冲突概率低的场景）
         /// </summary>
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-        public struct YieldPoolLink
+        public struct YieldPool
         {
-            /// <summary>
-            /// 缓存数量
-            /// </summary>
-            private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
             /// <summary>
             /// 是否需要释放资源
             /// </summary>
-            private readonly static bool isDisponse = typeof(IDisposable).IsAssignableFrom(typeof(valueType));
+            private readonly static bool isDisponse = typeof(IDisposable).IsAssignableFrom(typeof(T));
             /// <summary>
             /// 链表头部
             /// </summary>
-            private valueType head;
+            private T head;
             /// <summary>
             /// 弹出节点访问锁
             /// </summary>
-            private int popLock;
+            private AutoCSer.Threading.SpinLock popLock;
             /// <summary>
             /// 缓存数量
             /// </summary>
             private int count;
             /// <summary>
+            /// 最大缓存数量（非精确数量）
+            /// </summary>
+            private readonly int maxCount;
+            /// <summary>
+            /// 链表
+            /// </summary>
+            /// <param name="maxCount">链表缓存池默认缓存数量</param>
+            internal YieldPool(int maxCount)
+            {
+                head = null;
+                popLock = default(AutoCSer.Threading.SpinLock);
+                count = 0;
+                this.maxCount = maxCount;
+            }
+            /// <summary>
             /// 添加节点
             /// </summary>
             /// <param name="value"></param>
-            internal void PushNotNull(valueType value)
+            private void push(T value)
             {
-                if (count >= maxCount)
-                {
-                    if (isDisponse) ((IDisposable)value).Dispose();
-                    return;
-                }
                 System.Threading.Interlocked.Increment(ref count);
-                valueType headValue;
+                T headValue;
                 do
                 {
                     if ((headValue = head) == null)
@@ -77,59 +83,59 @@ namespace AutoCSer.Threading
                         value.LinkNext = headValue;
                         if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
                     }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPush);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }
             /// <summary>
             /// 添加节点
             /// </summary>
-            /// <param name="value"></param>
-            /// <returns></returns>
-            internal int IsPushNotNull(valueType value)
+            /// <param name="value">不可为 null</param>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal void Push(T value)
             {
-                if (count >= maxCount) return 0;
-                System.Threading.Interlocked.Increment(ref count);
-                valueType headValue;
-                do
+                if (count < maxCount) push(value);
+                else if (isDisponse) ((IDisposable)value).Dispose();
+            }
+            /// <summary>
+            /// 添加节点
+            /// </summary>
+            /// <param name="value">不可为 null</param>
+            /// <returns>是否添加成功</returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal int IsPush(T value)
+            {
+                if (count < maxCount)
                 {
-                    if ((headValue = head) == null)
-                    {
-                        value.LinkNext = null;
-                        if (System.Threading.Interlocked.CompareExchange(ref head, value, null) == null) return 1;
-                    }
-                    else
-                    {
-                        value.LinkNext = headValue;
-                        if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return 1;
-                    }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPush);
+                    push(value);
+                    return 1;
                 }
-                while (true);
+                if (isDisponse) ((IDisposable)value).Dispose();
+                return 0;
             }
             /// <summary>
             /// 弹出节点
             /// </summary>
             /// <returns></returns>
-            public valueType Pop()
+            public T Pop()
             {
-                valueType headValue;
-                while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
+                T headValue;
+                popLock.EnterYield();
                 do
                 {
                     if ((headValue = head) == null)
                     {
-                        System.Threading.Interlocked.Exchange(ref popLock, 0);
+                        popLock.Exit();
                         return null;
                     }
                     if (System.Threading.Interlocked.CompareExchange(ref head, headValue.LinkNext, headValue) == headValue)
                     {
-                        System.Threading.Interlocked.Exchange(ref popLock, 0);
+                        popLock.Exit();
                         System.Threading.Interlocked.Decrement(ref count);
                         headValue.LinkNext = null;
                         return headValue;
                     }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPop);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }
@@ -137,13 +143,13 @@ namespace AutoCSer.Threading
             /// 释放列表
             /// </summary>
             /// <param name="value"></param>
-            private void disposeLink(valueType value)
+            private void disposeLink(T value)
             {
-                do
+                while (value != null)
                 {
                     ((IDisposable)value).Dispose();
+                    value = value.LinkNext;
                 }
-                while ((value = value.LinkNext) != null);
             }
             /// <summary>
             /// 清除缓存数据
@@ -151,32 +157,29 @@ namespace AutoCSer.Threading
             /// <param name="count">保留缓存数据数量</param>
             internal void ClearCache(int count)
             {
-                valueType headValue = System.Threading.Interlocked.Exchange(ref head, null);
-                this.count = 0;
-                if (headValue != null)
+                T headValue = System.Threading.Interlocked.Exchange(ref head, null);
+                System.Threading.Interlocked.Exchange(ref this.count, 0);
+                if (count <= 0)
                 {
-                    if (count == 0)
+                    if (isDisponse) disposeLink(headValue);
+                }
+                else if (headValue != null)
+                {
+                    int pushCount = count;
+                    T end = headValue;
+                    while (--count != 0)
                     {
-                        if (isDisponse) disposeLink(headValue);
-                    }
-                    else
-                    {
-                        int pushCount = count;
-                        valueType end = headValue;
-                        while (--count != 0)
+                        if (end.LinkNext == null)
                         {
-                            if (end.LinkNext == null)
-                            {
-                                PushLink(headValue, end, pushCount - count);
-                                return;
-                            }
-                            end = end.LinkNext;
+                            PushLink(headValue, end, pushCount - count);
+                            return;
                         }
-                        valueType next = end.LinkNext;
-                        end.LinkNext = null;
-                        PushLink(headValue, end, pushCount);
-                        if (isDisponse && next != null) disposeLink(next);
+                        end = end.LinkNext;
                     }
+                    T next = end.LinkNext;
+                    end.LinkNext = null;
+                    PushLink(headValue, end, pushCount);
+                    if (isDisponse) disposeLink(next);
                 }
             }
             /// <summary>
@@ -185,10 +188,10 @@ namespace AutoCSer.Threading
             /// <param name="value">链表头部</param>
             /// <param name="end">链表尾部</param>
             /// <param name="count">数据数量</param>
-            internal void PushLink(valueType value, valueType end, int count)
+            internal void PushLink(T value, T end, int count)
             {
                 System.Threading.Interlocked.Add(ref this.count, count);
-                valueType headValue;
+                T headValue;
                 do
                 {
                     if ((headValue = head) == null)
@@ -201,32 +204,44 @@ namespace AutoCSer.Threading
                         end.LinkNext = headValue;
                         if (System.Threading.Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
                     }
-                    ThreadYield.Yield(ThreadYield.Type.YieldLinkPush);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }
-        }
-        /// <summary>
-        /// 链表节点池
-        /// </summary>
-        public static class YieldPool
-        {
+
             /// <summary>
             /// 链表节点池
             /// </summary>
-            public static YieldPoolLink Default;
+            public static YieldPool Default;
             /// <summary>
             /// 清除缓存数据
             /// </summary>
-            /// <param name="count">保留缓存数据数量</param>
-            private static void clearCache(int count)
+            /// <param name="count"></param>
+            private static void defaultClearCache(int count)
             {
                 Default.ClearCache(count);
+            }
+            /// <summary>
+            /// 清除缓存数据
+            /// </summary>
+            private static void defaultReleaseFree()
+            {
+                Default.ClearCache(AutoCSer.Common.ProcessorCount);
             }
 
             static YieldPool()
             {
-                AutoCSer.Pub.ClearCaches += clearCache;
+                LinkPoolParameter parameter = AutoCSer.Common.Config.GetLinkPoolParameter(typeof(T));
+                Default = new YieldPool(parameter.MaxObjectCount);
+                if (parameter.MaxObjectCount > 0)
+                {
+                    if (parameter.IsClearCache) AutoCSer.Memory.Common.AddClearCache(defaultClearCache);
+                    if (parameter.ReleaseFreeTimeoutSeconds > 0)
+                    {
+                        new SecondTimerActionTask(AutoCSer.Threading.SecondTimer.InternalTaskArray, defaultReleaseFree, parameter.ReleaseFreeTimeoutSeconds, SecondTimerThreadMode.Synchronous, SecondTimerKeepMode.Before, parameter.ReleaseFreeTimeoutSeconds).AppendTaskArray();
+                    }
+                    AutoCSer.Memory.ObjectRoot.ScanType.Add(typeof(YieldPool));
+                }
             }
         }
     }

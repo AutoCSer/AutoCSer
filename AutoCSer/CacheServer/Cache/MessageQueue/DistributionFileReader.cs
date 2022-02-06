@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
@@ -13,7 +13,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 默认配置
         /// </summary>
-        private static readonly DistributionConfig defaultConfig = ConfigLoader.GetUnion(typeof(DistributionConfig)).DistributionConfig ?? new DistributionConfig();
+        private static readonly DistributionConfig defaultConfig = (DistributionConfig)AutoCSer.Configuration.Common.Get(typeof(DistributionConfig)) ?? new DistributionConfig();
 
         /// <summary>
         /// 消息分发节点
@@ -22,7 +22,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 消息分发索引
         /// </summary>
-        private int readerIndex;
+        internal int ReaderIndex;
         /// <summary>
         /// 消息数据集合
         /// </summary>
@@ -30,7 +30,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 消息回调集合
         /// </summary>
-        private DistributionMessageGetter[] getters = NullValue<DistributionMessageGetter>.Array;
+        private DistributionMessageGetter[] getters = EmptyArray<DistributionMessageGetter>.Array;
         /// <summary>
         /// 当前消息回调索引
         /// </summary>
@@ -52,7 +52,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         {
             Node = node;
             timeoutTicks = Math.Max((config ?? defaultConfig).TimeoutSeconds, 1) * -TimeSpan.TicksPerSecond;
-            readerIndex = -1;
+            ReaderIndex = -1;
 
             int isReader = 0;
             writerAppendIdentity = Writer.NewRead();
@@ -79,7 +79,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             finally
             {
                 if (isReader == 0) Dispose();
-                else addReader(this);
+                else DistributionFileReaderTimeout.AddReader(this);
             }
         }
         /// <summary>
@@ -89,14 +89,14 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         {
             if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
             {
-                removeReader(this);
+                DistributionFileReaderTimeout.RemoveReader(this);
                 dispose();
                 while (messageIndex != writeMessageIndex)
                 {
                     messages[messageIndex].FreeBuffer();
                     if (++messageIndex == messages.Length) messageIndex = 0;
                 }
-                while (getterCount != 0) getters[getterCount--].OnDispose();
+                while (getterCount != 0) getters[--getterCount].OnDispose();
                 getterIndex = 0;
             }
         }
@@ -243,7 +243,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         {
             if (compressionBuffer.Buffer == null) return false;
             int bufferIndex = compressionBuffer.StartIndex, bufferSize = bufferIndex + dataSize;
-            fixed (byte* bigBufferFixed = compressionBuffer.Buffer)
+            fixed (byte* bigBufferFixed = compressionBuffer.GetFixedBuffer())
             {
                 do
                 {
@@ -464,13 +464,13 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 定时器触发消息处理超时检测
         /// </summary>
-        private void onTimer()
+        internal void OnTimer()
         {
             int count = (int)(uint)(sendIdentity - Identity);
             if (count != 0)
             {
                 ulong identity = Identity;
-                DateTime time = Date.NowTime.Now.AddTicks(timeoutTicks);
+                DateTime time = AutoCSer.Threading.SecondTimer.Now.AddTicks(timeoutTicks);
                 int endMessageIndex = this.messageIndex + count, messageIndex = this.messageIndex;
                 if (endMessageIndex >= messages.Length) endMessageIndex -= messages.Length;
                 do
@@ -482,79 +482,6 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 }
                 while (true);
             }
-        }
-
-        /// <summary>
-        /// 定时器触发消息处理超时检测
-        /// </summary>
-        private static readonly QueueTaskThread.DistributionOnTimer queueOnTimer = new QueueTaskThread.DistributionOnTimer();
-        /// <summary>
-        /// 消息分发集合
-        /// </summary>
-        private static DistributionFileReader[] readers = NullValue<DistributionFileReader>.Array;
-        /// <summary>
-        /// 消息分发数量
-        /// </summary>
-        private static int readerCount;
-        /// <summary>
-        /// 是否正在检测消息超时
-        /// </summary>
-        private static int isTimer;
-        /// <summary>
-        /// 添加消息分发
-        /// </summary>
-        /// <param name="reader"></param>
-        private static void addReader(DistributionFileReader reader)
-        {
-            if (readerCount == readers.Length) readers = readers.copyNew(Math.Max(readerCount << 1, sizeof(int)));
-            reader.readerIndex = readerCount;
-            readers[readerCount++] = reader;
-        }
-        /// <summary>
-        /// 删除消息分发
-        /// </summary>
-        /// <param name="reader"></param>
-        private static void removeReader(DistributionFileReader reader)
-        {
-            int readerIndex = reader.readerIndex;
-            if (readerIndex >= 0 && Object.ReferenceEquals(readers[readerIndex], reader))
-            {
-                if (--readerCount != readerIndex) (readers[readerIndex] = readers[readerCount]).readerIndex = readerIndex;
-                readers[readerCount] = null;
-            }
-        }
-        /// <summary>
-        /// 定时器触发消息处理超时检测
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void OnTimer()
-        {
-            if (readerCount != 0 && Interlocked.CompareExchange(ref isTimer, 1, 0) == 0) queueOnTimer.AddQueueTaskLinkThread();
-        }
-        /// <summary>
-        /// 定时器触发消息处理超时检测
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void QueueOnTimer()
-        {
-            try
-            {
-                if (readerCount != 0)
-                {
-                    int count = readerCount;
-                    foreach (DistributionFileReader reader in readers)
-                    {
-                        reader.onTimer();
-                        if (--count == 0) return;
-                    }
-                }
-            }
-            finally { Interlocked.Exchange(ref isTimer, 0); }
-        }
-
-        static DistributionFileReader()
-        {
-            OnTime.Default.Set();
         }
     }
 }

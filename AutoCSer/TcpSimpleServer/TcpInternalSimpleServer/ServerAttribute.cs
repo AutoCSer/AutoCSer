@@ -52,7 +52,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <returns>TCP 调用服务器端配置信息</returns>
         public static ServerAttribute GetConfig(string serviceName, Type type = null)
         {
-            return GetConfig(serviceName, type, new UnionType { Value = AutoCSer.Config.Loader.GetObject(typeof(ServerAttribute), serviceName) }.ServerAttribute);
+            return GetConfig(serviceName, type, (ServerAttribute)AutoCSer.Configuration.Common.Get(typeof(ServerAttribute), serviceName));
         }
     }
 }

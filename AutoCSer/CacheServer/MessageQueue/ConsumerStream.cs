@@ -20,7 +20,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="onMessage">消息处理委托，直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="log">日志处理</param>
-        public ConsumerStream(DataStructure.MessageQueue.QueueConsumer<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, AutoCSer.Log.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue)
+        public ConsumerStream(DataStructure.MessageQueue.QueueConsumer<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, AutoCSer.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue)
         {
             if (onMessage == null) throw new ArgumentNullException();
             this.onMessage = onMessage;
@@ -34,7 +34,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="readerIndex">读取编号</param>
         /// <param name="log">日志处理</param>
-        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, AutoCSer.Log.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, getReaderIndexNode(messageQueue, readerIndex))
+        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, AutoCSer.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, getReaderIndexNode(messageQueue, readerIndex))
         {
             if (onMessage == null) throw new ArgumentNullException();
             this.onMessage = onMessage;
@@ -48,7 +48,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="readerIndex">读取编号</param>
         /// <param name="log">日志处理</param>
-        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, AutoCSer.Log.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), log) { }
+        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, AutoCSer.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), log) { }
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
@@ -105,7 +105,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public ConsumerStream(DataStructure.MessageQueue.QueueConsumer<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue)
+        public ConsumerStream(DataStructure.MessageQueue.QueueConsumer<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, messageQueue)
         {
             if (getValue == null || onMessage == null) throw new ArgumentNullException();
             this.getValue = getValue;
@@ -121,7 +121,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="readerIndex">读取编号</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, getReaderIndexNode(messageQueue, readerIndex))
+        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : base(messageQueue.ClientDataStructure.Client.MasterClient, config, log, getReaderIndexNode(messageQueue, readerIndex))
         {
             if (getValue == null || onMessage == null) throw new ArgumentNullException();
             this.getValue = getValue;
@@ -137,7 +137,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="readerIndex">读取编号</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), getValue, log) { }
+        public ConsumerStream(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), getValue, log) { }
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>

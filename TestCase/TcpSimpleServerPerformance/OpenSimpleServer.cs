@@ -3,14 +3,14 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
 {
     /// <summary>
     /// TCP 服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpOpenSimpleServer.Server(Host = "127.0.0.1", Port = 12105, SendBufferSize = SubBuffer.Size.Byte256, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenSimpleServer.Server(Host = "127.0.0.1", Port = 12105, SendBufferSize = AutoCSer.Memory.BufferSize.Byte256, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsJsonSerialize = true)]
     public partial class OpenSimpleServer
     {
         /// <summary>
@@ -82,7 +82,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
 #else
  ".exe";
 #endif
-            FileInfo fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, (
+            FileInfo fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, (
 #if !DOTNET45
 @"..\" +
 #endif
@@ -107,7 +107,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
             ).pathSeparator()));
 #if DotNetStandard
             Console.WriteLine(fileInfo.FullName);
-            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (fileInfo.Exists)
             {
                 ProcessStartInfo process = new ProcessStartInfo("dotnet", fileInfo.FullName);
@@ -116,7 +116,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
                 return true;
             }
 #else
-            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (fileInfo.Exists)
             {
                 Process.Start(fileInfo.FullName);

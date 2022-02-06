@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CacheServer.Cache.Value
 {
@@ -26,7 +26,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 位图
         /// </summary>
-        internal byte[][] Maps = NullValue<byte[]>.Array;
+        internal byte[][] Maps = EmptyArray<byte[]>.Array;
         /// <summary>
         /// 位图 数据节点
         /// </summary>
@@ -58,7 +58,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 case OperationParameter.OperationType.Clear:
                     if (Maps.Length != 0)
                     {
-                        Maps = NullValue<byte[]>.Array;
+                        Maps = EmptyArray<byte[]>.Array;
                         parser.IsOperation = true;
                     }
                     parser.ReturnParameter.ReturnParameterSet(true);
@@ -153,7 +153,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 }
                 return new Snapshot.Value.Bitmap(newMaps);
             }
-            return new Snapshot.Value.Bitmap(NullValue<byte[]>.Array);
+            return new Snapshot.Value.Bitmap(EmptyArray<byte[]>.Array);
         }
 #if NOJIT
         /// <summary>

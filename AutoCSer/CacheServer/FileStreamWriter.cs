@@ -2,14 +2,14 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CacheServer
 {
     /// <summary>
     /// 文件流写入器
     /// </summary>
-    internal unsafe sealed class FileStreamWriter : AutoCSer.Threading.DoubleLink<FileStreamWriter>
+    internal unsafe sealed class FileStreamWriter : AutoCSer.Threading.SecondTimerNode
     {
         /// <summary>
         /// 文件头部
@@ -19,10 +19,6 @@ namespace AutoCSer.CacheServer
         /// 文件头部长度
         /// </summary>
         private const int fileHeaderSize = sizeof(int) * 2 + sizeof(ulong);
-        /// <summary>
-        /// 文件流写入器链表
-        /// </summary>
-        internal static YieldLink Writers;
 
         /// <summary>
         /// 缓存管理
@@ -36,6 +32,10 @@ namespace AutoCSer.CacheServer
         /// 缓冲区池
         /// </summary>
         private readonly SubBuffer.Pool bufferPool;
+        /// <summary>
+        /// 文件流写入
+        /// </summary>
+        private readonly Action flushHandle;
         /// <summary>
         /// 文件版本
         /// </summary>
@@ -51,7 +51,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 大数据缓冲区
         /// </summary>
-        private byte[] bigBuffer = NullValue<byte>.Array;
+        private byte[] bigBuffer = EmptyArray<byte>.Array;
         /// <summary>
         /// 操作数据链表
         /// </summary>
@@ -67,7 +67,11 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 物理文件刷新秒数
         /// </summary>
-        private int fileFlushSeconds;
+        private long fileFlushSeconds;
+        /// <summary>
+        /// 是否正在刷新物理文件
+        /// </summary>
+        private int isFlushTrade;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
@@ -90,6 +94,7 @@ namespace AutoCSer.CacheServer
             this.cache = cache;
             Config = config;
             bufferPool = SubBuffer.Pool.GetPool(config.BufferSize);
+            flushHandle = flush;
             FileInfo file = new FileInfo(config.GetFileName);
             FileName = file.FullName;
             IsDisposed = 1;
@@ -106,7 +111,7 @@ namespace AutoCSer.CacheServer
                         bufferPool.Get(ref buffer.Buffer);
                         if (fileStream.Read(buffer.Buffer.Buffer, buffer.Buffer.StartIndex, fileHeaderSize) == fileHeaderSize)
                         {
-                            fixed (byte* bufferFixed = buffer.Buffer.Buffer)
+                            fixed (byte* bufferFixed = buffer.Buffer.GetFixedBuffer())
                             {
                                 byte* bufferStart = bufferFixed + buffer.Buffer.StartIndex;
                                 if (*(int*)bufferStart == FileHeader)
@@ -144,7 +149,7 @@ namespace AutoCSer.CacheServer
                                                         AutoCSer.IO.Compression.DeflateDeCompressor.Get(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + (index += sizeof(int) * 2), compressionDataSize, ref buffer.CompressionBuffer);
                                                         if (buffer.CompressionBuffer.Buffer != null)
                                                         {
-                                                            fixed (byte* dataFixed = buffer.CompressionBuffer.Buffer)
+                                                            fixed (byte* dataFixed = buffer.CompressionBuffer.GetFixedBuffer())
                                                             {
                                                                 loadData.Set(buffer.CompressionBuffer.Buffer, buffer.CompressionBuffer.StartIndex, *(int*)(read + sizeof(int)), dataFixed);
                                                                 if (!cache.Load(ref loadData)) throw new InvalidDataException();
@@ -171,7 +176,7 @@ namespace AutoCSer.CacheServer
                                                         AutoCSer.IO.Compression.DeflateDeCompressor.Get(bigBuffer, 0, compressionDataSize, ref buffer.CompressionBuffer);
                                                         if (buffer.CompressionBuffer.Buffer != null)
                                                         {
-                                                            fixed (byte* dataFixed = buffer.CompressionBuffer.Buffer)
+                                                            fixed (byte* dataFixed = buffer.CompressionBuffer.GetFixedBuffer())
                                                             {
                                                                 loadData.Set(buffer.CompressionBuffer.Buffer, buffer.CompressionBuffer.StartIndex, *(int*)(read + sizeof(int)), dataFixed);
                                                                 if (!cache.Load(ref loadData)) throw new InvalidDataException();
@@ -254,8 +259,8 @@ namespace AutoCSer.CacheServer
                 BufferLink.Head.Array.SetNull();
                 if (IsDisposed == 0)
                 {
-                    fileFlushSeconds = config.FileFlushSeconds;
-                    Writers.PushNotNull(this);
+                    fileFlushSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds + config.FileFlushSeconds;
+                    AutoCSer.Threading.SecondTimer.InternalTaskArray.NodeLink.PushNotNull(this);
                 }
                 else if (fileStream != null) fileStream.Dispose();
             }
@@ -269,6 +274,7 @@ namespace AutoCSer.CacheServer
             cache = cacheFile.cache;
             Config = cacheFile.Config;
             bufferPool = SubBuffer.Pool.GetPool(Config.BufferSize);
+            flushHandle = flush;
         }
         /// <summary>
         /// 创建文件流
@@ -278,7 +284,7 @@ namespace AutoCSer.CacheServer
         private void create(ref SubBuffer.PoolBufferFull buffer, ulong version)
         {
             if (buffer.Buffer == null) bufferPool.Get(ref buffer);
-            fixed (byte* bufferFixed = buffer.Buffer)
+            fixed (byte* bufferFixed = buffer.GetFixedBuffer())
             {
                 byte* bufferStart = bufferFixed + buffer.StartIndex;
                 *(int*)bufferStart = FileHeader;
@@ -310,7 +316,7 @@ namespace AutoCSer.CacheServer
                 }
             }
             fileStream.Seek(sizeof(int) * 2, SeekOrigin.Begin);
-            fixed (byte* bufferFixed = buffer.Buffer) *(ulong*)(bufferFixed + (buffer.StartIndex + sizeof(int) * 2)) = ++Version;
+            fixed (byte* bufferFixed = buffer.GetFixedBuffer()) *(ulong*)(bufferFixed + (buffer.StartIndex + sizeof(int) * 2)) = ++Version;
             fileStream.Write(buffer.Buffer, buffer.StartIndex + sizeof(int) * 2, sizeof(ulong));
             fileStream.SetLength(FileLength);
             fileStream.Flush(true);
@@ -324,8 +330,8 @@ namespace AutoCSer.CacheServer
         {
             if (Interlocked.CompareExchange(ref IsDisposed, 1, 0) == 0)
             {
-                Writers.PopNotNull(this);
-                if (System.Threading.Interlocked.Exchange(ref fileFlushSeconds, 0) != 0) free();
+                AutoCSer.Threading.SecondTimer.InternalTaskArray.NodeLink.PopNotNull(this);
+                if (System.Threading.Interlocked.Exchange(ref isFlushTrade, 1) == 0) free();
             }
         }
         /// <summary>
@@ -351,7 +357,7 @@ namespace AutoCSer.CacheServer
                 long writeLength = 0;
                 try
                 {
-                    fixed (byte* bufferFixed = buffer.Buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.Buffer.GetFixedBuffer())
                     {
                         byte* bufferStart = bufferFixed + buffer.Buffer.StartIndex;
                         int index = sizeof(int), bigBufferSize;
@@ -411,7 +417,7 @@ namespace AutoCSer.CacheServer
                 catch (Exception error)
                 {
                     writeLength = 0;
-                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Fatal, error);
+                    AutoCSer.LogHelper.Exception(error, null, LogLevel.Fatal | LogLevel.Exception | LogLevel.AutoCSer);
                     fileStream.Dispose();
                     return false;
                 }
@@ -437,7 +443,7 @@ namespace AutoCSer.CacheServer
         {
             int compressionDataSize = -compressionData.Length;
             compressionData.MoveStart(-(sizeof(int) * 2));
-            fixed (byte* dataFixed = compressionData.Array)
+            fixed (byte* dataFixed = compressionData.GetFixedBuffer())
             {
                 byte* write = dataFixed + compressionData.Start;
                 *(int*)write = compressionDataSize;
@@ -445,23 +451,30 @@ namespace AutoCSer.CacheServer
             }
             fileStream.Write(compressionData.Array, compressionData.Start, compressionData.Length);
         }
-
         /// <summary>
         /// 定时器触发文件流写入
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnTimer()
+        protected internal override void OnTimer()
         {
-            if (!BufferLink.IsEmpty && System.Threading.Interlocked.Decrement(ref fileFlushSeconds) == 0)
+            if (!BufferLink.IsEmpty && AutoCSer.Threading.SecondTimer.CurrentSeconds >= fileFlushSeconds
+                && System.Threading.Interlocked.CompareExchange(ref isFlushTrade, 1, 0) == 0)
             {
-                write();
-                onWrite();
+                fileFlushSeconds = long.MaxValue;
+                AutoCSer.Threading.ThreadPool.TinyBackground.Start(flushHandle);
             }
-            else if (isTryRead)
+            if (isTryRead)
             {
                 isTryRead = false;
                 for (FileReader reader = Readers.End; reader != null; reader = reader.DoubleLinkPrevious) isTryRead |= reader.TryRead(FileLength);
             }
+        }
+        /// <summary>
+        /// 文件流写入
+        /// </summary>
+        private void flush()
+        {
+            write();
+            onWrite();
         }
         /// <summary>
         /// 文件写入后恢复文件刷新秒数
@@ -469,15 +482,21 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void onWrite()
         {
-            System.Threading.Interlocked.Exchange(ref fileFlushSeconds, Config.FileFlushSeconds);
-            if (IsDisposed != 0 && System.Threading.Interlocked.Exchange(ref fileFlushSeconds, 0) != 0) free();
+            fileFlushSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds + Config.FileFlushSeconds;
+            if (IsDisposed == 0) System.Threading.Interlocked.Exchange(ref isFlushTrade, 0);
+            else free();
         }
         /// <summary>
         /// 数据立即写入文件
         /// </summary>
         internal void Write()
         {
-            while (System.Threading.Interlocked.Exchange(ref fileFlushSeconds, 0) <= 0) System.Threading.Thread.Sleep(1);
+            while (System.Threading.Interlocked.CompareExchange(ref isFlushTrade, 1, 0) != 0)
+            {
+                if (BufferLink.IsEmpty || IsDisposed != 0) return;
+                System.Threading.Thread.Sleep(1);
+            }
+            fileFlushSeconds = long.MaxValue;
             if (!BufferLink.IsEmpty) write();
             onWrite();
         }
@@ -533,11 +552,7 @@ namespace AutoCSer.CacheServer
             finally
             {
                 buffer.Free();
-                if (IsDisposed == 0)
-                {
-                    Interlocked.Exchange(ref fileFlushSeconds, Config.FileFlushSeconds);
-                    AutoCSer.Threading.ThreadPool.TinyBackground.Start(writeCache);
-                }
+                if (IsDisposed == 0) AutoCSer.Threading.ThreadPool.TinyBackground.Start(writeCache);
                 else
                 {
                     cache.NextGetter();
@@ -556,7 +571,7 @@ namespace AutoCSer.CacheServer
             try
             {
                 bufferPool.Get(ref buffer.Buffer);
-                fixed (byte* bufferFixed = buffer.Buffer.Buffer)
+                fixed (byte* bufferFixed = buffer.Buffer.GetFixedBuffer())
                 {
                     byte* bufferStart = bufferFixed + buffer.Buffer.StartIndex;
                     int index = sizeof(int), snapshotSize;
@@ -670,14 +685,16 @@ namespace AutoCSer.CacheServer
                 try
                 {
                     bufferPool.Get(ref buffer);
-                    fixed (byte* bufferFixed = buffer.Buffer) *(ulong*)(bufferFixed + buffer.StartIndex) = Version;
+                    fixed (byte* bufferFixed = buffer.GetFixedBuffer()) *(ulong*)(bufferFixed + buffer.StartIndex) = Version;
                     fileStream.Seek(sizeof(int) * 2, SeekOrigin.Begin);
                     fileStream.Write(buffer.Buffer, buffer.StartIndex, sizeof(ulong));
                     fileStream.Flush();
                     fileStream.Seek(0, SeekOrigin.End);
                     cache.OnCreatedNewFileStream();
                     isError = false;
-                    Writers.PushNotNull(this);
+
+                    fileFlushSeconds = AutoCSer.Threading.SecondTimer.CurrentSeconds + Config.FileFlushSeconds;
+                    AutoCSer.Threading.SecondTimer.InternalTaskArray.NodeLink.PushNotNull(this);
                 }
                 finally
                 {
@@ -690,11 +707,6 @@ namespace AutoCSer.CacheServer
                 }
             }
             else AutoCSer.Threading.ThreadPool.TinyBackground.Start(writeQueue);
-        }
-
-        static FileStreamWriter()
-        {
-            OnTime.Default.Set();
         }
     }
 }

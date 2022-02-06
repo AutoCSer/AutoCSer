@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
@@ -211,15 +211,15 @@ namespace AutoCSer.CodeGenerator.Metadata
             if (IsGetMember = isGet)
             {
                 ReturnType = field.FieldType;
-                Parameters = NullValue<MethodParameter>.Array;
+                Parameters = EmptyArray<MethodParameter>.Array;
             }
             else
             {
                 ReturnType = typeof(void);
                 Parameters = new MethodParameter[] { new MethodParameter("value", field.FieldType) };
             }
-            OutputParameters = NullValue<MethodParameter>.Array;
-            GenericParameters = NullValue<ExtensionType>.Array;
+            OutputParameters = EmptyArray<MethodParameter>.Array;
+            GenericParameters = EmptyArray<ExtensionType>.Array;
         }
         /// <summary>
         /// 成员方法
@@ -245,8 +245,8 @@ namespace AutoCSer.CodeGenerator.Metadata
                     Parameters[Parameters.Length - 2].ParameterJoin = null;
                 }
             }
-            OutputParameters = NullValue<MethodParameter>.Array;
-            GenericParameters = NullValue<ExtensionType>.Array;
+            OutputParameters = EmptyArray<MethodParameter>.Array;
+            GenericParameters = EmptyArray<ExtensionType>.Array;
         }
         /// <summary>
         /// 类型成员方法缓存
@@ -312,7 +312,7 @@ namespace AutoCSer.CodeGenerator.Metadata
             if (!methodCache.TryGetValue(type, out methods))
             {
                 int index = 0;
-                methodCache[type] = methods = AutoCSer.Extension.ArrayExtension.concat(
+                methodCache[type] = methods = AutoCSer.Extensions.ArrayExtension.concat(
                     type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.PublicStatic, index++)),
                     type.GetMethods(BindingFlags.Public | BindingFlags.Instance).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.PublicInstance, index++)),
                     type.GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.NonPublicStatic, index++)),
@@ -374,16 +374,15 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
+        private static void clearCache()
         {
             if (methodCache.Count != 0) methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();
         }
 
         static MethodIndex()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(MethodIndex), 60 * 60);
         }
     }
 }

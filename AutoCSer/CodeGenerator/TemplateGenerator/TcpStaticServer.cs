@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using AutoCSer.CodeGenerator.Metadata;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
@@ -70,15 +70,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 类型集合
                 /// </summary>
-                public LeftArray<ServerType> Types;
+                public LeftArray<ServerType> Types = new LeftArray<ServerType>(0);
                 /// <summary>
                 /// 远程调用链类型集合
                 /// </summary>
-                public LeftArray<RemoteLinkType> RemoteLinkTypes;
+                public LeftArray<RemoteLinkType> RemoteLinkTypes = new LeftArray<RemoteLinkType>(0);
                 /// <summary>
                 /// 其它组件添加客户端代码
                 /// </summary>
-                public LeftArray<string> ClientCodes;
+                public LeftArray<string> ClientCodes = new LeftArray<string>(0);
                 /// <summary>
                 /// 配置类型
                 /// </summary>
@@ -481,11 +481,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 远程缓存成员集合
                 /// </summary>
-                internal LeftArray<RemoteLink> Caches;
+                internal LeftArray<RemoteLink> Caches = new LeftArray<RemoteLink>(0);
                 /// <summary>
                 /// 远程缓存成员集合
                 /// </summary>
-                private LeftArray<RemoteLinkMember> members;
+                private LeftArray<RemoteLinkMember> members = new LeftArray<RemoteLinkMember>(0);
                 /// <summary>
                 /// 添加远程缓存成员
                 /// </summary>
@@ -548,7 +548,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     cache members;
                     if (!memberCache.TryGetValue(type, out members))
                     {
-                        LeftArray<RemoteLink> remoteMembers = new LeftArray<RemoteLink>();
+                        LeftArray<RemoteLink> remoteMembers = new LeftArray<RemoteLink>(0);
                         foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, true, false))
                         {
                             if (member.CanGet)
@@ -556,7 +556,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(false);
                                 if (remoteAttribute != null)
                                 {
-                                    remoteMembers.Add(new RemoteLink { Member = member, PropertyParameters = member.IsField ? NullValue<MethodParameter>.Array : MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), NullValue<Type>.Array), Attribute = remoteAttribute });
+                                    remoteMembers.Add(new RemoteLink { Member = member, PropertyParameters = member.IsField ? EmptyArray<MethodParameter>.Array : MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), EmptyArray<Type>.Array), Attribute = remoteAttribute });
                                 }
                             }
                         }
@@ -681,7 +681,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         if (Attribute.IsRemoteLinkType) remoteLinkType = new RemoteLinkType { Type = Type, ParameterType = Type };
                         else if (Attribute.IsRemoteLink) remoteLinkType = GetRemoteLinkType(Type);
                     }
-                    LeftArray<RemoteMethod> remoteMethods = new LeftArray<RemoteMethod>();
+                    LeftArray<RemoteMethod> remoteMethods = new LeftArray<RemoteMethod>(0);
                     foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                     {
                         next(new TcpMethod { Method = method, MethodType = Type });
@@ -699,7 +699,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         remoteLinkType.RemoteMethods = remoteMethods.ToArray();
 
-                        LeftArray<RemoteMember> remoteMembers = new LeftArray<RemoteMember>();
+                        LeftArray<RemoteMember> remoteMembers = new LeftArray<RemoteMember>(0);
                         foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.NonPublicInstanceProperty, true, false))
                         {
                             if (member.CanGet)
@@ -836,7 +836,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 if (clientCodes.Count != 0) clientCodes = DictionaryCreator.CreateOnly<Type, ClientCode>();
 
                 StringArray clientCallCode = new StringArray();
-                LeftArray<TcpMethod> methods = new LeftArray<TcpMethod>();
+                LeftArray<TcpMethod> methods = new LeftArray<TcpMethod>(0);
                 TcpMethod[] methodIndexs;
                 ParameterBuilder parameterBuilder = new ParameterBuilder();
                 int staticMethodIndex = 0;
@@ -918,12 +918,12 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             ServerCallQueueTypes = queueTypeBuilder.Get();
                             foreach (ServerType serverType in server.Types)
                             {
-                                if (serverType.Methods.Length != 0)
+                                if (serverType.Methods.Array.Length != 0)
                                 {
                                     Type = serverType.Type;
                                     //TimeVerifyType = Type == server.AttributeType && server.IsTimeVerify ? Type : ExtensionType.Null;
                                     Attribute = serverType.Attribute ?? server.Attribute;
-                                    MethodIndexs = serverType.Methods.ToArray();
+                                    MethodIndexs = serverType.Methods.Array.ToArray();
                                     CSharpTypeDefinition definition = new CSharpTypeDefinition(Type, true, false);
                                     _code_.Length = 0;
                                     create(false);

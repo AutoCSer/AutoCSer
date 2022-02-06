@@ -376,6 +376,7 @@
     <Compile Include="Threading\ConfigLoader.cs" />
     <Compile Include="Threading\DoubleLink.cs" />
     <Compile Include="Threading\Link.AutoCSer.cs" />
+    <Compile Include="Threading\LazyEvent.cs" />
     <Compile Include="Threading\Link.cs" />
     <Compile Include="Threading\LinkTask.cs" />
     <Compile Include="Threading\LinkTaskConfig.cs" />
@@ -573,6 +574,7 @@
     <Compile Include="Net\TcpServer\CommandInfoBase.cs" />
     <Compile Include="Net\TcpServer\ServerBase.cs" />
     <Compile Include="Net\TcpServer\CheckSocketVersion.cs" />
+    <Compile Include="Net\TcpServer\ClientLazyLog.cs" />
     <Compile Include="Net\TcpServer\ClientBase.cs" />
     <Compile Include="Net\TcpServer\ClientSocketBase.cs" />
     <Compile Include="Net\TcpServer\ClientSocketSenderBase.cs" />

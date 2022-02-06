@@ -7,34 +7,8 @@ namespace AutoCSer
     /// <summary>
     /// 非托管内存数据流
     /// </summary>
-    public unsafe partial class UnmanagedStream
+    //public unsafe partial class UnmanagedStream
     {
-        /// <summary>
-        /// 非托管内存数据流
-        /// </summary>
-        /// <param name="size"></param>
-        public UnmanagedStream(int size = UnmanagedPool.TinySize) : base(size) { }
-        /// <summary>
-        /// 转换成字节数组
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="index">复制起始位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal unsafe void GetSubBuffer(ref SubBuffer.PoolBufferFull buffer, int index)
-        {
-            SubBuffer.Pool.GetBuffer(ref buffer, ByteSize);
-            fixed (byte* dataFixed = buffer.Buffer) AutoCSer.Memory.CopyNotNull(Data.Byte + index, dataFixed + (buffer.StartIndex + index), ByteSize - index);
-        }
-        /// <summary>
-        /// 转换成字节数组
-        /// </summary>
-        /// <param name="buffer"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal unsafe void GetSubBuffer(ref SubBuffer.PoolBufferFull buffer)
-        {
-            SubBuffer.Pool.GetBuffer(ref buffer, ByteSize);
-            fixed (byte* dataFixed = buffer.Buffer) AutoCSer.Memory.CopyNotNull(Data.Byte, dataFixed + buffer.StartIndex, ByteSize);
-        }
         /// <summary>
         /// 写数据
         /// </summary>
@@ -64,18 +38,6 @@ namespace AutoCSer
         public void Write(byte[] data)
         {
             if (data != null && data.Length != 0) WriteNotNull(data);
-        }
-        /// <summary>
-        /// 写入数据
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="length"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void WriteNotEmpty(byte* data, int length)
-        {
-            prepSize(length);
-            AutoCSer.Memory.CopyNotNull(data, Data.Byte + ByteSize, length);
-            ByteSize += length;
         }
         /// <summary>
         /// 写数据

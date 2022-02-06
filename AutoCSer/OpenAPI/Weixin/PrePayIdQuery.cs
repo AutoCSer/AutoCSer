@@ -5,7 +5,7 @@ namespace AutoCSer.OpenAPI.Weixin
     /// <summary>
     /// 统一下单参数
     /// </summary>
-    [AutoCSer.Xml.Serialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
+    [AutoCSer.XmlSerialize(Filter = Metadata.MemberFilters.InstanceField)]//, IsAllMember = true
     public sealed class PrePayIdQuery : PrePayIdQueryBase
     {
         /// <summary>

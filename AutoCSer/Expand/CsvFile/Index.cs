@@ -28,7 +28,7 @@ namespace AutoCSer.CsvFile
         /// <summary>
         /// CSV 解析数据对象集合
         /// </summary>
-        private LeftArray<ObjectReader> objectReaders;
+        private LeftArray<ObjectReader> objectReaders = new LeftArray<ObjectReader>(0);
         /// <summary>
         /// CSV 解析数据对象集合
         /// </summary>

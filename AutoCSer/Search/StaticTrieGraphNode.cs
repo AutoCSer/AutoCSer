@@ -45,7 +45,7 @@ namespace AutoCSer.Search
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             internal void Reset()
             {
-                Nodes = NullValue<KeyValue<keyType, int>>.Array;
+                Nodes = EmptyArray<KeyValue<keyType, int>>.Array;
                 Link = 0;
             }
             /// <summary>
@@ -54,7 +54,7 @@ namespace AutoCSer.Search
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             internal void CancelBuilder()
             {
-                Nodes = NullValue<KeyValue<keyType, int>>.Array;
+                Nodes = EmptyArray<KeyValue<keyType, int>>.Array;
                 Value = default(valueType);
             }
             /// <summary>

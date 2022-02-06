@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.Net.TcpServer.ServerOutput
 {
@@ -15,12 +16,11 @@ namespace AutoCSer.Net.TcpServer.ServerOutput
         internal unsafe override OutputLink Build(ServerSocketSenderBase sender, ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = sender.OutputSerializer.Stream;
-            if ((buildInfo.SendBufferSize - stream.ByteSize) >= sizeof(uint))
+            if ((buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= sizeof(uint))
             {
                 OutputLink nextBuild = LinkNext;
-                *(uint*)stream.CurrentData = CommandIndex;
+                stream.Data.Write(CommandIndex);
                 LinkNext = null;
-                stream.ByteSize += sizeof(uint);
                 ++buildInfo.Count;
                 AutoCSer.Threading.RingPool<ReturnTypeOutput>.Default.PushNotNull(this);
                 return nextBuild;

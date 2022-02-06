@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -50,7 +50,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 if (clientRoute == null)
                 {
                     TcpServer.ClientSocketBase socket = clientCreator.WaitSocket();
-                    return socket == null ? null : new UnionType { Value = socket.Sender }.ClientSocketSender;
+                    return socket == null ? null : new UnionType.ClientSocketSender { Object = socket.Sender }.Value;
                 }
                 return clientRoute.Sender;
             }
@@ -126,13 +126,13 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 创建客户端等待连接
         /// </summary>
+        /// <param name="clientWaitConnected">客户端等待连接</param>
         /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
-        /// <returns>客户端等待连接</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public TcpServer.ClientWaitConnected CreateWaitConnected(Action<TcpServer.ClientSocketEventParameter> onCheckSocketVersion = null)
+        public void CreateWaitConnected(out TcpServer.ClientWaitConnected clientWaitConnected, Action<TcpServer.ClientSocketEventParameter> onCheckSocketVersion = null)
         {
+            clientWaitConnected = new TcpServer.ClientWaitConnected(this, onCheckSocketVersion);
             TryCreateSocket();
-            return new TcpServer.ClientWaitConnected(this, onCheckSocketVersion);
         }
         /// <summary>
         /// 发送自定义数据
@@ -263,11 +263,11 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// TCP 开放服务客户端代理对象
         /// </summary>
-        private clientType client;
+        public readonly clientType MethodClient;
         /// <summary>
         /// 验证委托
         /// </summary>
-        private Func<clientType, ClientSocketSender, bool> verifyMethod;
+        private readonly Func<clientType, ClientSocketSender, bool> verifyMethod;
         /// <summary>
         /// TCP 开放服务客户端
         /// </summary>
@@ -281,7 +281,7 @@ namespace AutoCSer.Net.TcpOpenServer
         public Client(clientType client, ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
             : base(attribute, maxTimeoutSeconds, onCustomData, log, clientRoute)
         {
-            this.client = client;
+            this.MethodClient = client;
             this.verifyMethod = verifyMethod;
         }
         /// <summary>
@@ -291,7 +291,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <returns></returns>
         internal override bool SocketVerifyMethod(TcpServer.ClientSocketSenderBase socket)
         {
-            return verifyMethod == null || verifyMethod(client, new UnionType { Value = socket }.ClientSocketSender);
+            return verifyMethod == null || verifyMethod(MethodClient, new UnionType.ClientSocketSender { Object = socket }.Value);
         }
     }
 }

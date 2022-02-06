@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer.OperationParameter
     /// <summary>
     /// 数据结构操作参数
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     internal unsafe struct ClientDataStructure
     {
@@ -24,9 +24,9 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// </summary>
         /// <param name="serializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             DataStructure.SerializeOperationParameter(serializer.Stream);
         }
@@ -35,9 +35,9 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// </summary>
         /// <param name="deSerializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             Buffer = Serializer.GetOperationData(deSerializer);
         }

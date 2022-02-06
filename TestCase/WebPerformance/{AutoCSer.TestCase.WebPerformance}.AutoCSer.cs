@@ -24,8 +24,8 @@ namespace AutoCSer.TestCase.WebPerformance
                     return names;
                 }
             }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
             protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
             {
                 switch (callIndex)
@@ -43,7 +43,7 @@ namespace AutoCSer.TestCase.WebPerformance
                         return;
                 }
             }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.Memory.UnmanagedStream responseStream)
             {
                 switch (call.CallMethodIndex)
                 {
@@ -105,20 +105,20 @@ namespace AutoCSer.TestCase.WebPerformance
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Return:");
+                _js_.Write(@"{Return:");
                     {
                         int _value1_ = Return;
-                                    _js_.WriteJson((int)_value1_);
+                                    _js_.WriteWebViewJson((int)_value1_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 public int left;
                 public int right;
             }
@@ -164,20 +164,20 @@ namespace AutoCSer.TestCase.WebPerformance
                 return false;
             }
 
-            protected override void ajax(CharStream _js_)
+            protected override void ajax(AutoCSer.Memory.CharStream _js_)
             {
-                _js_.WriteNotNull(@"{Return:");
+                _js_.Write(@"{Return:");
                     {
                         int _value1_ = Return;
-                                    _js_.WriteJson((int)_value1_);
+                                    _js_.WriteWebViewJson((int)_value1_);
                     }
-                    _js_.WriteNotNull(@"}");
+                    _js_.Write(@"}");
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
-                [AutoCSer.Json.ParseMember(IsDefault = true)]
+                [AutoCSer.JsonDeSerializeMember(IsDefault = true)]
                 public int left;
                 public int right;
             }
@@ -266,7 +266,7 @@ namespace AutoCSer.TestCase.WebPerformance
             /// <summary>
             /// 网站生成配置
             /// </summary>
-            internal new static readonly AutoCSer.TestCase.WebPerformance.WebConfig WebConfig = new AutoCSer.TestCase.WebPerformance.WebConfig();
+            internal new static readonly AutoCSer.TestCase.WebPerformance.WebViewConfig WebConfig = new AutoCSer.TestCase.WebPerformance.WebViewConfig();
             /// <summary>
             /// 网站生成配置
             /// </summary>
@@ -383,15 +383,15 @@ namespace AutoCSer.TestCase.WebPerformance
                 string[] names = new string[5];
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[5];
                 names[0] = "Call.Add";
-                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304 };
+                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304 };
                 names[1] = "Call.Xor";
-                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsAsynchronous = true };
+                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsAsynchronous = true };
                 names[2] = "/WebView.html";
-                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[3] = "/WebViewAsynchronous.html";
-                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsViewPage = true };
+                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)131072, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[5 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
-                infos[5 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
+                infos[5 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.Memory.BufferSize.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
                 CompileJsonSerialize(new System.Type[] { typeof(_p1), null }, new System.Type[] { typeof(_p2), null });
             }

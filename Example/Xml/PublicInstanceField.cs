@@ -5,7 +5,7 @@ namespace AutoCSer.Example.Xml
     /// <summary>
     /// 仅选择公共字段成员 示例
     /// </summary>
-    [AutoCSer.Xml.Serialize(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
+    [AutoCSer.XmlSerialize(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
     class PublicInstanceField
     {
         /// <summary>
@@ -38,8 +38,8 @@ namespace AutoCSer.Example.Xml
         {
             PublicInstanceField value = new PublicInstanceField { Public = 1, Private = 2, Protected = 3, Internal = 4, Property = 5 };
 
-            string xml = AutoCSer.Xml.Serializer.Serialize(value);
-            PublicInstanceField newValue = AutoCSer.Xml.Parser.Parse<PublicInstanceField>(xml);
+            string xml = AutoCSer.XmlSerializer.Serialize(value);
+            PublicInstanceField newValue = AutoCSer.XmlDeSerializer.DeSerialize<PublicInstanceField>(xml);
 
             return newValue != null && newValue.Public == 1 && newValue.Private == 0 && newValue.Protected == 0 && newValue.Internal == 0 && newValue.Property == 0;
         }

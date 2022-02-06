@@ -7,7 +7,7 @@ namespace AutoCSer.Expand.Metadata
     /// <summary>
     /// 引用泛型类型元数据
     /// </summary>
-    internal abstract partial class ClassGenericType
+    internal abstract partial class ClassGenericType : AutoCSer.Metadata.GenericTypeBase
     {
         /// <summary>
         /// 连接字符串集合
@@ -21,16 +21,16 @@ namespace AutoCSer.Expand.Metadata
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Type, ClassGenericType> cache = new LockLastDictionary<Type, ClassGenericType>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashType, ClassGenericType> cache = new LockLastDictionary<HashType, ClassGenericType>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
-        /// <typeparam name="Type"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static ClassGenericType create<Type>() where Type : class
+        private static ClassGenericType create<T>() where T : class
         {
-            return new ClassGenericType<Type>();
+            return new ClassGenericType<T>();
         }
         /// <summary>
         /// 创建泛型类型元数据 函数信息
@@ -41,14 +41,14 @@ namespace AutoCSer.Expand.Metadata
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static ClassGenericType Get(Type type)
+        public static ClassGenericType Get(HashType type)
         {
             ClassGenericType value;
             if (!cache.TryGetValue(type, out value))
             {
                 try
                 {
-                    value = new UnionType { Value = createMethod.MakeGenericMethod(type).Invoke(null, null) }.ClassGenericType;
+                    value = new UnionType.ClassGenericType { Object = createMethod.MakeGenericMethod(type).Invoke(null, null) }.Value;
                     cache.Set(type, value);
                 }
                 finally { cache.Exit(); }
@@ -59,22 +59,27 @@ namespace AutoCSer.Expand.Metadata
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    /// <typeparam name="Type">泛型类型</typeparam>
-    internal sealed partial class ClassGenericType<Type> : ClassGenericType where Type : class
+    /// <typeparam name="T">泛型类型</typeparam>
+    internal sealed partial class ClassGenericType<T> : ClassGenericType where T : class
     {
+        /// <summary>
+        /// 获取当前泛型类型
+        /// </summary>
+        internal override Type CurrentType { get { return typeof(T); } }
+
         /// <summary>
         /// 连接字符串集合
         /// </summary>
         internal override Delegate NumberToCharStreamClassJoinCharDelegate
         {
-            get { return (Func<Type[], char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.classJoinChar<Type>; }
+            get { return (Func<T[], char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.classJoinChar<T>; }
         }
         /// <summary>
         /// 连接字符串集合
         /// </summary>
         internal override Delegate NumberToCharStreamClassSubArrayJoinCharDelegate
         {
-            get { return (Func<SubArray<Type>, char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.classSubArrayJoinChar<Type>; }
+            get { return (Func<SubArray<T>, char, string, string>)AutoCSer.NumberToCharStream.JoinMethod.classSubArrayJoinChar<T>; }
         }
     }
 }

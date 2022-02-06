@@ -27,15 +27,15 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 默认 HTTP 头部缓存数据字节大小
         /// </summary>
-        internal const SubBuffer.Size DefaultHeadSize = SubBuffer.Size.Kilobyte2;
+        internal const AutoCSer.Memory.BufferSize DefaultHeadSize = AutoCSer.Memory.BufferSize.Kilobyte2;
         /// <summary>
         /// HTTP 头部缓存数据字节大小，默认为 2KB
         /// </summary>
-        public SubBuffer.Size HeadSize = DefaultHeadSize;
+        public AutoCSer.Memory.BufferSize HeadSize = DefaultHeadSize;
         /// <summary>
         /// 临时缓存数据字节大小，默认为 2KB
         /// </summary>
-        public SubBuffer.Size BufferSize = SubBuffer.Size.Kilobyte2;
+        public AutoCSer.Memory.BufferSize BufferSize = AutoCSer.Memory.BufferSize.Kilobyte2;
         /// <summary>
         /// HTTP 头部接收默认超时为 9 秒，超时客户端将被当作攻击者被抛弃。
         /// </summary>
@@ -64,7 +64,7 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal DateTime GetTimeout(int size)
         {
-            return Date.NowTime.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * TimeSpan.TicksPerSecond);
+            return AutoCSer.Threading.SecondTimer.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * TimeSpan.TicksPerSecond);
         }
         /// <summary>
         /// 获取套接字操作超时时间
@@ -74,7 +74,7 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal DateTime GetTimeout(long size)
         {
-            return size <= int.MaxValue ? GetTimeout((int)size) : Date.NowTime.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * TimeSpan.TicksPerSecond);
+            return size <= int.MaxValue ? GetTimeout((int)size) : AutoCSer.Threading.SecondTimer.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * TimeSpan.TicksPerSecond);
         }
         /// <summary>
         /// 获取套接字操作超时时间
@@ -87,7 +87,7 @@ namespace AutoCSer.Net.Http
         {
             int seconds = Math.Max(size / SocketSizePerSecond + 1, 2);
             count = seconds <= ReceiveHeadSeconds ? (ushort)0 : (ushort)Math.Min(seconds / ReceiveHeadSeconds, ushort.MaxValue);
-            return Date.NowTime.Now.AddTicks(seconds * TimeSpan.TicksPerSecond);
+            return AutoCSer.Threading.SecondTimer.Now.AddTicks(seconds * TimeSpan.TicksPerSecond);
         }
         /// <summary>
         /// Session 超时分钟数

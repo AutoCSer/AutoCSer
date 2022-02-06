@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AutoCSer.Metadata;
 using System.Linq.Expressions;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data.Common;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -244,7 +244,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <summary>
         /// 成员绑定缓存集合
         /// </summary>
-        protected LeftArray<object> memberCaches;
+        protected LeftArray<object> memberCaches = new LeftArray<object>(0);
         /// <summary>
         /// 创建关键字整表缓存
         /// </summary>
@@ -757,7 +757,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                         if (memberField == null) throw new InvalidCastException(typeof(valueType).fullName() + " != " + typeof(memberCacheType).fullName());
                         else
                         {
-                            if (AutoCSer.Emit.Constructor<memberCacheType>.New == null) throw new InvalidOperationException("找不到无参构造函数 " + typeof(memberCacheType).FullName);
+                            if (AutoCSer.Metadata.DefaultConstructor<memberCacheType>.Constructor == null) throw new InvalidOperationException("找不到无参构造函数 " + typeof(memberCacheType).FullName);
                             GetMemberCache = AutoCSer.Emit.Field.UnsafeGetField<valueType, memberCacheType>(memberField.Member);
                             setMemberCache = AutoCSer.Emit.Field.UnsafeSetField<valueType, memberCacheType>(memberField.Member);
                             GetAllMemberCache = getAllMemberCache;
@@ -768,7 +768,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 }
                 else
                 {
-                    if (AutoCSer.Emit.Constructor<memberCacheType>.New == null) throw new InvalidOperationException("找不到无参构造函数 " + typeof(memberCacheType).FullName);
+                    if (AutoCSer.Metadata.DefaultConstructor<memberCacheType>.Constructor == null) throw new InvalidOperationException("找不到无参构造函数 " + typeof(memberCacheType).FullName);
                     MemberExpression<valueType, memberCacheType> expression = new MemberExpression<valueType, memberCacheType>(memberCache);
                     if (expression.Field == null) throw new InvalidCastException("memberCache is not MemberExpression");
                     GetMemberCache = expression.GetMember;
@@ -786,10 +786,10 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         {
             if (setMemberCache != null)
             {
-                if (setMemberCacheValue == null) setMemberCache(value, AutoCSer.Emit.Constructor<memberCacheType>.New());
+                if (setMemberCacheValue == null) setMemberCache(value, AutoCSer.Metadata.DefaultConstructor<memberCacheType>.Constructor());
                 else
                 {
-                    memberCacheType memberCache = AutoCSer.Emit.Constructor<memberCacheType>.New();
+                    memberCacheType memberCache = AutoCSer.Metadata.DefaultConstructor<memberCacheType>.Constructor();
                     setMemberCache(value, memberCache);
                     setMemberCacheValue(memberCache, value);
                 }

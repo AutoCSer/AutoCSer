@@ -1,5 +1,6 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpServer.ClientCommand
 {
@@ -50,7 +51,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         //    }
         //    catch (Exception error)
         //    {
-        //        Socket.Log.add(Log.LogType.Error, error);
+        //        Socket.Log.add(LogLevel.Error, error);
         //    }
         //    Socket.FreeIndex(index);
         //    return false;
@@ -63,7 +64,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         internal unsafe override CommandBase Build(ref SenderBuildInfo buildInfo)
         {
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
-            if ((buildInfo.SendBufferSize - stream.ByteSize) >= sizeof(int) + sizeof(uint))
+            if ((buildInfo.SendBufferSize - stream.Data.CurrentIndex) >= sizeof(int) + sizeof(uint))
             {
                 CommandBase nextBuild = LinkNext;
                 int commandIndex = Socket.CommandPool.Push(this);
@@ -71,12 +72,9 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                 {
                     if (KeepCallback.SetCommandIndex(commandIndex))
                     {
-                        byte* write = stream.CurrentData;
-                        *(int*)write = CommandInfo.Command;
-                        *(uint*)(write + sizeof(int)) = (uint)commandIndex | (uint)(CommandInfo.CommandFlags | CommandFlags.NullData);
+                        stream.Data.Write(CommandInfo.Command, (uint)commandIndex | (uint)(CommandInfo.CommandFlags | CommandFlags.NullData));
                         ++buildInfo.Count;
                         LinkNext = null;
-                        stream.ByteSize += sizeof(int) + sizeof(uint);
                         return nextBuild;
                     }
                     Socket.CommandPool.Cancel(commandIndex);

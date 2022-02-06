@@ -53,6 +53,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         ClientDeSerializeError,
         /// <summary>
+        /// 客户端获取套接字失败
+        /// </summary>
+        ClientSocketNull,
+        /// <summary>
         /// 客户端异常
         /// </summary>
         ClientException,

@@ -12,7 +12,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 缓存数量
         /// </summary>
-        private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(SocketAsyncEventArgs));
+        private readonly static int maxCount = AutoCSer.Common.Config.GetYieldPoolCount(typeof(SocketAsyncEventArgs));
         /// <summary>
         /// 套接字异步事件对象池首节点
         /// </summary>
@@ -20,7 +20,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 套接字异步事件对象池弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private static AutoCSer.Threading.SpinLock popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -31,26 +31,26 @@ namespace AutoCSer.Net
         /// <returns></returns>
         internal static SocketAsyncEventArgs Get()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SocketAsyncEventArgsPop);
+            popLock.EnterYield();
             SocketAsyncEventArgs value;
             do
             {
                 if ((value = head) == null)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     value = new SocketAsyncEventArgs();
                     value.SocketFlags = System.Net.Sockets.SocketFlags.None;
                     value.DisconnectReuseSocket = false;
                     return value;
                 }
-                if (Interlocked.CompareExchange(ref head, new UnionType { Value = value.UserToken }.SocketAsyncEventArgs, value) == value)
+                if (Interlocked.CompareExchange(ref head, new UnionType.SocketAsyncEventArgs { Object = value.UserToken }.Value, value) == value)
                 {
-                    System.Threading.Interlocked.Exchange(ref popLock, 0);
+                    popLock.Exit();
                     System.Threading.Interlocked.Decrement(ref count);
                     value.UserToken = null;
                     return value;
                 }
-                AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SocketAsyncEventArgsPop);
+                AutoCSer.Threading.ThreadYield.Yield();
             }
             while (true);
         }
@@ -85,7 +85,7 @@ namespace AutoCSer.Net
                         newValue.UserToken = oldHead;
                         if (System.Threading.Interlocked.CompareExchange(ref head, newValue, oldHead) == oldHead) return;
                     }
-                    AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SocketAsyncEventArgsPush);
+                    AutoCSer.Threading.ThreadYield.Yield();
                 }
                 while (true);
             }

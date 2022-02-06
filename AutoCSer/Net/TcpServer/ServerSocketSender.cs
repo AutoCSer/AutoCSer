@@ -1,9 +1,10 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpServer
 {
@@ -15,7 +16,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 创建输出线程调用类型
         /// </summary>
-        internal readonly AutoCSer.Threading.Thread.CallType BuildOutputThreadCallType;
+        internal readonly AutoCSer.Threading.ThreadTaskType BuildOutputThreadCallType;
         /// <summary>
         /// TCP 服务器端异步保持调用集合
         /// </summary>
@@ -37,7 +38,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="socket">TCP 服务套接字</param>
         /// <param name="isBuildOutputThread"></param>
         /// <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
-        internal ServerSocketSender(ServerSocket socket, bool isBuildOutputThread, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType)
+        internal ServerSocketSender(ServerSocket socket, bool isBuildOutputThread, AutoCSer.Threading.ThreadTaskType buildOutputThreadCallType)
             : base(socket, isBuildOutputThread)
         {
             BuildOutputThreadCallType = buildOutputThreadCallType;
@@ -84,7 +85,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="socket">TCP 服务套接字</param>
         /// <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
-        internal ServerSocketSender(ServerSocket<serverType, socketType, socketSenderType> socket, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType)
+        internal ServerSocketSender(ServerSocket<serverType, socketType, socketSenderType> socket, AutoCSer.Threading.ThreadTaskType buildOutputThreadCallType)
             : base(socket, socket.Server.ServerAttribute.IsBuildOutputThread, buildOutputThreadCallType)
         {
             Server = socket.Server;
@@ -124,20 +125,20 @@ namespace AutoCSer.Net.TcpServer
         protected unsafe byte setSendData(byte* start, int count)
         {
             UnmanagedStream outputStream = OutputSerializer.Stream;
-            int outputLength = outputStream.ByteSize, bufferLength = Buffer.Length, dataLength = outputLength - ServerOutput.OutputLink.StreamStartIndex, newBufferCount = 0, compressionDataSize = 0;
+            int outputLength = outputStream.Data.CurrentIndex, bufferLength = Buffer.Length, dataLength = outputLength - ServerOutput.OutputLink.StreamStartIndex, newBufferCount = 0, compressionDataSize = 0;
             byte isNewBuffer = 0;
             if (outputLength <= bufferLength)
             {
                 if (outputStream.Data.ByteSize != bufferLength)
                 {
                     newBufferCount = 1;
-                    Memory.CopyNotNull(outputStream.Data.Byte + ServerOutput.OutputLink.StreamStartIndex, start + ServerOutput.OutputLink.StreamStartIndex, dataLength);
+                    AutoCSer.Memory.Common.CopyNotNull(outputStream.Data.Byte + ServerOutput.OutputLink.StreamStartIndex, start + ServerOutput.OutputLink.StreamStartIndex, dataLength);
                 }
                 sendData.Set(Buffer.Buffer, Buffer.StartIndex + ServerOutput.OutputLink.StreamStartIndex, dataLength);
             }
             else
             {
-                outputStream.GetSubBuffer(ref CopyBuffer, ServerOutput.OutputLink.StreamStartIndex);
+                outputStream.Data.GetSubBuffer(ref CopyBuffer, ServerOutput.OutputLink.StreamStartIndex);
                 newBufferCount = CopyBuffer.PoolBuffer.Pool == null ? 2 : 1;
                 sendData.Set(CopyBuffer.Buffer, CopyBuffer.StartIndex + ServerOutput.OutputLink.StreamStartIndex, dataLength);
                 if (CopyBuffer.Length <= Server.SendBufferMaxSize)
@@ -156,7 +157,7 @@ namespace AutoCSer.Net.TcpServer
                     {
                         compressionDataSize = sendData.Length;
                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
-                        fixed (byte* dataFixed = sendData.Array, oldSendDataFixed = oldSendData.Array)
+                        fixed (byte* dataFixed = sendData.GetFixedBuffer(), oldSendDataFixed = oldSendData.GetFixedBuffer())
                         {
                             byte* dataStart = dataFixed + sendData.Start;
                             *(uint*)dataStart = *(uint*)(oldSendDataFixed + oldSendData.Start);
@@ -172,7 +173,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 if (compressionDataSize == 0 && dataLength >= sizeof(uint) && ServerSocket.MarkData != 0)
                 {
-                    fixed (byte* dataFixed = sendData.Array)
+                    fixed (byte* dataFixed = sendData.GetFixedBuffer())
                     {
                         CommandBuffer.Mark64(dataFixed + (sendData.Start + ServerOutput.OutputLink.StreamStartIndex), ServerSocket.MarkData, (sendData.Length - (ServerOutput.OutputLink.StreamStartIndex - 3)) & (int.MaxValue - 3));
                     }
@@ -186,7 +187,7 @@ namespace AutoCSer.Net.TcpServer
                     {
                         compressionDataSize = sendData.Length;
                         sendData.MoveStart(-(sizeof(uint) + sizeof(int) * 2));
-                        fixed (byte* dataFixed = sendData.Array)
+                        fixed (byte* dataFixed = sendData.GetFixedBuffer())
                         {
                             byte* dataStart = dataFixed + sendData.Start;
                             *(uint*)dataStart = ClientCommand.KeepCommand.MergeIndex;
@@ -203,7 +204,7 @@ namespace AutoCSer.Net.TcpServer
                 if (compressionDataSize == 0)
                 {
                     sendData.MoveStart(-ServerOutput.OutputLink.StreamStartIndex);
-                    fixed (byte* dataFixed = sendData.Array)
+                    fixed (byte* dataFixed = sendData.GetFixedBuffer())
                     {
                         byte* dataStart = dataFixed + sendData.Start;
                         *(uint*)dataStart = ClientCommand.KeepCommand.MergeIndex;
@@ -234,7 +235,7 @@ namespace AutoCSer.Net.TcpServer
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void AddLog(Exception error)
         {
-            Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+            Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
         }
 
         /// <summary>
@@ -254,7 +255,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                    Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     return null;
                 }
             }
@@ -363,7 +364,7 @@ namespace AutoCSer.Net.TcpServer
             {
                 ServerOutput.ReturnTypeOutput output = AutoCSer.Threading.RingPool<ServerOutput.ReturnTypeOutput>.Default.Pop() ?? new ServerOutput.ReturnTypeOutput();
                 output.CommandIndex = TcpServer.Server.GetCommandIndex(commandIndex, returnType);
-                if (Outputs.IsPushHead(output) && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) new AutoCSer.Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
+                if (Outputs.IsPushHead(output) && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) new AutoCSer.Threading.ThreadTask { Value = this, Type = BuildOutputThreadCallType }.Call();
                 return true;
             }
             return false;
@@ -389,7 +390,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                    Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     return null;
                 }
             }
@@ -512,7 +513,7 @@ namespace AutoCSer.Net.TcpServer
             if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
             {
                 if (IsBuildOutputThread) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, BuildOutputThreadCallType);
-                else new AutoCSer.Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
+                else new AutoCSer.Threading.ThreadTask { Value = this, Type = BuildOutputThreadCallType }.Call();
             }
         }
         /// <summary>
@@ -525,7 +526,7 @@ namespace AutoCSer.Net.TcpServer
             if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
             {
                 if (isBuildOutputThread & IsBuildOutputThread) AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, BuildOutputThreadCallType);
-                else new AutoCSer.Threading.Thread.CallInfo { Value = this, Type = BuildOutputThreadCallType }.Call();
+                else new AutoCSer.Threading.ThreadTask { Value = this, Type = BuildOutputThreadCallType }.Call();
             }
         }
 

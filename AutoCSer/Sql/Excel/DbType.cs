@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Excel

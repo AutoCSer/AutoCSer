@@ -35,7 +35,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 if (isValue(value))
                 {
                     DateTime time = getTime(value);
-                    if (time < minTime && time > AutoCSer.Pub.MinTime) minTime = time;
+                    if (time < minTime && time > AutoCSer.Date.BaseTime) minTime = time;
                 }
             }
             Append(minTime);

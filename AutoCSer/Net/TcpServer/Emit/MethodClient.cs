@@ -11,8 +11,16 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         protected volatile int _isDisposed_;
+        /// <summary>
+        /// 获取是否已经释放资源
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        internal static int GetIsDisposed(MethodClient client)
+        {
+            return client._isDisposed_;
+        }
     }
     /// <summary>
     /// TCP 客户端
@@ -24,12 +32,16 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public clientType _TcpClient_ { get; internal set; }
         /// <summary>
         /// 客户端等待连接
         /// </summary>
-        public ClientWaitConnected _WaitConnected_ { get; internal set; }
+        internal ClientWaitConnected _WaitConnected_;
+        /// <summary>
+        /// 客户端等待连接
+        /// </summary>
+        /// <returns></returns>
+        public ClientWaitConnected _GetWaitConnected_() { return _WaitConnected_; }
         /// <summary>
         /// 等待连接初始化
         /// </summary>

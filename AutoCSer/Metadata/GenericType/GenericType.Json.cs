@@ -11,103 +11,26 @@ namespace AutoCSer.Metadata
     internal abstract partial class GenericType
     {
         /// <summary>
-        /// JSON 反数据序列化 实例
+        /// JSON 自定义反序列化不支持类型
         /// </summary>
-        internal static readonly AutoCSer.Json.Parser JsonParser = new AutoCSer.Json.Parser();
-        /// <summary>
-        /// JSON 数据序列化 实例
-        /// </summary>
-        internal static readonly AutoCSer.Json.Serializer JsonSerializer = new AutoCSer.Json.Serializer();
-
+        internal abstract Delegate JsonDeSerializeNotSupportDelegate { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumByteMethod { get; }
+        internal abstract MethodInfo JsonDeSerializeTypeMethod { get; }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumSByteMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumUShortMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumShortMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumUIntMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumIntMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo JsonParseEnumULongMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo JsonParseEnumLongMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumByteFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumSByteFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumUShortFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumShortFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumUIntFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo JsonParseEnumIntFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo JsonParseEnumULongFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo JsonParseEnumLongFlagsMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo JsonParseTypeMethod { get; }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal abstract MethodInfo JsonParseArrayMethod { get; }
+        internal abstract Delegate JsonDeSerializeArrayMethod { get; }
         
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract Action<AutoCSer.Json.Serializer, object> JsonSerializeObjectDelegate { get; }
+        internal abstract Action<AutoCSer.JsonSerializer, object> JsonSerializeObjectDelegate { get; }
+        /// <summary>
+        /// JSON 自定义序列化不支持类型
+        /// </summary>
+        internal abstract Delegate JsonSerializeNotSupportDelegate { get; }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
@@ -123,197 +46,81 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeArrayMethod { get; }
+        internal abstract Delegate JsonSerializeArrayMethod { get; }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonSerializeStringDictionaryMethod { get; }
+        internal abstract Delegate JsonSerializeStringDictionaryMethod { get; }
     }
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal sealed partial class GenericType<Type> : GenericType
+    internal sealed partial class GenericType<T> : GenericType
     {
         /// <summary>
+        /// JSON 自定义反序列化不支持类型
+        /// </summary>
+        internal override Delegate JsonDeSerializeNotSupportDelegate { get { return (AutoCSer.JsonDeSerializer.DeSerializeDelegate<T>)AutoCSer.JsonDeSerializer.NotSupport<T>; } }
+        /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumByteMethod
+        internal override MethodInfo JsonDeSerializeTypeMethod
         {
-            get { return ((deSerialize)GenericType.JsonParser.enumByte<Type>).Method; }
+            get { return ((JsonDeSerializer.DeSerializeDelegate<T>)JsonDeSerializer.TypeDeSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumSByteMethod
+        internal override Delegate JsonDeSerializeArrayMethod
         {
-            get { return ((deSerialize)GenericType.JsonParser.enumSByte<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumUShortMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumUShort<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumShortMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumShort<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumUIntMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumUInt<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumIntMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumInt<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo JsonParseEnumULongMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumULong<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo JsonParseEnumLongMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumLong<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumByteFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumByteFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumSByteFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumSByteFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumUShortFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumUShortFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumShortFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumShortFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumUIntFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumUIntFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo JsonParseEnumIntFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumIntFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo JsonParseEnumULongFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumULongFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo JsonParseEnumLongFlagsMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.enumLongFlags<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo JsonParseTypeMethod
-        {
-            get { return ((deSerialize)GenericType.JsonParser.typeParse<Type>).Method; }
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化函数信息
-        /// </summary>
-        internal override MethodInfo JsonParseArrayMethod
-        {
-            get { return ((deSerializeArray)GenericType.JsonParser.array<Type>).Method; }
+            get { return (JsonDeSerializer.DeSerializeDelegate<T[]>)JsonDeSerializer.Array<T>; }
         }
 
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override Action<AutoCSer.Json.Serializer, object> JsonSerializeObjectDelegate
+        internal override Action<AutoCSer.JsonSerializer, object> JsonSerializeObjectDelegate
         {
-            get { return (Action<AutoCSer.Json.Serializer, object>)AutoCSer.Json.Serializer.serializeObject<Type>; }
+            get { return (Action<AutoCSer.JsonSerializer, object>)AutoCSer.JsonSerializer.SerializeObject<T>; }
         }
+        /// <summary>
+        /// JSON 自定义序列化不支持类型
+        /// </summary>
+        internal override Delegate JsonSerializeNotSupportDelegate { get { return (Action<AutoCSer.JsonSerializer, T>)AutoCSer.JsonSerializer.NotSupport<T>; } }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
         internal override MethodInfo JsonSerializeEnumToStringMethod
         {
-            get { return ((Action<Type>)GenericType.JsonSerializer.EnumToString<Type>).Method; }
+            get { return ((Action<JsonSerializer, T>)JsonSerializer.EnumToString<T>).Method; }
         }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
         internal override MethodInfo JsonSerializeStructSerializeMethod
         {
-            get { return ((Action<Type>)GenericType.JsonSerializer.structSerialize<Type>).Method; }
+            get { return ((Action<JsonSerializer, T>)JsonSerializer.StructSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
         internal override MethodInfo JsonSerializeClassSerializeMethod
         {
-            get { return ((Action<Type>)GenericType.JsonSerializer.classSerialize<Type>).Method; }
+            get { return ((Action<JsonSerializer, T>)JsonSerializer.ClassSerialize<T>).Method; }
         }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeArrayMethod
+        internal override Delegate JsonSerializeArrayMethod
         {
-            get { return ((Action<Type[]>)GenericType.JsonSerializer.array<Type>).Method; }
+            get { return (Action<JsonSerializer, T[]>)JsonSerializer.Array<T>; }
         }
         /// <summary>
         /// 获取 JSON 序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonSerializeStringDictionaryMethod
+        internal override Delegate JsonSerializeStringDictionaryMethod
         {
-            get { return ((Action<Dictionary<string, Type>>)GenericType.JsonSerializer.stringDictionary<Type>).Method; }
+            get { return (Action<JsonSerializer, Dictionary<string, T>>)JsonSerializer.StringDictionary<T>; }
         }
     }
 }

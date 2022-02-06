@@ -11,7 +11,7 @@ namespace AutoCSer.IO
     /// <summary>
     /// 文件流写入器
     /// </summary>
-    internal unsafe sealed class FileStreamWriter : IDisposable
+    internal unsafe sealed class FileStreamWriterX : IDisposable
     {
         /// <summary>
         /// 等待缓冲区

@@ -2,7 +2,7 @@
 using AutoCSer.Net.TcpServer.Emit;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpOpenServer.Emit
 {

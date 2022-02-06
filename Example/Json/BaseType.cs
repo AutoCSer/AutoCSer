@@ -5,8 +5,8 @@ namespace AutoCSer.Example.Json
     /// <summary>
     /// 入侵派生类型 示例
     /// </summary>
-    [AutoCSer.Json.Serialize(IsBaseType = true)]
-    [AutoCSer.Json.Parse(IsBaseType = true)]
+    [AutoCSer.JsonSerialize(IsBaseType = true)]
+    [AutoCSer.JsonDeSerialize(IsBaseType = true)]
     class BaseType
     {
         /// <summary>
@@ -22,15 +22,15 @@ namespace AutoCSer.Example.Json
         internal static bool TestCase()
         {
             SonType value = new SonType { Value = 1, SonValue = 2 };
-            string json = AutoCSer.Json.Serializer.Serialize(value);
+            string json = AutoCSer.JsonSerializer.Serialize(value);
 
-            SonType newValue = AutoCSer.Json.Parser.Parse<SonType>(json);
+            SonType newValue = AutoCSer.JsonDeSerializer.DeSerialize<SonType>(json);
             if (newValue == null || newValue.Value != 1 || newValue.SonValue != 0)
             {
                 return false;
             }
 
-            SonType2 newValue2 = AutoCSer.Json.Parser.Parse<SonType2>(json);
+            SonType2 newValue2 = AutoCSer.JsonDeSerializer.DeSerialize<SonType2>(json);
             return newValue2 != null && newValue2.Value == 1 && newValue2.SonValue == 0;
         }
     }

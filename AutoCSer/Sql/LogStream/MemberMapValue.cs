@@ -37,9 +37,9 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         /// <param name="toJsoner">对象转换成JSON字符串</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void toJson(AutoCSer.Json.Serializer toJsoner)
+        private void toJson(AutoCSer.JsonSerializer toJsoner)
         {
             new AutoCSer.Metadata.MemberMapValue<memberMapType> { MemberMap = MemberMap, Value = Value }.ToJson(toJsoner);
         }
@@ -47,9 +47,9 @@ namespace AutoCSer.Sql.LogStream
         /// 对象转换成JSON字符串
         /// </summary>
         /// <param name="parser">Json解析器</param>
-        [AutoCSer.Json.ParseCustom]
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void parseJson(AutoCSer.Json.Parser parser)
+        private void parseJson(AutoCSer.JsonDeSerializer parser)
         {
             if (MemberMap == null) MemberMap = new MemberMap<memberMapType>();
             parser.MemberMap = MemberMap;
@@ -58,7 +58,7 @@ namespace AutoCSer.Sql.LogStream
                 valueType poolValue = Value = MemberMapValueLinkPool<valueType>.Pop();
                 try
                 {
-                    AutoCSer.Json.TypeParser<valueType>.Parse(parser, ref Value);
+                    AutoCSer.Json.TypeDeSerializer<valueType>.DeSerialize(parser, ref Value);
                 }
                 finally
                 {
@@ -68,7 +68,7 @@ namespace AutoCSer.Sql.LogStream
             else
             {
                 memberMapType parseValue = Value;
-                AutoCSer.Json.TypeParser<memberMapType>.Parse(parser, ref parseValue);
+                AutoCSer.Json.TypeDeSerializer<memberMapType>.DeSerialize(parser, ref parseValue);
             }
         }
         /// <summary>
@@ -76,9 +76,9 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         /// <param name="serializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             new AutoCSer.Metadata.MemberMapValue<memberMapType> { MemberMap = MemberMap, Value = Value }.Serialize(serializer);
         }
@@ -86,9 +86,9 @@ namespace AutoCSer.Sql.LogStream
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer">序列化数据</param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             if (deSerializer.CheckNullValue() == 0) Value = default(valueType);
             else

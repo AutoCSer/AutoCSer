@@ -7,7 +7,7 @@ namespace AutoCSer.IO
     /// 类型转换
     /// </summary>
     [StructLayout(LayoutKind.Explicit)]
-    internal struct UnionType
+    internal struct UnionTypeX
     {
         /// <summary>
         /// 目标对象

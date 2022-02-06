@@ -26,9 +26,21 @@ namespace AutoCSer.Net.TcpSimpleServer
             }
         }
         /// <summary>
-                 /// TCP 服务器端异步调用
-                 /// </summary>
-                 /// <param name="socket">异步套接字</param>
+        /// 套接字最后接收数据时间
+        /// </summary>
+        public override DateTime LastReceiveTime
+        {
+            get
+            {
+                serverSocketType socket = this.socket;
+                if (socket != null) return socket.LastReceiveTime;
+                return base.LastReceiveTime;
+            }
+        }
+        /// <summary>
+        /// TCP 服务器端异步调用
+        /// </summary>
+        /// <param name="socket">异步套接字</param>
         protected ServerCallback(serverSocketType socket)
         {
             this.socket = socket;
@@ -64,8 +76,20 @@ namespace AutoCSer.Net.TcpSimpleServer
             }
         }
         /// <summary>
-                 /// 服务端输出信息
-                 /// </summary>
+        /// 套接字最后接收数据时间
+        /// </summary>
+        public override DateTime LastReceiveTime
+        {
+            get
+            {
+                serverSocketType socket = this.socket;
+                if (socket != null) return socket.LastReceiveTime;
+                return base.LastReceiveTime;
+            }
+        }
+        /// <summary>
+        /// 服务端输出信息
+        /// </summary>
         protected readonly TcpSimpleServer.OutputInfo outputInfo;
         /// <summary>
         /// 输出参数

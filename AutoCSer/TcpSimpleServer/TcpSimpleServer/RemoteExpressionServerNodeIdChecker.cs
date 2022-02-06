@@ -16,7 +16,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        internal override TcpServer.ReturnValue<int[]> Get(RemoteType[] types)
+        internal override TcpServer.ReturnValue<int[]> Get(AutoCSer.Reflection.RemoteType[] types)
         {
             return Client.GetRemoteExpressionNodeId(types);
         }

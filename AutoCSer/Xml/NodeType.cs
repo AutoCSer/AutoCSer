@@ -8,6 +8,10 @@ namespace AutoCSer.Xml
     public enum NodeType : byte
     {
         /// <summary>
+        /// 空值
+        /// </summary>
+        Null,
+        /// <summary>
         /// 字符串
         /// </summary>
         String,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.TestCase
 {
@@ -74,7 +75,7 @@ namespace AutoCSer.TestCase
                 {
                     AutoCSer.Net.SimpleSerialize.TypeSerializer<Data>.Serializer(stream, ref data);
                     Data newData = default(Data);
-                    if (AutoCSer.Net.SimpleSerialize.TypeDeSerializer<Data>.DeSerialize(stream.Data.Byte, ref newData, stream.CurrentData) != stream.CurrentData)
+                    if (AutoCSer.Net.SimpleSerialize.TypeDeSerializer<Data>.DeSerialize(stream.Data.Byte, ref newData, stream.Current) != stream.Current)
                     {
                         return false;
                     }

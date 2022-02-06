@@ -43,15 +43,15 @@ namespace AutoCSer.Threading
         /// <returns></returns>
         public long GetNext()
         {
-            while (System.Threading.Interlocked.CompareExchange(ref identityLock, 1, 0) != 0) ThreadYield.YieldOnly();
+            IdentityLock.EnterYield();
             long timestamp = startTimestamp + Date.TimestampDifference;
             if (timestamp < maxTimestamp)
             {
                 long identity = (currentIdentity += identityIncrement);
                 if ((identity & mask) != 0)
                 {
-                    System.Threading.Interlocked.Exchange(ref identityLock, 0);
-                    return identity;
+                    IdentityLock.Exit();
+                   return identity;
                 }
                 if (--timestampCount == 0)
                 {
@@ -59,7 +59,7 @@ namespace AutoCSer.Threading
                     timestampCount = 1000;
                 }
                 maxTimestamp += Date.TimestampPerMillisecond;
-                System.Threading.Interlocked.Exchange(ref identityLock, 0);
+                IdentityLock.Exit();
                 return identity;
             }
             else if (timestamp == maxTimestamp)
@@ -72,7 +72,7 @@ namespace AutoCSer.Threading
                 }
                 currentIdentity = identity;
                 maxTimestamp += Date.TimestampPerMillisecond;
-                System.Threading.Interlocked.Exchange(ref identityLock, 0);
+                IdentityLock.Exit();
                 return identity;
             }
             else
@@ -82,7 +82,7 @@ namespace AutoCSer.Threading
                 timestampCount = 1000;
                 maxTimestamp = Date.GetTimestampByMilliseconds(identity + 1);
                 currentIdentity = (identity = (identity << bits) | distributed);
-                System.Threading.Interlocked.Exchange(ref identityLock, 0);
+                IdentityLock.Exit();
                 return identity;
             }
         }

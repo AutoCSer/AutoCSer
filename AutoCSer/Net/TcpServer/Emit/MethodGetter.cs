@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Collections.Generic;
 
 namespace AutoCSer.Net.TcpServer.Emit
@@ -96,7 +96,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                         serverAttribute = attribute;
                         break;
                     }
-                    if (serverAttribute == null) serverAttribute = AutoCSer.Emit.Constructor<attributeType>.New();
+                    if (serverAttribute == null) serverAttribute = AutoCSer.Metadata.DefaultConstructor<attributeType>.Constructor();
                     methodAttributeType methodAttribute = null;
                     foreach (methodAttributeType attribute in type.GetCustomAttributes(typeof(methodAttributeType), false))
                     {
@@ -105,11 +105,11 @@ namespace AutoCSer.Net.TcpServer.Emit
                     }
                     if (methodAttribute == null)
                     {
-                        methodAttribute = AutoCSer.Emit.Constructor<methodAttributeType>.New();
+                        methodAttribute = AutoCSer.Metadata.DefaultConstructor<methodAttributeType>.Constructor();
                         methodAttribute.IsDefault = true;
                     }
 
-                    LeftArray<methodType> tcpMethods = new LeftArray<methodType>();
+                    LeftArray<methodType> tcpMethods = new LeftArray<methodType>(0);
                     if (!get(type, serverAttribute, methodAttribute, true, ref tcpMethods)) return false;
                     foreach (Type interfaceType in type.GetInterfaces().notNull())
                     {
@@ -183,9 +183,9 @@ namespace AutoCSer.Net.TcpServer.Emit
                             }
                         }
                     }
-                    Queues = queueTypes == null ? NullValue<ServerCallQueue>.Array : queueTypes.Values.getArray();
+                    Queues = queueTypes == null ? EmptyArray<ServerCallQueue>.Array : queueTypes.Values.getArray();
                     string serviceName = serverAttribute.ServerName ?? type.fullName();
-                    DefaultServerAttribute = (attributeType)AutoCSer.Config.Loader.GetObject(typeof(attributeType), serviceName) ?? AutoCSer.MemberCopy.Copyer<attributeType>.MemberwiseClone(serverAttribute);
+                    DefaultServerAttribute = (attributeType)AutoCSer.Configuration.Common.Get(typeof(attributeType), serviceName) ?? AutoCSer.MemberCopy.Copyer<attributeType>.MemberwiseClone(serverAttribute);
                     if (DefaultServerAttribute.Name == null) DefaultServerAttribute.Name = serviceName;
                     if (DefaultServerAttribute.GetServerCallQueueType != null && !typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).IsAssignableFrom(DefaultServerAttribute.GetServerCallQueueType))
                     {

@@ -13,7 +13,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         private ClientMetadata()
             : base(typeof(TcpOpenSimpleServer.Client), typeof(MethodClient)
             , ParameterGenericType.Get, ParameterGenericType2.Get
-            , ((Func<TcpServer.CommandInfoBase, TcpServer.ReturnType>)ParameterGenericType.Client.Call).Method)
+            , ((Func<TcpSimpleServer.Client, TcpServer.CommandInfoBase, TcpServer.ReturnType>)TcpSimpleServer.Client.Call).Method)
         {
         }
         /// <summary>

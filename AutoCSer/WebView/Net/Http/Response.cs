@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Text;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.Http
 {
@@ -30,7 +31,7 @@ namespace AutoCSer.Net.Http
         internal void SetBody()
         {
             freeBody();
-            Body.Array = NullValue<byte>.Array;
+            Body.Array = EmptyArray<byte>.Array;
             Type = ResponseType.ByteArray;
         }
         /// <summary>
@@ -41,13 +42,13 @@ namespace AutoCSer.Net.Http
         {
             switch (Type)
             {
-                case ResponseType.ByteArray: Body.Array = NullValue<byte>.Array; return;
+                case ResponseType.ByteArray: Body.Array = EmptyArray<byte>.Array; return;
                 case ResponseType.SubByteArray:
-                    Body.Array = NullValue<byte>.Array;
+                    Body.Array = EmptyArray<byte>.Array;
                     Flag &= ResponseFlag.All ^ ResponseFlag.CanHeaderSize;
                     return;
                 case ResponseType.SubBuffer:
-                    Body.Array = NullValue<byte>.Array;
+                    Body.Array = EmptyArray<byte>.Array;
                     SubBuffer.Free();
                     return;
                 case ResponseType.File: BodyFile = null; return;
@@ -74,7 +75,7 @@ namespace AutoCSer.Net.Http
             if (data.Length == 0)
             {
                 SetBody();
-                Body.Array = NullValue<byte>.Array;
+                Body.Array = EmptyArray<byte>.Array;
                 Type = ResponseType.ByteArray;
             }
             else
@@ -99,7 +100,7 @@ namespace AutoCSer.Net.Http
         /// <param name="encoding"></param>
         internal unsafe void SetBody(CharStream charStream, ref EncodingCache encoding)
         {
-            if (charStream.ByteSize == 0) SetBody();
+            if (charStream.Data.CurrentIndex == 0) SetBody();
             else
             {
                 freeBody();
@@ -131,24 +132,24 @@ namespace AutoCSer.Net.Http
             else
             {
                 freeBody();
-                if (isAscii && encoding.IsAsciiOther != 0)
+                if (isAscii && encoding.IsCompatibleAscii != 0)
                 {
                     int size = value.Length;
                     AutoCSer.SubBuffer.Pool.GetBuffer(ref SubBuffer, size);
                     fixed (char* textFixed = value)
-                    fixed (byte* bufferFixed = SubBuffer.Buffer)
+                    fixed (byte* bufferFixed = SubBuffer.GetFixedBuffer())
                     {
                         if (SubBuffer.PoolBuffer.Pool == null)
                         {
                             Body.Array = SubBuffer.Buffer;
-                            AutoCSer.Extension.StringExtension.WriteBytes(textFixed, size, bufferFixed);
+                            AutoCSer.Extensions.StringExtension.WriteBytes(textFixed, size, bufferFixed);
                             SubBuffer.Buffer = null;
                             Type = ResponseType.ByteArray;
                         }
                         else
                         {
                             Body.Set(SubBuffer.Buffer, SubBuffer.StartIndex, size);
-                            AutoCSer.Extension.StringExtension.WriteBytes(textFixed, size, bufferFixed + Body.Start);
+                            AutoCSer.Extensions.StringExtension.WriteBytes(textFixed, size, bufferFixed + Body.Start);
                             Type = ResponseType.SubBuffer;
                         }
                     }
@@ -178,11 +179,11 @@ namespace AutoCSer.Net.Http
         /// <param name="bodyStream"></param>
         internal unsafe void SetBody(UnmanagedStream bodyStream)
         {
-            if (bodyStream.ByteSize == 0) SetBody();
+            if (bodyStream.Data.CurrentIndex == 0) SetBody();
             else
             {
                 freeBody();
-                bodyStream.GetSubBuffer(ref SubBuffer, 0);
+                bodyStream.Data.GetSubBuffer(ref SubBuffer, 0);
                 if (SubBuffer.PoolBuffer.Pool == null)
                 {
                     Body.Array = SubBuffer.Buffer;
@@ -191,7 +192,7 @@ namespace AutoCSer.Net.Http
                 }
                 else
                 {
-                    Body.Set(SubBuffer.Buffer, SubBuffer.StartIndex, bodyStream.ByteSize);
+                    Body.Set(SubBuffer.Buffer, SubBuffer.StartIndex, bodyStream.Data.CurrentIndex);
                     Type = ResponseType.SubBuffer;
                 }
             }
@@ -297,7 +298,7 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void SetLocation(byte[] data, ResponseState state = ResponseState.Found302)
         {
-            if (data == null) Location.Set(NullValue<byte>.Array, 0, 0);
+            if (data == null) Location.Set(EmptyArray<byte>.Array, 0, 0);
             else Location.Set(data, 0, data.Length);
             State = state;
             Flag = (Flag | ResponseFlag.Location | ResponseFlag.State) & (ResponseFlag.All ^ ResponseFlag.AccessControlAllowOrigin);
@@ -336,14 +337,14 @@ namespace AutoCSer.Net.Http
         /// <param name="state"></param>
         internal unsafe void SetLocation(Header header, string path, ResponseState state = ResponseState.Found302)
         {
-            if (path.Length == 0) Location.Set(NullValue<byte>.Array, 0, 0);
+            if (path.Length == 0) Location.Set(EmptyArray<byte>.Array, 0, 0);
             else
             {
                 header.SetResponseLocationRange(path, ref Location);
                 fixed (char* pathFixed = path)
-                fixed (byte* dataFixed = Location.Array)
+                fixed (byte* dataFixed = Location.GetFixedBuffer())
                 {
-                    AutoCSer.Extension.StringExtension.WriteBytes(pathFixed, path.Length, dataFixed + Location.Start);
+                    AutoCSer.Extensions.StringExtension.WriteBytes(pathFixed, path.Length, dataFixed + Location.Start);
                 }
             }
             State = state;
@@ -376,7 +377,7 @@ namespace AutoCSer.Net.Http
                 Cookie cookie = Cookie;
                 do
                 {
-                    if (AutoCSer.Memory.EqualNotNull(name, cookie.Name)) return cookie;
+                    if (AutoCSer.Memory.Common.EqualNotNull(name, cookie.Name)) return cookie;
                 }
                 while ((cookie= cookie.LinkNext) != null);
             }
@@ -654,7 +655,7 @@ namespace AutoCSer.Net.Http
             SUBBYTEARRAY:
                     if (Body.Length > GZipHeaderSize + 256)
                     {
-                        SubArray<byte> compressData = default(SubArray<byte>);
+                        SubArray<byte> compressData = new SubArray<byte>();
                         try
                         {
 #if DOTNET2 || DOTNET4
@@ -679,7 +680,7 @@ namespace AutoCSer.Net.Http
                     if (Body.Length > GZipHeaderSize + 256)
                     {
                         SubBuffer.PoolBufferFull compressBuffer = default(SubBuffer.PoolBufferFull);
-                        SubArray<byte> compressData = default(SubArray<byte>);
+                        SubArray<byte> compressData = new SubArray<byte>();
                         byte isCompress = 0;
                         try
                         {
@@ -743,11 +744,11 @@ namespace AutoCSer.Net.Http
                 freeBody();
                 Type = ResponseType.ByteArray;
                 Flag = ResponseFlag.IsPool;
-                if (YieldPool.Default.IsPushNotNull(this) != 0) return;
+                if (YieldPool.Default.IsPush(this) != 0) return;
             }
             if (Type == ResponseType.SubBuffer)
             {
-                Body.Array = NullValue<byte>.Array;
+                Body.Array = EmptyArray<byte>.Array;
                 SubBuffer.Free();
                 Type = ResponseType.ByteArray;
             }
@@ -764,7 +765,7 @@ namespace AutoCSer.Net.Http
             if (response == null)
             {
                 response = new Response { Flag = ResponseFlag.IsPool };
-                response.Body.Array = NullValue<byte>.Array;
+                response.Body.Array = EmptyArray<byte>.Array;
             }
             return response;
         }
@@ -790,7 +791,7 @@ namespace AutoCSer.Net.Http
         internal static Response New()
         {
             Response response = new Response { Flag = ResponseFlag.None };
-            response.Body.Array = NullValue<byte>.Array;
+            response.Body.Array = EmptyArray<byte>.Array;
             return response;
         }
 
@@ -823,20 +824,20 @@ namespace AutoCSer.Net.Http
         /// </summary>
         internal static readonly Response Blank = new Response
         {
-            Body = new SubArray<byte>(NullValue<byte>.Array),
+            Body = new SubArray<byte>(EmptyArray<byte>.Array),
             Flag = ResponseFlag.State,
             State = ResponseState.Ok200,
             CacheControlData = StaticFileCacheControl,
-            LastModifiedData = Date.NowTime.Now.ToBytes()
+            LastModifiedData = AutoCSer.Threading.SecondTimer.Now.ToBytes()
         };
         /// <summary>
         /// 资源未修改
         /// </summary>
-        internal static readonly Response NotChanged304 = new Response { Body = new SubArray<byte>(NullValue<byte>.Array), Flag = ResponseFlag.State, State = ResponseState.NotChanged304 };
+        internal static readonly Response NotChanged304 = new Response { Body = new SubArray<byte>(EmptyArray<byte>.Array), Flag = ResponseFlag.State, State = ResponseState.NotChanged304 };
         /// <summary>
         /// Range 请求无效
         /// </summary>
-        internal static readonly Response RangeNotSatisfiable416 = new Response { Body = new SubArray<byte>(NullValue<byte>.Array), Flag = ResponseFlag.State, State = ResponseState.RangeNotSatisfiable416 };
+        internal static readonly Response RangeNotSatisfiable416 = new Response { Body = new SubArray<byte>(EmptyArray<byte>.Array), Flag = ResponseFlag.State, State = ResponseState.RangeNotSatisfiable416 };
 #if DOTNET2 || DOTNET4
         /// <summary>
         /// 压缩处理

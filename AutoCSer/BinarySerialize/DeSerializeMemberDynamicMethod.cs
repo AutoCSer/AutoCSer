@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -30,7 +30,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="type"></param>
         public DeSerializeMemberDynamicMethod(Type type)
         {
-            dynamicMethod = new DynamicMethod("FieldDeSerializer", null, new Type[] { typeof(DeSerializer), type.MakeByRefType() }, type, true);
+            dynamicMethod = new DynamicMethod("FieldDeSerializer", null, new Type[] { typeof(BinaryDeSerializer), type.MakeByRefType() }, type, true);
             generator = dynamicMethod.GetILGenerator();
             isValueType = type.IsValueType;
         }
@@ -54,7 +54,7 @@ namespace AutoCSer.BinarySerialize
                 if (!isValueType) generator.Emit(OpCodes.Ldind_Ref);
                 generator.Emit(OpCodes.Ldflda, field.Field);
             }
-            generator.call(DeSerializer.GetMemberDeSerializeMethod(fieldType) ?? DeSerializeMethodCache.GetMember(fieldType));
+            generator.call(BinaryDeSerializer.GetMemberDeSerializeMethod(fieldType) ?? DeSerializeMethodCache.GetMember(fieldType));
         }
         /// <summary>
         /// 创建成员转换委托

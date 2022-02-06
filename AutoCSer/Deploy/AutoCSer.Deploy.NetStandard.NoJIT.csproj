@@ -57,6 +57,7 @@
     <Compile Include="CustomPushResult.cs" />
     <Compile Include="DeployInfo.cs" />
     <Compile Include="DeployResult.cs" />
+    <Compile Include="DeployResultData.cs" />
     <Compile Include="DeployState.cs" />
     <Compile Include="Diagnostics\ConfigLoader.cs" />
     <Compile Include="Diagnostics\NET4.5\ProcessCopyClient.cs" />

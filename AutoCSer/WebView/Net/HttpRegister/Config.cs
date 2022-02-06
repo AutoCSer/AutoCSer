@@ -13,7 +13,7 @@ namespace AutoCSer.Net.HttpRegister
         /// <summary>
         /// HTTP 服务程序集运行目录
         /// </summary>
-        public string WorkPath = AutoCSer.Config.Pub.Default.CachePath;
+        public string WorkPath = AutoCSer.Common.Config.CachePath;
         /// <summary>
         /// TCP 服务端口证书集合
         /// </summary>

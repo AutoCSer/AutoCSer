@@ -19,7 +19,7 @@ namespace AutoCSer.IO.Compression
             SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
             try
             {
-                SubArray<byte> compressData = default(SubArray<byte>);
+                SubArray<byte> compressData = new SubArray<byte>();
                 if (DeflateCompressor.Get(data, 0, data.Length, ref buffer, ref compressData, sizeof(int), 0))
                 {
                     compressData.MoveStart(-sizeof(int));

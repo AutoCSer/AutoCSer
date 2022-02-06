@@ -38,7 +38,7 @@ namespace AutoCSer.Sql.Cache.Whole.Client
                 try
                 {
                     cache.ToSize(id + 1);
-                    (value = AutoCSer.Emit.Constructor<valueType>.New()).Id = id;
+                    (value = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor()).Id = id;
                     return cache[id] = value;
                 }
                 finally { Monitor.Exit(cacheLock); }
@@ -47,7 +47,7 @@ namespace AutoCSer.Sql.Cache.Whole.Client
             {
                 try
                 {
-                    (value = AutoCSer.Emit.Constructor<valueType>.New()).Id = id;
+                    (value = AutoCSer.Metadata.DefaultConstructor<valueType>.Constructor()).Id = id;
                     return cache[id] = value;
                 }
                 finally { Monitor.Exit(cacheLock); }

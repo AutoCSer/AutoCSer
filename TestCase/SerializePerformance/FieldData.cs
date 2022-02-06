@@ -6,7 +6,7 @@ namespace AutoCSer.TestCase.SerializePerformance
     /// <summary>
     /// 字段测试数据
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     class FieldData
     {
         public bool Bool;

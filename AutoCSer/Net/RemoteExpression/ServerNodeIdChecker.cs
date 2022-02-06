@@ -13,7 +13,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// <summary>
         /// 请求数据
         /// </summary>
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         internal struct Input
         {
             /// <summary>
@@ -23,12 +23,12 @@ namespace AutoCSer.Net.RemoteExpression
             /// <summary>
             /// 表达式服务端节点类型集合
             /// </summary>
-            internal RemoteType[] Types;
+            internal AutoCSer.Reflection.RemoteType[] Types;
         }
         /// <summary>
         /// 返回数据
         /// </summary>
-        [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+        [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
         internal struct Output
         {
             /// <summary>
@@ -67,7 +67,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        internal abstract AutoCSer.Net.TcpServer.ReturnValue<int[]> Get(RemoteType[] types);
+        internal abstract AutoCSer.Net.TcpServer.ReturnValue<int[]> Get(AutoCSer.Reflection.RemoteType[] types);
         /// <summary>
         /// 服务端映射标识检测
         /// </summary>
@@ -76,7 +76,7 @@ namespace AutoCSer.Net.RemoteExpression
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal unsafe AutoCSer.Net.TcpServer.ReturnType Check(Node node)
         {
-            LeftArray<Type> types = default(LeftArray<Type>);
+            LeftArray<Type> types = new LeftArray<Type>(0);
             return Check(node, ref types);
         }
         /// <summary>
@@ -90,7 +90,7 @@ namespace AutoCSer.Net.RemoteExpression
             node.CheckServerNodeId(this, ref types);
             if (types.Length == 0) return AutoCSer.Net.TcpServer.ReturnType.Success;
             int count = types.Length;
-            LeftArray<RemoteType> remoteTypes = new LeftArray<RemoteType>(types.Length);
+            LeftArray<AutoCSer.Reflection.RemoteType> remoteTypes = new LeftArray<AutoCSer.Reflection.RemoteType>(types.Length);
             types.Length = 0;
             AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Success;
             Monitor.Enter(serverNodeIdLock);

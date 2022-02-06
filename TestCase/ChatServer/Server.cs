@@ -8,9 +8,9 @@ namespace AutoCSer.TestCase.ChatServer
     /// 群聊客户端
     /// </summary>
 #if !DOTNET45
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\..\ChatClient\")]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = AutoCSer.Memory.BufferSize.Kilobyte, ReceiveBufferSize = AutoCSer.Memory.BufferSize.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\..\ChatClient\")]
 #else
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\ChatClient\")]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = AutoCSer.Memory.BufferSize.Kilobyte, ReceiveBufferSize = AutoCSer.Memory.BufferSize.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\ChatClient\")]
 #endif
     public partial class Server
     {
@@ -21,7 +21,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// <summary>
         /// 待移除用户名称集合
         /// </summary>
-        private LeftArray<HashString> removeUsers;
+        private LeftArray<HashString> removeUsers = new LeftArray<HashString>(0);
         /// <summary>
         /// 用户登录
         /// </summary>
@@ -113,7 +113,7 @@ namespace AutoCSer.TestCase.ChatServer
             User currentUser = getCurrentUser(socket);
             if (currentUser != null)
             {
-                ChatData.Message message = new ChatData.Message { User = currentUser.Name, Content = content, Time = Date.Now };
+                ChatData.Message message = new ChatData.Message { User = currentUser.Name, Content = content, Time = AutoCSer.Threading.SecondTimer.Now };
                 removeUsers.ClearOnlyLength();
                 foreach (var user in users)
                 {

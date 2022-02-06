@@ -16,9 +16,9 @@ namespace AutoCSer.Example.Json
         /// 自定义序列化函数
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void Serialize(AutoCSer.Json.Serializer serializer)
+        internal void Serialize(AutoCSer.JsonSerializer serializer)
         {
             serializer.CallSerialize(Value == null ? 1 : 2);
         }
@@ -26,11 +26,11 @@ namespace AutoCSer.Example.Json
         /// 自定义反序列化函数
         /// </summary>
         /// <param name="parser"></param>
-        [AutoCSer.Json.ParseCustom]
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.Json.Parser parser)
+        private unsafe void deSerialize(AutoCSer.JsonDeSerializer parser)
         {
-            switch (parser.TypeParse<int>())
+            switch (parser.TypeDeSerialize<int>())
             {
                 case 1: Value = null; return;
                 case 2: Value = string.Empty; return;
@@ -45,14 +45,14 @@ namespace AutoCSer.Example.Json
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            string json = AutoCSer.Json.Serializer.Serialize(new CustomStruct { Value = null });
-            if (AutoCSer.Json.Parser.Parse<CustomStruct>(json).Value != null)
+            string json = AutoCSer.JsonSerializer.Serialize(new CustomStruct { Value = null });
+            if (AutoCSer.JsonDeSerializer.DeSerialize<CustomStruct>(json).Value != null)
             {
                 return false;
             }
 
-            json = AutoCSer.Json.Serializer.Serialize(new CustomStruct { Value = string.Empty });
-            return AutoCSer.Json.Parser.Parse<CustomStruct>(json).Value == string.Empty;
+            json = AutoCSer.JsonSerializer.Serialize(new CustomStruct { Value = string.Empty });
+            return AutoCSer.JsonDeSerializer.DeSerialize<CustomStruct>(json).Value == string.Empty;
         }
     }
 }

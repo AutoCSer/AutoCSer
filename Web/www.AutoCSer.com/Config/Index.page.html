@@ -9,7 +9,7 @@
     </p>
     <p>
         添加一个配置容器类型，需要给该类型添加配置容器类型声明 <b>[AutoCSer.Config.Type]</b>。
-        <br />在配置容器类型中添加具体的配置项，支持静态字段或者不带参数的静态属性，需要给该配置项添加配置项申明 <b>[AutoCSer.Config.Member]</b>
+        <br />在配置容器类型中添加具体的配置项，支持静态字段或者不带参数的静态属性，需要给该配置项添加配置项申明 <b>[AutoCSer.Configuration.Member]</b>
         <br />配置项申明有一个 string 类型的参数 <b>Name</b> 用于标识该配置的名称，默认为 string.Empty 表示全局默认配置，否则表示特定应用配置的唯一标识。
         <br />获取配置可以访问 <b>AutoCSer.Config.Loader</b> 下的两个静态方法，<b>Type</b> 表示需要获取的目标配置数据类型，也就是配置项的字段或者属性的定义类型。
         <div name="ace" mode="csharp">
@@ -69,7 +69,7 @@
     </p>
     <p>
         <a href="/Serialize/Binary.html">二进制数据序列化</a>
-        <br />. <b>AutoCSer.BinarySerialize.SerializeAttribute</b> 序列化类型配置申明
+        <br />. <b>AutoCSer.BinarySerializeAttribute</b> 序列化类型配置申明
         <br />. <b>AutoCSer.BinarySerialize.SerializeConfig</b> 序列化配置参数
         <br />. <b>AutoCSer.BinarySerialize.DeSerializeConfig</b> 反序列化配置参数
     </p>

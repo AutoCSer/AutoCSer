@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CacheServer
 {
@@ -82,7 +83,7 @@ namespace AutoCSer.CacheServer
         /// <param name="identity">服务端数据结构索引标识</param>
         internal unsafe void SetIdentity(ref IndexIdentity identity)
         {
-            fixed (byte* bufferFixed = Array.Array) identity.UnsafeSerialize(bufferFixed + (Array.Start + OperationParameter.Serializer.HeaderSize));
+            fixed (byte* bufferFixed = Array.GetFixedBuffer()) identity.UnsafeSerialize(bufferFixed + (Array.Start + OperationParameter.Serializer.HeaderSize));
         }
         /// <summary>
         /// 设置服务端数据结构索引标识
@@ -90,7 +91,7 @@ namespace AutoCSer.CacheServer
         /// <param name="identity">服务端数据结构索引标识</param>
         internal unsafe void SetIdentity(IndexIdentity identity)
         {
-            fixed (byte* bufferFixed = Array.Array) identity.UnsafeSerialize(bufferFixed + (Array.Start + OperationParameter.Serializer.HeaderSize));
+            fixed (byte* bufferFixed = Array.GetFixedBuffer()) identity.UnsafeSerialize(bufferFixed + (Array.Start + OperationParameter.Serializer.HeaderSize));
         }
         /// <summary>
         /// 设置数据
@@ -165,6 +166,15 @@ namespace AutoCSer.CacheServer
                 buffer.FreeReference();
                 buffer = buffer.LinkNext;
             }
+        }
+        /// <summary>
+        /// 获取 fixed 缓冲区，DEBUG 模式对数据范围进行检测
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal byte[] GetFixedBuffer()
+        {
+            return Array.GetFixedBuffer();
         }
     }
 }

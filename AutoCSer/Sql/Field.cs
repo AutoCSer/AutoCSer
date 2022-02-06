@@ -2,7 +2,7 @@
 using AutoCSer.Metadata;
 using System.Reflection;
 using AutoCSer.Data;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql
@@ -31,7 +31,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 数据读取函数
         /// </summary>
-        internal MethodInfo DataReaderMethod;
+        internal Delegate DataReaderDelegate;
         /// <summary>
         /// 数据转换SQL字符串函数信息
         /// </summary>
@@ -99,7 +99,7 @@ namespace AutoCSer.Sql
             MemberMapIndex = field.MemberIndex;
             DataMember = format(attribute, FieldInfo.FieldType, ref IsSqlColumn);
             if ((NullableDataType = DataMember.DataType) == null) NullableDataType = FieldInfo.FieldType;
-            if ((DataReaderMethod = DataReader.GetMethod(DataType = NullableDataType.nullableType() ?? NullableDataType)) == null)
+            if ((DataReaderDelegate = DataReader.GetDelegate(DataType = NullableDataType.nullableType() ?? NullableDataType)) == null)
             {
                 if (IsSqlColumn)
                 {
@@ -110,11 +110,12 @@ namespace AutoCSer.Sql
                     DataType = NullableDataType = typeof(string);
                     DataReaderMethod = DataReader.GetMethodInfo;
 #else
-                DataReaderMethod = DataReader.GetMethod(DataType = NullableDataType = typeof(string));
+                DataReaderDelegate = DataReader.GetDelegate(DataType = NullableDataType = typeof(string));
 #endif
                 IsUnknownJson = true;
-                ToSqlCastMethod = jsonSerializeMethod.MakeGenericMethod(FieldInfo.FieldType);
-                ToModelCastMethod = jsonParseMethod.MakeGenericMethod(FieldInfo.FieldType);
+                AutoCSer.Sql.Metadata.GenericType GenericType = AutoCSer.Sql.Metadata.GenericType.Get(FieldInfo.FieldType);
+                ToSqlCastMethod = GenericType.JsonSerializeMethod;
+                ToModelCastMethod = GenericType.JsonDeSerializeMethod;
             }
             else
             {
@@ -123,6 +124,17 @@ namespace AutoCSer.Sql
             }
             if (attribute != null && attribute.NowTimeType != NowTimeType.None && FieldInfo.FieldType == typeof(DateTime)) NowTimeType = attribute.NowTimeType;
             ToSqlMethod = ConstantConverter.GetMethod(DataType);
+        }
+        /// <summary>
+        /// 获取数据读取函数
+        /// </summary>
+        /// <param name="clientKind"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal Delegate GetDataReaderDelegate(ClientKind clientKind)
+        {
+            if (clientKind != ClientKind.Excel) return DataReaderDelegate;
+            return Excel.DataReader.GetDelegate(DataType);
         }
         /// <summary>
         /// 获取数据列名称
@@ -135,7 +147,7 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal string GetSqlColumnName()
         {
-            if (getSqlColumnName == null) getSqlColumnName = ColumnGroup.Inserter.GetColumnNames(FieldInfo.FieldType);
+            if (getSqlColumnName == null) getSqlColumnName = (Func<string, string>)AutoCSer.Sql.Metadata.GenericType.Get(FieldInfo.FieldType).InserterGetColumnNamesMethod;
             return getSqlColumnName(FieldInfo.Name);
         }
         /// <summary>
@@ -208,32 +220,23 @@ namespace AutoCSer.Sql
         /// <param name="value">数据对象</param>
         /// <returns>Json字符串</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static string jsonSerialize<valueType>(valueType value)
+        internal static string JsonSerialize<valueType>(valueType value)
         {
-            return value == null ? string.Empty : AutoCSer.Json.Serializer.Serialize(value);
+            return value == null ? string.Empty : AutoCSer.JsonSerializer.Serialize(value);
         }
-        /// <summary>
-        /// 对象转换JSON字符串函数信息
-        /// </summary>
-        private static readonly MethodInfo jsonSerializeMethod = typeof(Field).GetMethod("jsonSerialize", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// Json解析
         /// </summary>
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="jsonString">Json字符串</param>
         /// <returns>目标数据</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static valueType jsonParse<valueType>(string jsonString)
+        internal static valueType JsonDeSerialize<valueType>(string jsonString)
         {
             if (string.IsNullOrEmpty(jsonString)) return default(valueType);
             valueType value = default(valueType);
-            return AutoCSer.Json.Parser.ParseNotEmpty(jsonString, ref value).State == Json.ParseState.Success ? value : default(valueType);
+            return AutoCSer.JsonDeSerializer.DeSerializeNotEmpty(jsonString, ref value).State == Json.DeSerializeState.Success ? value : default(valueType);
         }
-        /// <summary>
-        /// Json解析函数信息
-        /// </summary>
-        private static readonly MethodInfo jsonParseMethod = typeof(Field).GetMethod("jsonParse", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { typeof(string) }, null);
+        
         /// <summary>
         /// 数据列类型集合
         /// </summary>
@@ -341,7 +344,7 @@ namespace AutoCSer.Sql
         /// <param name="database">数据库配置</param>
         /// <returns>数据库成员信息集合</returns>
         internal static KeyValue<MemberIndexInfo, MemberAttribute>[] GetMemberIndexs<attributeType>(Type type, attributeType database)
-             where attributeType : Metadata.MemberFilterAttribute
+             where attributeType : AutoCSer.Metadata.MemberFilterAttribute
         {
             return GetMembers(MemberIndexGroup.Get(type).Find<MemberAttribute>(database));
         }
@@ -359,16 +362,15 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
+        private static void clearCache()
         {
             sqlColumnTypes.Clear();
             verifyTypes.Clear();
         }
         static Field()
         {
-            AutoCSer.Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(Field), 60 * 60);
         }
     }
 }

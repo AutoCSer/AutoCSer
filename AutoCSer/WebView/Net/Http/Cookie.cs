@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.Http
 {
@@ -101,20 +101,20 @@ namespace AutoCSer.Net.Http
             writeSetCookie(start);
             byte* write = start + setCookieSize;
             int index = Name.Length;
-            Memory.SimpleCopyNotNull64(Name, write, index);
+            AutoCSer.Memory.Common.SimpleCopyNotNull64(Name, write, index);
             write += index;
             Name = null;
             *write++ = (byte)'=';
             if ((index = Value.Length) != 0)
             {
-                Memory.SimpleCopyNotNull64(Value, write, index);
+                AutoCSer.Memory.Common.SimpleCopyNotNull64(Value, write, index);
                 Value = null;
                 write += index;
             }
             if ((index = Domain.Length) != 0)
             {
                 writeCookieDomain(write);
-                fixed (byte* domainFixed = Domain.Array) Memory.SimpleCopyNotNull64(domainFixed + Domain.Start, write += cookieDomainSize, index);
+                fixed (byte* domainFixed = Domain.GetFixedBuffer()) AutoCSer.Memory.Common.SimpleCopyNotNull64(domainFixed + Domain.Start, write += cookieDomainSize, index);
                 Domain.SetNull();
                 write += index;
             }
@@ -124,7 +124,7 @@ namespace AutoCSer.Net.Http
                 write += cookiePathSize;
                 if ((index = Path.Length) != 0)
                 {
-                    Memory.SimpleCopyNotNull64(Path, write, index);
+                    AutoCSer.Memory.Common.SimpleCopyNotNull64(Path, write, index);
                     write += index;
                 }
                 Path = null;
@@ -133,7 +133,7 @@ namespace AutoCSer.Net.Http
             {
                 writeCookieExpires(write);
                 write += cookieExpiresSize;
-                if (Expires == Pub.MinTime) writeMinTimeCookieExpires(write);
+                if (Expires == AutoCSer.Date.BaseTime) writeMinTimeCookieExpires(write);
                 else Date.ToBytes(Expires, write);
                 write += Date.ToByteLength;
             }

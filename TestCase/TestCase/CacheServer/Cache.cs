@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CacheServer;
 using AutoCSer.CacheServer.DataStructure;
 using AutoCSer.CacheServer.DataStructure.Value;
+using AutoCSer.Memory;
 
 namespace AutoCSer.TestCase.CacheServer
 {

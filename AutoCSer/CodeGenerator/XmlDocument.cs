@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.IO;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CodeGenerator
@@ -15,11 +15,11 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 程序集信息集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockLastDictionary<Assembly, XmlDocumentAssembly> assemblyLock = new AutoCSer.Threading.LockLastDictionary<Assembly, XmlDocumentAssembly>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashAssembly, XmlDocumentAssembly> assemblyLock = new AutoCSer.Threading.LockLastDictionary<HashAssembly, XmlDocumentAssembly>(XmlDocumentAssembly.GetAssembly);
         /// <summary>
         /// XML解析配置
         /// </summary>
-        private static AutoCSer.Xml.ParseConfig xmlParserConfig = new AutoCSer.Xml.ParseConfig { BootNodeName = "doc", IsAttribute = true };
+        private static AutoCSer.Xml.DeSerializeConfig xmlParserConfig = new AutoCSer.Xml.DeSerializeConfig { BootNodeName = "doc", IsAttribute = true };
         /// <summary>
         /// 获取程序集信息
         /// </summary>
@@ -38,12 +38,12 @@ namespace AutoCSer.CodeGenerator
                     {
                         if (File.Exists(fileName = fileName.Substring(0, fileName.Length - 3) + "xml"))
                         {
-                            Xml.Node xmlNode = AutoCSer.Xml.Parser.Parse<Xml.Node>(File.ReadAllText(fileName, Encoding.UTF8), xmlParserConfig)["members"];
+                            Xml.Node xmlNode = AutoCSer.XmlDeSerializer.DeSerialize<Xml.Node>(File.ReadAllText(fileName, Encoding.UTF8), xmlParserConfig)["members"];
                             if (xmlNode.Type == Xml.NodeType.Node)
                             {
                                 fixed (char* nameFixed = "name")
                                 {
-                                    value = new XmlDocumentAssembly();
+                                    value = new XmlDocumentAssembly(assembly);
                                     Range attribute = default(Range);
                                     foreach (KeyValue<SubString, Xml.Node> node in xmlNode.Nodes)
                                     {
@@ -57,9 +57,17 @@ namespace AutoCSer.CodeGenerator
                                     }
                                 }
                             }
-                            else AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, "XML文档解析失败 " + fileName);
+                            else
+                            {
+                                AutoCSer.LogHelper.Error("XML文档解析失败 " + fileName, LogLevel.Error | LogLevel.AutoCSer);
+                                AutoCSer.LogHelper.Flush();
+                            }
                         }
-                        else AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, "没有找到XML文档注释 " + fileName);
+                        else
+                        {
+                            AutoCSer.LogHelper.Error("没有找到XML文档注释 " + fileName, LogLevel.Error | LogLevel.AutoCSer);
+                            AutoCSer.LogHelper.Flush();
+                        }
                     }
                     assemblyLock.Set(assembly, value);
                 }
@@ -136,18 +144,9 @@ namespace AutoCSer.CodeGenerator
             return assembly == null ? string.Empty : assembly.Get(method, parameter);
         }
 
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            assemblyLock.Clear();
-        }
         static XmlDocument()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(assemblyLock.Clear, typeof(XmlDocument), 60 * 60);
         }
     }
 }

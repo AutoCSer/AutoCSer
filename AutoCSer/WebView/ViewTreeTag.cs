@@ -8,10 +8,6 @@ namespace AutoCSer.WebView
     internal sealed class ViewTreeTag : IEquatable<ViewTreeTag>
     {
         /// <summary>
-        /// 树节点标识类型
-        /// </summary>
-        internal ViewTreeTagType Type;
-        /// <summary>
         /// 标识command
         /// </summary>
         internal SubString Command;
@@ -19,6 +15,10 @@ namespace AutoCSer.WebView
         /// 内容
         /// </summary>
         internal SubString Content;
+        /// <summary>
+        /// 树节点标识类型
+        /// </summary>
+        internal ViewTreeTagType Type;
         /// <summary>
         /// 是否已经回合
         /// </summary>

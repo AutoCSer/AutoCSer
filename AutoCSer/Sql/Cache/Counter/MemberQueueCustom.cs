@@ -3,7 +3,7 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql.Cache.Counter
 {

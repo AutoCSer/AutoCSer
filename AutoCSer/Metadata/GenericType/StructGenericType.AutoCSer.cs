@@ -26,21 +26,21 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 结构体泛型类型元数据
     /// </summary>
-    internal sealed partial class StructGenericType<Type> : StructGenericType where Type : struct
+    internal sealed partial class StructGenericType<T> : StructGenericType where T : struct
     {
         /// <summary>
         /// 简单序列化预编译
         /// </summary>
         internal override void SimpleSerializeCompile()
         {
-            AutoCSer.Net.SimpleSerialize.TypeSerializer<Type>.Compile();
+            AutoCSer.Net.SimpleSerialize.TypeSerializer<T>.Compile();
         }
         /// <summary>
         /// 简单反序列化预编译
         /// </summary>
         internal override void SimpleDeSerializeCompile()
         {
-            AutoCSer.Net.SimpleSerialize.TypeDeSerializer<Type>.Compile();
+            AutoCSer.Net.SimpleSerialize.TypeDeSerializer<T>.Compile();
         }
     }
 }

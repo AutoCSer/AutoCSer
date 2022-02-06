@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 #if !NOJIT
@@ -72,7 +72,7 @@ namespace AutoCSer.Sql.DataModel
                 generator.Emit(OpCodes.Ldfld, field.FieldInfo);
                 generator.Emit(OpCodes.Ldarg_2);
                 generator.Emit(OpCodes.Ldstr, field.FieldInfo.Name);
-                generator.Emit(OpCodes.Call, ColumnGroup.Verifyer.GetTypeVerifyer(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).VerifyMethod);
                 generator.Emit(OpCodes.Brtrue_S, end);
             }
             else if (field.DataType == typeof(string) || field.IsUnknownJson)
@@ -128,24 +128,15 @@ namespace AutoCSer.Sql.DataModel
             {
                 MethodInfo method;
                 if (verifyMethods.TryGetValue(type, out method)) return method;
-                verifyMethods.Set(type, method = type.GetMethod("IsSqlVeify", BindingFlags.Instance | BindingFlags.Public, null, NullValue<Type>.Array, null));
+                verifyMethods.Set(type, method = type.GetMethod("IsSqlVeify", BindingFlags.Instance | BindingFlags.Public, null, EmptyArray<Type>.Array, null));
                 return method;
             }
             return null;
         }
 
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            verifyMethods.Clear();
-        }
         static Verifyer()
         {
-            AutoCSer.Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(verifyMethods.Clear, typeof(Verifyer), 60 * 60);
         }
     }
     /// <summary>
@@ -253,7 +244,7 @@ namespace AutoCSer.Sql.DataModel
 
             static Verifyer()
             {
-                if (attribute != null)
+                if (Attribute != null)
                 {
                     LeftArray<Field> verifyFields = Fields.getFind(value => value.IsVerify);
                     if (verifyFields.Length != 0)
@@ -263,7 +254,7 @@ namespace AutoCSer.Sql.DataModel
                         int index = 0;
                         foreach (Field member in verifyFields) fields[index++].Set(member);
 #else
-                        DataModel.Verifyer dynamicMethod = new DataModel.Verifyer(typeof(modelType), attribute);
+                        DataModel.Verifyer dynamicMethod = new DataModel.Verifyer(typeof(modelType), Attribute);
                         foreach (Field member in verifyFields) dynamicMethod.Push(member);
                         verifyer = (Func<modelType, MemberMap, Table, bool>)dynamicMethod.Create<Func<modelType, MemberMap, Table, bool>>();
 #endif

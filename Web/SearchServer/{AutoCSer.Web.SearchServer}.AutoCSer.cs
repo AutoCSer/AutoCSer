@@ -93,9 +93,10 @@ namespace AutoCSer.Web.SearchServer
                 public static AutoCSer.Net.TcpServer.ReturnValue<string> getImageUrl(AutoCSer.Web.SearchServer.DataKey DataKey)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p6> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p6>.Pop();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = null;
                     try
                     {
-                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.Web.SearchServer.TcpStaticClient/**/.SearchServer/**/.TcpClient.Sender;
+                        _socket_ = AutoCSer.Web.SearchServer.TcpStaticClient/**/.SearchServer/**/.TcpClient.Sender;
                         if (_socket_ != null)
                         {
                             
@@ -116,7 +117,7 @@ namespace AutoCSer.Web.SearchServer
                     {
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p6>.PushNotNull(_wait_);
                     }
-                    return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = _socket_ == null ? AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull : AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
             }
@@ -163,9 +164,10 @@ namespace AutoCSer.Web.SearchServer
                 public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Web.SearchServer.SearchItem[]> Search(string key)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p2>.Pop();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = null;
                     try
                     {
-                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.Web.SearchServer.TcpStaticClient/**/.SearchServer/**/.TcpClient.Sender;
+                        _socket_ = AutoCSer.Web.SearchServer.TcpStaticClient/**/.SearchServer/**/.TcpClient.Sender;
                         if (_socket_ != null)
                         {
                             
@@ -186,7 +188,7 @@ namespace AutoCSer.Web.SearchServer
                     {
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p2>.PushNotNull(_wait_);
                     }
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Web.SearchServer.SearchItem[]> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Web.SearchServer.SearchItem[]> { Type = _socket_ == null ? AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull : AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
                 /// <summary>
                 /// 关键字搜索
@@ -209,7 +211,7 @@ namespace AutoCSer.Web.SearchServer
                         _returnType_ = _socket_.GetAwaiter<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Web.SearchServer.SearchItem[]>>(_a1, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
-                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull);
                     return _awaiter_;
                 }
 
@@ -218,9 +220,10 @@ namespace AutoCSer.Web.SearchServer
                 public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p4> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p4>.Pop();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = null;
                     try
                     {
-                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
+                        _socket_ = _sender_;
                         if (_socket_ != null)
                         {
                             
@@ -251,7 +254,7 @@ namespace AutoCSer.Web.SearchServer
                     {
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p4>.PushNotNull(_wait_);
                     }
-                    return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _socket_ == null ? AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull : AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
             }
@@ -283,8 +286,8 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
             /// <param name="verify">TCP验证实例</param>
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
-            public SearchServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SearchServer", typeof(AutoCSer.Web.SearchServer.Server), true)), verify, null, onCustomData, log, 0, false, true)
+            public SearchServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.ILog log = null)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SearchServer", typeof(AutoCSer.Web.SearchServer.Server), true)), verify, null, 0, onCustomData, log, 0, false, true)
             {
                 setCommandData(3);
                 setCommand(0);
@@ -409,14 +412,14 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
             }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
 
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p1
             {
                 public string p0;
             }
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p2
@@ -443,7 +446,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
                 }
 #endif
             }
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p3
@@ -453,7 +456,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
                 public string p2;
                 public ulong p3;
             }
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p4
@@ -481,14 +484,14 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
                 }
 #endif
             }
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p5
             {
                 public AutoCSer.Web.SearchServer.DataKey p0;
             }
-            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p6
@@ -550,7 +553,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticClient
                 /// <summary>
                 /// 日志接口
                 /// </summary>
-                public AutoCSer.Log.ILog Log;
+                public AutoCSer.ILog Log;
                 /// <summary>
                 /// TCP 客户端路由
                 /// </summary>
@@ -570,12 +573,12 @@ namespace AutoCSer.Web.SearchServer.TcpStaticClient
             }
             static SearchServer()
             {
-                ClientConfig config = (ClientConfig)AutoCSer.Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
+                ClientConfig config = (ClientConfig)AutoCSer.Configuration.Common.Get(typeof(ClientConfig)) ?? new ClientConfig();
                 if (config.ServerAttribute == null)
                 {
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SearchServer", typeof(AutoCSer.Web.SearchServer.Server));
                 }
-                if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 SearchServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
+                if (config.ServerAttribute.IsServer) AutoCSer.LogHelper.Debug("请确认 SearchServer 服务器端是否本地调用", AutoCSer.LogLevel.Debug | AutoCSer.LogLevel.Warn | AutoCSer.LogLevel.AutoCSer);
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, 0, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 if (config.ServerAttribute.IsAutoClient) TcpClient.TryCreateSocket();
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p1), null }

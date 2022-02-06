@@ -34,8 +34,8 @@
   <ItemGroup>
     <Compile Include="Buffer.cs" />
     <Compile Include="BufferCount.cs" />
-    <Compile Include="Extension\Memory.cs" />
-    <Compile Include="Extension\Number.cs" />
+    <Compile Include="Extensions\MemoryExtension.RawSocketListener.cs" />
+    <Compile Include="Extensions\NumberExtension.RawSocketListener.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Packet\Arp.cs" />
     <Compile Include="Packet\Ethernet.cs" />

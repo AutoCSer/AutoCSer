@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CodeGenerator.Metadata
@@ -217,7 +217,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         internal static MethodParameter[] Get(MethodInfo method, Type[] genericParameters)
         {
             ParameterInfo[] parameters = method.GetParameters();
-            if (parameters.isEmpty()) return NullValue<MethodParameter>.Array;
+            if (parameters.isEmpty()) return EmptyArray<MethodParameter>.Array;
             int index = 0;
             return parameters.getArray(value => new MethodParameter(method, genericParameters, value, index, ++index == parameters.Length));
         }

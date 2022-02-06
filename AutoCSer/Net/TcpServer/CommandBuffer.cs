@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.Log;
 using System.Net;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer
@@ -34,7 +34,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="sendBufferSize">发送数据缓冲区字节大小</param>
         /// <param name="sendBufferMaxSize">发送数据缓存区最大字节大小</param>
         /// <param name="log">日志接口</param>
-        internal CommandBuffer(ServerBaseAttribute attribute, SubBuffer.Size receiveBufferSize, SubBuffer.Size sendBufferSize, int sendBufferMaxSize, ILog log)
+        internal CommandBuffer(ServerBaseAttribute attribute, AutoCSer.Memory.BufferSize receiveBufferSize, AutoCSer.Memory.BufferSize sendBufferSize, int sendBufferMaxSize, ILog log)
             :base(attribute, sendBufferMaxSize, log)
         {
             SendBufferPool = SubBuffer.Pool.GetPool(sendBufferSize);

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
@@ -59,7 +59,7 @@ namespace AutoCSer.Deploy
         /// <param name="verifyMethod">验证函数</param>
         public Client(ClientConfig config = null, Action<OnClientParameter> onClient = null, Func<Server.TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null)
         {
-            this.Config = config ?? ConfigLoader.GetUnion(typeof(ClientConfig)).ClientConfig;
+            this.Config = config ?? (ClientConfig)AutoCSer.Configuration.Common.Get(typeof(ClientConfig));
             this.onClient = onClient;
             if ((deploys = config.Deploys).Length == 0) throw new ArgumentNullException();
             IgnoreFileNames = config.IgnoreFileNames.getHash(value => value) ?? HashSetCreator.CreateOnly<string>();

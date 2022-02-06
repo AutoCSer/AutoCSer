@@ -39,7 +39,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        private void toJson(AutoCSer.Json.Serializer serializer)
+        private void toJson(AutoCSer.JsonSerializer serializer)
         {
             serializer.CustomWriteFirstName("touser");
             serializer.CallSerialize(touser);
@@ -83,8 +83,8 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        [AutoCSer.Json.SerializeCustom]
-        private static void toJson(AutoCSer.Json.Serializer serializer, Message value)
+        [AutoCSer.JsonSerializeCustom]
+        private static void toJson(AutoCSer.JsonSerializer serializer, Message value)
         {
             value.toJson(serializer);
         }

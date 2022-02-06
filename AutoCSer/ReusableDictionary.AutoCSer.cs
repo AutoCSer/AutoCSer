@@ -30,7 +30,7 @@ namespace AutoCSer
     /// <summary>
     /// 可重用字典
     /// </summary>
-    public sealed partial class ReusableDictionary<keyType, valueType>
+    public sealed partial class ReusableDictionary<KT, VT>
     {
         /// <summary>
         /// 节点数据
@@ -40,9 +40,9 @@ namespace AutoCSer
             /// <summary>
             /// 获取键值对
             /// </summary>
-            internal KeyValue<keyType, valueType> KeyValue
+            internal KeyValue<KT, VT> KeyValue
             {
-                get { return new KeyValue<keyType, valueType>(Key, Value); }
+                get { return new KeyValue<KT, VT>(Key, Value); }
             }
             /// <summary>
             /// 删除节点时获取下一个数据索引位置
@@ -50,7 +50,7 @@ namespace AutoCSer
             /// <param name="value"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal int RemoveGetNext(out valueType value)
+            internal int RemoveGetNext(out VT value)
             {
                 value = Value;
                 return Next;
@@ -59,22 +59,24 @@ namespace AutoCSer
             /// 设置数据
             /// </summary>
             /// <param name="node"></param>
+            /// <param name="next"></param>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal uint RemoveSet(ref Node node)
+            internal uint RemoveSet(ref Node node, out int next)
             {
                 Source = node.Source;
                 HashCode = node.HashCode;
                 Next = node.Next;
                 Key = node.Key;
                 Value = node.Value;
+                next = Next;
                 return Source;
             }
         }
         /// <summary>
         /// 键值对集合
         /// </summary>
-        public IEnumerable<KeyValue<keyType, valueType>> KeyValues
+        public IEnumerable<KeyValue<KT, VT>> KeyValues
         {
             get
             {
@@ -92,7 +94,7 @@ namespace AutoCSer
         /// <summary>
         /// 关键字集合
         /// </summary>
-        public IEnumerable<keyType> Keys
+        public IEnumerable<KT> Keys
         {
             get
             {
@@ -110,7 +112,7 @@ namespace AutoCSer
         /// <summary>
         /// 数据集合
         /// </summary>
-        public IEnumerable<valueType> Values
+        public IEnumerable<VT> Values
         {
             get
             {
@@ -139,7 +141,7 @@ namespace AutoCSer
         /// <param name="key">关键字</param>
         /// <returns>是否存在关键字</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool ContainsKey(ref keyType key)
+        public bool ContainsKey(ref KT key)
         {
             return count != 0 && indexOf(ref key) >= 0;
         }
@@ -149,7 +151,7 @@ namespace AutoCSer
         /// <param name="key">关键字</param>
         /// <returns>是否存在关键字</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool ContainsKey(keyType key)
+        public bool ContainsKey(KT key)
         {
             return count != 0 && indexOf(ref key) >= 0;
         }
@@ -159,9 +161,9 @@ namespace AutoCSer
         /// <param name="key"></param>
         /// <returns>是否存在关键字</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Remove(keyType key)
+        public bool Remove(KT key)
         {
-            valueType value;
+            VT value;
             return Remove(ref key, out value);
         }
         /// <summary>
@@ -170,9 +172,9 @@ namespace AutoCSer
         /// <param name="key"></param>
         /// <returns>是否存在关键字</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Remove(ref keyType key)
+        public bool Remove(ref KT key)
         {
-            valueType value;
+            VT value;
             return Remove(ref key, out value);
         }
         /// <summary>
@@ -182,7 +184,7 @@ namespace AutoCSer
         /// <param name="value">被删除数据</param>
         /// <returns>是否存在关键字</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Remove(keyType key, out valueType value)
+        public bool Remove(KT key, out VT value)
         {
             return Remove(ref key, out value);
         }
@@ -192,7 +194,7 @@ namespace AutoCSer
         /// <param name="key"></param>
         /// <param name="value">被删除数据</param>
         /// <returns>是否存在关键字</returns>
-        public bool Remove(ref keyType key, out valueType value)
+        public bool Remove(ref KT key, out VT value)
         {
             if (count != 0)
             {
@@ -221,7 +223,7 @@ namespace AutoCSer
                     }
                 }
             }
-            value = default(valueType);
+            value = default(VT);
             return false;
         }
         /// <summary>
@@ -233,9 +235,11 @@ namespace AutoCSer
             int lastIndex = count - 1;
             if (nodeIndex != lastIndex)
             {
-                uint source = nodes[nodeIndex].RemoveSet(ref nodes[lastIndex]);
+                int next;
+                uint source = nodes[nodeIndex].RemoveSet(ref nodes[lastIndex], out next);
                 if ((source & 0x80000000U) == 0) nodes[(int)source].LinkIndex = nodeIndex;
                 else nodes[(int)(source & (uint)int.MaxValue)].Next = nodeIndex;
+                if (next != int.MaxValue) nodes[next].Source = (uint)nodeIndex | 0x80000000U;
             }
             if (isClear) nodes[lastIndex].Clear();
             count = lastIndex;
@@ -244,12 +248,12 @@ namespace AutoCSer
         /// 复制数据
         /// </summary>
         /// <param name="values"></param>
-        internal void CopyTo(ref LeftArray<KeyValue<keyType, valueType>> values)
+        internal void CopyTo(ref LeftArray<KeyValue<KT, VT>> values)
         {
             if (count != 0)
             {
                 values.PrepLength(count);
-                KeyValue<keyType, valueType>[] array = values.Array;
+                KeyValue<KT, VT>[] array = values.Array;
                 int arrayIndex = values.Length, endIndex = arrayIndex + count;
                 foreach (Node node in nodes)
                 {

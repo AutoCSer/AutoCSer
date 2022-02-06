@@ -9,6 +9,10 @@ namespace AutoCSer.Sql
     public sealed unsafe class Connection
     {
         /// <summary>
+        /// 连接类型
+        /// </summary>
+        private HashString connectionType;
+        /// <summary>
         /// 连接字符串
         /// </summary>
         public string ConnectionString;
@@ -55,20 +59,29 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 日志处理
         /// </summary>
-        public AutoCSer.Log.ILog Log;
+        public AutoCSer.ILog Log;
         /// <summary>
         /// SQL 客户端类型
         /// </summary>
         public ClientKind Type;
         /// <summary>
-        /// 是否启用连接池
+        /// 默认为 true 启用连接池
         /// </summary>
         public bool IsPool = true;
 
         /// <summary>
+        /// 获取连接类型
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <returns></returns>
+        private static HashString getConnectionType(Connection connection)
+        {
+            return connection.connectionType;
+        }
+        /// <summary>
         /// 连接集合
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<HashString, Connection> connections = new AutoCSer.Threading.LockEquatableLastDictionary<HashString, Connection>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<HashString, Connection> connections = new AutoCSer.Threading.LockLastDictionary<HashString, Connection>(getConnectionType);
         /// <summary>
         /// 根据连接类型获取连接信息
         /// </summary>
@@ -80,7 +93,16 @@ namespace AutoCSer.Sql
             {
                 Connection value;
                 HashString key = type;
-                if (!connections.TryGetValue(ref key, out value)) connections.Set(ref key, value = ConfigLoader.GetUnion(typeof(Connection), type).Connection ?? new Connection());
+                if (!connections.TryGetValue(key, out value))
+                {
+                    try
+                    {
+                        value = (Connection)AutoCSer.Configuration.Common.Get(typeof(Connection), type) ?? new Connection();
+                        value.connectionType = key;
+                        connections.Set(key, value);
+                    }
+                    finally { connections.Exit(); }
+                }
                 return value;
             }
             return null;

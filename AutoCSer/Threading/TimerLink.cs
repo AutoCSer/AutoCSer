@@ -8,8 +8,8 @@ namespace AutoCSer.Threading
     /// 定时链表
     /// </summary>
     /// <typeparam name="timerType"></typeparam>
-    internal abstract class TimerLink<timerType> : AutoCSer.Threading.DoubleLink<timerType>
-        where timerType : TimerLink<timerType>
+    //internal abstract class TimerLink<timerType> : AutoCSer.Threading.DoubleLink<timerType>
+    //    where timerType : TimerLink<timerType>
     {
         /// <summary>
         /// 超时秒数

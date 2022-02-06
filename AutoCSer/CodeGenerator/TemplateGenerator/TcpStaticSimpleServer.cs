@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using AutoCSer.CodeGenerator.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
@@ -48,7 +48,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 类型集合
                 /// </summary>
-                public LeftArray<ServerType> Types;
+                public LeftArray<ServerType> Types = new LeftArray<ServerType>(0);
                 /// <summary>
                 /// 配置类型
                 /// </summary>
@@ -247,7 +247,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             protected unsafe override void onCreated()
             {
                 StringArray clientCallCode = new StringArray();
-                LeftArray<TcpMethod> methods = new LeftArray<TcpMethod>();
+                LeftArray<TcpMethod> methods = new LeftArray<TcpMethod>(0);
                 TcpMethod[] methodIndexs;
                 ParameterBuilder parameterBuilder = new ParameterBuilder();
                 int staticMethodIndex = 0;
@@ -285,12 +285,12 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         ParameterTypes = parameterBuilder.Get();
                         foreach (ServerType serverType in server.Types)
                         {
-                            if (serverType.Methods.Length != 0)
+                            if (serverType.Methods.Array.Length != 0)
                             {
                                 Type = serverType.Type;
                                 //TimeVerifyType = Type == server.AttributeType && server.IsTimeVerify ? Type : ExtensionType.Null;
                                 Attribute = serverType.Attribute ?? server.Attribute;
-                                MethodIndexs = serverType.Methods.ToArray();
+                                MethodIndexs = serverType.Methods.Array.ToArray();
                                 CSharpTypeDefinition definition = new CSharpTypeDefinition(Type, true, false);
                                 _code_.Length = 0;
                                 create(false);

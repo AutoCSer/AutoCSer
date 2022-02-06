@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 
 namespace AutoCSer.Web.HttpServer
@@ -25,6 +25,7 @@ namespace AutoCSer.Web.HttpServer
             AutoCSer.Threading.ThreadPool.TinyBackground.Start(() => AutoCSer.Web.Config.Pub.ConsoleCommand(ExitEvent));
             AutoCSer.Threading.ThreadPool.TinyBackground.Start(createHttpServer);
         }
+        private static AutoCSer.Net.HttpRegister.Server.TcpInternalServer server;
         private static void createHttpServer()
         {
             AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpRegisterAttribute(typeof(AutoCSer.Net.HttpRegister.Server), false);
@@ -33,15 +34,18 @@ namespace AutoCSer.Web.HttpServer
             {
                 try
                 {
-                    using (AutoCSer.Net.HttpRegister.Server.TcpInternalServer server = new AutoCSer.Net.HttpRegister.Server.TcpInternalServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute)))
+                    if (server != null)
                     {
-                        if (server.IsListen)
-                        {
-                            Console.WriteLine("HTTP 服务启动成功 " + serverAttribute.Host + ":" + server.Port.toString());
-                            return;
-                        }
-                        Console.WriteLine("Search 服务启动失败 " + serverAttribute.Host + ":" + server.Port.toString());
+                        server.Dispose();
+                        server = null;
                     }
+                    server = new AutoCSer.Net.HttpRegister.Server.TcpInternalServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute));
+                    if (server.IsListen)
+                    {
+                        Console.WriteLine("HTTP 服务启动成功 " + serverAttribute.Host + ":" + server.Port.toString());
+                        return;
+                    }
+                    Console.WriteLine("Search 服务启动失败 " + serverAttribute.Host + ":" + server.Port.toString());
                 }
                 catch (Exception error)
                 {

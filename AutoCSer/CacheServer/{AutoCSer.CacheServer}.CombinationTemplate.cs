@@ -226,7 +226,7 @@ namespace AutoCSer.CacheServer
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -271,7 +271,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -316,7 +316,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -361,7 +361,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -406,7 +406,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -451,7 +451,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -496,7 +496,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 整数更新
@@ -541,7 +541,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -586,7 +586,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -631,7 +631,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -676,7 +676,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -721,7 +721,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -766,7 +766,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -811,7 +811,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -856,7 +856,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -901,7 +901,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新
@@ -946,7 +946,7 @@ namespace AutoCSer.Extension
     }
 }
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数字更新

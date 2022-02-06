@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Cache.Whole
@@ -77,7 +77,7 @@ namespace AutoCSer.Sql.Cache.Whole
         private void onInserted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 memberKeyType memberKey = getMemberKey(value);
@@ -117,7 +117,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key, memberKeyType memberKey)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 Dictionary<RandomKey<memberKeyType>, ListArray<valueType>> dictionary = getMember(target);
@@ -126,12 +126,12 @@ namespace AutoCSer.Sql.Cache.Whole
                     ListArray<valueType> list;
                     if (dictionary.TryGetValue(memberKey, out list))
                     {
-                        int index = Array.LastIndexOf(list.Array, value, list.Length - 1);
+                        int index = Array.LastIndexOf(list.Array.Array, value, list.Array.Length - 1);
                         if (index != -1)
                         {
-                            if (list.Length != 1)
+                            if (list.Array.Length != 1)
                             {
-                                if (isRemoveEnd) list.RemoveAtEnd(index);
+                                if (isRemoveEnd) list.Array.TryRemoveAtToEnd(index);
                                 else list.RemoveAt(index);
                             }
                             else dictionary.Remove(memberKey);
@@ -139,7 +139,7 @@ namespace AutoCSer.Sql.Cache.Whole
                         }
                     }
                 }
-                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
             }
         }
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.Http
 {

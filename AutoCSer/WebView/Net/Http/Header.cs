@@ -1,9 +1,10 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.Http
 {
@@ -167,7 +168,7 @@ namespace AutoCSer.Net.Http
                 if ((Flag & HeaderFlag.IsSetQueryJson) != 0 && queryJson.Length != 0)
                 {
                     int index = Buffer.StartIndex + queryJson.StartIndex;
-                    fixed (byte* bufferFixed = Buffer.Buffer) return UnescapeUtf8(bufferFixed + index, queryJson.Length, Buffer.Buffer, index);
+                    fixed (byte* bufferFixed = Buffer.GetFixedBuffer()) return UnescapeUtf8(bufferFixed + index, queryJson.Length, Buffer.Buffer, index);
                 }
                 return null;
             }
@@ -186,7 +187,7 @@ namespace AutoCSer.Net.Http
                 if ((Flag & HeaderFlag.IsSetQueryXml) != 0 && queryXml.Length != 0)
                 {
                     int index = Buffer.StartIndex + queryXml.StartIndex;
-                    fixed (byte* bufferFixed = Buffer.Buffer) return UnescapeUtf8(bufferFixed + index, queryXml.Length, Buffer.Buffer, index);
+                    fixed (byte* bufferFixed = Buffer.GetFixedBuffer()) return UnescapeUtf8(bufferFixed + index, queryXml.Length, Buffer.Buffer, index);
                 }
                 return null;
             }
@@ -200,7 +201,7 @@ namespace AutoCSer.Net.Http
         /// </summary>
         internal EncodingCache RequestEncoding
         {
-            get { return (Flag & HeaderFlag.IsSetRequestEncoding) == 0 ? EncodingCache.Utf8 : requestEncoding; }
+            get { return (Flag & HeaderFlag.IsSetRequestEncoding) == 0 ? EncodingCache.UTF8 : requestEncoding; }
         }
         /// <summary>
         /// WebSocket 数据
@@ -417,7 +418,7 @@ namespace AutoCSer.Net.Http
             HostIndex.Value = 0;
             Flag &= isKeepAliveDomainServer ? HeaderFlag.IsKeepAlive | HeaderFlag.IsSsl | HeaderFlag.IsGZip : (HeaderFlag.IsKeepAlive | HeaderFlag.IsSsl);
             WebSocketFlag = HeaderWebSocketFlag.None;
-            fixed (byte* bufferFixed = Buffer.Buffer)
+            fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
             {
                 byte* bufferStart = bufferFixed + Buffer.StartIndex, current = bufferStart + receiveIndex;
                 if ((Method = GetMethod(current)) == MethodType.Unknown) return false;
@@ -728,7 +729,7 @@ namespace AutoCSer.Net.Http
                 {
                     start = bufferStart + contentType.StartIndex;
                     end = start + contentType.Length;
-                    current = AutoCSer.Memory.Find(start, end, (byte)';');
+                    current = AutoCSer.Memory.Common.Find(start, end, (byte)';');
                     switch ((current == null ? contentType.Length : (int)(current - start)) - 8)
                     {
                         case 8 - 8://text/xml; charset=utf-8
@@ -822,15 +823,15 @@ namespace AutoCSer.Net.Http
                 if ((WebSocketFlag & HeaderWebSocketFlag.IsWebSocket) != HeaderWebSocketFlag.IsWebSocket)
                 {
                     start = bufferStart + UriIndex.StartIndex;
-                    end = AutoCSer.Memory.Find(start, start + UriIndex.Length, (byte)'?');
+                    end = AutoCSer.Memory.Common.Find(start, start + UriIndex.Length, (byte)'?');
                     if (end == null)
                     {
-                        end = AutoCSer.Memory.Find(start, start + UriIndex.Length, (byte)'#');
+                        end = AutoCSer.Memory.Common.Find(start, start + UriIndex.Length, (byte)'#');
                         if (end != null) Flag |= HeaderFlag.IsHash | HeaderFlag.IsSetHash | HeaderFlag.IsSetSearchEngine | HeaderFlag.IsSearchEngine;
                     }
                     else if (*(end + 1) == '_')
                     {
-                        if (Memory.SimpleEqualNotNull(googleFragmentName.Byte, end + 2, googleFragmentNameSize))
+                        if (AutoCSer.Memory.Common.SimpleEqualNotNull(googleFragmentName.Byte, end + 2, googleFragmentNameSize))
                         {
                             Flag |= HeaderFlag.IsHash | HeaderFlag.IsSetHash | HeaderFlag.IsSetSearchEngine | HeaderFlag.IsSearchEngine;
                             byte* write = end + 1, urlEnd = start + UriIndex.Length;
@@ -933,35 +934,35 @@ namespace AutoCSer.Net.Http
                                                 case ('2' & 15)://gb2312
                                                     if (*(int*)(start + 2) == ('2' | ('3' << 8) | ('1' << 16) | ('2' << 24)))
                                                     {
-                                                        requestEncoding = EncodingCacheOther.Gb2312;
+                                                        requestEncoding = EncodingCacheOther.GB2312;
                                                         Flag |= HeaderFlag.IsSetRequestEncoding;
                                                     }
                                                     break;
                                                 case ('f' & 15)://utf-8
                                                     if ((*(int*)(start + 1) | 0x2020) == ('t' | ('f' << 8) | ('-' << 16) | ('8' << 24)))
                                                     {
-                                                        requestEncoding = EncodingCache.Utf8;
+                                                        requestEncoding = EncodingCache.UTF8;
                                                         Flag |= HeaderFlag.IsSetRequestEncoding;
                                                     }
                                                     break;
                                                 case ('k' & 15)://gbk
                                                     if ((*(int*)(start - 1) | 0x20202000) == ('=' | ('g' << 8) | ('b' << 16) | ('k' << 24)))
                                                     {
-                                                        requestEncoding = EncodingCacheOther.Gbk;
+                                                        requestEncoding = EncodingCacheOther.GBK;
                                                         Flag |= HeaderFlag.IsSetRequestEncoding;
                                                     }
                                                     break;
                                                 case ('g' & 15)://big5
                                                     if ((*(int*)start | 0x00202020) == ('b' | ('i' << 8) | ('g' << 16) | ('5' << 24)))
                                                     {
-                                                        requestEncoding = EncodingCacheOther.Big5;
+                                                        requestEncoding = EncodingCacheOther.BIG5;
                                                         Flag |= HeaderFlag.IsSetRequestEncoding;
                                                     }
                                                     break;
                                                 case ('1' & 15)://gb18030
                                                     if (*(int*)(start + 3) == ('8' | ('0' << 8) | ('3' << 16) | ('0' << 24)))
                                                     {
-                                                        requestEncoding = EncodingCacheOther.Gb18030;
+                                                        requestEncoding = EncodingCacheOther.GB18030;
                                                         Flag |= HeaderFlag.IsSetRequestEncoding;
                                                     }
                                                     break;
@@ -992,7 +993,7 @@ namespace AutoCSer.Net.Http
                 else
                 {
                     start = bufferStart + UriIndex.StartIndex;
-                    end = AutoCSer.Memory.Find(start, start + UriIndex.Length, (byte)'?');
+                    end = AutoCSer.Memory.Common.Find(start, start + UriIndex.Length, (byte)'?');
                     if (end == null) PathIndex = UriIndex;
                     else
                     {
@@ -1131,35 +1132,35 @@ namespace AutoCSer.Net.Http
                     case ('2' & 15)://gb2312
                         if (*(int*)(start + 10) == ('2' | ('3' << 8) | ('1' << 16) | ('2' << 24)))
                         {
-                            requestEncoding = EncodingCacheOther.Gb2312;
+                            requestEncoding = EncodingCacheOther.GB2312;
                             Flag |= HeaderFlag.IsSetRequestEncoding;
                         }
                         break;
                     case ('f' & 15)://utf-8
                         if ((*(int*)(start + 9) | 0x2020) == ('t' | ('f' << 8) | ('-' << 16) | ('8' << 24)))
                         {
-                            requestEncoding = EncodingCache.Utf8;
+                            requestEncoding = EncodingCache.UTF8;
                             Flag |= HeaderFlag.IsSetRequestEncoding;
                         }
                         break;
                     case ('k' & 15)://gbk
                         if ((*(int*)(start + 7) | 0x20202000) == ('=' | ('g' << 8) | ('b' << 16) | ('k' << 24)))
                         {
-                            requestEncoding = EncodingCacheOther.Gbk;
+                            requestEncoding = EncodingCacheOther.GBK;
                             Flag |= HeaderFlag.IsSetRequestEncoding;
                         }
                         break;
                     case ('g' & 15)://big5
                         if ((*(int*)(start + 8) | 0x00202020) == ('b' | ('i' << 8) | ('g' << 16) | ('5' << 24)))
                         {
-                            requestEncoding = EncodingCacheOther.Big5;
+                            requestEncoding = EncodingCacheOther.BIG5;
                             Flag |= HeaderFlag.IsSetRequestEncoding;
                         }
                         break;
                     case ('1' & 15)://gb18030
                         if (*(int*)(start + 11) == ('8' | ('0' << 8) | ('3' << 16) | ('0' << 24)))
                         {
-                            requestEncoding = EncodingCacheOther.Gb18030;
+                            requestEncoding = EncodingCacheOther.GB18030;
                             Flag |= HeaderFlag.IsSetRequestEncoding;
                         }
                         break;
@@ -1180,7 +1181,7 @@ namespace AutoCSer.Net.Http
         /// <returns></returns>
         private bool checkSearchEngine()
         {
-            fixed (byte* bufferFixed = Buffer.Buffer)
+            fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
             {
                 byte* start = bufferFixed + Buffer.StartIndex + userAgent.StartIndex, letterTable = (byte*)searchEngineLetterTable.Data, end = start + userAgent.Length - 4;
                 do
@@ -1383,14 +1384,14 @@ namespace AutoCSer.Net.Http
             while (++start < end);
             if (unicode != 0 || (escapeCode & 8) == 0)
             {
-                if (escape == null) AutoCSer.Memory.ToString(current, (int)(end - current));
+                if (escape == null) AutoCSer.Memory.Common.ToString(current, (int)(end - current));
                 length = (int)(++escape - current);
                 for (start = escape + (*escape == 'u' ? 5 : 2); start < end; ++length)
                 {
                     if (*start == '%') start += *(start + 1) == 'u' ? 6 : 3;
                     else ++start;
                 }
-                string value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
+                string value = AutoCSer.Extensions.StringExtension.FastAllocateString(length);
                 fixed (char* valueFixed = value)
                 {
                     start = current;
@@ -1475,7 +1476,7 @@ namespace AutoCSer.Net.Http
         /// <returns>值</returns>
         private BufferIndex getCookie(byte* name, int nameLength)
         {
-            fixed (byte* bufferFixed = Buffer.Buffer)
+            fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
             {
                 byte* bufferStart = bufferFixed + Buffer.StartIndex, start = bufferStart + cookie.StartIndex, end = start + cookie.Length, searchEnd = end - nameLength;
                 *end = (byte)';';
@@ -1485,7 +1486,7 @@ namespace AutoCSer.Net.Http
                     if (start >= searchEnd) break;
                     if (*(start + nameLength) == '=')
                     {
-                        if (AutoCSer.Memory.SimpleEqualNotNull(name, start, nameLength))
+                        if (AutoCSer.Memory.Common.SimpleEqualNotNull(name, start, nameLength))
                         {
                             for (start += nameLength + 1; *start == ' '; ++start) ;
                             int startIndex = (int)(start - bufferStart);
@@ -1530,7 +1531,7 @@ namespace AutoCSer.Net.Http
         //        fixed (char* nameFixed = name)
         //        {
         //            byte* cookieNameBuffer = UnmanagedPool.Tiny.Get();
-        //            AutoCSer.Extension.StringExtension.WriteBytes(nameFixed, name.Length, cookieNameBuffer);
+        //            AutoCSer.Extensions.StringExtension.WriteBytes(nameFixed, name.Length, cookieNameBuffer);
         //            index = getCookie(cookieNameBuffer, name.Length);
         //            UnmanagedPool.Tiny.Push(cookieNameBuffer);
         //        }
@@ -1622,11 +1623,11 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// Google请求#!查询名称
         /// </summary>
-        private static Pointer googleFragmentName;
+        private static AutoCSer.Memory.Pointer googleFragmentName;
         /// <summary>
         /// 搜索引擎首字母查询表
         /// </summary>
-        private static Pointer searchEngineLetterTable;
+        private static AutoCSer.Memory.Pointer searchEngineLetterTable;
         /// <summary>
         /// HTTP 头部缓冲区池
         /// </summary>
@@ -1658,15 +1659,15 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// HTTP 头部接收超时
         /// </summary>
-        internal static readonly SocketTimeoutLink.TimerLink ReceiveTimeout;
+        internal static readonly SocketTimeoutLink ReceiveTimeout;
         /// <summary>
         /// 第二次 HTTP 头部接收超时
         /// </summary>
-        internal static readonly SocketTimeoutLink.TimerLink KeepAliveReceiveTimeout;
+        internal static readonly SocketTimeoutLink KeepAliveReceiveTimeout;
         /// <summary>
         /// 查询模式类型集合
         /// </summary>
-        private static Pointer methodTypes;
+        private static AutoCSer.Memory.Pointer methodTypes;
         /// <summary>
         /// 查询模式字节转枚举
         /// </summary>
@@ -1689,7 +1690,7 @@ namespace AutoCSer.Net.Http
             ReceiveBufferSize = Math.Min(QueryStartIndex - sizeof(int), size - 20 * 4);
             if (ReceiveBufferSize < 64)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Warn, "HTTP 头部缓冲区不足");
+                AutoCSer.LogHelper.Warn("HTTP 头部缓冲区不足", LogLevel.Warn | LogLevel.AutoCSer);
                 BufferPool = SubBuffer.Pool.GetPool(Config.DefaultHeadSize);
                 NameStartIndex = (size = (int)Config.DefaultHeadSize) - (maxHeaderCount = Config.DefaultHeaderCount) * sizeof(BufferIndex) * 2;
                 QueryStartIndex = NameStartIndex - (maxQueryCount = Config.DefaultQueryCount) * sizeof(BufferIndex) * 2;
@@ -1697,12 +1698,12 @@ namespace AutoCSer.Net.Http
             }
             isKeepAliveDomainServer = config.IsKeepAliveDomainServer;
             int receiveHeadSeconds = config.ReceiveHeadSeconds > 0 ? config.ReceiveHeadSeconds : Config.DefaultReceiveHeadSeconds;
-            ReceiveTimeout = SocketTimeoutLink.TimerLink.Get(receiveHeadSeconds);
+            ReceiveTimeout = new SocketTimeoutLink(receiveHeadSeconds);
             int keepAliveReceiveHeadSeconds = config.KeepAliveReceiveHeadSeconds > 0 ? config.KeepAliveReceiveHeadSeconds : Config.DefaultKeepAliveReceiveHeadSeconds;
-            KeepAliveReceiveTimeout = keepAliveReceiveHeadSeconds > receiveHeadSeconds ? SocketTimeoutLink.TimerLink.Get(keepAliveReceiveHeadSeconds) : ReceiveTimeout;
+            KeepAliveReceiveTimeout = keepAliveReceiveHeadSeconds > receiveHeadSeconds ? new SocketTimeoutLink(keepAliveReceiveHeadSeconds) : ReceiveTimeout;
 
-            searchEngineLetterTable = new Pointer { Data = Unmanaged.GetStatic64(256 + (1 << 4) + ((googleFragmentNameSize + 7) & (int.MaxValue - 7)), false) };
-            Memory.ClearUnsafe((ulong*)searchEngineLetterTable.Data, (256 + (1 << 4)) >> 3);
+            searchEngineLetterTable =Unmanaged.GetStaticPointer(256 + (1 << 4) + ((googleFragmentNameSize + 7) & (int.MaxValue - 7)), false);
+            AutoCSer.Memory.Common.Clear((ulong*)searchEngineLetterTable.Data, (256 + (1 << 4)) >> 3);
             byte* letterTable = (byte*)searchEngineLetterTable.Data;
             letterTable['b'] = (byte)SearchEngineLetter.b;
             letterTable['D'] = (byte)SearchEngineLetter.D;

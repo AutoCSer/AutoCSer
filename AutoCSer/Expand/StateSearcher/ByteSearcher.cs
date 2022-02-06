@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.StateSearcher
 {
@@ -26,7 +27,7 @@ namespace AutoCSer.StateSearcher
         /// ASCII字节搜索器
         /// </summary>
         /// <param name="data">数据起始位置</param>
-        internal ByteSearcher(Pointer data)
+        internal ByteSearcher(ref AutoCSer.Memory.Pointer data)
         {
             if (data.Data == null)
             {
@@ -97,7 +98,7 @@ namespace AutoCSer.StateSearcher
         {
             if (data.Length != 0)
             {
-                fixed (byte* dataFixed = data.Array)
+                fixed (byte* dataFixed = data.GetFixedBuffer())
                 {
                     byte* start = dataFixed + data.Start;
                     return Search(start, start + data.Length);
@@ -123,7 +124,7 @@ namespace AutoCSer.StateSearcher
         /// <summary>
         /// 状态搜索数据
         /// </summary>
-        private Pointer.Size data;
+        private AutoCSer.Memory.Pointer data;
         /// <summary>
         /// 是否固定内存申请
         /// </summary>
@@ -138,7 +139,7 @@ namespace AutoCSer.StateSearcher
         {
             this.Array = values;
             data = ByteBuilder.Create(states, this.isStaticUnmanaged = isStaticUnmanaged);
-            Searcher = new ByteSearcher(data.Pointer);
+            Searcher = new ByteSearcher(ref data);
         }
         /// <summary>
         /// 获取状态数据
@@ -158,7 +159,7 @@ namespace AutoCSer.StateSearcher
         /// </summary>
         ~ByteSearcher()
         {
-            if (isStaticUnmanaged) Unmanaged.Free(ref data, isStaticUnmanaged);
+            if (isStaticUnmanaged) Unmanaged.FreeStatic(ref data);
             else Unmanaged.Free(ref data);
         }
         /// <summary>
@@ -167,7 +168,7 @@ namespace AutoCSer.StateSearcher
         public unsafe void Dispose()
         {
             Searcher.State = null;
-            if (isStaticUnmanaged) Unmanaged.Free(ref data, isStaticUnmanaged);
+            if (isStaticUnmanaged) Unmanaged.FreeStatic(ref data);
             else Unmanaged.Free(ref data);
         }
     }

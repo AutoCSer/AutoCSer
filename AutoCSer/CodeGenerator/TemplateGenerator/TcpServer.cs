@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using System.Collections.Generic;
 using AutoCSer.CodeGenerator.Metadata;
@@ -51,10 +51,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             attribute = (MemberIndex ?? Method).GetSetupAttribute<methodAttributeType>(true);
                             if (MemberIndex != null && !Method.IsGetMember)
                             {
-                                attribute = attribute == null ? AutoCSer.Emit.Constructor<methodAttributeType>.New() : AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(attribute);
+                                attribute = attribute == null ? AutoCSer.Metadata.DefaultConstructor<methodAttributeType>.Constructor() : AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(attribute);
                                 attribute.CommandIdentity = int.MinValue;
                             }
-                            else if (attribute == null) attribute = AutoCSer.Emit.Constructor<methodAttributeType>.New();
+                            else if (attribute == null) attribute = AutoCSer.Metadata.DefaultConstructor<methodAttributeType>.Constructor();
                             //attribute = AutoCSer.ui.reflection.memberInfo.customAttribute<AutoCSer.code.cSharp.tcpMethod>(Method.Method, false, true);
                         }
                         return attribute;
@@ -557,14 +557,14 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 }
                             }
                             else if (type == typeof(AutoCSer.Net.TcpServer.ServerCallback)) isAsynchronousCallback = true;
-                            if (isAsynchronousCallback) methodParameters = MethodParameter.Get(methodParameters.getSub(0, methodParameters.Length - 1));
+                            if (isAsynchronousCallback) methodParameters = MethodParameter.Get(methodParameters.AsSpan(0, methodParameters.Length - 1).GetArray());
                         }
                         if (methodParameters.Length != 0)
                         {
                             if (!methodParameters[0].IsRefOrOut && methodParameters[0].ParameterType.Type == typeof(serverSocketType))
                             {
                                 clientParameterName = methodParameters[0].ParameterName;
-                                methodParameters = MethodParameter.Get(methodParameters.getSub(1, methodParameters.Length - 1));
+                                methodParameters = MethodParameter.Get(methodParameters.AsSpan(1, methodParameters.Length - 1).GetArray());
                             }
                         }
                     }
@@ -603,7 +603,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             methodType identityMethod;
                             if (identitys.TryGetValue(identity, out identityMethod))
                             {
-                                Messages.Add(method.MethodType.FullName + " 命令序号重复 " + method.MemberFullName + " [" + identity.toString() + "] " + identityMethod.MemberFullName);
+                                Messages.Error(method.MethodType.FullName + " 命令序号重复 " + method.MemberFullName + " [" + identity.toString() + "] " + identityMethod.MemberFullName);
                                 return null;
                             }
                             identitys.Add(identity, method);
@@ -631,7 +631,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                         else
                         {
-                            Messages.Add(commandIdentityEnmuType.fullName() + " 不是有效的命令映射枚举类型");
+                            Messages.Error(commandIdentityEnmuType.fullName() + " 不是有效的命令映射枚举类型");
                             return null;
                         }
                     }
@@ -831,7 +831,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         {
                             return serverCallQueueType = ServiceAttribute.GetServerCallQueueType;
                         }
-                        Messages.Add(ServiceAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).fullName());
+                        Messages.Error(ServiceAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).fullName());
                     }
                     return serverCallQueueType;
                 }
@@ -847,7 +847,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         string clientSegmentationCopyPath = Attribute.ClientSegmentationCopyPath;
                         Attribute.ClientSegmentationCopyPath = null;
-                        string json = AutoCSer.Json.Serializer.Serialize(Attribute).Replace(@"""", @"""""");
+                        string json = AutoCSer.JsonSerializer.Serialize(Attribute).Replace(@"""", @"""""");
                         Attribute.ClientSegmentationCopyPath = clientSegmentationCopyPath;
                         return json;
                     }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Threading;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.SubBuffer
 {
@@ -55,7 +56,7 @@ namespace AutoCSer.SubBuffer
         /// <summary>
         /// 空闲缓冲区访问锁
         /// </summary>
-        private int freeBufferLock;
+        private AutoCSer.Threading.SpinLock freeBufferLock;
         /// <summary>
         /// 当前缓冲区索引
         /// </summary>
@@ -96,7 +97,7 @@ namespace AutoCSer.SubBuffer
             this.sizeBits = sizeBits;
             ArrayIndexMark = arrayBufferCount - 1;
             Buffers = new byte[256][];
-            *(byte**)(freeStart = UnmanagedPool.Default.Get()) = null;
+            *(byte**)(freeStart = UnmanagedPool.Default.GetPointer().Byte) = null;
             freeEnd = freeStart + UnmanagedPool.DefaultSize;
             freeCurrent = (uint*)(freeStart += sizeof(byte**));
         }
@@ -106,14 +107,14 @@ namespace AutoCSer.SubBuffer
         /// <returns>缓冲区</returns>
         internal void Get(ref PoolBuffer buffer)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolPop);
+            freeBufferLock.EnterYield();
             if (freeStart != freeCurrent)
             {
                 uint freeIndex = *--freeCurrent;
                 if (freeStart == freeCurrent)
                 {
                     byte* free = freeStart - sizeof(byte**);
-                    if (*(byte**)free == null) System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                    if (*(byte**)free == null) freeBufferLock.Exit();
                     else
                     {
                         freeStart = *(byte**)free;
@@ -121,34 +122,34 @@ namespace AutoCSer.SubBuffer
                         freeCurrent = (uint*)freeEnd;
                         if (backFree == null)
                         {
-                            System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                            freeBufferLock.Exit();
                             Monitor.Enter(createFreeLock);
-                            while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolSetBackFree);
+                            freeBufferLock.EnterYield();
                             if (backFree == null)
                             {
                                 backFree = free;
-                                System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                                freeBufferLock.Exit();
                                 Monitor.Exit(createFreeLock);
                             }
                             else
                             {
-                                System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                                freeBufferLock.Exit();
                                 Monitor.Exit(createFreeLock);
                                 UnmanagedPool.Default.Push(free);
                             }
                         }
                         else
                         {
-                            System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                            freeBufferLock.Exit();
                             UnmanagedPool.Default.Push(free);
                         }
                     }
                 }
-                else System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                else freeBufferLock.Exit();
                 buffer.Set(this, freeIndex);
                 return;
             }
-            System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+            freeBufferLock.Exit();
             uint index = (uint)System.Threading.Interlocked.Increment(ref bufferIndex) - 1;
             if (index >= bufferCount)
             {
@@ -187,12 +188,12 @@ namespace AutoCSer.SubBuffer
             if (buffer.Pool == this)
             {
             START:
-                while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolPush);
+                freeBufferLock.EnterYield();
                 if (freeCurrent == freeEnd)
                 {
                     if (backFree == null)
                     {
-                        System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                        freeBufferLock.Exit();
                         Monitor.Enter(createFreeLock);
                         if (backFree != null)
                         {
@@ -202,10 +203,10 @@ namespace AutoCSer.SubBuffer
                         byte* newBackFree;
                         try
                         {
-                            newBackFree = UnmanagedPool.Default.Get();
+                            newBackFree = UnmanagedPool.Default.GetPointer().Byte;
                         }
                         finally { Monitor.Exit(createFreeLock); }
-                        while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SubBufferPoolSetBackFree);
+                        freeBufferLock.EnterYield();
                         backFree = newBackFree;
                         if (freeCurrent != freeEnd) goto PUSH;
                     }
@@ -216,7 +217,7 @@ namespace AutoCSer.SubBuffer
                 }
             PUSH:
                 *freeCurrent++ = buffer.Index;
-                System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
+                freeBufferLock.Exit();
                 buffer.Pool = null;
             }
         }
@@ -252,7 +253,7 @@ namespace AutoCSer.SubBuffer
         /// <param name="size"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static Pool GetPool(Size size)
+        public static Pool GetPool(AutoCSer.Memory.BufferSize size)
         {
             int bits = ((uint)(int)size).DeBruijnLog2(), index = bits - minBufferSizeBits;
             if ((uint)index >= pools.Length) throw new IndexOutOfRangeException(size.ToString());
@@ -296,23 +297,23 @@ namespace AutoCSer.SubBuffer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static Pool GetPool(int size)
         {
-            if (size <= (int)SubBuffer.Size.Kilobyte4)
+            if (size <= (int)AutoCSer.Memory.BufferSize.Kilobyte4)
             {
-                if (size <= (int)SubBuffer.Size.Kilobyte)
+                if (size <= (int)AutoCSer.Memory.BufferSize.Kilobyte)
                 {
-                    if (size <= (int)SubBuffer.Size.Byte256) return getPool(0);
-                    return getPool(size <= (int)SubBuffer.Size.Byte512 ? 1 : 2);
+                    if (size <= (int)AutoCSer.Memory.BufferSize.Byte256) return getPool(0);
+                    return getPool(size <= (int)AutoCSer.Memory.BufferSize.Byte512 ? 1 : 2);
                 }
-                return getPool(size <= (int)SubBuffer.Size.Kilobyte2 ? 3 : 4);
+                return getPool(size <= (int)AutoCSer.Memory.BufferSize.Kilobyte2 ? 3 : 4);
             }
-            if (size <= (int)SubBuffer.Size.Kilobyte128)
+            if (size <= (int)AutoCSer.Memory.BufferSize.Kilobyte128)
             {
-                if (size <= (int)SubBuffer.Size.Kilobyte32)
+                if (size <= (int)AutoCSer.Memory.BufferSize.Kilobyte32)
                 {
-                    if (size <= (int)SubBuffer.Size.Kilobyte8) return getPool(5);
-                    return getPool(size <= (int)SubBuffer.Size.Kilobyte16 ? 6 : 7);
+                    if (size <= (int)AutoCSer.Memory.BufferSize.Kilobyte8) return getPool(5);
+                    return getPool(size <= (int)AutoCSer.Memory.BufferSize.Kilobyte16 ? 6 : 7);
                 }
-                return getPool(size <= (int)SubBuffer.Size.Kilobyte64 ? 8 : 9);
+                return getPool(size <= (int)AutoCSer.Memory.BufferSize.Kilobyte64 ? 8 : 9);
             }
             return null;
         }
@@ -329,21 +330,29 @@ namespace AutoCSer.SubBuffer
             else pool.Get(ref buffer);
         }
         /// <summary>
-        /// 清除缓存数据
+        /// 获取独立缓冲区
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
+        /// <param name="buffer"></param>
+        /// <param name="size"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
+        internal static void GetSingleBuffer(ref PoolBufferFull buffer, int size)
         {
-            foreach (Pool pool in pools)
-            {
-                if (pool != null) pool.clear();
-            }
+            GetBuffer(ref buffer, Math.Max(size, bufferSize));
         }
+        ///// <summary>
+        ///// 清除缓存数据
+        ///// </summary>
+        //private static void clearCache()
+        //{
+        //    foreach (Pool pool in pools)
+        //    {
+        //        if (pool != null) pool.clear();
+        //    }
+        //}
 
         static Pool()
         {
-            Pub.ClearCaches += clearCache;
+            //AutoCSer.Memory.Common.AddClearCache(clearCache);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
     /// 服务端返回上传文件信息
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public struct UploadFileIdentity
     {
         /// <summary>

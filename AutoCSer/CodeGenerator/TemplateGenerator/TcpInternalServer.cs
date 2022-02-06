@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using AutoCSer.Metadata;
 using AutoCSer.CodeGenerator.Metadata;

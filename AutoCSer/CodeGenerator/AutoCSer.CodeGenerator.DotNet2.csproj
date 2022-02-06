@@ -44,11 +44,16 @@
     <Compile Include="AsynchronousMethod.cs" />
     <Compile Include="CodeLanguage.cs" />
     <Compile Include="Coder.cs" />
-    <Compile Include="CombinationTemplate.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="CombinationTemplate\CombinationTemplate.cs" />
+    <Compile Include="CombinationTemplate\CombinationTemplateHeaderEnumerable.cs" />
+    <Compile Include="CombinationTemplate\CombinationTemplateLink.cs" />
     <Compile Include="CSharper.cs" />
     <Compile Include="CustomConfig.cs" />
+    <Compile Include="Extensions\MethodInfo.cs" />
+    <Compile Include="Extensions\TcpStaticServerAttribute.cs" />
+    <Compile Include="Extensions\TypeExtension.CodeGenerator.cs" />
     <Compile Include="GeneratorAttribute.cs" />
+    <Compile Include="HashAssembly.cs" />
     <Compile Include="Html.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -111,13 +116,6 @@
     <Compile Include="ProjectParameter.cs" />
     <Compile Include="XmlDocument.cs" />
     <Compile Include="XmlDocumentAssembly.cs" />
-    <Compile Include="Extension\MethodInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Extension\TcpStaticServerAttribute.cs" />
-    <Compile Include="Extension\Type.CodeGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Program.cs">
       <SubType>Code</SubType>
     </Compile>

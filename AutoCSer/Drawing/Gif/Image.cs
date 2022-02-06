@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Drawing.Gif
 {
@@ -45,7 +45,7 @@ namespace AutoCSer.Drawing.Gif
         /// <summary>
         /// 压缩数据集合
         /// </summary>
-        internal LeftArray<SubArray<byte>> LzwDatas;
+        internal LeftArray<SubArray<byte>> LzwDatas = new LeftArray<SubArray<byte>>(0);
         /// <summary>
         /// 创建位图
         /// </summary>
@@ -55,7 +55,7 @@ namespace AutoCSer.Drawing.Gif
         {
             if (Width == 0 || Height == 0 || LzwSize == 0 || LzwSize > 8) return null;
             int colorSize = Width * Height;
-            Pointer.Size colorIndexs = Writer.LzwEncodeTableBufferPool.GetSize(colorSize);
+            AutoCSer.Memory.Pointer colorIndexs = Writer.LzwEncodeTableBufferPool.GetMinSize(colorSize);
             try
             {
                 int length = lzwDecode(Decoder.BlocksToByte(ref LzwDatas), colorIndexs.Byte, LzwSize);
@@ -103,7 +103,7 @@ namespace AutoCSer.Drawing.Gif
                     catch (Exception error)
                     {
                         bitmap.Dispose();
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -128,7 +128,7 @@ namespace AutoCSer.Drawing.Gif
         /// <summary>
         /// LZW压缩解码字符串缓冲区
         /// </summary>
-        private static readonly SubBuffer.Pool stringBufferPool = SubBuffer.Pool.GetPool(SubBuffer.Size.Kilobyte32);//4097 * 8
+        private static readonly SubBuffer.Pool stringBufferPool = SubBuffer.Pool.GetPool(AutoCSer.Memory.BufferSize.Kilobyte32);//4097 * 8
         /// <summary>
         /// LZW压缩解码
         /// </summary>
@@ -144,7 +144,7 @@ namespace AutoCSer.Drawing.Gif
             stringBufferPool.Get(ref stringBuffer);
             try
             {
-                fixed (byte* inputFixed = input, stringFixed = stringBuffer.Buffer)
+                fixed (byte* inputFixed = input, stringFixed = stringBuffer.GetFixedBuffer())
                 {
                     byte* nextStrings = null, stringStart = stringFixed + stringBuffer.StartIndex;
                     byte* currentInput = inputFixed, inputEnd = inputFixed + input.Length;
@@ -181,7 +181,7 @@ namespace AutoCSer.Drawing.Gif
                         if (prefixIndex == endIndex) break;
                         if (currentOutput == outputEnd) return -1;
 
-                        AutoCSer.Memory.ClearUnsafe((ulong*)stringStart, 4097);
+                        AutoCSer.Memory.Common.Clear((ulong*)stringStart, 4097);
                         inputSize = startSize;
                         inputMark = startMark;
                         nextIndex = (short)(endIndex + 1);

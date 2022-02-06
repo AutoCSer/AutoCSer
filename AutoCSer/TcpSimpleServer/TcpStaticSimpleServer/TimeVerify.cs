@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Security.Cryptography;
 
 namespace AutoCSer.Net.TcpStaticSimpleServer
@@ -19,7 +19,7 @@ namespace AutoCSer.Net.TcpStaticSimpleServer
         /// <summary>
         /// 验证时间戳
         /// </summary>
-        private static TcpServer.TimeVerifyTick timeVerifyTick = new TcpServer.TimeVerifyTick(Date.NowTime.UtcNow.Ticks - 1);
+        private static TcpServer.TimeVerifyTick timeVerifyTick = new TcpServer.TimeVerifyTick(AutoCSer.Threading.SecondTimer.UtcNow.Ticks - 1);
         /// <summary>
         /// 时间验证函数
         /// </summary>

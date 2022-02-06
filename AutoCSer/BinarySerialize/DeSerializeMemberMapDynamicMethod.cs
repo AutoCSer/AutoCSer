@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -31,7 +31,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="type"></param>
         public DeSerializeMemberMapDynamicMethod(Type type)
         {
-            dynamicMethod = new DynamicMethod("FieldMemberMapDeSerializer", null, new Type[] { typeof(MemberMap), typeof(DeSerializer), type.MakeByRefType() }, type, true);
+            dynamicMethod = new DynamicMethod("FieldMemberMapDeSerializer", null, new Type[] { typeof(MemberMap), typeof(BinaryDeSerializer), type.MakeByRefType() }, type, true);
             generator = dynamicMethod.GetILGenerator();
             isValueType = type.IsValueType;
         }
@@ -49,7 +49,7 @@ namespace AutoCSer.BinarySerialize
             generator.Emit(OpCodes.Ldarg_2);
             if (!isValueType) generator.Emit(OpCodes.Ldind_Ref);
             generator.Emit(OpCodes.Ldflda, field.Field);
-            generator.call(DeSerializer.GetMemberMapDeSerializeMethod(field.Field.FieldType) ?? DeSerializeMethodCache.GetMember(field.Field.FieldType));
+            generator.call(BinaryDeSerializer.GetMemberMapDeSerializeMethod(field.Field.FieldType) ?? DeSerializeMethodCache.GetMember(field.Field.FieldType));
 
             generator.MarkLabel(end);
         }

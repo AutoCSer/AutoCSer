@@ -52,7 +52,7 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal sealed partial class GenericType<Type> : GenericType
+    internal sealed partial class GenericType<T> : GenericType
     {
         /// <summary>
         /// 客户端回调转换
@@ -60,7 +60,7 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override MethodInfo TcpClientCallbackGetMethod
         {
-            get { return ((Func<Func<AutoCSer.Net.TcpServer.ReturnValue<Type>, bool>, Action<AutoCSer.Net.TcpServer.ReturnValue<Type>>>)AutoCSer.Net.TcpServer.Emit.ClientCallback<Type>.Get).Method; }
+            get { return ((Func<Func<AutoCSer.Net.TcpServer.ReturnValue<T>, bool>, Action<AutoCSer.Net.TcpServer.ReturnValue<T>>>)AutoCSer.Net.TcpServer.Emit.ClientCallback<T>.Get).Method; }
         }
         /// <summary>
         /// 同步等待调用类型
@@ -68,7 +68,7 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override System.Type TcpAutoWaitReturnValueType
         {
-            get { return typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue<Type>); }
+            get { return typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue<T>); }
         }
         /// <summary>
         /// 弹出同步等待调用节点
@@ -76,13 +76,13 @@ namespace AutoCSer.Metadata
         /// <returns></returns>
         internal override MethodInfo TcpAutoWaitReturnValuePopMethod
         {
-            get { return ((Func<AutoCSer.Net.TcpServer.AutoWaitReturnValue<Type>>)AutoCSer.Net.TcpServer.AutoWaitReturnValue<Type>.Pop).Method; }
+            get { return ((Func<AutoCSer.Net.TcpServer.AutoWaitReturnValue<T>>)AutoCSer.Net.TcpServer.AutoWaitReturnValue<T>.Pop).Method; }
         }
 #if !DOTNET2 && !DOTNET4 && !UNITY3D
         /// <summary>
         /// 异步等待
         /// </summary>
-        private AutoCSer.Net.TcpServer.Emit.Awaiter<Type> tcpAwaiter;
+        private AutoCSer.Net.TcpServer.Emit.Awaiter<T> tcpAwaiter;
         /// <summary>
         /// 设置错误返回值类型
         /// </summary>
@@ -90,14 +90,14 @@ namespace AutoCSer.Metadata
         {
             get
             {
-                if (tcpAwaiter == null) tcpAwaiter = new AutoCSer.Net.TcpServer.Emit.Awaiter<Type>();
+                if (tcpAwaiter == null) tcpAwaiter = new AutoCSer.Net.TcpServer.Emit.Awaiter<T>();
                 return ((Action<AutoCSer.Net.TcpServer.ReturnType>)tcpAwaiter.Call).Method;
             }
         }
         /// <summary>
         /// await 返回值类型
         /// </summary>
-        internal override System.Type AwaiterReturnValueType { get { return typeof(AutoCSer.Net.TcpServer.Emit.AwaiterReturnValue<Type>); } }
+        internal override System.Type AwaiterReturnValueType { get { return typeof(AutoCSer.Net.TcpServer.Emit.AwaiterReturnValue<T>); } }
 #endif
         ///// <summary>
         ///// 获取服务端回调转换
@@ -105,21 +105,21 @@ namespace AutoCSer.Metadata
         ///// <returns></returns>
         //internal override MethodInfo TcpServerCallbackGetMethod
         //{
-        //    get { return ((Func<Func<AutoCSer.Net.TcpServer.ReturnValue<Type>, bool>, Func<Type, bool>>)AutoCSer.Net.TcpServer.Emit.ServerCallback<Type>.Get).Method; }
+        //    get { return ((Func<Func<AutoCSer.Net.TcpServer.ReturnValue<T>, bool>, Func<T, bool>>)AutoCSer.Net.TcpServer.Emit.ServerCallback<T>.Get).Method; }
         //}
         /// <summary>
         /// 服务端回调委托返类型
         /// </summary>
         internal override System.Type TcpServerCallbackType
         {
-            get { return typeof(AutoCSer.Net.TcpServer.ServerCallback<Type>); }
+            get { return typeof(AutoCSer.Net.TcpServer.ServerCallback<T>); }
         }
         /// <summary>
         /// 服务端回调委托返类型
         /// </summary>
         internal override System.Type TcpServerCallbackEmitType
         {
-            get { return typeof(Func<AutoCSer.Net.TcpServer.ReturnValue<Type>, bool>); }
+            get { return typeof(Func<AutoCSer.Net.TcpServer.ReturnValue<T>, bool>); }
         }
     }
 }

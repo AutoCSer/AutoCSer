@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -50,7 +50,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <summary>
         /// 微信支付日志
         /// </summary>
-        internal AutoCSer.Log.ILog PayLog = AutoCSer.Log.Pub.Log;
+        internal AutoCSer.ILog PayLog = AutoCSer.LogHelper.Default;
 #pragma warning restore
         /// <summary>
         /// 获取访问令牌
@@ -89,9 +89,9 @@ namespace AutoCSer.OpenAPI.Weixin
                     else timestamp = token;
                 }
                 else value = token;
-                if (SHA.Sha1(AutoCSer.Extension.String_Weixin.ConcatBytes(nonce, timestamp, value)).checkLowerHexNotNull(signature)) return true;
+                if (SHA.Sha1(AutoCSer.Extensions.StringExtensionWeixin.ConcatBytes(nonce, timestamp, value)).checkLowerHexNotNull(signature)) return true;
             }
-            AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "微信服务器验证错误 signature[" + signature + @"] timestamp[" + timestamp + "] nonce[" + nonce + "] token[" + token + "]");
+            AutoCSer.LogHelper.Debug("微信服务器验证错误 signature[" + signature + @"] timestamp[" + timestamp + "] nonce[" + nonce + "] token[" + token + "]", LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             return false;
         }
         /// <summary>
@@ -111,11 +111,11 @@ namespace AutoCSer.OpenAPI.Weixin
             int length = Sign<ProductUrlSign>.GetData(sign, key, ref buffer);
             try
             {
-                fixed (byte* bufferFixed = buffer.Buffer)
+                fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                 {
                     using (MD5 md5 = new MD5CryptoServiceProvider())
                     {
-                        return "weixin://wxpay/bizpayurl?" + Memory_WebClient.BytesToStringNotEmpty(bufferFixed + buffer.StartIndex, length) + "&sign=" + sign.sign;
+                        return "weixin://wxpay/bizpayurl?" + MemoryExtensionWebClient.BytesToStringNotEmpty(bufferFixed + buffer.StartIndex, length) + "&sign=" + sign.sign;
                     }
                 }
             }
@@ -125,6 +125,6 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <summary>
         /// 默认配置
         /// </summary>
-        public static readonly Config Default = AutoCSer.Config.Loader.Get<Config>() ?? new Config();
+        public static readonly Config Default = (Config)AutoCSer.Configuration.Common.Get(typeof(Config)) ?? new Config();
     }
 }

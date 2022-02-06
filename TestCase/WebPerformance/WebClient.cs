@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Net.Sockets;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -282,17 +282,17 @@ namespace AutoCSer.TestCase.WebPerformance
                 asyncType = ClientSocketAsyncType.Receive;
                 recieveAsyncEventArgs.SetBuffer(0, bufferSize);
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterYield();
 #endif
                 if (socket.ReceiveAsync(recieveAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                receiveAsyncLock.Exit();
 #endif
                 return next();
             }
@@ -350,7 +350,7 @@ namespace AutoCSer.TestCase.WebPerformance
                             case TestType.WebCall:
                             case TestType.WebCallAsynchronous:
                                 returnValue = value + 1;
-                                AutoCSer.Json.Parser.Parse<int>(ref json, ref returnValue);
+                                AutoCSer.JsonDeSerializer.DeSerialize<int>(ref json, ref returnValue);
                                 break;
                             case TestType.WebView:
                             case TestType.WebViewAsynchronous:
@@ -359,7 +359,7 @@ namespace AutoCSer.TestCase.WebPerformance
                             case TestType.Ajax:
                             case TestType.AjaxAsynchronous:
                                 JsonReturn jsonReturn = new JsonReturn();
-                                if (AutoCSer.Json.Parser.Parse<JsonReturn>(ref json, ref jsonReturn)) returnValue = jsonReturn.Return;
+                                if (AutoCSer.JsonDeSerializer.DeSerialize<JsonReturn>(ref json, ref jsonReturn)) returnValue = jsonReturn.Return;
                                 else returnValue = value + 1;
                                 break;
                             default: returnValue = value + 1; break;
@@ -443,7 +443,7 @@ Connection: Keep-Alive
         /// <summary>
         /// AutoCSer爬虫标识
         /// </summary>
-        private static readonly byte[] AutoCSerSpiderUserAgent = ("User-Agent: " + AutoCSer.Pub.HttpSpiderUserAgent + @"
+        private static readonly byte[] AutoCSerSpiderUserAgent = ("User-Agent: " + AutoCSer.Config.HttpSpiderUserAgent + @"
 ").getBytes();
         /// <summary>
         /// 测试类型
@@ -460,7 +460,7 @@ Connection: Keep-Alive
 #endif
             bool isKeepAlive = true;
 
-            int cpuCount = AutoCSer.Threading.Pub.CpuCount, maxSocketCount = Math.Min(cpuCount * clientCountPerCpu, maxClientCount), count = maxSocketCount * 256;
+            int cpuCount = AutoCSer.Common.ProcessorCount, maxSocketCount = Math.Min(cpuCount * clientCountPerCpu, maxClientCount), count = maxSocketCount * 256;
             int keepAliveCount = isKeepAlive ? ((count <<= 2) + (maxSocketCount - 1)) / maxSocketCount : 1;
             using (Task task = new Task(maxSocketCount, keepAliveCount))
             {

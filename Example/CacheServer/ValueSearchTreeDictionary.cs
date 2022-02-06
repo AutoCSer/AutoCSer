@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Example.CacheServer
 {

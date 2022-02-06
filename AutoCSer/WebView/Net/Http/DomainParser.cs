@@ -32,15 +32,15 @@ namespace AutoCSer.Net.Http
         /// <returns>主域名</returns>
         public SubArray<byte> GetMainDomainByUrl(byte* start)
         {
-            byte* end = dataEnd, domain = Memory.Find(start, end, (byte)':');
+            byte* end = dataEnd, domain = AutoCSer.Memory.Common.Find(start, end, (byte)':');
             if (domain != null && *(short*)++domain == '/' + ('/' << 8) && (domain += sizeof(short)) < end)
             {
-                byte* next = Memory.Find(domain, end, (byte)'/');
+                byte* next = AutoCSer.Memory.Common.Find(domain, end, (byte)'/');
                 if (next == null) return getMainDomain(domain, end);
                 if (domain != next) return getMainDomain(domain, next);
 
             }
-            return default(SubArray<byte>);
+            return new SubArray<byte>();
         }
         /// <summary>
         /// 获取主域名
@@ -60,7 +60,7 @@ namespace AutoCSer.Net.Http
         /// <returns>主域名</returns>
         private SubArray<byte> getMainDomain(byte* domain, byte* end)
         {
-            byte* next = Memory.Find(domain, end, (byte)':');
+            byte* next = AutoCSer.Memory.Common.Find(domain, end, (byte)':');
             if (next != null) end = next;
             if (domain != end)
             {
@@ -68,10 +68,10 @@ namespace AutoCSer.Net.Http
                 {
                     if (((uint)(*next - '0') >= 10 && *next != '.'))
                     {
-                        byte* dot1 = Memory.FindLast(domain, end, (byte)'.');
+                        byte* dot1 = AutoCSer.Memory.Common.FindLast(domain, end, (byte)'.');
                         if (dot1 != null && domain != dot1)
                         {
-                            byte* dot2 = Memory.FindLast(domain, dot1, (byte)'.');
+                            byte* dot2 = AutoCSer.Memory.Common.FindLast(domain, dot1, (byte)'.');
                             if (dot2 != null)
                             {
                                 if (topDomains.Contains(new SubArray<byte> { Array = data, Start = (int)(dot1 - dataFixed) + 1, Length = (int)(end - dot1) - 1 })
@@ -79,7 +79,7 @@ namespace AutoCSer.Net.Http
                                 {
                                     domain = dot2 + 1;
                                 }
-                                else if (domain != dot2 && (dot1 = Memory.FindLast(domain, dot2, (byte)'.')) != null)
+                                else if (domain != dot2 && (dot1 = AutoCSer.Memory.Common.FindLast(domain, dot2, (byte)'.')) != null)
                                 {
                                     domain = dot1 + 1;
                                 }
@@ -90,7 +90,7 @@ namespace AutoCSer.Net.Http
                 }
                 return new SubArray<byte> { Array = data, Start = (int)(domain - dataFixed), Length = (int)(end - domain) };
             }
-            return default(SubArray<byte>);
+            return new SubArray<byte>();
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace AutoCSer.Net.Http
         /// <returns>主域名</returns>
         internal unsafe static SubArray<byte> GetMainDomainByUrl(SubArray<byte> url)
         {
-            fixed (byte* urlFixed = url.Array)
+            fixed (byte* urlFixed = url.GetFixedBuffer())
             {
                 byte* urlStart = urlFixed + url.Start;
                 return new DomainParser { data = url.Array, dataFixed = urlFixed, dataEnd = urlStart + url.Length }.GetMainDomainByUrl(urlStart);
@@ -113,7 +113,7 @@ namespace AutoCSer.Net.Http
         /// <returns>主域名</returns>
         internal unsafe static SubArray<byte> GetMainDomain(SubArray<byte> domain)
         {
-            fixed (byte* domainFixed = domain.Array)
+            fixed (byte* domainFixed = domain.GetFixedBuffer())
             {
                 byte* domainStart = domainFixed + domain.Start;
                 return new DomainParser { data = domain.Array, dataFixed = domainFixed, dataEnd = domainStart + domain.Length }.GetMainDomain(domainStart);

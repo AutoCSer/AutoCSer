@@ -40,10 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\AutoCSer.NetStandard.csproj" />
     <ProjectReference Include="..\..\AutoCSer\HtmlTitle\AutoCSer.HtmlTitle.NetStandard.csproj" />
   </ItemGroup>

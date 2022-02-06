@@ -6,7 +6,7 @@ namespace AutoCSer.Net.RemoteExpression
     /// <summary>
     /// 客户端远程表达式节点
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     public struct ClientNode
     {
         /// <summary>
@@ -46,9 +46,9 @@ namespace AutoCSer.Net.RemoteExpression
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             serializer.Stream.Write(ClientNodeId);
             Node.Serialize(serializer, Checker);
@@ -57,9 +57,9 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             ClientNodeId = deSerializer.ReadInt();
             Node.DeSerialize(deSerializer, out Node);
@@ -68,9 +68,9 @@ namespace AutoCSer.Net.RemoteExpression
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.Json.Serializer serializer)
+        private void serialize(AutoCSer.JsonSerializer serializer)
         {
             serializer.CharStream.Write('[');
             serializer.CallSerialize(ClientNodeId);
@@ -81,32 +81,32 @@ namespace AutoCSer.Net.RemoteExpression
         /// <summary>
         /// 服务端反序列化
         /// </summary>
-        /// <param name="parser"></param>
-        [AutoCSer.Json.ParseCustom]
+        /// <param name="jsonDeSerializer"></param>
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.Json.Parser parser)
+        private unsafe void deSerialize(AutoCSer.JsonDeSerializer jsonDeSerializer)
         {
-            if (*parser.Current++ == '[')
+            if (*jsonDeSerializer.Current++ == '[')
             {
-                parser.CallParse(ref ClientNodeId);
-                if (parser.State == Json.ParseState.Success)
+                jsonDeSerializer.CallSerialize(ref ClientNodeId);
+                if (jsonDeSerializer.State == Json.DeSerializeState.Success)
                 {
-                    if (*parser.Current++ == ',')
+                    if (*jsonDeSerializer.Current++ == ',')
                     {
-                        Node.DeSerialize(parser, ref Node);
-                        if (parser.State != Json.ParseState.Success || *parser.Current++ == ']') return;
+                        Node.DeSerialize(jsonDeSerializer, ref Node);
+                        if (jsonDeSerializer.State != Json.DeSerializeState.Success || *jsonDeSerializer.Current++ == ']') return;
                     }
                 }
                 else return;
             }
-            parser.ParseState = Json.ParseState.Custom;
+            jsonDeSerializer.DeSerializeState = Json.DeSerializeState.Custom;
         }
     }
     /// <summary>
     /// 客户端远程表达式参数节点
     /// </summary>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     public struct ClientNode<returnType>
     {
         /// <summary>
@@ -129,9 +129,9 @@ namespace AutoCSer.Net.RemoteExpression
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             Node.Serialize(serializer, Checker);
         }
@@ -139,9 +139,9 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             Node node;
             RemoteExpression.Node.DeSerialize(deSerializer, out node);
@@ -151,28 +151,28 @@ namespace AutoCSer.Net.RemoteExpression
         /// 客户端序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.Json.Serializer serializer)
+        private void serialize(AutoCSer.JsonSerializer serializer)
         {
             Node.Serialize(serializer, Checker);
         }
         /// <summary>
         /// 服务端反序列化
         /// </summary>
-        /// <param name="parser"></param>
-        [AutoCSer.Json.ParseCustom]
+        /// <param name="jsonDeSerializer"></param>
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.Json.Parser parser)
+        private unsafe void deSerialize(AutoCSer.JsonDeSerializer jsonDeSerializer)
         {
             Node node = null;
-            RemoteExpression.Node.DeSerialize(parser, ref node);
-            if (parser.State != Json.ParseState.Success)
+            RemoteExpression.Node.DeSerialize(jsonDeSerializer, ref node);
+            if (jsonDeSerializer.State != Json.DeSerializeState.Success)
             {
                 Node = (Node<returnType>)node;
                 return;
             }
-            parser.ParseState = Json.ParseState.Custom;
+            jsonDeSerializer.DeSerializeState = Json.DeSerializeState.Custom;
         }
     }
 }

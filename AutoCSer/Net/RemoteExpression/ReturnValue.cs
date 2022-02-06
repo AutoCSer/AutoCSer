@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.RemoteExpression
 {
     /// <summary>
     /// 返回值
     /// </summary>
-    [AutoCSer.Json.Serialize]
-    [AutoCSer.Json.Parse]
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.JsonSerialize]
+    [AutoCSer.JsonDeSerialize]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     public class ReturnValue
     {
         /// <summary>
@@ -67,32 +68,32 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端序列化返回值
         /// </summary>
         /// <param name="serializer"></param>
-        protected virtual void serialize(AutoCSer.BinarySerialize.Serializer serializer) { }
+        protected virtual void serialize(AutoCSer.BinarySerializer serializer) { }
         /// <summary>
         /// 服务端序列化返回值
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void serialize(AutoCSer.BinarySerialize.Serializer serializer, ReturnValue value)
+        private static void serialize(AutoCSer.BinarySerializer serializer, ReturnValue value)
         {
-            if(value == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
+            if(value == null) serializer.Stream.Write(AutoCSer.BinarySerializer.NullValue);
             else value.serialize(serializer);
         }
         /// <summary>
         /// 客户端反序列化返回值
         /// </summary>
         /// <param name="deSerializer"></param>
-        protected virtual void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer) { }
+        protected virtual void deSerialize(AutoCSer.BinaryDeSerializer deSerializer) { }
         /// <summary>
         /// 客户端反序列化返回值
         /// </summary>
         /// <param name="deSerializer"></param>
         /// <param name="value"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref ReturnValue value)
+        private static void deSerialize(AutoCSer.BinaryDeSerializer deSerializer, ref ReturnValue value)
         {
             value = createReturnValues.Array[deSerializer.ReadInt()]();
             value.deSerialize(deSerializer);
@@ -101,15 +102,15 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端序列化返回值
         /// </summary>
         /// <param name="serializer"></param>
-        protected virtual void serialize(AutoCSer.Json.Serializer serializer) { }
+        protected virtual void serialize(AutoCSer.JsonSerializer serializer) { }
         /// <summary>
         /// 服务端序列化返回值
         /// </summary>
         /// <param name="serializer"></param>
         /// <param name="value"></param>
-        [AutoCSer.Json.SerializeCustom]
+        [AutoCSer.JsonSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void serialize(AutoCSer.Json.Serializer serializer, ReturnValue value)
+        private static void serialize(AutoCSer.JsonSerializer serializer, ReturnValue value)
         {
             if (value == null) serializer.CharStream.WriteJsonArray();
             else
@@ -125,44 +126,44 @@ namespace AutoCSer.Net.RemoteExpression
         /// <summary>
         /// 客户端反序列化返回值
         /// </summary>
-        /// <param name="parser"></param>
-        protected virtual void deSerialize(AutoCSer.Json.Parser parser) { }
+        /// <param name="jsonDeSerializer"></param>
+        protected virtual void deSerialize(AutoCSer.JsonDeSerializer jsonDeSerializer) { }
         /// <summary>
         /// 客户端反序列化返回值
         /// </summary>
-        /// <param name="parser"></param>
+        /// <param name="jsonDeSerializer"></param>
         /// <param name="value"></param>
-        [AutoCSer.Json.ParseCustom]
+        [AutoCSer.JsonDeSerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe static void deSerialize(AutoCSer.Json.Parser parser, ref ReturnValue value)
+        private unsafe static void deSerialize(AutoCSer.JsonDeSerializer jsonDeSerializer, ref ReturnValue value)
         {
-            if (*parser.Current++ == '[')
+            if (*jsonDeSerializer.Current++ == '[')
             {
-                if (*parser.Current == ']')
+                if (*jsonDeSerializer.Current == ']')
                 {
-                    ++parser.Current;
+                    ++jsonDeSerializer.Current;
                     return;
                 }
                 int clientNodeId = 0;
-                parser.CallParse(ref clientNodeId);
-                if (parser.State == Json.ParseState.Success)
+                jsonDeSerializer.CallSerialize(ref clientNodeId);
+                if (jsonDeSerializer.State == Json.DeSerializeState.Success)
                 {
                     value = createReturnValues.Array[clientNodeId]();
-                    value.deSerialize(parser);
+                    value.deSerialize(jsonDeSerializer);
                 }
                 return;
             }
-            parser.ParseState = Json.ParseState.Custom;
+            jsonDeSerializer.DeSerializeState = Json.DeSerializeState.Custom;
         }
 
         /// <summary>
         /// 新建返回值的委托集合
         /// </summary>
-        private static LeftArray<Func<ReturnValue>> createReturnValues;
+        private static LeftArray<Func<ReturnValue>> createReturnValues = new LeftArray<Func<ReturnValue>>(0);
         /// <summary>
         /// 新建返回值的委托集合访问锁
         /// </summary>
-        private static readonly object createReturnValueLock = new object();
+        private static AutoCSer.Threading.SleepFlagSpinLock createReturnValueLock;
         /// <summary>
         /// 客户端表达式节点注册
         /// </summary>
@@ -171,13 +172,14 @@ namespace AutoCSer.Net.RemoteExpression
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static int RegisterClient(Func<ReturnValue> createReturnValue)
         {
-            Monitor.Enter(createReturnValueLock);
+            createReturnValueLock.Enter();
             int id = createReturnValues.Length;
             try
             {
+                if (createReturnValues.FreeCount == 0) createReturnValueLock.SleepFlag = 1;
                 createReturnValues.Add(createReturnValue);
             }
-            finally { Monitor.Exit(createReturnValueLock); }
+            finally { createReturnValueLock.ExitSleepFlag(); }
             return id;
         }
         static ReturnValue()
@@ -207,7 +209,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端序列化返回值
         /// </summary>
         /// <param name="serializer"></param>
-        protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        protected override void serialize(AutoCSer.BinarySerializer serializer)
         {
             serializer.Stream.Write(ClientNodeId);
             AutoCSer.BinarySerialize.TypeSerializer<returnType>.Serialize(serializer, ref Value);
@@ -216,7 +218,7 @@ namespace AutoCSer.Net.RemoteExpression
         /// 客户端反序列化返回值
         /// </summary>
         /// <param name="deSerializer"></param>
-        protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        protected override void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             AutoCSer.BinarySerialize.TypeDeSerializer<returnType>.DeSerialize(deSerializer, ref Value);
         }
@@ -224,17 +226,17 @@ namespace AutoCSer.Net.RemoteExpression
         /// 服务端序列化返回值
         /// </summary>
         /// <param name="serializer"></param>
-        protected override void serialize(AutoCSer.Json.Serializer serializer)
+        protected override void serialize(AutoCSer.JsonSerializer serializer)
         {
             AutoCSer.Json.TypeSerializer<returnType>.Serialize(serializer, ref Value);
         }
         /// <summary>
         /// 客户端反序列化返回值
         /// </summary>
-        /// <param name="parser"></param>
-        protected override void deSerialize(AutoCSer.Json.Parser parser)
+        /// <param name="jsonDeSerializer"></param>
+        protected override void deSerialize(AutoCSer.JsonDeSerializer jsonDeSerializer)
         {
-            AutoCSer.Json.TypeParser<returnType>.Parse(parser, ref Value);
+            AutoCSer.Json.TypeDeSerializer<returnType>.DeSerialize(jsonDeSerializer, ref Value);
         }
     }
 }

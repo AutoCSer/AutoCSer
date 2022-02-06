@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.DiskBlock
 {
@@ -24,9 +25,9 @@ namespace AutoCSer.DiskBlock
         /// 对象序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private unsafe void serialize(AutoCSer.BinarySerializer serializer)
         {
             int size = Buffer.Length;
             if (IsClient) serializer.Stream.Write(-size);
@@ -35,17 +36,16 @@ namespace AutoCSer.DiskBlock
                 UnmanagedStream stream = serializer.Stream;
                 if (size == 0)
                 {
-                    stream.PrepLength(sizeof(int) * 2);
-                    stream.UnsafeWrite(size);
-                    stream.UnsafeWrite((int)(byte)State);
+                    byte* write = stream.GetBeforeMove(sizeof(int) * 2);
+                    *(int*)write = size;
+                    *(int*)(write + sizeof(int)) = (int)(byte)State;
                 }
                 else
                 {
                     int offset = -size & 3;
-                    stream.PrepLength(size + offset + sizeof(int));
-                    stream.UnsafeWrite(size);
-                    stream.UnsafeWriteNotEmpty(ref Buffer);
-                    stream.ByteSize += offset;
+                    byte* write = stream.GetBeforeMove(size + offset + sizeof(int));
+                    *(int*)write = size;
+                    Buffer.CopyTo(new Span<byte>(write + sizeof(int), size));
                 }
             }
         }
@@ -53,9 +53,9 @@ namespace AutoCSer.DiskBlock
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer">序列化数据</param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             byte* read = deSerializer.Read;
             int size = *(int*)read;
@@ -77,7 +77,7 @@ namespace AutoCSer.DiskBlock
             {
                 if (deSerializer.MoveReadAny(sizeof(int) + size + (-size & 3)))
                 {
-                    fixed (byte* bufferFixed = Buffer.Array) AutoCSer.Memory.CopyNotNull(read + sizeof(int), bufferFixed + Buffer.Start, size);
+                    fixed (byte* bufferFixed = Buffer.GetFixedBuffer()) AutoCSer.Memory.Common.CopyNotNull(read + sizeof(int), bufferFixed + Buffer.Start, size);
                     State = MemberState.Remote;
                 }
             }

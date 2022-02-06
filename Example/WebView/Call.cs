@@ -32,9 +32,9 @@ namespace AutoCSer.Example.WebView
             {
                 #region FORM + JSON 支持
                 NameValueCollection form = new NameValueCollection();
-                form.Add("j", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 1, right = 2 }));
+                form.Add("j", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 1, right = 2 }));
                 string json = Encoding.UTF8.GetString(webClient.UploadValues(url, form));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 1 + 2)
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 1 + 2)
                 {
                     return false;
                 }
@@ -42,9 +42,9 @@ namespace AutoCSer.Example.WebView
 
                 #region FORM + XML 支持
                 form = new NameValueCollection();
-                form.Add("x", AutoCSer.Xml.Serializer.Serialize(new AddParameter { left = 2, right = 3 }));
+                form.Add("x", AutoCSer.XmlSerializer.Serialize(new AddParameter { left = 2, right = 3 }));
                 json = Encoding.UTF8.GetString(webClient.UploadValues(url, form));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 2 + 3)
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 2 + 3)
                 {
                     return false;
                 }
@@ -52,8 +52,8 @@ namespace AutoCSer.Example.WebView
 
                 #region POST + JSON 支持
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
-                json = webClient.UploadString(url, "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 3, right = 5 }));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 3 + 5)
+                json = webClient.UploadString(url, "POST", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 3, right = 5 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 3 + 5)
                 {
                     return false;
                 }
@@ -61,24 +61,24 @@ namespace AutoCSer.Example.WebView
 
                 #region POST + XML 支持
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/xml; charset=utf-8");
-                json = webClient.UploadString(url, "POST", AutoCSer.Xml.Serializer.Serialize(new AddParameter { left = 5, right = 8 }));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 5 + 8)
+                json = webClient.UploadString(url, "POST", AutoCSer.XmlSerializer.Serialize(new AddParameter { left = 5, right = 8 }));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 5 + 8)
                 {
                     return false;
                 }
                 #endregion
 
                 #region Query + JSON 支持
-                json = webClient.DownloadString(url + "?j=" + System.Web.HttpUtility.UrlEncode(AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 1, right = 2 })));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 1 + 2)
+                json = webClient.DownloadString(url + "?j=" + System.Web.HttpUtility.UrlEncode(AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 1, right = 2 })));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 1 + 2)
                 {
                     return false;
                 }
                 #endregion
 
                 #region Query + XML 支持
-                json = webClient.DownloadString(url + "?x=" + System.Web.HttpUtility.UrlEncode(AutoCSer.Xml.Serializer.Serialize(new AddParameter { left = 2, right = 3 })));
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 2 + 3)
+                json = webClient.DownloadString(url + "?x=" + System.Web.HttpUtility.UrlEncode(AutoCSer.XmlSerializer.Serialize(new AddParameter { left = 2, right = 3 })));
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 2 + 3)
                 {
                     return false;
                 }
@@ -86,7 +86,7 @@ namespace AutoCSer.Example.WebView
 
                 #region Query 支持
                 json = webClient.DownloadString(url + "?left=3&right=5");
-                if (AutoCSer.Json.Parser.Parse<int>(json) != 3 + 5)
+                if (AutoCSer.JsonDeSerializer.DeSerialize<int>(json) != 3 + 5)
                 {
                     return false;
                 }

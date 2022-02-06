@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.TestCase.SqlTableCacheServer
 {
@@ -244,21 +244,26 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// 初始化测试数据
         /// </summary>
-        /// <param name="value"></param>
-        private static void onInitializeInserted(Class value)
+        /// <param name="returnValue"></param>
+        private static void onInitializeInserted(AutoCSer.Sql.ReturnValue<Class> returnValue)
         {
-            SqlModel.Member.ClassDate[] classes = new SqlModel.Member.ClassDate[] { new SqlModel.Member.ClassDate { ClassId = value.Id, Date = value.DateRange.Start } };
-            switch (value.Name)
+            if (returnValue.ReturnType == Sql.ReturnType.Success)
             {
-                case "软件 1 班":
-                    Student.InitializeInsert(new Student { Name = "张三", Email = "zhangsan@AutoCSer.com", Password = "zhangsan", Birthday = new DateTime(1994, 3, 3), Gender = SqlModel.Member.Gender.男, Classes = classes });
-                    Student.InitializeInsert(new Student { Name = "李四", Email = "lisi@AutoCSer.com", Password = "lisi", Birthday = new DateTime(1994, 4, 4), Gender = SqlModel.Member.Gender.女, Classes = classes });
-                    return;
-                case "软件 2 班":
-                    Student.InitializeInsert(new Student { Name = "王五", Email = "wangwu@AutoCSer.com", Password = "wangwu", Birthday = new DateTime(1995, 5, 5), Gender = SqlModel.Member.Gender.男, Classes = classes });
-                    Student.InitializeInsert(new Student { Name = "赵六", Email = "zhaoliu@AutoCSer.com", Password = "zhaoliu", Birthday = new DateTime(1995, 4, 4), Gender = SqlModel.Member.Gender.女, Classes = classes });
-                    return;
+                Class value = returnValue.Value;
+                SqlModel.Member.ClassDate[] classes = new SqlModel.Member.ClassDate[] { new SqlModel.Member.ClassDate { ClassId = value.Id, Date = value.DateRange.Start } };
+                switch (value.Name)
+                {
+                    case "软件 1 班":
+                        Student.InitializeInsert(new Student { Name = "张三", Email = "zhangsan@AutoCSer.com", Password = "zhangsan", Birthday = new DateTime(1994, 3, 3), Gender = SqlModel.Member.Gender.男, Classes = classes });
+                        Student.InitializeInsert(new Student { Name = "李四", Email = "lisi@AutoCSer.com", Password = "lisi", Birthday = new DateTime(1994, 4, 4), Gender = SqlModel.Member.Gender.女, Classes = classes });
+                        return;
+                    case "软件 2 班":
+                        Student.InitializeInsert(new Student { Name = "王五", Email = "wangwu@AutoCSer.com", Password = "wangwu", Birthday = new DateTime(1995, 5, 5), Gender = SqlModel.Member.Gender.男, Classes = classes });
+                        Student.InitializeInsert(new Student { Name = "赵六", Email = "zhaoliu@AutoCSer.com", Password = "zhaoliu", Birthday = new DateTime(1995, 4, 4), Gender = SqlModel.Member.Gender.女, Classes = classes });
+                        return;
+                }
             }
+            else Console.WriteLine("数据添加失败 " + returnValue.ReturnType.ToString());
         }
     }
 }

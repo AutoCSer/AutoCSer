@@ -31,14 +31,14 @@ namespace AutoCSer.TestCase.WebPerformance
             uint value32 = (uint)-value;
             if (value32 >= 100000000)
             {
-                uint value100000000 = (uint)((value32 * (ulong)AutoCSer.Extension.Number.Div100000000Mul) >> AutoCSer.Extension.Number.Div100000000Shift);
+                uint value100000000 = (uint)((value32 * (ulong)AutoCSer.Extensions.NumberExtension.Div100000000Mul) >> AutoCSer.Extensions.NumberExtension.Div100000000Shift);
                 value32 -= value100000000 * 100000000;
-                uint value10000 = (uint)((value32 * AutoCSer.Extension.Number.Div10000Mul) >> AutoCSer.Extension.Number.Div10000Shift);
+                uint value10000 = (uint)((value32 * AutoCSer.Extensions.NumberExtension.Div10000Mul) >> AutoCSer.Extensions.NumberExtension.Div10000Shift);
                 uIntToString(value10000, chars + 4);
                 uIntToString(value32 - value10000 * 10000, chars + 8);
                 if (value100000000 >= 10)
                 {
-                    value10000 = (value100000000 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    value10000 = (value100000000 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)(chars + 2) = ((value100000000 - value10000 * 10) << 16) | value10000 | 0x300030U;
                     *(chars + 1) = '-';
                     return new RangeLength(1, 11);
@@ -58,16 +58,16 @@ namespace AutoCSer.TestCase.WebPerformance
         {
             if (value >= 10000)
             {
-                uint value10000 = (uint)((value * AutoCSer.Extension.Number.Div10000Mul) >> AutoCSer.Extension.Number.Div10000Shift);
+                uint value10000 = (uint)((value * AutoCSer.Extensions.NumberExtension.Div10000Mul) >> AutoCSer.Extensions.NumberExtension.Div10000Shift);
                 if (value10000 >= 100)
                 {
-                    uint value10 = (value10000 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    uint value10 = (value10000 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     if (value10000 >= 1000)
                     {
                         uIntToString(value - value10000 * 10000, chars + 6);
-                        value = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                        value = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                         *(uint*)(chars + 4) = ((value10000 - value10 * 10) << 16) | (value10 - value * 10) | 0x300030U;
-                        value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                        value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                         *(uint*)(chars + 2) = ((value - value10 * 10) << 16) | value10 | 0x300030U;
                         *(chars + 1) = '-';
                         return new RangeLength(1, 9);
@@ -75,7 +75,7 @@ namespace AutoCSer.TestCase.WebPerformance
                     else
                     {
                         uIntToString(value - value10000 * 10000, chars + 4);
-                        value = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                        value = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                         *(uint*)(chars + 2) = ((value10000 - value10 * 10) << 16) | (value10 - value * 10) | 0x300030U;
                         *(uint*)chars = '-' + ((value + '0') << 16);
                         return new RangeLength(0, 8);
@@ -84,7 +84,7 @@ namespace AutoCSer.TestCase.WebPerformance
                 if (value10000 >= 10)
                 {
                     uIntToString(value - value10000 * 10000, chars + 4);
-                    value = (value10000 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    value = (value10000 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)(chars + 2) = ((value10000 - value * 10) << 16) | value | 0x300030U;
                     *(chars + 1) = '-';
                     return new RangeLength(1, 7);
@@ -97,18 +97,18 @@ namespace AutoCSer.TestCase.WebPerformance
             {
                 if (value >= 1000)
                 {
-                    uint value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
-                    uint value100 = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    uint value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
+                    uint value100 = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)(chars + 4) = ((value - value10 * 10) << 16) | (value10 - value100 * 10) | 0x300030U;
-                    value10 = (value100 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    value10 = (value100 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)(chars + 2) = ((value100 - value10 * 10) << 16) | value10 | 0x300030U;
                     *(chars + 1) = '-';
                     return new RangeLength(1, 5);
                 }
                 else
                 {
-                    uint value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
-                    uint value100 = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    uint value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
+                    uint value100 = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)(chars + 2) = ((value - value10 * 10) << 16) | (value10 - value100 * 10) | 0x300030U;
                     *(uint*)chars = '-' + ((value100 + '0') << 16);
                     return new RangeLength(0, 4);
@@ -117,7 +117,7 @@ namespace AutoCSer.TestCase.WebPerformance
             if (value >= 10)
             {
                 *chars = '-';
-                uint value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                uint value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                 *(uint*)(chars + 1) = ((value - value10 * 10) << 16) | value10 | 0x300030U;
                 return new RangeLength(0, 3);
             }
@@ -134,14 +134,14 @@ namespace AutoCSer.TestCase.WebPerformance
         {
             if (value >= 100000000)
             {
-                uint value100000000 = (uint)((value * (ulong)AutoCSer.Extension.Number.Div100000000Mul) >> AutoCSer.Extension.Number.Div100000000Shift);
+                uint value100000000 = (uint)((value * (ulong)AutoCSer.Extensions.NumberExtension.Div100000000Mul) >> AutoCSer.Extensions.NumberExtension.Div100000000Shift);
                 value -= value100000000 * 100000000;
-                uint value10000 = (uint)((value * AutoCSer.Extension.Number.Div10000Mul) >> AutoCSer.Extension.Number.Div10000Shift);
+                uint value10000 = (uint)((value * AutoCSer.Extensions.NumberExtension.Div10000Mul) >> AutoCSer.Extensions.NumberExtension.Div10000Shift);
                 uIntToString(value10000, chars + 2);
                 uIntToString(value - value10000 * 10000, chars + 6);
                 if (value100000000 >= 10)
                 {
-                    value10000 = (value100000000 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    value10000 = (value100000000 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)chars = ((value100000000 - value10000 * 10) << 16) | value10000 | 0x300030U;
                     return new RangeLength(0, 10);
                 }
@@ -160,16 +160,16 @@ namespace AutoCSer.TestCase.WebPerformance
         {
             if (value >= 10000)
             {
-                uint value10000 = (uint)((value * AutoCSer.Extension.Number.Div10000Mul) >> AutoCSer.Extension.Number.Div10000Shift);
+                uint value10000 = (uint)((value * AutoCSer.Extensions.NumberExtension.Div10000Mul) >> AutoCSer.Extensions.NumberExtension.Div10000Shift);
                 if (value10000 >= 100)
                 {
-                    uint value10 = (value10000 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    uint value10 = (value10000 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     if (value10000 >= 1000)
                     {
                         uIntToString(value - value10000 * 10000, chars + 4);
-                        value = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                        value = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                         *(uint*)(chars + 2) = ((value10000 - value10 * 10) << 16) | (value10 - value * 10) | 0x300030U;
-                        value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                        value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                         *(uint*)chars = ((value - value10 * 10) << 16) | value10 | 0x300030U;
                         return 8;
                     }
@@ -177,7 +177,7 @@ namespace AutoCSer.TestCase.WebPerformance
                     {
                         uIntToString(value - value10000 * 10000, chars + 3);
                         chars[2] = (char)((value10000 - value10 * 10) + '0');
-                        value = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                        value = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                         *(uint*)chars = ((value10 - value * 10) << 16) | value | 0x300030U;
                         return 7;
                     }
@@ -185,7 +185,7 @@ namespace AutoCSer.TestCase.WebPerformance
                 if (value10000 >= 10)
                 {
                     uIntToString(value - value10000 * 10000, chars + 2);
-                    value = (value10000 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    value = (value10000 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)chars = ((value10000 - value * 10) << 16) | value | 0x300030U;
                     return 6;
                 }
@@ -195,26 +195,26 @@ namespace AutoCSer.TestCase.WebPerformance
             }
             if (value >= 100)
             {
-                uint value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                uint value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                 if (value >= 1000)
                 {
-                    uint value100 = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    uint value100 = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)(chars + 2) = ((value - value10 * 10) << 16) | (value10 - value100 * 10) | 0x300030U;
-                    value10 = (value100 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    value10 = (value100 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)chars = ((value100 - value10 * 10) << 16) | value10 | 0x300030U;
                     return 4;
                 }
                 else
                 {
                     chars[2] = (char)((value - value10 * 10) + '0');
-                    uint value100 = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                    uint value100 = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                     *(uint*)chars = ((value10 - value100 * 10) << 16) | value100 | 0x300030U;
                     return 3;
                 }
             }
             if (value >= 10)
             {
-                uint value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                uint value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
                 *(uint*)chars = ((value - value10 * 10) << 16) | value10 | 0x300030U;
                 return 2;
             }
@@ -228,10 +228,10 @@ namespace AutoCSer.TestCase.WebPerformance
         /// <param name="chars">字符串</param>
         private unsafe static void uIntToString(uint value, char* chars)
         {
-            uint value10 = (value * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
-            uint value100 = (value10 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            uint value10 = (value * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
+            uint value100 = (value10 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
             *(uint*)(chars + 2) = ((value - value10 * 10) << 16) | (value10 - value100 * 10) | 0x300030U;
-            value10 = (value100 * AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            value10 = (value100 * AutoCSer.Extensions.NumberExtension.Div10_16Mul) >> AutoCSer.Extensions.NumberExtension.Div10_16Shift;
             *(uint*)chars = ((value100 - value10 * 10) << 16) | value10 | 0x300030U;
         }
     }

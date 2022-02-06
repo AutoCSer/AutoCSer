@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
@@ -67,7 +67,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onInserted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 LazyOrderArray<valueType> array = getMember(target);
@@ -88,11 +88,11 @@ namespace AutoCSer.Sql.Cache.Whole
             if (key.Equals(oldKey))
             {
                 targetType target = getValue(key);
-                if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+                if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
                 else
                 {
                     LazyOrderArray<valueType> array = getMember(target);
-                    if (array == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                    if (array == null) cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                     else array.Update(cacheValue);
                 }
             }
@@ -110,11 +110,11 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Debug(typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString(), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             else
             {
                 LazyOrderArray<valueType> array = getMember(target);
-                if (array == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                if (array == null) cache.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                 else array.Delete(value);
             }
         }
@@ -157,7 +157,7 @@ namespace AutoCSer.Sql.Cache.Whole
         public valueType[] GetFindArray(keyType key, Func<valueType, bool> isValue)
         {
             LazyOrderArray<valueType> array = getCache(key);
-            return array == null ? NullValue<valueType>.Array : array.Array.GetFindArray(isValue);
+            return array == null ? EmptyArray<valueType>.Array : array.Array.GetFindArray(isValue);
         }
         /// <summary>
         /// 获取不排序的数据集合
@@ -168,7 +168,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             LazyOrderArray<valueType> array = getCache(key);
             if (array != null) return array.Array;
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
         /// <summary>
         /// 获取有序数据
@@ -206,7 +206,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 return task.Wait(out count);
             }
             count = 0;
-            return NullValue<valueType>.Array;
+            return EmptyArray<valueType>.Array;
         }
     }
 }

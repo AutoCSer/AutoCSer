@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Diagnostics
 {
@@ -24,9 +24,9 @@ namespace AutoCSer.Diagnostics
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
-            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "守护进程客户端调用失败");
+            AutoCSer.LogHelper.Error("守护进程客户端调用失败", LogLevel.Error | LogLevel.AutoCSer);
             callGuardTask();
 #endif
         }
@@ -45,7 +45,7 @@ namespace AutoCSer.Diagnostics
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
 #endif
         }
@@ -65,7 +65,7 @@ namespace AutoCSer.Diagnostics
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.AutoCSer, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
 #endif
             return false;

@@ -32,6 +32,7 @@ namespace AutoCSer.Search
         {
             TextLength = textLength;
             WordType = wordType;
+            Indexs = new LeftArray<int>(0);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.Http
@@ -52,7 +52,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                httpSocket.Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             httpSocket.HeaderError();
         }
@@ -69,10 +69,10 @@ namespace AutoCSer.Net.Http
                 {
                     HeaderEndIndex = receiveIndex;
                     if (searchEnd()) return;
-                    fixed (byte* bufferFixed = Buffer.Buffer)
+                    fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
                     {
                         byte* start = bufferFixed + Buffer.StartIndex;
-                        Memory.CopyNotNull(start + receiveIndex, start, receiveCount = receiveSize);
+                        AutoCSer.Memory.Common.CopyNotNull(start + receiveIndex, start, receiveCount = receiveSize);
                     }
                     HeaderEndIndex -= receiveIndex;
                     receiveIndex = 0;
@@ -83,7 +83,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                httpSocket.Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             httpSocket.HeaderError();
         }
@@ -114,7 +114,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                httpSocket.Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                httpSocket.Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             httpSocket.HeaderError();
         }
@@ -127,7 +127,7 @@ namespace AutoCSer.Net.Http
             int searchEndIndex = receiveCount - sizeof(int);
             if (HeaderEndIndex <= searchEndIndex)
             {
-                fixed (byte* dataFixed = Buffer.Buffer)
+                fixed (byte* dataFixed = Buffer.GetFixedBuffer())
                 {
                     byte* bufferStart = dataFixed + Buffer.StartIndex, start = bufferStart + HeaderEndIndex, searchEnd = bufferStart + searchEndIndex, end = bufferStart + receiveCount;
                     *end = 13;

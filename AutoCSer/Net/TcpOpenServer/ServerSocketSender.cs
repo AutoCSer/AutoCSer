@@ -1,8 +1,9 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer.Net.TcpOpenServer
 {
@@ -29,7 +30,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        private int sendAsyncLock;
+        private AutoCSer.Threading.SpinLock sendAsyncLock;
 #endif
 #endif
         /// <summary>
@@ -84,7 +85,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="socket">TCP 开放服务套接字</param>
         internal ServerSocketSender(ServerSocket socket)
-            : base(socket, Threading.Thread.CallType.TcpOpenServerSocketSenderBuildOutput)
+            : base(socket, Threading.ThreadTaskType.TcpOpenServerSocketSenderBuildOutput)
         {
         }
         /// <summary>
@@ -201,22 +202,22 @@ namespace AutoCSer.Net.TcpOpenServer
                 try
                 {
                     if (Buffer.Buffer == null) Server.SendBufferPool.Get(ref Buffer);
-                    if (OutputSerializer == null) outputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
+                    if (OutputSerializer == null) outputStream = (OutputSerializer = BinarySerializer.YieldPool.Default.Pop() ?? new BinarySerializer()).SetTcpServer();
                     else outputStream = OutputSerializer.Stream;
-                    int outputSleep = Server.ServerAttribute.OutputSleep, currentOutputSleep;
+                    TcpServer.OutputWaitType outputWaitType = Server.ServerAttribute.OutputWaitType, currentOutputWaitType;
                     do
                     {
                         buildInfo.IsNewBuffer = 0;
-                        fixed (byte* dataFixed = Buffer.Buffer)
+                        fixed (byte* dataFixed = Buffer.GetFixedBuffer())
                         {
                             byte* start = dataFixed + Buffer.StartIndex;
                         STREAM:
                             using (outputStream)
                             {
+                                currentOutputWaitType = outputWaitType;
                                 if (outputStream.Data.Byte != start) outputStream.Reset(start, Buffer.Length);
                                 buildInfo.Clear();
-                                outputStream.ByteSize = TcpServer.ServerOutput.OutputLink.StreamStartIndex;
-                                currentOutputSleep = outputSleep;
+                                outputStream.Data.CurrentIndex = TcpServer.ServerOutput.OutputLink.StreamStartIndex;
                                 if ((head = Outputs.GetClear(out end)) == null) goto CHECK;
                             LOOP:
                                 do
@@ -235,15 +236,26 @@ namespace AutoCSer.Net.TcpOpenServer
                                     goto LOOP;
                                 }
                             CHECK:
-                                if (currentOutputSleep >= 0)
+                                switch (currentOutputWaitType)
                                 {
-                                    Thread.Sleep(currentOutputSleep);
-                                    if (!Outputs.IsEmpty)
-                                    {
-                                        head = Outputs.GetClear(out end);
-                                        currentOutputSleep = 0;
-                                        goto LOOP;
-                                    }
+                                    case TcpServer.OutputWaitType.ThreadYield:
+                                        AutoCSer.Threading.ThreadYield.YieldOnly();
+                                        if (!Outputs.IsEmpty)
+                                        {
+                                            head = Outputs.GetClear(out end);
+                                            currentOutputWaitType = TcpServer.OutputWaitType.DontWait;
+                                            goto LOOP;
+                                        }
+                                        break;
+                                    case TcpServer.OutputWaitType.ThreadSleep:
+                                        System.Threading.Thread.Sleep(0);
+                                        if (!Outputs.IsEmpty)
+                                        {
+                                            head = Outputs.GetClear(out end);
+                                            currentOutputWaitType = TcpServer.OutputWaitType.DontWait;
+                                            goto LOOP;
+                                        }
+                                        break;
                                 }
                                 if (buildInfo.Count == 0)
                                 {
@@ -287,7 +299,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     buildInfo.IsError = true;
                 }
                 finally
@@ -326,13 +338,13 @@ namespace AutoCSer.Net.TcpOpenServer
                     sendAsyncEventArgs.Completed += onSendAsyncCallback;
                 }
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref sendAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                sendAsyncLock.EnterYield();
 #endif
                 sendAsyncEventArgs.SetBuffer(sendData.Array, sendData.Start, sendData.Length);
                 if (Socket.SendAsync(sendAsyncEventArgs))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref sendAsyncLock, 0);
+                    sendAsyncLock.Exit();
 #endif
                     return SendState.Asynchronous;
                 }
@@ -340,7 +352,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 {
                     sendData.MoveStart(sendAsyncEventArgs.BytesTransferred);
 #if !DotNetStandard
-                    Interlocked.Exchange(ref sendAsyncLock, 0);
+                    sendAsyncLock.Exit();
 #endif
                     if (sendData.Length == 0)
                     {
@@ -373,7 +385,7 @@ namespace AutoCSer.Net.TcpOpenServer
             try
             {
 #if DOTNET2
-                Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
+                Socket socket = (Socket)async.AsyncState;
                 if (socket == Socket)
                 {
                     SocketError socketError;
@@ -407,7 +419,7 @@ namespace AutoCSer.Net.TcpOpenServer
             }
             catch (Exception error)
             {
-                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             if (IsSocket)
             {

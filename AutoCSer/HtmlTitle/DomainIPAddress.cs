@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.HtmlTitle
 {
@@ -45,17 +45,17 @@ namespace AutoCSer.Net.HtmlTitle
         {
             try
             {
-                fixed (byte* domainFixed = domain.Array)
+                fixed (byte* domainFixed = domain.GetFixedBuffer())
                 {
                     byte* domainStart = domainFixed + domain.StartIndex;
-                    AutoCSer.Memory.ToLowerNotNull(domainStart, domainStart + domain.Length);
+                    AutoCSer.Memory.Common.ToLowerNotNull(domainStart, domainStart + domain.Length);
                     HashBytes key = domain;
                     DomainIPAddress value;
                     Monitor.Enter(domainIpLock);
                     try
                     {
                         value = domainIps.Get(ref key, default(DomainIPAddress));
-                        if (value.Ips != null && value.Timeout < AutoCSer.Date.NowTime.Now)
+                        if (value.Ips != null && value.Timeout < AutoCSer.Threading.SecondTimer.Now)
                         {
                             domainIps.Remove(ref key, out value);
                             value.Ips = null;
@@ -64,7 +64,7 @@ namespace AutoCSer.Net.HtmlTitle
                     finally { Monitor.Exit(domainIpLock); }
                     if (value.Ips == null)
                     {
-                        if (value.Domain == null) value.Domain = Memory_WebClient.BytesToStringNotEmpty(domainStart, domain.Length);
+                        if (value.Domain == null) value.Domain = MemoryExtensionWebClient.BytesToStringNotEmpty(domainStart, domain.Length);
                         IPAddress ip;
                         if (IPAddress.TryParse(value.Domain, out ip))
                         {
@@ -76,7 +76,7 @@ namespace AutoCSer.Net.HtmlTitle
                         value.Ips = Dns.GetHostEntry(value.Domain).AddressList;
                         if (value.Ips.Length != 0)
                         {
-                            value.Timeout = AutoCSer.Date.NowTime.Now.AddTicks(domainIpTimeoutTicks);
+                            value.Timeout = AutoCSer.Threading.SecondTimer.Now.AddTicks(domainIpTimeoutTicks);
                             setDomainIp(key.Copy(), ref value);
                             return value.Ips;
                         }
@@ -86,7 +86,7 @@ namespace AutoCSer.Net.HtmlTitle
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             return null;
         }
@@ -109,19 +109,21 @@ namespace AutoCSer.Net.HtmlTitle
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        private static void clearCache(int count)
+        private static void clearCache()
         {
-            Monitor.Enter(domainIpLock);
-            try
+            if (domainIps.Count != 0)
             {
-                if (domainIps.Count != 0) domainIps = new FifoPriorityQueue<HashBytes, DomainIPAddress>();
+                Monitor.Enter(domainIpLock);
+                try
+                {
+                    if (domainIps.Count != 0) domainIps = new FifoPriorityQueue<HashBytes, DomainIPAddress>();
+                }
+                finally { Monitor.Exit(domainIpLock); }
             }
-            finally { Monitor.Exit(domainIpLock); }
         }
         static DomainIPAddress()
         {
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(DomainIPAddress), 0);
         }
     }
 }

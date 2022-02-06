@@ -237,7 +237,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// </summary>
         /// <param name="key">关键字</param>
         /// <returns>缓存数据</returns>
-        public valueType this[keyType key]
+        public ReturnValue<valueType> this[keyType key]
         {
             get
             {
@@ -248,7 +248,7 @@ namespace AutoCSer.Sql.Cache.Counter
                     counter.SqlTable.AddQueue(task);
                     return task.Wait();
                 }
-                return null;
+                return ReturnType.NotFoundData;
             }
         }
         /// <summary>
@@ -317,7 +317,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// <summary>
             /// 返回值
             /// </summary>
-            private valueType value;
+            private ReturnValue<valueType> value;
             /// <summary>
             /// 关键字
             /// </summary>
@@ -349,6 +349,10 @@ namespace AutoCSer.Sql.Cache.Counter
                 {
                     value = queue.get(ref connection, node, key);
                 }
+                catch (Exception error)
+                {
+                    value = error;
+                }
                 finally
                 {
                     wait.Set();
@@ -359,7 +363,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal valueType Wait()
+            internal ReturnValue<valueType> Wait()
             {
                 wait.Wait();
                 return value;
@@ -372,14 +376,17 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="node"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        private valueType get(ref DbConnection connection, memberCacheType node, keyType key)
+        private ReturnValue<valueType> get(ref DbConnection connection, memberCacheType node, keyType key)
         {
             valueType value = get(node);
-            if (value == null && (value = counter.Get(key)) == null)
+            if (value != null || (value = counter.Get(key)) != null) return value;
+
+            ReturnValue<valueType> returnValue = getValue(ref connection, key, counter.MemberMap);
+            if (returnValue.ReturnType == ReturnType.Success)
             {
-                if ((value = getValue(ref connection, key, counter.MemberMap)) != null) onInserted(value);
+                if (returnValue.Value != null) onInserted(returnValue.Value);
             }
-            return value;
+            return returnValue;
         }
     }
 }

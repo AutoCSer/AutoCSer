@@ -13,7 +13,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, ParameterGenericType2> cache = new LockEquatableLastDictionary<AutoCSer.Metadata.GenericType2.TypeKey, ParameterGenericType2>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<TypeKey, ParameterGenericType2> cache = new LockLastDictionary<TypeKey, ParameterGenericType2>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -40,11 +40,15 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
         public static ParameterGenericType2 Get(Type type1, Type type2)
         {
             ParameterGenericType2 value;
-            AutoCSer.Metadata.GenericType2.TypeKey typeKey = new AutoCSer.Metadata.GenericType2.TypeKey { Type1 = type1, Type2 = type2 };
-            if (!cache.TryGetValue(ref typeKey, out value))
+            TypeKey typeKey = new TypeKey(type1, type2);
+            if (!cache.TryGetValue(typeKey, out value))
             {
-                value = new UnionType { Value = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.ParameterGenericType2;
-                cache.Set(ref typeKey, value);
+                try
+                {
+                    value = new UnionType.ParameterGenericType2 { Object = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.Value;
+                    cache.Set(typeKey, value);
+                }
+                finally { cache.Exit(); }
             }
             return value;
         }
@@ -59,15 +63,20 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
         where outputParameterType : struct
     {
         /// <summary>
+        /// 获取当前类型
+        /// </summary>
+        internal override TypeKey CurrentType { get { return new TypeKey(typeof(inputParameterType), typeof(outputParameterType)); } }
+
+        /// <summary>
         /// TCP调用并返回参数值
         /// </summary>
-        internal delegate TcpServer.ReturnType ClientGet(TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter, ref outputParameterType outputParameter);
+        internal delegate TcpServer.ReturnType ClientGet(TcpSimpleServer.Client client, TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter, ref outputParameterType outputParameter);
         /// <summary>
         /// TCP调用并返回参数值
         /// </summary>
         internal override MethodInfo ClientGetMethod
         {
-            get { return ((ClientGet)ParameterGenericType.Client.Get<inputParameterType, outputParameterType>).Method; }
+            get { return ((ClientGet)TcpSimpleServer.Client.Get<inputParameterType, outputParameterType>).Method; }
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CodeGenerator
 {
@@ -23,10 +23,11 @@ namespace AutoCSer.CodeGenerator
         {
             try
             {
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.Info, string.Join(@""", @""", args));
+                AutoCSer.LogHelper.Info(string.Join(@""", @""", args), LogLevel.Info | LogLevel.AutoCSer);
+                AutoCSer.LogHelper.Flush();
                 //args = new string[] { @"AutoCSer.TestCase.SqlTableCacheServer", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\ ", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\bin\Release\AutoCSer.TestCase.SqlTableCacheServer.dll ", @"AutoCSer.TestCase.SqlTableCacheServer" };
-                //                AutoCSer.Log.Pub.Log.Wait(AutoCSer.Log.LogType.All, "args.Length[" + args.Length.ToString() + @"]
-                //args = new string[] { @"AutoCSer.CodeGenerator.DotNet4.5", @"C:\AutoCSer\AutoCSer\CodeGenerator\ ", @"C:\AutoCSer\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe ", @"AutoCSer.CodeGenerator" };
+                //                AutoCSer.LogHelper.Wait(AutoCSer.LogLevel.All, "args.Length[" + args.Length.ToString() + @"]
+                 //args = new string[] { @"AutoCSer.Web.DotNet2", @"C:\AutoCSer\Web\www.AutoCSer.com\ ", @"C:\AutoCSer\Web\www.AutoCSer.com\bin\Release\AutoCSer.Web.exe ", @"AutoCSer.Web" };
                 if (args.Length >= 4)
                 {
                     AutoCSer.CodeGenerator.ProjectParameter parameter = new AutoCSer.CodeGenerator.ProjectParameter(args[0].TrimEnd(' '), args[1].TrimEnd(' '), args[2].TrimEnd(' '), args[3].TrimEnd(' '), args.Length > 4);
@@ -38,11 +39,11 @@ namespace AutoCSer.CodeGenerator
                         else
                         {
 #if !DotNetStandard
-                            FileInfo file = new FileInfo(AutoCSer.PubPath.ApplicationPath + "AutoCSer.CodeGenerator." + platform + ".exe");
+                            FileInfo file = new FileInfo(AutoCSer.Config.ApplicationPath + "AutoCSer.CodeGenerator." + platform + ".exe");
                             if (file.Exists)
                             {
                                 string fileName = AutoCSer.IO.File.BakPrefix + ((ulong)DateTime.Now.Ticks).toHex() + ((uint)AutoCSer.Random.Default.Next()).toHex() + "." + platform;
-                                File.WriteAllText(fileName, AutoCSer.Json.Serializer.Serialize(args));
+                                File.WriteAllText(fileName, AutoCSer.JsonSerializer.Serialize(args));
                                 Process process = Process.Start(file.FullName, fileName);
                                 process.WaitForExit();
                                 File.Delete(fileName);
@@ -50,18 +51,21 @@ namespace AutoCSer.CodeGenerator
                             else
 #endif
                             {
-                                Messages.Add(exception);
+                                Messages.Exception(exception);
                             }
                         }
                     }
-                    else Messages.Add("未找到程序集文件 : " + parameter.AssemblyPath);
+                    else Messages.Error("未找到程序集文件 : " + parameter.AssemblyPath);
                 }
             }
             catch (Exception error)
             {
-                Messages.Add(error);
+                Messages.Exception(error);
             }
-            finally { Messages.Open(); }
+            finally
+            {
+                Messages.Open();
+            }
         }
         /// <summary>
         /// 
@@ -79,11 +83,11 @@ namespace AutoCSer.CodeGenerator
                 AutoCSer.CodeGenerator.ProjectParameter parameter = new AutoCSer.CodeGenerator.ProjectParameter(args[0].TrimEnd(' '), args[1].TrimEnd(' '), args[2].TrimEnd(' '), args[3].TrimEnd(' '), args.Length > 4); bool isAssemblyPath = false;
                 Exception exception = parameter.LoadAssembly(ref isAssemblyPath);
                 if (exception == null) parameter.Start();
-                else Messages.Add(exception);
+                else Messages.Exception(exception);
             }
             catch (Exception error)
             {
-                Messages.Add(error);
+                Messages.Exception(error);
             }
             finally { Messages.Open(); }
         }

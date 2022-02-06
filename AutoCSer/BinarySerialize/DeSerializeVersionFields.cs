@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Runtime.InteropServices;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.BinarySerialize
 {
@@ -57,7 +57,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="attribute"></param>
         /// <returns></returns>
-        internal TypeDeSerializer<valueType> Create(SerializeAttribute attribute)
+        internal TypeDeSerializer<valueType> Create(BinarySerializeAttribute attribute)
         {
             Monitor.Enter(CreateLock);
             try
@@ -76,11 +76,11 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="attribute"></param>
         /// <returns></returns>
-        internal TypeDeSerializer<valueType> CreateOnly(SerializeAttribute attribute)
+        internal TypeDeSerializer<valueType> CreateOnly(BinarySerializeAttribute attribute)
         {
             DeSerializeVersionField[] fieldArray = this.fields;
             LeftArray<FieldSize> fixedFields = new LeftArray<FieldSize>(fieldArray.Length - noSerializeMemberCount), fields = new LeftArray<FieldSize>(fieldArray.Length - noSerializeMemberCount);
-            LeftArray<AutoCSer.Metadata.FieldIndex> jsonFields = new LeftArray<AutoCSer.Metadata.FieldIndex>();
+            LeftArray<AutoCSer.Metadata.FieldIndex> jsonFields = new LeftArray<AutoCSer.Metadata.FieldIndex>(0);
             int fixedSize = 0;
             AutoCSer.Algorithm.QuickSort.Sort(fieldArray, DeSerializeVersionField.MemberNameSort, 0, fieldArray.Length);
             if (attribute.GetIsMemberMap)
@@ -101,7 +101,7 @@ namespace AutoCSer.BinarySerialize
             else if (noSerializeMemberCount != 0) fieldArray = fieldArray.getFindArray(value => value.Attribute != null);
             foreach (DeSerializeVersionField field in fieldArray)
             {
-                SerializeMemberAttribute memberAttribute = field.Attribute;
+                BinarySerializeMemberAttribute memberAttribute = field.Attribute;
                 if (memberAttribute.GetIsJson) jsonFields.Add(field.Field);
                 else
                 {

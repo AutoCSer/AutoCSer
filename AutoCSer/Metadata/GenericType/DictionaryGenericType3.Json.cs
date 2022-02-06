@@ -13,7 +13,7 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal abstract MethodInfo JsonParseDictionaryConstructorMethod { get; }
+        internal abstract MethodInfo JsonDeSerializeDictionaryConstructorMethod { get; }
     }
     /// <summary>
     /// 泛型类型元数据
@@ -24,9 +24,9 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 JSON 反序列化函数信息
         /// </summary>
-        internal override MethodInfo JsonParseDictionaryConstructorMethod
+        internal override MethodInfo JsonDeSerializeDictionaryConstructorMethod
         {
-            get { return ((deSerialize)GenericType.JsonParser.dictionaryConstructor<Type1, Type2, Type3>).Method; }
+            get { return ((JsonDeSerializer.DeSerializeDelegate<Type1>)JsonDeSerializer.DictionaryConstructor<Type1, Type2, Type3>).Method; }
         }
     }
 }

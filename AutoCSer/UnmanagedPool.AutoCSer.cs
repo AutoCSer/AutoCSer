@@ -9,7 +9,7 @@ namespace AutoCSer
     /// <summary>
     /// 非托管内存池
     /// </summary>
-    public unsafe sealed partial class UnmanagedPool
+    //public unsafe sealed partial class UnmanagedPool
     {
         /// <summary>
         /// 获取缓冲区

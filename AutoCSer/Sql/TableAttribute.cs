@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql
 {
@@ -113,5 +113,13 @@ namespace AutoCSer.Sql
         /// 初始化时是否检测匹配表格信息
         /// </summary>
         public bool IsCheckTable = true;
+        /// <summary>
+        /// 是否需要设置真实成员位图，用于不确定性 Excel 表格
+        /// </summary>
+        public bool IsSetRealMemberMap;
+        /// <summary>
+        /// 是否忽略 DateTime 类型不匹配错误
+        /// </summary>
+        public bool IsIgnoreMatchDateTime;
     }
 }

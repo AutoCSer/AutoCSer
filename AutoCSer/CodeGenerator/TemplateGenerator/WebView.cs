@@ -1,11 +1,12 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.IO;
 using System.Reflection;
 using AutoCSer.CodeGenerator.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using AutoCSer.Memory;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
@@ -158,7 +159,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 子节点集合
             /// </summary>
-            private LeftArray<ViewTreeNode> childs;
+            private LeftArray<ViewTreeNode> childs = new LeftArray<ViewTreeNode>(0);
             /// <summary>
             /// 子节点集合
             /// </summary>
@@ -222,7 +223,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <param name="type">模板关联视图类型</param>
             /// <param name="html">HTML模板</param>
             public TreeTemplate(Type type, string html)
-                : base(type, Messages.Add, Messages.Message)
+                : base(type, Messages.Error, Messages.Message)
             {
                 creators[AutoCSer.WebView.ViewTreeCommand.Note.ToString()] = creators[AutoCSer.WebView.ViewTreeCommand.Client.ToString()] = note;
                 creators[AutoCSer.WebView.ViewTreeCommand.Loop.ToString()] = creators[AutoCSer.WebView.ViewTreeCommand.For.ToString()] = loop;
@@ -352,9 +353,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 using (ajaxCode = new CharStream())
                 {
-                    ajaxCode.WriteNotNull(@"_js_.WriteNotNull(@""");
+                    ajaxCode.Write(@"_js_.Write(@""");
                     ajax(currentMembers[0], null);
-                    ajaxCode.WriteNotNull(@""");");
+                    ajaxCode.Write(@""");");
                     return ajaxQuoteRegex.Replace(ajaxCode.ToString(), ajaxQuote);
                 }
             }
@@ -388,13 +389,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         {");
                     if (loopMember.Value.IsNextPath)
                     {
-                        ajaxCode.WriteNotNull(@"
+                        ajaxCode.Write(@"
                             if (_loopIndex_ == 0)
                             {
                                 _js_.Write('""');
-                                _js_.WriteNotNull(""");
+                                _js_.Write(""");
                         ajaxLoopNames(loopMember.Value);
-                        ajaxCode.WriteNotNull(@""");
+                        ajaxCode.Write(@""");
                                 _js_.Write('""');
                             }
                             _js_.Write(',');");
@@ -405,15 +406,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             else
                             {");
                         }
-                        ajaxCode.WriteNotNull(@"
-                                _js_.WriteNotNull(@""[");
+                        ajaxCode.Write(@"
+                                _js_.Write(@""[");
                         pushMember(member.Get(string.Empty));
                         ajaxLoop(loopMember.Value);
                         --currentMembers.Length;
-                        ajaxCode.WriteNotNull(@"]"");");
+                        ajaxCode.Write(@"]"");");
                         if (type.IsNull)
                         {
-                            ajaxCode.WriteNotNull(@"
+                            ajaxCode.Write(@"
                             }");
                         }
                         ajaxCode.Write(@"
@@ -421,11 +422,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                         _loopIndex_ = ", loopIndex(0), @";
                     }
-                    _js_.WriteNotNull(@""]", AutoCSer.WebView.AjaxBase.FormatView);
+                    _js_.Write(@""]", AutoCSer.WebView.AjaxBase.FormatView);
                     }
                     else
                     {
-                        ajaxCode.WriteNotNull(@"
+                        ajaxCode.Write(@"
                             if (_loopIndex_ != 0) _js_.Write(',');");
                         if (type.IsNull)
                         {
@@ -437,7 +438,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         ajaxValue(type, path(currentMembers.Length));
                         if (type.IsNull)
                         {
-                            ajaxCode.WriteNotNull(@"
+                            ajaxCode.Write(@"
                                 }");
                         }
                         ajaxCode.Write(@"
@@ -445,7 +446,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                         _loopIndex_ = ", loopIndex(0), @";
                     }
-                    _js_.WriteNotNull(@""]");
+                    _js_.Write(@""]");
                     }
                 }
                 else
@@ -458,14 +459,14 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         clientMemberName = node.Type.ClientViewMemberName;
                         if (clientMemberName == null)
                         {
-                            ajaxCode.WriteNotNull("new ");
-                            ajaxCode.WriteNotNull(clientTypeName);
+                            ajaxCode.Write("new ");
+                            ajaxCode.Write(clientTypeName);
                             ajaxCode.Write('(');
                         }
                         else
                         {
-                            ajaxCode.WriteNotNull(clientTypeName);
-                            ajaxCode.WriteNotNull(".Get(");
+                            ajaxCode.Write(clientTypeName);
+                            ajaxCode.Write(".Get(");
                         }
                     }
                     ajaxCode.Write('{');
@@ -491,20 +492,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             }
                             if (name.Value.IsNextPath)
                             {
-                                ajaxCode.WriteNotNull(@"
-                            _js_.WriteNotNull(@""");
+                                ajaxCode.Write(@"
+                            _js_.Write(@""");
                                 ajax(name.Value, path(0));
-                                ajaxCode.WriteNotNull(@""");");
+                                ajaxCode.Write(@""");");
                             }
                             else ajaxValue(member.Type, path(0));
                             if (member.Type.IsNull)
                             {
-                                ajaxCode.WriteNotNull(@"
+                                ajaxCode.Write(@"
                         }");
                             }
-                            ajaxCode.WriteNotNull(@"
+                            ajaxCode.Write(@"
                     }
-                    _js_.WriteNotNull(@""");
+                    _js_.Write(@""");
                             --currentMembers.Length;
                         }
                     }
@@ -544,31 +545,31 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 ajaxCode.Write(@"
                             if (", memberIgnoreName, @") _js_.Write(',');
                             else ", memberIgnoreName, @" = true;
-                            _js_.WriteNotNull(@""");
+                            _js_.Write(@""");
                                 ajaxCode.Write(ref nameKey);
                                 ajaxCode.Write(':');
                                 if (name.Value.IsNextPath)
                                 {
                                     ajax(name.Value, path(0));
-                                    ajaxCode.WriteNotNull(@""");");
+                                    ajaxCode.Write(@""");");
                                 }
                                 else
                                 {
-                                    ajaxCode.WriteNotNull(@""");");
+                                    ajaxCode.Write(@""");");
                                     ajaxValue(member.Type, path(0));
                                 }
                                 if (member.Type.IsNull || member.Type.IsNumber || member.Type.IsBool)
                                 {
-                                    ajaxCode.WriteNotNull(@"
+                                    ajaxCode.Write(@"
                         }");
                                 }
-                                ajaxCode.WriteNotNull(@"
+                                ajaxCode.Write(@"
                     }");
                                 --currentMembers.Length;
                             }
                         }
-                        ajaxCode.WriteNotNull(@"
-                    _js_.WriteNotNull(@""");
+                        ajaxCode.Write(@"
+                    _js_.Write(@""");
                     }
                     else
                     {
@@ -600,28 +601,28 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         if (", path(0), @")
                         {");
                                 }
-                                ajaxCode.WriteNotNull(@"
-                            _js_.WriteNotNull(@"",");
+                                ajaxCode.Write(@"
+                            _js_.Write(@"",");
                                 ajaxCode.Write(ref nameKey);
                                 ajaxCode.Write(':');
                                 if (name.Value.IsNextPath)
                                 {
                                     ajax(name.Value, path(0));
-                                    ajaxCode.WriteNotNull(@""");");
+                                    ajaxCode.Write(@""");");
                                 }
                                 else
                                 {
-                                    ajaxCode.WriteNotNull(@""");");
+                                    ajaxCode.Write(@""");");
                                     ajaxValue(member.Type, path(0));
                                 }
                                 if (member.Type.IsNull || member.Type.IsNumber || member.Type.IsBool)
                                 {
-                                    ajaxCode.WriteNotNull(@"
+                                    ajaxCode.Write(@"
                         }");
                                 }
-                                ajaxCode.WriteNotNull(@"
+                                ajaxCode.Write(@"
                     }
-                    _js_.WriteNotNull(@""");
+                    _js_.Write(@""");
                                 --currentMembers.Length;
                             }
                         }
@@ -638,7 +639,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             private KeyValue<SubString, MemberNode>[] ajaxName(MemberNode node)
             {
                 Dictionary<HashString, MemberNode> members;
-                return memberPaths.TryGetValue(node, out members) ? members.getArray(value => new KeyValue<SubString, MemberNode>(value.Key.String, value.Value)).sort(ajaxNameSortHandle) : NullValue<KeyValue<SubString, MemberNode>>.Array;
+                return memberPaths.TryGetValue(node, out members) ? members.getArray(value => new KeyValue<SubString, MemberNode>(value.Key.String, value.Value)).sort(ajaxNameSortHandle) : EmptyArray<KeyValue<SubString, MemberNode>>.Array;
             }
             /// <summary>
             /// 视图AJAX循环成员节点名称
@@ -664,7 +665,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     memberIndex = 1;
                     ajaxCode.Write(AutoCSer.WebView.AjaxBase.ViewClientType);
                     if (node.Type.ClientViewMemberName != null) ajaxCode.Write(AutoCSer.WebView.AjaxBase.ViewClientMember);
-                    ajaxCode.WriteNotNull(clientTypeName);
+                    ajaxCode.Write(clientTypeName);
                     ajaxCode.Write(',');
                 }
                 foreach (KeyValue<SubString, MemberNode> name in members)
@@ -720,19 +721,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                     if (loopMember.Value.IsNextPath)
                     {
-                        ajaxCode.WriteNotNull(@"
+                        ajaxCode.Write(@"
                                 _js_.Write('[');");
                         pushMember(member.Get(string.Empty));
-                        ajaxCode.WriteNotNull(@"
-                                _js_.WriteNotNull(@""");
+                        ajaxCode.Write(@"
+                                _js_.Write(@""");
                         ajaxLoop(loopMember.Value);
                         --currentMembers.Length;
-                        ajaxCode.WriteNotNull(@"]"");");
+                        ajaxCode.Write(@"]"");");
                     }
                     else ajaxValue(type, path(currentMembers.Length));
                     if (type.isNull())
                     {
-                        ajaxCode.WriteNotNull(@"
+                        ajaxCode.Write(@"
                             }");
                     }
                     ajaxCode.Write(@"
@@ -740,7 +741,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                         _loopIndex_ = ", loopIndex(0), @";
                     }
-                    _js_.WriteNotNull(@""]");
+                    _js_.Write(@""]");
                 }
                 else
                 {
@@ -764,20 +765,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                         if (name.Value.IsNextPath)
                         {
-                            ajaxCode.WriteNotNull(@"
-                                    _js_.WriteNotNull(@""[");
+                            ajaxCode.Write(@"
+                                    _js_.Write(@""[");
                             ajaxLoop(name.Value);
-                            ajaxCode.WriteNotNull(@"]"");");
+                            ajaxCode.Write(@"]"");");
                         }
                         else ajaxValue(member.Type, path(0));
                         if (member.Type.IsNull)
                         {
-                            ajaxCode.WriteNotNull(@"
+                            ajaxCode.Write(@"
                                 }");
                         }
-                        ajaxCode.WriteNotNull(@"
+                        ajaxCode.Write(@"
                     }
-                    _js_.WriteNotNull(@""");
+                    _js_.Write(@""");
                         --currentMembers.Length;
                     }
                 }
@@ -792,42 +793,42 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 if (type.IsAjaxToString || type.IsDateTime)
                 {
                     ajaxCode.Write(@"
-                                    _js_.WriteJson((", type.NotNullType.FullName, ")", name, ");");
+                                    _js_.WriteWebViewJson((", type.NotNullType.FullName, ")", name, ");");
                 }
                 else if (type.IsString || type.IsSubString || type.IsHashUrl)
                 {
                     ajaxCode.Write(@"
-                                    _js_.WriteJson(", name, ");");
+                                    _js_.WriteWebViewJson(", name, ");");
                 }
                 else if (type.Type.IsEnum)
                 {
                     ajaxCode.Write(@"
-                                    _js_.CopyJsonNotNull(", name, @".ToString());");
+                                    _js_.WriteQuote(", name, @".ToString());");
                 }
                 else
                 {
                     string clientTypeName = type.ClientViewTypeName, clientMemberName = null;
                     if (clientTypeName != null)
                     {
-                        ajaxCode.WriteNotNull(@"
-                                    _js_.WriteNotNull(@""");
+                        ajaxCode.Write(@"
+                                    _js_.Write(@""");
                         clientMemberName = type.ClientViewMemberName;
                         if (clientMemberName == null)
                         {
-                            ajaxCode.WriteNotNull("new ");
-                            ajaxCode.WriteNotNull(clientTypeName);
+                            ajaxCode.Write("new ");
+                            ajaxCode.Write(clientTypeName);
                             ajaxCode.Write('(');
                         }
                         else
                         {
-                            ajaxCode.WriteNotNull(clientTypeName);
-                            ajaxCode.WriteNotNull(".Get(");
+                            ajaxCode.Write(clientTypeName);
+                            ajaxCode.Write(".Get(");
                         }
                         ajaxCode.Write(@"{})"");");
                     }
                     else
                     {
-                        ajaxCode.WriteNotNull(@"
+                        ajaxCode.Write(@"
                                     _js_.WriteJsonObject();");
                     }
                 }
@@ -1034,7 +1035,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// WEB视图类型集合
             /// </summary>
-            private LeftArray<ViewType> views = new LeftArray<ViewType>();
+            private LeftArray<ViewType> views = new LeftArray<ViewType>(0);
             /// <summary>
             /// WEB视图类型集合
             /// </summary>
@@ -1152,13 +1153,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (Attribute == null) return;
                     if (!typeof(AutoCSer.WebView.View).IsAssignableFrom(Type))
                     {
-                        Messages.Add(Type.FullName + " 必须继承自 AutoCSer.WebView.View 或者 AutoCSer.WebView.View<" + Type.FullName + ">");
+                        Messages.Error(Type.FullName + " 必须继承自 AutoCSer.WebView.View 或者 AutoCSer.WebView.View<" + Type.FullName + ">");
                         return;
                     }
                 }
                 
                 string fileName = AutoParameter.ProjectPath + HtmlFile;
-                if (!File.Exists(fileName)) Messages.Add("未找到HTML页面文件 " + fileName);
+                if (!File.Exists(fileName)) Messages.Error("未找到HTML页面文件 " + fileName);
                 else
                 {
                     LoadMethod = getLoadMethod(Type, out LoadAttribute);
@@ -1171,7 +1172,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         {
                             if (QueryMembers.any(member => member.MemberName == parameter.ParameterName))
                             {
-                                Messages.Add(Type.FullName + " 查询名称冲突 " + parameter.ParameterName);
+                                Messages.Error(Type.FullName + " 查询名称冲突 " + parameter.ParameterName);
                                 return;
                             }
                         }
@@ -1198,7 +1199,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                     catch (Exception exception)
                     {
-                        Messages.Add(exception);
+                        Messages.Exception(exception);
                         throw new Exception(fileName);
                     }
                 }
@@ -1219,7 +1220,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         string rewritePath = view.RewritePath;
                         if (rewritePaths.Contains(rewritePath))
                         {
-                            Messages.Add("URL 重写冲突 " + rewritePath);
+                            Messages.Error("URL 重写冲突 " + rewritePath);
                             throw new Exception("URL 重写冲突" + rewritePath);
                         }
                         rewritePaths.Add(rewritePath);
@@ -1234,13 +1235,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             else rewritePath = path;
                             if (rewritePaths.Contains(rewritePath = path))
                             {
-                                Messages.Add("URL 重写冲突 " + rewritePath);
+                                Messages.Error("URL 重写冲突 " + rewritePath);
                                 throw new Exception("URL 重写冲突" + rewritePath);
                             }
                             rewritePaths.Add(rewritePath);
                             if (rewritePaths.Contains(rewritePath = path + ".js"))
                             {
-                                Messages.Add("URL 重写冲突 " + rewritePath);
+                                Messages.Error("URL 重写冲突 " + rewritePath);
                                 throw new Exception("URL 重写冲突" + rewritePath);
                             }
                             rewritePaths.Add(rewritePath);

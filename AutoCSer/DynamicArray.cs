@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer
@@ -13,9 +13,13 @@ namespace AutoCSer
     internal static class DynamicArray
     {
         /// <summary>
+        /// 默认数组容器长度
+        /// </summary>
+        internal const int DefalutArrayCapacity = sizeof(int);
+        /// <summary>
         /// 是否需要清除数组缓存信息
         /// </summary>
-        private static Dictionary<Type, bool> isClearArrayCache = AutoCSer.DictionaryCreator.CreateOnly<Type, bool>();
+        private static Dictionary<HashType, bool> isClearArrayCache;
         /// <summary>
         /// 是否需要清除数组缓存 访问锁
         /// </summary>
@@ -36,8 +40,13 @@ namespace AutoCSer
                 Monitor.Enter(isClearArrayLock);
                 try
                 {
-                    if (isClearArrayCache.TryGetValue(type, out isClear)) return isClear;
-                    isClearArrayCache.Add(type, isClear = isClearArray(type));
+                    if (isClearArrayCache != null)
+                    {
+                        if (isClearArrayCache.TryGetValue(type, out isClear)) return isClear;
+                    }
+                    else isClearArrayCache = DictionaryCreator<HashType>.Create<bool>();
+                    isClearArrayCache.Add(type, true);
+                    isClearArrayCache[type] = isClear = isClearArray(type, isClearArrayCache);
                 }
                 finally { Monitor.Exit(isClearArrayLock); }
                 return isClear;
@@ -48,8 +57,9 @@ namespace AutoCSer
         /// 是否需要清除数组
         /// </summary>
         /// <param name="type">类型</param>
+        /// <param name="isClearArrayCache"></param>
         /// <returns>需要清除数组</returns>
-        private static bool isClearArray(Type type)
+        private static bool isClearArray(Type type, Dictionary<HashType, bool> isClearArrayCache)
         {
             foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
@@ -64,7 +74,8 @@ namespace AutoCSer
                             bool isClear;
                             if (!isClearArrayCache.TryGetValue(fieldType, out isClear))
                             {
-                                isClearArrayCache.Add(fieldType, isClear = isClearArray(fieldType));
+                                isClearArrayCache.Add(fieldType, true);
+                                isClearArrayCache[fieldType] = isClear = isClearArray(fieldType, isClearArrayCache);
                             }
                             if (isClear) return true;
                         }
@@ -77,60 +88,36 @@ namespace AutoCSer
         /// <summary>
         /// 清除缓存数据
         /// </summary>
-        internal static void ClearCache()
+        private static void clearCache()
         {
             Monitor.Enter(isClearArrayLock);
-            try
-            {
-                if (isClearArrayCache.Count != 0) isClearArrayCache = AutoCSer.DictionaryCreator.CreateOnly<Type, bool>();
-            }
-            finally { Monitor.Exit(isClearArrayLock); }
+            isClearArrayCache = null;
+            Monitor.Exit(isClearArrayLock);
+        }
+        static DynamicArray()
+        {
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(DynamicArray), 60 * 60);
         }
     }
     /// <summary>
     /// 动态数组基类
     /// </summary>
-    /// <typeparam name="valueType">数据类型</typeparam>
-    public abstract class DynamicArray<valueType>
+    /// <typeparam name="T">数据类型</typeparam>
+    public static class DynamicArray<T>
     {
         /// <summary>
         /// 是否需要清除数组
         /// </summary>
-        internal static readonly bool IsClearArray = DynamicArray.IsClearArray(typeof(valueType));
+        internal static readonly bool IsClearArray = DynamicArray.IsClearArray(typeof(T));
         /// <summary>
         /// 创建新数组
         /// </summary>
         /// <param name="length">数组长度</param>
         /// <returns>数组</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static valueType[] GetNewArray(int length)
+        internal static T[] GetNewArray(int length)
         {
-            return new valueType[(uint)length <= ((int.MaxValue >> 1) + 1) ? (int)((uint)length).UpToPower2() : int.MaxValue];
+            return new T[(uint)length <= ((int.MaxValue >> 1) + 1) ? (int)((uint)length).UpToPower2() : int.MaxValue];
         }
-
-        /// <summary>
-        /// 数据数组
-        /// </summary>
-        protected internal valueType[] Array;
-        /// <summary>
-        /// 是否只读
-        /// </summary>
-        public bool IsReadOnly { get { return false; } }
-        /// <summary>
-        /// 添加数据集合
-        /// </summary>
-        /// <param name="values">数据集合</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void Add(valueType[] values)
-        {
-            if (values != null) Add(values, 0, values.Length);
-        }
-        /// <summary>
-        /// 添加数据集合
-        /// </summary>
-        /// <param name="values">数据集合</param>
-        /// <param name="index">起始位置</param>
-        /// <param name="count">数量</param>
-        public abstract void Add(valueType[] values, int index, int count);
     }
 }

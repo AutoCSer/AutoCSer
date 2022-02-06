@@ -53,8 +53,8 @@ namespace AutoCSer.Example.WebView.Ajax
             using (WebClient webClient = new WebClient())
             {
                 webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
-                string json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=RefOut.Add", "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 3, right = 5 }));
-                RefOutReturn value = AutoCSer.Json.Parser.Parse<RefOutReturn>(json);
+                string json = webClient.UploadString(WebConfig.HttpDomain + @"Ajax?n=RefOut.Add", "POST", AutoCSer.JsonSerializer.Serialize(new AddParameter { left = 3, right = 5 }));
+                RefOutReturn value = AutoCSer.JsonDeSerializer.DeSerialize<RefOutReturn>(json);
                 if (value.Return != 3 + 5 || value.right != 5 << 1 || value.mul != 3 * 5)
                 {
                     return false;

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -51,7 +51,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [AutoCSer.Xml.UnknownName]
-        private unsafe static bool parseRefund(AutoCSer.Xml.Parser parser, ref RefundResult value, ref Pointer.Size name)
+        private unsafe static bool parseRefund(AutoCSer.XmlDeSerializer parser, ref RefundResult value, ref AutoCSer.Memory.Pointer name)
         {
             return value.parseRefund(parser, name.Char);
         }
@@ -61,7 +61,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <param name="parser"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        private unsafe bool parseRefund(AutoCSer.Xml.Parser parser, char* name)
+        private unsafe bool parseRefund(AutoCSer.XmlDeSerializer parser, char* name)
         {
             int index, couponIndex = 0;
             switch (*name - 'c')
@@ -72,26 +72,26 @@ namespace AutoCSer.OpenAPI.Weixin
                         case 'f' - 'b':
                             if ((index = getCouponIndex("coupon_refund_fee_", name, ref couponIndex)) >= 0)
                             {
-                                if (couponIndex >= 0) return parser.CustomParse(ref refunds[index].coupons[couponIndex].coupon_refund_fee);
-                                else return parser.CustomParse(ref refunds[index].coupon_refund_fee);
+                                if (couponIndex >= 0) return parser.CustomDeSerialize(ref refunds[index].coupons[couponIndex].coupon_refund_fee);
+                                else return parser.CustomDeSerialize(ref refunds[index].coupon_refund_fee);
                             }
                             break;
                         case 'c' - 'b':
                             if ((index = getRefundIndex("coupon_refund_count_", name)) >= 0)
                             {
-                                return parser.CustomParse(ref refunds[index].coupon_refund_count);
+                                return parser.CustomDeSerialize(ref refunds[index].coupon_refund_count);
                             }
                             break;
                         case 'b' - 'b':
                             if ((index = getCouponIndex("coupon_refund_batch_id_", name, ref couponIndex)) >= 0 && couponIndex >= 0)
                             {
-                                return parser.CustomParse(ref refunds[index].coupons[couponIndex].coupon_refund_batch_id);
+                                return parser.CustomDeSerialize(ref refunds[index].coupons[couponIndex].coupon_refund_batch_id);
                             }
                             break;
                         case 'i' - 'b':
                             if ((index = getCouponIndex("coupon_refund_id_", name, ref couponIndex)) >= 0 && couponIndex >= 0)
                             {
-                                return parser.CustomParse(ref refunds[index].coupons[couponIndex].coupon_refund_id);
+                                return parser.CustomDeSerialize(ref refunds[index].coupons[couponIndex].coupon_refund_id);
                             }
                             break;
                     }
@@ -102,25 +102,25 @@ namespace AutoCSer.OpenAPI.Weixin
                         case 'i' - 'c':
                             if ((index = getRefundIndex("refund_id_", name)) >= 0)
                             {
-                                return parser.CustomParse(ref refunds[index].refund_id);
+                                return parser.CustomDeSerialize(ref refunds[index].refund_id);
                             }
                             break;
                         case 'c' - 'c':
                             if ((index = getRefundIndex("refund_channel_", name)) >= 0)
                             {
-                                return parser.CustomEnumByte(ref refunds[index].refund_channel);
+                                return parser.CustomNullableEnum(ref refunds[index].refund_channel);
                             }
                             break;
                         case 'f' - 'c':
                             if ((index = getRefundIndex("refund_fee_", name)) >= 0)
                             {
-                                return parser.CustomParse(ref refunds[index].refund_fee);
+                                return parser.CustomDeSerialize(ref refunds[index].refund_fee);
                             }
                             break;
                         case 's' - 'c':
                             if ((index = getRefundIndex("refund_status_", name)) >= 0)
                             {
-                                return parser.CustomEnumByte(ref refunds[index].refund_status);
+                                return parser.CustomStruct(ref refunds[index].refund_status);
                             }
                             break;
                     }
@@ -128,7 +128,7 @@ namespace AutoCSer.OpenAPI.Weixin
                 case 'o' - 'c':
                     if ((index = getRefundIndex("out_refund_no_", name)) >= 0)
                     {
-                        return parser.CustomParse(ref refunds[index].out_refund_no);
+                        return parser.CustomDeSerialize(ref refunds[index].out_refund_no);
                     }
                     break;
             }
@@ -142,7 +142,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         private unsafe int getRefundIndex(string name, char* nameStart)
         {
-            if (AutoCSer.Extension.String_Weixin.SimpleEqual(name, nameStart))
+            if (AutoCSer.Extensions.StringExtensionWeixin.SimpleEqual(name, nameStart))
             {
                 int index = *(nameStart += name.Length) - '0';
                 do
@@ -169,7 +169,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         private unsafe int getCouponIndex(string name, char* nameStart, ref int couponIndex)
         {
-            if (AutoCSer.Extension.String_Weixin.SimpleEqual(name, nameStart))
+            if (AutoCSer.Extensions.StringExtensionWeixin.SimpleEqual(name, nameStart))
             {
                 int index = *(nameStart += name.Length) - '0';
                 do
@@ -214,7 +214,7 @@ namespace AutoCSer.OpenAPI.Weixin
             if (IsReturn)
             {
                 if (appid == config.appid && mch_id == config.mch_id && Sign<RefundResult>.Check(this, config.key, sign)) return true;
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                AutoCSer.LogHelper.Debug("签名验证错误 " + AutoCSer.JsonSerializer.Serialize(this), LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return false;
         }

@@ -20,9 +20,5 @@ namespace AutoCSer.DomainUnload
         /// 释放 TCP 组件基类
         /// </summary>
         TcpCommandBaseDispose,
-        /// <summary>
-        /// 释放线程池
-        /// </summary>
-        ThreadPoolDispose,
     }
 }

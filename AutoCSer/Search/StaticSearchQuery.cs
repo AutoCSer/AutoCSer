@@ -20,11 +20,19 @@ namespace AutoCSer.Search
             /// <summary>
             /// 分词结果
             /// </summary>
-            private LeftArray<KeyValue<HashString, QueryResult>> result;
+            private LeftArray<KeyValue<HashString, QueryResult>> result = new LeftArray<KeyValue<HashString, QueryResult>>(0);
             /// <summary>
             /// 分词结果
             /// </summary>
             private QueryResult queryResult;
+            /// <summary>
+            /// 未匹配分词集合
+            /// </summary>
+            private LeftArray<SubString> lessWords;
+            /// <summary>
+            /// 匹配类型
+            /// </summary>
+            private MatchType matchType;
             /// <summary>
             /// 初始化添加数据
             /// </summary>
@@ -38,16 +46,24 @@ namespace AutoCSer.Search
             /// 获取文本分词结果
             /// </summary>
             /// <param name="text"></param>
-            /// <param name="isAllMatch">是否要求关键字全匹配</param>
+            /// <param name="matchType"></param>
             /// <param name="result">分词结果</param>
-            internal void Get(ref Simplified text, bool isAllMatch, ref LeftArray<KeyValue<HashString, QueryResult>> result)
+            /// <param name="lessWords"></param>
+            internal void Get(ref Simplified text, MatchType matchType, ref LeftArray<KeyValue<HashString, QueryResult>> result, ref LeftArray<SubString> lessWords)
             {
                 this.result = result;
+                this.lessWords = lessWords;
                 formatText = text.FormatText;
                 formatLength = text.Size - 1;
                 fixed (char* textFixed = formatText)
                 {
-                    if (get(textFixed, isAllMatch)) result = this.result;
+                    this.matchType = matchType;
+                    this.lessWords.Length = 0;
+                    if (get(textFixed))
+                    {
+                        result = this.result;
+                        lessWords = this.lessWords;
+                    }
                 }
 
             }
@@ -55,26 +71,33 @@ namespace AutoCSer.Search
             /// 获取文本分词结果
             /// </summary>
             /// <param name="text"></param>
-            /// <param name="isAllMatch">是否要求关键字全匹配</param>
+            /// <param name="matchType"></param>
             /// <param name="result">分词结果</param>
-            internal void Get(string text, bool isAllMatch, ref LeftArray<KeyValue<HashString, QueryResult>> result)
+            /// <param name="lessWords"></param>
+            internal void Get(string text, MatchType matchType, ref LeftArray<KeyValue<HashString, QueryResult>> result, ref LeftArray<SubString> lessWords)
             {
                 this.result = result;
+                this.lessWords = lessWords;
                 formatLength = text.Length;
-                formatText = AutoCSer.Extension.StringExtension.FastAllocateString(formatLength + 1);
+                formatText = AutoCSer.Extensions.StringExtension.FastAllocateString(formatLength + 1);
                 fixed (char* textFixed = formatText)
                 {
                     Simplified.FormatNotEmpty(text, textFixed, formatLength);
-                    if (get(textFixed, isAllMatch)) result = this.result;
+                    this.matchType = matchType;
+                    this.lessWords.Length = 0;
+                    if (get(textFixed))
+                    {
+                        result = this.result;
+                        lessWords = this.lessWords;
+                    }
                 }
             }
             /// <summary>
             /// 获取文本分词结果
             /// </summary>
             /// <param name="textFixed"></param>
-            /// <param name="isAllMatch">是否要求关键字全匹配</param>
             /// <returns></returns>
-            private bool get(char* textFixed, bool isAllMatch)
+            private bool get(char* textFixed)
             {
                 char* start = textFixed, end = textFixed + formatLength;
                 try
@@ -96,7 +119,7 @@ namespace AutoCSer.Search
                                 {
                                     if ((type & ((byte)WordType.Chinese | (byte)WordType.TrieGraph)) == ((byte)WordType.Chinese | (byte)WordType.TrieGraph))
                                     {
-                                        if (!checkAddWord((int)(start - textFixed), 1) && isAllMatch) return false;
+                                        if (!checkAddWordLess((int)(start - textFixed), 1)) return false;
                                     }
                                     if (((nextType = charTypeData[*++start]) & StringTrieGraph.TrieGraphHeadFlag) != 0)
                                     {
@@ -118,9 +141,9 @@ namespace AutoCSer.Search
                             }
                             if ((int)(start - segment) == 1)
                             {
-                                if ((type & (byte)WordType.Chinese) != 0)
+                                if ((charTypeData[*segment] & (byte)WordType.Chinese) != 0)
                                 {
-                                    if (!checkAddWord((int)(segment - textFixed), 1) && isAllMatch) return false;
+                                    if (!checkAddWordLess((int)(segment - textFixed), 1)) return false;
                                 }
                             }
                             else
@@ -142,8 +165,8 @@ namespace AutoCSer.Search
                                     startIndex = (int)(segment - textFixed);
                                     foreach (KeyValue<int, int> value in matchs.Array)
                                     {
-                                        if (!checkAddWord(index = value.Key + startIndex, value.Value) && isAllMatch) return false;
-                                        matchMap.Set(index, value.Value);
+                                        if (checkAddWord(index = value.Key + startIndex, value.Value)) matchMap.Set(index, value.Value);
+                                        else lessWords.Add(new SubString(index, value.Value, formatText));
                                         if (--count == 0) break;
                                     }
                                     index = (int)(segmentEnd - textFixed);
@@ -151,7 +174,7 @@ namespace AutoCSer.Search
                                     {
                                         if (matchMap.Get(startIndex) == 0 && (charTypeData[textFixed[startIndex]] & (byte)WordType.Chinese) != 0)
                                         {
-                                            if (!checkAddWord(startIndex, 1) && isAllMatch) return false;
+                                            if (!checkAddWordLess(startIndex, 1)) return false;
                                         }
                                     }
                                     while (++startIndex != index);
@@ -161,7 +184,7 @@ namespace AutoCSer.Search
                                 {
                                     if ((charTypeData[*segmentEnd] & (byte)WordType.Chinese) != 0)
                                     {
-                                        if (!checkAddWord((int)(segmentEnd - textFixed), 1) && isAllMatch) return false;
+                                        if (!checkAddWordLess((int)(segmentEnd - textFixed), 1)) return false;
                                     }
                                     ++segmentEnd;
                                 }
@@ -192,9 +215,10 @@ namespace AutoCSer.Search
                         *end = ' ';
                         if ((type & (byte)WordType.Chinese) != 0)
                         {
+                            type = charTypeData[*start];
                             do
                             {
-                                if ((type & (byte)WordType.TrieGraph) == 0 && !isAllMatch) checkAddWord((int)(start - textFixed), 1);
+                                if (matchType != MatchType.All && (type & (byte)WordType.TrieGraph) == 0) checkAddWordLess((int)(start - textFixed), 1);
                             }
                             while (((type = charTypeData[*++start]) & (byte)WordType.Chinese) != 0);
                         }
@@ -211,7 +235,7 @@ namespace AutoCSer.Search
                                     {
                                         if (type != (byte)WordType.Keep)
                                         {
-                                            if (!checkAddWord((int)(word - textFixed), (int)(start - word)) && isAllMatch) return false;
+                                            if (!checkAddWord((int)(word - textFixed), (int)(start - word))) return false;
                                             isWord = true;
                                         }
                                         type = nextType;
@@ -220,22 +244,41 @@ namespace AutoCSer.Search
                                 }
                                 if (word != segment && type != (byte)WordType.Keep)
                                 {
-                                    if (!checkAddWord((int)(word - textFixed), (int)(start - word)) && isAllMatch) return false;
+                                    if (!checkAddWord((int)(word - textFixed), (int)(start - word))) return false;
                                     isWord = true;
                                 }
                                 if (!isWord)
                                 {
-                                    if (!checkAddWord((int)(segment - textFixed), (int)(start - segment)) && isAllMatch) return false;
+                                    if (!checkAddWord((int)(segment - textFixed), (int)(start - segment))) return false;
                                 }
                             }
                             else
                             {
                                 while ((charTypeData[*++start] & (byte)WordType.OtherLetter) != 0) ;
-                                if (!checkAddWord((int)(segment - textFixed), (int)(start - segment)) && isAllMatch) return false;
+                                if (!checkAddWord((int)(segment - textFixed), (int)(start - segment))) return false;
                             }
                         }
                     }
                     while (start != end);
+
+                    if (lessWords.Length != 0)
+                    {
+                        if (isMatchMap)
+                        {
+                            SubString[] wordArray = lessWords.Array;
+                            for (int index = lessWords.Length; index != 0;)
+                            {
+                                int mapIndex = wordArray[--index].Start, endIndex = wordArray[index].EndIndex;
+                                do
+                                {
+                                    if (matchMap.Get(mapIndex) == 0) break;
+                                }
+                                while (++mapIndex != endIndex);
+                                if (mapIndex == endIndex && index != --lessWords.Length) wordArray[index] = wordArray[lessWords.Length];
+                            }
+                        }
+                        if (matchType == MatchType.All && lessWords.Length != 0) return false;
+                    }
                 }
                 finally { *end = ' '; }
                 return true;
@@ -249,14 +292,39 @@ namespace AutoCSer.Search
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             private bool checkAddWord(int start, int length)
             {
-                HashString word = new SubString(start, length, formatText);
-                if (searcher.results.GetResult(ref word, ref queryResult))
+                SubString word = new SubString(start, length, formatText);
+                HashString wordKey = word;
+                if (searcher.results.GetResult(ref wordKey, ref queryResult))
                 {
                     result.PrepLength(1);
-                    result.Array[result.Length++].Set(word, queryResult);
+                    result.Array[result.Length++].Set(wordKey, queryResult);
                     return true;
                 }
                 return false;
+            }
+            /// <summary>
+            /// 添加分词
+            /// </summary>
+            /// <param name="start"></param>
+            /// <param name="length"></param>
+            /// <returns></returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            private bool checkAddWordLess(int start, int length)
+            {
+                SubString word = new SubString(start, length, formatText);
+                HashString wordKey = word;
+                if (searcher.results.GetResult(ref wordKey, ref queryResult))
+                {
+                    result.PrepLength(1);
+                    result.Array[result.Length++].Set(wordKey, queryResult);
+                    return true;
+                }
+                switch (matchType)
+                {
+                    case MatchType.All: return false;
+                    case MatchType.Less: lessWords.Add(word); return true;
+                }
+                return true;
             }
         }
     }

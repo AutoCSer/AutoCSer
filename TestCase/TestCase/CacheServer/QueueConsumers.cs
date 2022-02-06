@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CacheServer;
 using AutoCSer.CacheServer.DataStructure.MessageQueue;
 

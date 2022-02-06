@@ -3,7 +3,7 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Sql.Cache.Counter
 {
@@ -42,7 +42,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// </summary>
         /// <param name="key">关键字</param>
         /// <returns>缓存数据集合</returns>
-        public LeftArray<valueType> this[keyType key]
+        public ReturnValue<LeftArray<valueType>> this[keyType key]
         {
             get
             {
@@ -53,7 +53,7 @@ namespace AutoCSer.Sql.Cache.Counter
                     sqlTable.AddQueue(task);
                     return task.Wait();
                 }
-                return default(LeftArray<valueType>);
+                return new LeftArray<valueType>(0);
             }
         }
         /// <summary>
@@ -151,7 +151,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// <summary>
             /// 返回值
             /// </summary>
-            private LeftArray<valueType> value;
+            private ReturnValue<LeftArray<valueType>> value;
             /// <summary>
             /// 关键字
             /// </summary>
@@ -183,6 +183,10 @@ namespace AutoCSer.Sql.Cache.Counter
                 {
                     value = queue.get(ref connection, node, key);
                 }
+                catch (Exception error)
+                {
+                    value = error;
+                }
                 finally
                 {
                     wait.Set();
@@ -193,7 +197,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// </summary>
             /// <returns></returns>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal LeftArray<valueType> Wait()
+            internal ReturnValue<LeftArray<valueType>> Wait()
             {
                 wait.Wait();
                 return value;
@@ -206,15 +210,19 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <param name="node"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        private LeftArray<valueType> get(ref DbConnection connection, memberCacheType node, keyType key)
+        private ReturnValue<LeftArray<valueType>> get(ref DbConnection connection, memberCacheType node, keyType key)
         {
             ListArray<valueType> list = get(node);
-            if (list == null)
+            if (list != null) return list.Array;
+
+            ReturnValue<LeftArray<valueType>> listArray = sqlTable.SelectQueue(ref connection, getWhere(key));
+            if (listArray.ReturnType == ReturnType.Success)
             {
-                list = new ListArray<valueType>(sqlTable.SelectQueue(ref connection, getWhere(key)));
+                list = new ListArray<valueType>(ref listArray.Value);
                 appendNode(node, list);
+                return list.Array;
             }
-            return new LeftArray<valueType>(list);
+            return listArray;
         }
     }
 }

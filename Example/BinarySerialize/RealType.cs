@@ -5,7 +5,7 @@ namespace AutoCSer.Example.BinarySerialize
     /// <summary>
     /// 抽象类型与接口类型支持 示例
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsBaseType = true)]
+    [AutoCSer.BinarySerialize(IsBaseType = true)]
     class RealType : AbstractType, InterfaceType
     {
         /// <summary>
@@ -20,16 +20,16 @@ namespace AutoCSer.Example.BinarySerialize
         internal static bool TestCase()
         {
             AbstractType value = new RealType { Value = 1 };
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value, realTypeConfig);
-            AbstractType newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<AbstractType>(data);
+            byte[] data = AutoCSer.BinarySerializer.Serialize(value, realTypeConfig);
+            AbstractType newValue = AutoCSer.BinaryDeSerializer.DeSerialize<AbstractType>(data);
             if (newValue == null || newValue.Value != 1)
             {
                 return false;
             }
 
             InterfaceType value2 = new RealType { Value = 2 };
-            data = AutoCSer.BinarySerialize.Serializer.Serialize(value2, realTypeConfig);
-            AbstractType newValue2 = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<InterfaceType>(data) as AbstractType;
+            data = AutoCSer.BinarySerializer.Serialize(value2, realTypeConfig);
+            AbstractType newValue2 = AutoCSer.BinaryDeSerializer.DeSerialize<InterfaceType>(data) as AbstractType;
             return newValue2 != null && newValue2.Value == 2;
         }
     }

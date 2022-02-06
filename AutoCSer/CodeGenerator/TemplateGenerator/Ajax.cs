@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.CodeGenerator.Metadata;
 using System.Collections.Generic;
 
@@ -281,7 +281,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// AJAX函数
             /// </summary>
-            private LeftArray<AjaxMethod> methods;
+            private LeftArray<AjaxMethod> methods = new LeftArray<AjaxMethod>(0);
             /// <summary>
             /// AJAX 函数
             /// </summary>
@@ -360,7 +360,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (Attribute == null) return;
                     if (!typeof(AutoCSer.WebView.Ajax).IsAssignableFrom(Type))
                     {
-                        Messages.Add(Type.FullName + " 必须继承自 AutoCSer.WebView.Ajax 或者 AutoCSer.WebView.Ajax<" + Type.FullName + ">");
+                        Messages.Error(Type.FullName + " 必须继承自 AutoCSer.WebView.Ajax 或者 AutoCSer.WebView.Ajax<" + Type.FullName + ">");
                         return;
                     }
                 }
@@ -433,7 +433,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                     else
                     {
-                        Messages.Add(@"AJAX调用名称冲突：
+                        Messages.Error(@"AJAX调用名称冲突：
 " + names.JoinString(@"
 ", value => value.Key + "[" + value.Value.toString() + "]"));
                     }

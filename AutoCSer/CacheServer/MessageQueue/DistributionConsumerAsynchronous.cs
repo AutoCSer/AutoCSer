@@ -19,7 +19,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="onMessage">消息处理委托</param>
         /// <param name="config">消息分发 读取配置</param>
         /// <param name="log">日志处理</param>
-        public DistributionConsumerAsynchronous(DataStructure.MessageQueue.Distributor<valueType> node, Action<valueType, Action> onMessage, DistributionConsumerConfig config, AutoCSer.Log.ILog log = null) : base(node, config, log)
+        public DistributionConsumerAsynchronous(DataStructure.MessageQueue.Distributor<valueType> node, Action<valueType, Action> onMessage, DistributionConsumerConfig config, AutoCSer.ILog log = null) : base(node, config, log)
         {
             if (onMessage == null) throw new ArgumentNullException();
             OnMessage = onMessage;
@@ -54,7 +54,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">消息分发 读取配置</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public DistributionConsumerAsynchronous(DataStructure.MessageQueue.Distributor<nodeType> node, Action<valueType, Action> onMessage, DistributionConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : base(node, config, log, getValue)
+        public DistributionConsumerAsynchronous(DataStructure.MessageQueue.Distributor<nodeType> node, Action<valueType, Action> onMessage, DistributionConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : base(node, config, log, getValue)
         {
             if (onMessage == null) throw new ArgumentNullException();
             OnMessage = onMessage;

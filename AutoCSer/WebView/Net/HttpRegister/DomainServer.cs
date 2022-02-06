@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoCSer.IO;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.HttpRegister

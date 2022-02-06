@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -33,7 +33,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 异常集合
         /// </summary>
-        private static LeftArray<Exception> exceptions;
+        private static LeftArray<Exception> exceptions = new LeftArray<Exception>(0);
         /// <summary>
         /// 是否存在错误或者异常信息
         /// </summary>
@@ -51,7 +51,7 @@ namespace AutoCSer.CodeGenerator
         internal static void Clear()
         {
             errors.Clear();
-            exceptions.SetNull();
+            exceptions.SetEmpty();
             messages.Clear();
             isError = isMessage = false;
         }
@@ -64,34 +64,37 @@ namespace AutoCSer.CodeGenerator
             if (messages.Count != 0)
             {
 #if DOTNET2
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, messages.getArray().joinString(@"
+                AutoCSer.LogHelper.Error(messages.getArray().joinString(@"
 - - - - - - - -
-"));
+"), LogLevel.All);
 #else
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, messages.joinString(@"
+                AutoCSer.LogHelper.Error(messages.joinString(@"
 - - - - - - - -
-"));
+"), LogLevel.All);
 #endif
+                AutoCSer.LogHelper.Flush();
                 messages.Clear();
                 isMessage = true;
             }
             if (errors.Count != 0)
             {
 #if DOTNET2
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, errors.getArray().joinString(@"
+                AutoCSer.LogHelper.Error(errors.getArray().joinString(@"
 - - - - - - - -
-"));
+"), LogLevel.All);
 #else
-                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, errors.joinString(@"
+                AutoCSer.LogHelper.Error(errors.joinString(@"
 - - - - - - - -
-"));
+"), LogLevel.All);
 #endif
+                AutoCSer.LogHelper.Flush();
                 errors.Clear();
                 isError = true;
             }
             if (exceptions.Length != 0)
             {
-                foreach (Exception error in exceptions) AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, error);
+                foreach (Exception error in exceptions) AutoCSer.LogHelper.Exception(error, null, LogLevel.All);
+                AutoCSer.LogHelper.Flush();
                 exceptions.Length = 0;
                 isError = true;
             }
@@ -102,7 +105,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="error">错误信息</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void Add(string error)
+        internal static void Error(string error)
         {
             errors.Add(error);
         }
@@ -111,7 +114,7 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         /// <param name="error">异常</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static void Add(Exception error)
+        public static void Exception(Exception error)
         {
             exceptions.Add(error);
         }
@@ -132,8 +135,8 @@ namespace AutoCSer.CodeGenerator
         {
             if (output() || IsMessage)
             {
-                AutoCSer.Log.Pub.Log.Flush();
-                string fileName = (AutoCSer.Log.Pub.Log as AutoCSer.Log.File).UnsafeMoveBak();
+                AutoCSer.LogHelper.Flush();
+                string fileName = (AutoCSer.LogHelper.Default as AutoCSer.Log.File).UnsafeMoveBak();
                 if (fileName != null)
                 {
 #if DotNetStandard

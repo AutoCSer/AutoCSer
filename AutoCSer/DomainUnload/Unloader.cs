@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.DomainUnload
@@ -130,8 +130,8 @@ namespace AutoCSer.DomainUnload
                 Monitor.Exit(unloaderLock);
                 if (isRemove && isRun) new UnloadInfo { Unload = unload, Type = type }.Call();
             }
-            else if (isRun) AutoCSer.Threading.ThreadPool.Tiny.FastStart(new UnloadObject { Unload = unload, Type = type }, AutoCSer.Threading.Thread.CallType.DomainUnloadRemoveLastRun);
-            else AutoCSer.Threading.ThreadPool.Tiny.FastStart(new UnloadObject { Unload = unload, Type = type }, AutoCSer.Threading.Thread.CallType.DomainUnloadRemoveLast);
+            else if (isRun) AutoCSer.Threading.ThreadPool.Tiny.FastStart(new UnloadObject { Unload = unload, Type = type }, AutoCSer.Threading.ThreadTaskType.DomainUnloadRemoveLastRun);
+            else AutoCSer.Threading.ThreadPool.Tiny.FastStart(new UnloadObject { Unload = unload, Type = type }, AutoCSer.Threading.ThreadTaskType.DomainUnloadRemoveLast);
         }
         /// <summary>
         /// 删除卸载处理函数
@@ -171,7 +171,8 @@ namespace AutoCSer.DomainUnload
                 return true;
             }
             Monitor.Exit(unloaderLock);
-            AutoCSer.Log.Pub.Log.Wait(Log.LogType.Debug, "应用程序正在退出");
+            AutoCSer.LogHelper.Debug("应用程序正在退出", LogLevel.Debug | LogLevel.AutoCSer);
+            AutoCSer.LogHelper.Flush();
             return false;
         }
         /// <summary>
@@ -197,10 +198,11 @@ namespace AutoCSer.DomainUnload
                     Monitor.Exit(unloaderLock);
                     for (DateTime logTime = DateTime.MinValue; transactionCount != 0; Thread.Sleep(1))
                     {
-                        if (Date.NowTime.Now > logTime)
+                        if (AutoCSer.Threading.SecondTimer.Now > logTime)
                         {
-                            AutoCSer.Log.Pub.Log.Wait(Log.LogType.Debug, "事务未结束 " + transactionCount.toString());
-                            logTime = Date.NowTime.Now.AddTicks(TimeSpan.TicksPerMinute);
+                            AutoCSer.LogHelper.Debug("事务未结束 " + transactionCount.toString(), LogLevel.Debug | LogLevel.AutoCSer);
+                            AutoCSer.LogHelper.Flush();
+                            logTime = AutoCSer.Threading.SecondTimer.Now.AddTicks(TimeSpan.TicksPerMinute);
                         }
                     }
                     Monitor.Enter(unloaderLock);
@@ -213,7 +215,8 @@ namespace AutoCSer.DomainUnload
                         try { value.Call(); }
                         catch (Exception error)
                         {
-                            AutoCSer.Log.Pub.Log.Wait(Log.LogType.Error, error);
+                            AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                            AutoCSer.LogHelper.Flush();
                         }
                     }
                     foreach (UnloadInfo value in lastUnloaders.getArray())
@@ -221,7 +224,8 @@ namespace AutoCSer.DomainUnload
                         try { value.Call(); }
                         catch (Exception error)
                         {
-                            AutoCSer.Log.Pub.Log.Wait(Log.LogType.Error, error);
+                            AutoCSer.LogHelper.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                            AutoCSer.LogHelper.Flush();
                         }
                     }
                     State = State.Unloaded;
@@ -247,15 +251,16 @@ namespace AutoCSer.DomainUnload
         private static void onError(object sender, UnhandledExceptionEventArgs error)
         {
             Exception exception = error.ExceptionObject as Exception;
-            if (exception != null) AutoCSer.Log.Pub.Log.Wait(Log.LogType.Error, exception);
-            else AutoCSer.Log.Pub.Log.Wait(Log.LogType.Error, error.ExceptionObject.ToString());
+            if (exception != null) AutoCSer.LogHelper.Exception(exception, null, LogLevel.Exception | LogLevel.AutoCSer);
+            else AutoCSer.LogHelper.Error(error.ExceptionObject.ToString(), LogLevel.Error | LogLevel.AutoCSer);
+            AutoCSer.LogHelper.Flush();
             unloadEvent(null, null);
         }
 
         /// <summary>
         /// 公共默认应用程序默认卸载配置
         /// </summary>
-        internal static readonly UnloadEventConfig DefaultConfig = ConfigLoader.GetUnion(typeof(UnloadEventConfig)).UnloadEventConfig ?? new UnloadEventConfig();
+        internal static readonly UnloadEventConfig DefaultConfig = (UnloadEventConfig)AutoCSer.Configuration.Common.Get(typeof(UnloadEventConfig)) ?? new UnloadEventConfig();
 
         static Unloader()
         {

@@ -14,7 +14,7 @@ namespace AutoCSer.Example.Json
         /// <summary>
         /// 公共字段成员
         /// </summary>
-        [AutoCSer.Json.SerializeMember(IsIgnoreCurrent = true)]
+        [AutoCSer.JsonSerializeMember(IsIgnoreCurrent = true)]
         public int Ignore;
 
         /// <summary>
@@ -25,16 +25,16 @@ namespace AutoCSer.Example.Json
         internal static bool TestCase()
         {
             SerializeIgnoreMember value = new SerializeIgnoreMember { Value = 1, Ignore = 2 };
-            string json = AutoCSer.Json.Serializer.Serialize(value);
-            NoIgnoreMember newValue = AutoCSer.Json.Parser.Parse<NoIgnoreMember>(json);
+            string json = AutoCSer.JsonSerializer.Serialize(value);
+            NoIgnoreMember newValue = AutoCSer.JsonDeSerializer.DeSerialize<NoIgnoreMember>(json);
             if (newValue == null || newValue.Value != 1 || newValue.Ignore != 0)
             {
                 return false;
             }
 
             newValue = new NoIgnoreMember { Value = 1, Ignore = 2 };
-            json = AutoCSer.Json.Serializer.Serialize(newValue);
-            value = AutoCSer.Json.Parser.Parse<SerializeIgnoreMember>(json);
+            json = AutoCSer.JsonSerializer.Serialize(newValue);
+            value = AutoCSer.JsonDeSerializer.DeSerialize<SerializeIgnoreMember>(json);
             return value != null && value.Value == 1 && value.Ignore == 2;
         }
     }

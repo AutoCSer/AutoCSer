@@ -9,7 +9,7 @@ namespace AutoCSer.Log
     /// <summary>
     /// 配置加载
     /// </summary>
-    internal static class ConfigLoader
+    //internal static class ConfigLoader
     {
         /// <summary>
         /// 获取配置数据
@@ -20,7 +20,7 @@ namespace AutoCSer.Log
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static UnionType GetUnion(System.Type type, string name = "")
         {
-            return new UnionType { Value = AutoCSer.Config.Loader.GetObject(type, name) };
+            return new UnionType { Object = AutoCSer.Config.Loader.GetObject(type, name) };
         }
     }
 }

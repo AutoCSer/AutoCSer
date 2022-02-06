@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using AutoCSer.Memory;
 
 namespace AutoCSer.TestCase.TcpInternalServerPerformance
 {
@@ -77,7 +78,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         {
             int length = value.Buffer.Count;
             ServerCustomSerializeBuffer buffer = null;
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref bufferLock);
+            while (System.Threading.Interlocked.CompareExchange(ref bufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
             if (currentBuffer != null)
             {
                 if (currentBuffer.Size + length <= ServerCustomSerializeBuffer.BufferSize) buffer = currentBuffer;
@@ -92,7 +93,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
             System.Threading.Interlocked.Exchange(ref bufferLock, 0);
             if (buffer == null)
             {
-                AutoCSer.Threading.Interlocked.CompareExchangeYield(ref freeBufferLock);
+                while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
                 if (freeBuffer == null)
                 {
                     System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
@@ -107,7 +108,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 }
             }
             buffer.Copy(ref value.Buffer);
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref bufferLock);
+            while (System.Threading.Interlocked.CompareExchange(ref bufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
             currentBuffer = buffer;
             System.Threading.Interlocked.Exchange(ref bufferLock, 0);
         }
@@ -115,15 +116,15 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// 序列化操作
         /// </summary>
         /// <param name="serializer"></param>
-        internal void Serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        internal void Serialize(AutoCSer.BinarySerializer serializer)
         {
             UnmanagedStream stream = serializer.Stream;
-            byte* start = stream.CurrentData, write = start + sizeof(int);
+            byte* start = stream.Current, write = start + sizeof(int);
             int freeCount = (stream.FreeSize - sizeof(int) * 2) / (sizeof(int) * 3), outputCount = 0;
             ServerCustomSerializeBuffer buffer;
             do
             {
-                AutoCSer.Threading.Interlocked.CompareExchangeYield(ref bufferLock);
+                while (System.Threading.Interlocked.CompareExchange(ref bufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
                 if (headBuffer == null)
                 {
                     buffer = currentBuffer;
@@ -159,7 +160,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 {
                     onCustomSerialize.Callback(new ServerCustomSerialize { Output = this });
                     write = buffer.Serialize(write, freeCount);
-                    AutoCSer.Threading.Interlocked.CompareExchangeYield(ref bufferLock);
+                    while (System.Threading.Interlocked.CompareExchange(ref bufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
                     if (headBuffer == null) endBuffer = buffer;
                     else buffer.LinkNext = headBuffer;
                     headBuffer = buffer;
@@ -168,7 +169,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     return;
                 }
                 write = buffer.Serialize(write);
-                AutoCSer.Threading.Interlocked.CompareExchangeYield(ref freeBufferLock);
+                while (System.Threading.Interlocked.CompareExchange(ref freeBufferLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
                 buffer.LinkNext = freeBuffer;
                 freeBuffer = buffer;
                 System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);

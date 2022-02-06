@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;WebClient</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -47,7 +47,7 @@
     <Compile Include="DeCompressor.cs" />
     <Compile Include="DeflateStream.cs" />
     <Compile Include="Emit\Pub.cs" />
-    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extensions\MemoryExtension.WebClient.cs" />
     <Compile Include="Form\CustomAttribute.cs" />
     <Compile Include="Form\FormAttribute.cs" />
     <Compile Include="Form\Getter.cs" />
@@ -70,6 +70,9 @@
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del $(ProjectDir)obj\project.* /Q</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

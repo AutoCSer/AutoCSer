@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer.OperationParameter
     /// <summary>
     /// 删除数据结构操作参数
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     internal unsafe struct RemoveDataStructure
     {
@@ -23,22 +23,22 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// 序列化
         /// </summary>
         /// <param name="serializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             Serializer operationSerializer = new Serializer(serializer.Stream);
-            operationSerializer.Stream.ByteSize += IndexIdentity.SerializeSize;
-            fixed (char* nameFixed = CacheName) AutoCSer.BinarySerialize.Serializer.Serialize(nameFixed, operationSerializer.Stream, CacheName.Length);
+            operationSerializer.Stream.Data.CurrentIndex += IndexIdentity.SerializeSize;
+            fixed (char* nameFixed = CacheName) AutoCSer.BinarySerializer.Serialize(nameFixed, operationSerializer.Stream, CacheName.Length);
             operationSerializer.End(OperationType.RemoveDataStructure);
         }
         /// <summary>
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             Buffer = Serializer.GetOperationData(deSerializer);
         }

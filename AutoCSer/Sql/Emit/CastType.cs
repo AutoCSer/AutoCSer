@@ -140,9 +140,6 @@ namespace AutoCSer.Emit
                         break;
                     }
                 }
-                //Type[] castParameterTypes = new Type[] { fromType };
-                //method = toType.GetMethod("op_Implicit", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public, null, castParameterTypes, null)
-                //    ?? toType.GetMethod("op_Explicit", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public, null, castParameterTypes, null);
             }
 #if NOJIT
             if (method == null)
@@ -163,18 +160,9 @@ namespace AutoCSer.Emit
             return method;
         }
 
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            methods.Clear();
-        }
         static CastType()
         {
-            AutoCSer.Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(methods.Clear, typeof(CastType), 60 * 60);
         }
     }
 }

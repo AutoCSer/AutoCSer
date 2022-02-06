@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer.OperationParameter
     /// <summary>
     /// 短路径操作参数
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsReferenceMember = false, IsMemberMap = false)]
+    [AutoCSer.BinarySerialize(IsReferenceMember = false, IsMemberMap = false)]
     [StructLayout(LayoutKind.Auto)]
     internal unsafe struct ShortPathOperationNode
     {
@@ -28,9 +28,9 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// </summary>
         /// <param name="serializer"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
+        private void serialize(AutoCSer.BinarySerializer serializer)
         {
             Serializer operationSerializer = new Serializer(serializer.Stream);
             Node.SerializeParameter(operationSerializer.Stream);
@@ -40,9 +40,9 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// 反序列化
         /// </summary>
         /// <param name="deSerializer"></param>
-        [AutoCSer.BinarySerialize.SerializeCustom]
+        [AutoCSer.BinarySerializeCustom]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        private unsafe void deSerialize(AutoCSer.BinaryDeSerializer deSerializer)
         {
             byte* read = deSerializer.Read;
             int size = *(int*)read;
@@ -53,7 +53,7 @@ namespace AutoCSer.CacheServer.OperationParameter
                 if (bufferSize >= Serializer.HeaderSize + IndexIdentity.SerializeSize)
                 {
                     Buffer = BufferCount.GetBuffer(bufferSize);
-                    fixed (byte* bufferFixed = Buffer.Array.Array)
+                    fixed (byte* bufferFixed = Buffer.GetFixedBuffer())
                     {
                         byte* start = bufferFixed + Buffer.Array.Start;
                         *(int*)start = Buffer.Array.Length;

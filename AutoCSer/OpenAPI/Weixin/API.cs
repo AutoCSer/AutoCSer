@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -36,7 +36,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <summary>
         /// 访问令牌锁
         /// </summary>
-        private volatile int tokenLock;
+        private AutoCSer.Threading.SpinLock tokenLock;
         /// <summary>
         /// API调用
         /// </summary>
@@ -69,16 +69,16 @@ namespace AutoCSer.OpenAPI.Weixin
         private Token checkToken(ref DateTime timeout)
         {
             Token value;
-            while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
-            if (this.timeout > Date.NowTime.Now)
+            tokenLock.EnterYield();
+            if (this.timeout > AutoCSer.Threading.SecondTimer.Now)
             {
                 value = token;
                 timeout = this.timeout;
-                System.Threading.Interlocked.Exchange(ref tokenLock, 0);
+                tokenLock.Exit();
             }
             else
             {
-                System.Threading.Interlocked.Exchange(ref tokenLock, 0);
+                tokenLock.Exit();
                 value = null;
             }
             return value;
@@ -90,24 +90,24 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         private Token setToken(KeyValue<string, DateTime> tokenTime)
         {
-            if (tokenTime.Value > Date.NowTime.Now)
+            if (tokenTime.Value > AutoCSer.Threading.SecondTimer.Now)
             {
                 Token value = this.token;
                 if (value == null)
                 {
                     value = new Token();
-                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+                    tokenLock.EnterYield();
                     value.access_token = tokenTime.Key;
                     this.timeout = tokenTime.Value;
                     this.token = value;
-                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
+                    tokenLock.Exit();
                 }
                 else
                 {
-                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+                    tokenLock.EnterYield();
                     value.access_token = tokenTime.Key;
                     this.timeout = tokenTime.Value;
-                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
+                    tokenLock.Exit();
                 }
                 return value;
             }
@@ -125,17 +125,17 @@ namespace AutoCSer.OpenAPI.Weixin
             try
             {
                 if ((value = checkToken(ref timeout)) != null) return value;
-                if ((value = config.GetToken()) != null && value.IsReturn && (timeout = Date.NowTime.Now.AddSeconds(value.expires_in - 60)) > Date.NowTime.Now)
+                if ((value = config.GetToken()) != null && value.IsReturn && (timeout = AutoCSer.Threading.SecondTimer.Now.AddSeconds(value.expires_in - 60)) > AutoCSer.Threading.SecondTimer.Now)
                 {
-                    while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
+                    tokenLock.EnterYield();
                     token = value;
                     this.timeout = timeout;
-                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
+                    tokenLock.Exit();
                     return value;
                 }
             }
             finally { Monitor.Exit(getTokenLock); }
-            if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "访问令牌获取失败 " + value.Message);
+            if (value != null) AutoCSer.LogHelper.Debug("访问令牌获取失败 " + value.Message, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             return null;
         }
         /// <summary>
@@ -167,19 +167,19 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         private string checkToken(string token, ref DateTime timeout)
         {
-            while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
-            if (this.timeout > Date.NowTime.Now)
+            tokenLock.EnterYield();
+            if (this.timeout > AutoCSer.Threading.SecondTimer.Now)
             {
                 if (token != this.token.access_token)
                 {
                     token = this.token.access_token;
                     timeout = this.timeout;
-                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
+                    tokenLock.Exit();
                     return token;
                 }
                 this.timeout = DateTime.MinValue;
             }
-            System.Threading.Interlocked.Exchange(ref tokenLock, 0);
+            tokenLock.Exit();
             return null;
         }
         /// <summary>
@@ -247,7 +247,7 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.LogHelper.Debug("API " + url + " 请求失败 " + value.Message, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return null;
         }
@@ -291,7 +291,7 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.LogHelper.Debug("API " + url + " 请求失败 " + value.Message, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return null;
         }
@@ -339,7 +339,7 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.LogHelper.Debug("API " + url + " 请求失败 " + value.Message, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return null;
         }
@@ -390,7 +390,7 @@ namespace AutoCSer.OpenAPI.Weixin
                 {
                     if ((token = resetToken(token)) != null && (data = Config.Client.Download(urlPrefix + token)) != null && checkMediaData(data) == null) return data;
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.LogHelper.Debug("API " + url + " 请求失败 " + value.Message, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             }
             return null;
         }
@@ -415,7 +415,7 @@ namespace AutoCSer.OpenAPI.Weixin
                     {
                         if ((*start & 0x80) != 0) return null;
                     }
-                    return AutoCSer.Json.Parser.Parse<Return>(Memory_WebClient.BytesToStringNotEmpty(dataFixed, data.Length));
+                    return AutoCSer.JsonDeSerializer.DeSerialize<Return>(MemoryExtensionWebClient.BytesToStringNotEmpty(dataFixed, data.Length));
                 }
             }
             return null;
@@ -1254,7 +1254,7 @@ namespace AutoCSer.OpenAPI.Weixin
         {
             if (data.length() != 0)
             {
-                KeyValue<byte[], byte[]>[] form = type == MediaType.video ? new KeyValue<byte[], byte[]>[] { new KeyValue<byte[], byte[]>(videoDescriptionData, System.Text.Encoding.UTF8.GetBytes(AutoCSer.Json.Serializer.Serialize(video))) } : null;
+                KeyValue<byte[], byte[]>[] form = type == MediaType.video ? new KeyValue<byte[], byte[]>[] { new KeyValue<byte[], byte[]>(videoDescriptionData, System.Text.Encoding.UTF8.GetBytes(AutoCSer.JsonSerializer.Serialize(video))) } : null;
                 return requestFile<MediaUrl>("https://api.weixin.qq.com/cgi-bin/material/add_material?type=" + type.ToString() + "&access_token=", data, "media", null, null, form);
             }
             return null;
@@ -2101,10 +2101,10 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         private unsafe static LeftArray<SubString> splitBill(ref SubString value)
         {
-            LeftArray<SubString> values = default(LeftArray<SubString>);
+            LeftArray<SubString> values = new LeftArray<SubString>(0);
             if (value.Length > 1)
             {
-                fixed (char* valueFixed = value.String)
+                fixed (char* valueFixed = value.GetFixedBuffer())
                 {
                     char* start = valueFixed + value.Start;
                     if (*start == '`')
@@ -2138,7 +2138,7 @@ namespace AutoCSer.OpenAPI.Weixin
             BillQuery query = new BillQuery { bill_type = type, bill_date = date.ToString("yyyyMMdd"), device_info = device_info };
             query.SetConfig(config);
             string text = Config.Client.RequestXml<BillQuery>("https://api.mch.weixin.qq.com/pay/downloadbill", query, xmlSerializeConfig);
-            ReturnCode returnCode = AutoCSer.Xml.Parser.Parse<ReturnCode>(text);
+            ReturnCode returnCode = AutoCSer.XmlDeSerializer.DeSerialize<ReturnCode>(text);
             if (returnCode == null)
             {
                 LeftArray<SubString> rows = text.split('\n');
@@ -2157,13 +2157,13 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                         catch (Exception error)
                         {
-                            AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, text);
+                            AutoCSer.LogHelper.Exception(error, text, LogLevel.Exception | LogLevel.AutoCSer);
                         }
                         return null;
                     }
                 }
             }
-            AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, text);
+            AutoCSer.LogHelper.Debug(text, LogLevel.Debug | LogLevel.Info | LogLevel.AutoCSer);
             return null;
         }
         /// <summary>

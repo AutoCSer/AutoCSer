@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 
@@ -18,7 +18,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 队列数据 读文件
         /// </summary>
-        private FileReader[] readers = NullValue<FileReader>.Array;
+        private FileReader[] readers = EmptyArray<FileReader>.Array;
         /// <summary>
         /// 多消费者队列消费节点 数据节点
         /// </summary>

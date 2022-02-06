@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CodeGenerator
@@ -152,7 +152,7 @@ namespace AutoCSer.CodeGenerator
                     string fileName = parameter.ProjectPath + @"{AutoCSer}.CSharper.cs";
                     if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.ToArray()) + Coder.FileEndCode))
                     {
-                        Messages.Add(fileName + " 被修改");
+                        Messages.Error(fileName + " 被修改");
                         return false;
                     }
                 }
@@ -168,7 +168,7 @@ namespace AutoCSer.CodeGenerator
         /// <param name="fileName"></param>
         private void copyDotNetCoreJson(string path, string fileName)
         {
-            System.IO.FileInfo file = new System.IO.FileInfo(AutoCSer.PubPath.ApplicationPath + fileName);
+            System.IO.FileInfo file = new System.IO.FileInfo(AutoCSer.Config.ApplicationPath + fileName);
             if (file.Exists) file.CopyTo(path + fileName, true);
         }
 #endif

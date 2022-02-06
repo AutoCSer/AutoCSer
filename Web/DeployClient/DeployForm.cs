@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Diagnostics;
 using System.Text;
 
@@ -110,6 +110,18 @@ namespace AutoCSer.Web.DeployClient
                     ClientPath = new DirectoryInfo(@"..\..\..\..\TestCase\").FullName,
                     ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"TestCase\",
                     SearchPatterns = new string[] { "*.cs", "*.html", "*.ts", "*.js" },
+                },
+                new AutoCSer.Deploy.ClientTask.File
+                {
+                    ClientPath = new DirectoryInfo(@"..\..\..\..\..\AutoCSer2\Example\").FullName,
+                    ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"AutoCSer2\Example\",
+                    SearchPatterns = new string[] { "*.cs" },
+                },
+                new AutoCSer.Deploy.ClientTask.File
+                {
+                    ClientPath = new DirectoryInfo(@"..\..\..\..\..\AutoCSer2\TestCase\").FullName,
+                    ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"AutoCSer2\TestCase\",
+                    SearchPatterns = new string[] { "*.cs" },
                 },
                 new AutoCSer.Deploy.ClientTask.Custom
                 {

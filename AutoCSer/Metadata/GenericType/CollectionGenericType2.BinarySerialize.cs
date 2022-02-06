@@ -14,103 +14,103 @@ namespace AutoCSer.Metadata
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinaryDeSerializeStructCollectionMethod { get; }
+        internal abstract Delegate BinaryDeSerializeStructCollectionMethod { get; }
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinaryDeSerializeClassCollectionMethod { get; }
+        internal abstract Delegate BinaryDeSerializeClassCollectionMethod { get; }
 
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumByteCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumByteCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumSByteCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumSByteCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumUShortCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumUShortCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumShortCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumShortCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumUIntCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumUIntCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumIntCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumIntCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumULongCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumULongCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructEnumLongCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructEnumLongCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumByteCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumByteCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumSByteCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumSByteCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumUShortCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumUShortCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumShortCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumShortCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumUIntCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumUIntCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumIntCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumIntCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumULongCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumULongCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassEnumLongCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassEnumLongCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeStructCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeStructCollectionMethod { get; }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal abstract MethodInfo BinarySerializeClassCollectionMethod { get; }
+        internal abstract Delegate BinarySerializeClassCollectionMethod { get; }
     }
     /// <summary>
     /// 泛型类型元数据
@@ -121,169 +121,170 @@ namespace AutoCSer.Metadata
          where Type1 : ICollection<Type2>
     {
         /// <summary>
-        /// 反序列化委托
+        /// 获取当前类型
         /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerialize(ref Type1 value);
+        internal override TypeKey CurrentType { get { return new TypeKey(typeof(Type1), typeof(Type2)); } }
+
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinaryDeSerializeStructCollectionMethod
+        internal override Delegate BinaryDeSerializeStructCollectionMethod
         {
-            get { return ((deSerialize)GenericType.BinaryDeSerializer.structCollection<Type1, Type2>).Method; }
+            get { return (AutoCSer.BinaryDeSerializer.DeSerializeDelegate<Type1>)BinaryDeSerializer.StructCollection<Type1, Type2>; }
         }
         /// <summary>
         /// 获取二进制反序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinaryDeSerializeClassCollectionMethod
+        internal override Delegate BinaryDeSerializeClassCollectionMethod
         {
-            get { return ((deSerialize)GenericType.BinaryDeSerializer.classCollection<Type1, Type2>).Method; }
+            get { return (AutoCSer.BinaryDeSerializer.DeSerializeDelegate<Type1>)BinaryDeSerializer.ClassCollection<Type1, Type2>; }
         }
 
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumByteCollectionMethod
+        internal override Delegate BinarySerializeStructEnumByteCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumByteCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumByteCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumSByteCollectionMethod
+        internal override Delegate BinarySerializeStructEnumSByteCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumSByteCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumSByteCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumUShortCollectionMethod
+        internal override Delegate BinarySerializeStructEnumUShortCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumUShortCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumUShortCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumShortCollectionMethod
+        internal override Delegate BinarySerializeStructEnumShortCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumShortCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumShortCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumUIntCollectionMethod
+        internal override Delegate BinarySerializeStructEnumUIntCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumUIntCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumUIntCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumIntCollectionMethod
+        internal override Delegate BinarySerializeStructEnumIntCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumIntCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumIntCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumULongCollectionMethod
+        internal override Delegate BinarySerializeStructEnumULongCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumULongCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumULongCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructEnumLongCollectionMethod
+        internal override Delegate BinarySerializeStructEnumLongCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structEnumLongCollection<Type2, Type1>).Method; }
-        }        /// <summary>
-        /// 获取二进制序列化函数信息
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumByteCollectionMethod
-        {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumByteCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructEnumLongCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumSByteCollectionMethod
+        internal override Delegate BinarySerializeClassEnumByteCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumSByteCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumByteCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumUShortCollectionMethod
+        internal override Delegate BinarySerializeClassEnumSByteCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumUShortCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumSByteCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumShortCollectionMethod
+        internal override Delegate BinarySerializeClassEnumUShortCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumShortCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumUShortCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumUIntCollectionMethod
+        internal override Delegate BinarySerializeClassEnumShortCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumUIntCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumShortCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumIntCollectionMethod
+        internal override Delegate BinarySerializeClassEnumUIntCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumIntCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumUIntCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumULongCollectionMethod
+        internal override Delegate BinarySerializeClassEnumIntCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumULongCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumIntCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassEnumLongCollectionMethod
+        internal override Delegate BinarySerializeClassEnumULongCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classEnumLongCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumULongCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeStructCollectionMethod
+        internal override Delegate BinarySerializeClassEnumLongCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.structCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassEnumLongCollection<Type2, Type1>; }
         }
         /// <summary>
         /// 获取二进制序列化函数信息
         /// </summary>
         /// <returns></returns>
-        internal override MethodInfo BinarySerializeClassCollectionMethod
+        internal override Delegate BinarySerializeStructCollectionMethod
         {
-            get { return ((Action<Type1>)GenericType.BinarySerializer.classCollection<Type2, Type1>).Method; }
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.StructCollection<Type2, Type1>; }
+        }
+        /// <summary>
+        /// 获取二进制序列化函数信息
+        /// </summary>
+        /// <returns></returns>
+        internal override Delegate BinarySerializeClassCollectionMethod
+        {
+            get { return (Action<BinarySerializer, Type1>)BinarySerializer.ClassCollection<Type2, Type1>; }
         }
     }
 }

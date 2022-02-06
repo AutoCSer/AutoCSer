@@ -9,7 +9,7 @@ namespace AutoCSer.Metadata
     /// <summary>
     /// 泛型类型元数据
     /// </summary>
-    internal abstract partial class GenericType2
+    internal abstract class GenericType2Base
     {
         /// <summary>
         /// 类型关键字
@@ -24,6 +24,16 @@ namespace AutoCSer.Metadata
             /// 泛型类型
             /// </summary>
             internal Type Type2;
+            /// <summary>
+            /// 类型关键字
+            /// </summary>
+            /// <param name="type1"></param>
+            /// <param name="type2"></param>
+            internal TypeKey(Type type1, Type type2)
+            {
+                Type1 = type1;
+                Type2 = type2;
+            }
             /// <summary>
             /// 
             /// </summary>
@@ -51,10 +61,30 @@ namespace AutoCSer.Metadata
                 return Equals((TypeKey)obj);
             }
         }
+
+        /// <summary>
+        /// 获取当前类型
+        /// </summary>
+        internal abstract TypeKey CurrentType { get; }
+        /// <summary>
+        /// 获取获取当前类型
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected static TypeKey getCurrentType(GenericType2Base value)
+        {
+            return value.CurrentType;
+        }
+    }
+    /// <summary>
+    /// 泛型类型元数据
+    /// </summary>
+    internal abstract partial class GenericType2 : GenericType2Base
+    {
         /// <summary>
         /// 泛型类型元数据缓存
         /// </summary>
-        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<TypeKey, GenericType2> cache = new LockEquatableLastDictionary<TypeKey, GenericType2>();
+        private static readonly AutoCSer.Threading.LockLastDictionary<TypeKey, GenericType2> cache = new LockLastDictionary<TypeKey, GenericType2>(getCurrentType);
         /// <summary>
         /// 创建泛型类型元数据
         /// </summary>
@@ -79,11 +109,15 @@ namespace AutoCSer.Metadata
         public static GenericType2 Get(Type type1, Type type2)
         {
             GenericType2 value;
-            TypeKey typeKey = new TypeKey { Type1 = type1, Type2 = type2 };
-            if (!cache.TryGetValue(ref typeKey, out value))
+            TypeKey typeKey = new TypeKey(type1, type2);
+            if (!cache.TryGetValue(typeKey, out value))
             {
-                value = new UnionType { Value = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.GenericType2;
-                cache.Set(ref typeKey, value);
+                try
+                {
+                    value = new UnionType.GenericType2 { Object = createMethod.MakeGenericMethod(type1, type2).Invoke(null, null) }.Value;
+                    cache.Set(typeKey, value);
+                }
+                finally { cache.Exit(); }
             }
             return value;
         }
@@ -106,19 +140,8 @@ namespace AutoCSer.Metadata
     internal sealed partial class GenericType2<Type1, Type2> : GenericType2
     {
         /// <summary>
-        /// 反序列化委托
+        /// 获取当前类型
         /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerializeDictionary(ref Dictionary<Type1, Type2> value);
-        /// <summary>
-        /// 反序列化委托
-        /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerializeKeyValuePair(ref KeyValuePair<Type1, Type2> value);
-        /// <summary>
-        /// 反序列化委托
-        /// </summary>
-        /// <param name="value">目标数据</param>
-        internal delegate void deSerialize1(ref Type1 value);
+        internal override TypeKey CurrentType { get { return new TypeKey(typeof(Type1), typeof(Type2)); } }
     }
 }

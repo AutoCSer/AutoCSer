@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Net.Security;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Threading;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -104,8 +104,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                Console.WriteLine(error.ToString());
-                server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception  | LogLevel.AutoCSer);
             }
             HeaderError();
         }
@@ -123,7 +122,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             HeaderError();
         }
@@ -193,7 +192,7 @@ namespace AutoCSer.Net.Http
                 }
                 catch (Exception error)
                 {
-                    Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                    Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                 }
             }
             HeaderError();
@@ -289,7 +288,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, error);
+                Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             if (isHeaderError) HeaderError();
             else ResponseError(ResponseState.ServerError500);
@@ -333,7 +332,7 @@ namespace AutoCSer.Net.Http
                     return true;
                 }
                 ResponseSize = response.BodySize;
-                fixed (byte* headerBufferFixed = Header.Buffer.Buffer)
+                fixed (byte* headerBufferFixed = Header.Buffer.GetFixedBuffer())
                 {
                     byte* responseSizeFixed = headerBufferFixed + (Header.Buffer.StartIndex + Http.Header.ReceiveBufferSize);
                     RangeLength responseSizeIndex, bodySizeIndex = new RangeLength(), rangeStartIndex = new RangeLength(), rangeEndIndex = new RangeLength();
@@ -345,9 +344,9 @@ namespace AutoCSer.Net.Http
                             if (state == ResponseState.Ok200)
                             {
                                 long rangeStart = Header.RangeStart, rangeEnd = Header.RangeEnd;
-                                rangeStartIndex = Number.ToBytes((ulong)rangeStart, responseSizeFixed + 20 * 2);
-                                rangeEndIndex = Number.ToBytes((ulong)rangeEnd, responseSizeFixed + 20 * 3);
-                                bodySizeIndex = Number.ToBytes((ulong)ResponseSize, responseSizeFixed + 20);
+                                rangeStartIndex = NumberExtension.ToBytes((ulong)rangeStart, responseSizeFixed + 20 * 2);
+                                rangeEndIndex = NumberExtension.ToBytes((ulong)rangeEnd, responseSizeFixed + 20 * 3);
+                                bodySizeIndex = NumberExtension.ToBytes((ulong)ResponseSize, responseSizeFixed + 20);
                                 response.State = state = ResponseState.PartialContent206;
                                 ResponseSize = Header.RangeSize;
                             }
@@ -364,7 +363,7 @@ namespace AutoCSer.Net.Http
                         *responseSizeFixed = (byte)((int)ResponseSize + '0');
                         responseSizeIndex = new RangeLength(0, 1);
                     }
-                    else responseSizeIndex = Number.ToBytes((ulong)ResponseSize, responseSizeFixed);
+                    else responseSizeIndex = NumberExtension.ToBytes((ulong)ResponseSize, responseSizeFixed);
                     ResponseStateAttribute stateAttribute = EnumAttribute<ResponseState, ResponseStateAttribute>.Array((byte)state);
                     if (stateAttribute == null) stateAttribute = EnumAttribute<ResponseState, ResponseStateAttribute>.Array((byte)ResponseState.ServerError500);
                     int index = httpVersionSize + stateAttribute.Text.Length + contentLengthSize + responseSizeIndex.Length + 2 + 2;
@@ -374,23 +373,23 @@ namespace AutoCSer.Net.Http
                     }
                     Cookie cookie = null;
                     SubBuffer.PoolBufferFull buffer = GetBuffer(index = GetResponseHeaderIndex(response, index, ref cookie));
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.GetFixedBuffer())
                     {
                         byte* bufferStart = bufferFixed + buffer.StartIndex, write = bufferStart + httpVersionSize;
                         writeHttpVersion(bufferStart);
                         stateAttribute.Write(write);
                         writeContentLength(write += stateAttribute.Text.Length);
-                        Memory.SimpleCopyNotNull64(responseSizeFixed + responseSizeIndex.Start, write += contentLengthSize, responseSizeIndex.Length);
+                        AutoCSer.Memory.Common.SimpleCopyNotNull64(responseSizeFixed + responseSizeIndex.Start, write += contentLengthSize, responseSizeIndex.Length);
                         *(short*)(write += responseSizeIndex.Length) = 0x0a0d;
                         write += sizeof(short);
                         if (state == ResponseState.PartialContent206)
                         {
                             writeRange(write);
-                            Memory.SimpleCopyNotNull64(responseSizeFixed + (rangeStartIndex.Start + 20 * 2), write += rangeSize, rangeStartIndex.Length);
+                            AutoCSer.Memory.Common.SimpleCopyNotNull64(responseSizeFixed + (rangeStartIndex.Start + 20 * 2), write += rangeSize, rangeStartIndex.Length);
                             *(write += rangeStartIndex.Length) = (byte)'-';
-                            Memory.SimpleCopyNotNull64(responseSizeFixed + (rangeEndIndex.Start + 20 * 3), ++write, rangeEndIndex.Length);
+                            AutoCSer.Memory.Common.SimpleCopyNotNull64(responseSizeFixed + (rangeEndIndex.Start + 20 * 3), ++write, rangeEndIndex.Length);
                             *(write += rangeEndIndex.Length) = (byte)'/';
-                            Memory.SimpleCopyNotNull64(responseSizeFixed + (bodySizeIndex.Start + 20), ++write, bodySizeIndex.Length);
+                            AutoCSer.Memory.Common.SimpleCopyNotNull64(responseSizeFixed + (bodySizeIndex.Start + 20), ++write, bodySizeIndex.Length);
                             *(short*)(write += bodySizeIndex.Length) = 0x0a0d;
                             write += sizeof(short);
                         }
@@ -416,7 +415,7 @@ namespace AutoCSer.Net.Http
                                     if (Header.IsKeepAlive != 0 && (responseFlag & ResponseFlag.CanHeaderSize) != 0 && index <= response.Body.Start && Header.IsRange == 0)
                                     {
                                         if ((socket = Socket) == null) return false;
-                                        fixed (byte* bodyFixed = response.Body.Array) Memory.CopyNotNull(bufferStart, bodyFixed + response.Body.Start - index, index);
+                                        fixed (byte* bodyFixed = response.Body.GetFixedBuffer()) AutoCSer.Memory.Common.CopyNotNull(bufferStart, bodyFixed + response.Body.Start - index, index);
                                         response.SetHeaderSize(index);
 
                                         Data = response.Body;
@@ -457,7 +456,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, error);
+                Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             finally { Http.Response.Push(ref response); }
             return false;
@@ -499,7 +498,7 @@ namespace AutoCSer.Net.Http
                             break;
                     }
                 }
-                else if ((count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0)) && Date.NowTime.Now <= Timeout)
+                else if ((count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0)) && AutoCSer.Threading.SecondTimer.Now <= Timeout)
                 {
                     System.Net.Sockets.Socket socket = Socket;
                     if (socket != null)
@@ -511,7 +510,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             HeaderError();
         }
@@ -584,7 +583,7 @@ namespace AutoCSer.Net.Http
                     }
                     catch (Exception error)
                     {
-                        Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                        Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -640,7 +639,7 @@ namespace AutoCSer.Net.Http
             }
             catch (Exception error)
             {
-                Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Error, error);
+                Server.RegisterServer.TcpServer.Log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             HeaderError();
         }

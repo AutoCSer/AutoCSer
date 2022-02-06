@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpSimpleServer.Emit
 {
@@ -77,7 +77,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
             ServerType = serverType;
             SocketType = socketType;
             ServerTypeName = serverType.fullName();
-            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.Log.ILog), typeof(bool) });
+            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.ILog), typeof(bool) });
             DoCommandParameterTypes = new Type[] { typeof(int), socketType, typeof(SubArray<byte>).MakeByRefType() };
             MethodParameterTypes = new Type[] { socketType, typeof(SubArray<byte>).MakeByRefType() };
 
@@ -91,32 +91,11 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         /// <summary>
         /// TCP 服务器端同步调用套接字对象通过函数验证处理
         /// </summary>
-        internal static readonly MethodInfo ServerSocketDeSerializeMethod;
-        /// <summary>
-        /// TCP 服务器端同步调用套接字对象通过函数验证处理
-        /// </summary>
         internal static readonly MethodInfo ServerSocketSetVerifyMethodMethod;
         static ServerMetadata()
         {
             Type subArrayByteRefType = typeof(SubArray<byte>).MakeByRefType();
-            foreach (MethodInfo method in typeof(ServerSocket).GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            {
-                if (method.ReturnType == typeof(bool))
-                {
-                    if (method.IsGenericMethod && method.Name == "DeSerialize")
-                    {
-                        ParameterInfo[] parameters = method.GetParameters();
-                        if (parameters.Length == 3 && parameters[0].ParameterType == subArrayByteRefType && parameters[1].ParameterType.IsByRef && parameters[2].ParameterType == typeof(bool)) ServerSocketDeSerializeMethod = method;
-                    }
-                }
-                else if (method.ReturnType == typeof(void))
-                {
-                    if (method.Name == "SetVerifyMethod" && method.GetParameters().Length == 0)
-                    {
-                        ServerSocketSetVerifyMethodMethod = method;
-                    }
-                }
-            }
+            ServerSocketSetVerifyMethodMethod = ((Action<ServerSocket>)ServerSocket.SetVerifyMethod).Method;
         }
     }
 }

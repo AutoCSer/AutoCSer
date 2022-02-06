@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 

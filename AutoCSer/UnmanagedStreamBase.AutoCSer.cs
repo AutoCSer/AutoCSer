@@ -8,7 +8,7 @@ namespace AutoCSer
     /// <summary>
     /// 非托管内存数据流
     /// </summary>
-    public unsafe abstract partial class UnmanagedStreamBase
+    //public unsafe abstract partial class UnmanagedStreamBase
     {
         /// <summary>
         /// 空闲字节数
@@ -16,17 +16,6 @@ namespace AutoCSer
         public int FreeSize
         {
             get { return Data.ByteSize - ByteSize; }
-        }
-        /// <summary>
-        /// 移动当前位置
-        /// </summary>
-        /// <param name="size"></param>
-        public void MoveSize(int size)
-        {
-            int byteSize = ByteSize + size;
-            if (byteSize > Data.ByteSize) throw new IndexOutOfRangeException("ByteSize[" + ByteSize.toString() + "] + size[" + size.toString() + "] > Data.ByteSize[" + Data.ByteSize.toString() + "]");
-            if (byteSize < 0) throw new IndexOutOfRangeException("ByteSize[" + ByteSize.toString() + "] + size[" + size.toString() + "] < 0");
-            ByteSize = byteSize;
         }
         /// <summary>
         /// 写字符串

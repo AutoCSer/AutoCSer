@@ -28,7 +28,7 @@ namespace AutoCSer.OpenAPI.Weixin
         {
             if (--days < (byte)7)
             {
-                DateTime today = Date.NowTime.Now;
+                DateTime today = AutoCSer.Threading.SecondTimer.Now;
                 if (begin_date < (today = new DateTime(today.Year, today.Month, today.Day)))
                 {
                     if (days == 0)
@@ -50,7 +50,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         public static string ToString(DateTime begin_date)
         {
-            DateTime today = Date.NowTime.Now;
+            DateTime today = AutoCSer.Threading.SecondTimer.Now;
             return begin_date < (today = new DateTime(today.Year, today.Month, today.Day)) ? begin_date.toDateString('-') : null;
         }
     }

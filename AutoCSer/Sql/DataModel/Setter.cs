@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 #if !NOJIT
 using/**/System.Reflection.Emit;
@@ -15,6 +15,10 @@ namespace AutoCSer.Sql.DataModel
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     internal struct Setter
     {
+        /// <summary>
+        /// SQL 客户端类型
+        /// </summary>
+        private readonly ClientKind clientKind;
         /// <summary>
         /// 动态函数
         /// </summary>
@@ -31,9 +35,11 @@ namespace AutoCSer.Sql.DataModel
         /// 动态函数
         /// </summary>
         /// <param name="type"></param>
-        public Setter(Type type)
+        /// <param name="clientKind"></param>
+        public Setter(Type type, ClientKind clientKind)
         {
-            dynamicMethod = new DynamicMethod("SqlModelSetter", null, new Type[] { typeof(DbDataReader), type, typeof(MemberMap) }, type, true);
+            this.clientKind = clientKind;
+            dynamicMethod = new DynamicMethod("SqlModelSetter" + ((byte)clientKind).toString(), null, new Type[] { typeof(DbDataReader), type, typeof(MemberMap) }, type, true);
             generator = dynamicMethod.GetILGenerator();
             indexMember = generator.DeclareLocal(typeof(int));
             generator.Emit(OpCodes.Ldc_I4_0);
@@ -54,7 +60,7 @@ namespace AutoCSer.Sql.DataModel
                 generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldflda, field.FieldInfo);
                 generator.Emit(OpCodes.Ldloca_S, indexMember);
-                generator.Emit(OpCodes.Call, ColumnGroup.Setter.GetTypeSetter(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).SetMethod);
             }
             else
             {
@@ -64,7 +70,7 @@ namespace AutoCSer.Sql.DataModel
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldloc_0);
-                    generator.Emit(OpCodes.Callvirt, field.DataReaderMethod);
+                    generator.call(field.GetDataReaderDelegate(clientKind).Method);
                     if (field.ToModelCastMethod != null) generator.Emit(OpCodes.Call, field.ToModelCastMethod);
                     generator.Emit(OpCodes.Stfld, field.FieldInfo);
                 }
@@ -93,12 +99,12 @@ namespace AutoCSer.Sql.DataModel
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldloc_0);
-                    generator.Emit(OpCodes.Callvirt, field.DataReaderMethod);
+                    generator.call(field.GetDataReaderDelegate(clientKind).Method);
                     if (field.DataType == field.NullableDataType)
                     {
                         if (field.ToModelCastMethod != null) generator.Emit(OpCodes.Call, field.ToModelCastMethod);
                     }
-                    else generator.Emit(OpCodes.Newobj, AutoCSer.Emit.NullableConstructor.Constructors[field.DataType]);
+                    else generator.call(AutoCSer.Emit.NullableConstructor.Constructors[field.DataType]);
                     generator.Emit(OpCodes.Stfld, field.FieldInfo);
                     generator.MarkLabel(end);
                 }
@@ -196,6 +202,19 @@ namespace AutoCSer.Sql.DataModel
                 if (setter != null) setter(reader, value, memberMap);
 #endif
             }
+            /// <summary>
+            /// 设置字段值
+            /// </summary>
+            /// <param name="reader">字段读取器物理存储</param>
+            /// <param name="value">目标数据</param>
+            /// <param name="memberMap">成员位图</param>
+            /// <param name="clientKind"></param>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            public static void Set(DbDataReader reader, modelType value, MemberMap memberMap, ClientKind clientKind)
+            {
+                if (clientKind != ClientKind.Excel) Set(reader, value, memberMap);
+                else AutoCSer.Sql.Excel.DataModel.Model<modelType>.Setter.Set(reader, value, memberMap);
+            }
 #if NOJIT
             /// <summary>
             /// 字段集合
@@ -210,14 +229,14 @@ namespace AutoCSer.Sql.DataModel
 
             static Setter()
             {
-                if (attribute != null)
+                if (Attribute != null)
                 {
 #if NOJIT
                     fields = new sqlModel.setField[Fields.Length];
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.Setter dynamicMethod = new DataModel.Setter(typeof(modelType));
+                    DataModel.Setter dynamicMethod = new DataModel.Setter(typeof(modelType), ClientKind.Sql2000);
                     foreach (Field member in Fields) dynamicMethod.Push(member);
                     setter = (Action<DbDataReader, modelType, MemberMap>)dynamicMethod.Create<Action<DbDataReader, modelType, MemberMap>>();
 #endif

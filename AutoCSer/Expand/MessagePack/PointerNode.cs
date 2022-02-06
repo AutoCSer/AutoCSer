@@ -118,8 +118,8 @@ namespace AutoCSer.MessagePack
                 switch (*start - 0xC0)
                 {
                     case 0xC0 - 0xC0: return null;
-                    case 0xDC - 0xC0: return getArray(start + (1 + sizeof(ushort)), AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1));
-                    case 0xDD - 0xC0: return getArray(start + (1 + sizeof(uint)), AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1));
+                    case 0xDC - 0xC0: return getArray(start + (1 + sizeof(ushort)), AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1));
+                    case 0xDD - 0xC0: return getArray(start + (1 + sizeof(uint)), AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1));
                 }
                 throw new InvalidCastException();
             }
@@ -153,8 +153,8 @@ namespace AutoCSer.MessagePack
                 switch (*start - 0xC0)
                 {
                     case 0xC0 - 0xC0: return null;
-                    case 0xDE - 0xC0: return getMap(start + (1 + sizeof(ushort)), AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1));
-                    case 0xDF - 0xC0: return getMap(start + (1 + sizeof(uint)), AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1));
+                    case 0xDE - 0xC0: return getMap(start + (1 + sizeof(ushort)), AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1));
+                    case 0xDF - 0xC0: return getMap(start + (1 + sizeof(uint)), AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1));
                 }
                 throw new InvalidCastException();
             }
@@ -188,8 +188,8 @@ namespace AutoCSer.MessagePack
                 switch (*start - 0xC0)
                 {
                     case 0xC0 - 0xC0: return default(KeyValue<PointerNode, PointerNode>);
-                    case 0xDE - 0xC0: return getMap0(start + (1 + sizeof(ushort)), AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1));
-                    case 0xDF - 0xC0: return getMap0(start + (1 + sizeof(uint)), AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1));
+                    case 0xDE - 0xC0: return getMap0(start + (1 + sizeof(ushort)), AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1));
+                    case 0xDF - 0xC0: return getMap0(start + (1 + sizeof(uint)), AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1));
                 }
                 throw new InvalidCastException();
             }
@@ -197,22 +197,22 @@ namespace AutoCSer.MessagePack
         /// <summary>
         /// 内存数据块
         /// </summary>
-        public Pointer.Size Memory
+        public AutoCSer.Memory.Pointer Memory
         {
             get
             {
                 switch (*start - 0xC0)
                 {
-                    case 0xC0 - 0xC0: return default(Pointer.Size);
+                    case 0xC0 - 0xC0: return default(AutoCSer.Memory.Pointer);
                     case 0xC4 - 0xC0:
                     case 0xD9 - 0xC0:
                         return getMemory(start + 2, start[1]);
                     case 0xC5 - 0xC0:
                     case 0xDA - 0xC0:
-                        return getMemory(start + (1 + sizeof(ushort)), AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1));
+                        return getMemory(start + (1 + sizeof(ushort)), AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1));
                     case 0xC6 - 0xC0:
                     case 0xDB - 0xC0:
-                        return getMemory(start + (1 + sizeof(uint)), (int)AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1));
+                        return getMemory(start + (1 + sizeof(uint)), (int)AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1));
                 }
                 switch ((*start >> 4) - 0xA)
                 {
@@ -230,10 +230,10 @@ namespace AutoCSer.MessagePack
         /// <param name="size"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private Pointer.Size getMemory(byte* data, int size)
+        private AutoCSer.Memory.Pointer getMemory(byte* data, int size)
         {
-            if (size >= 0 && data + size <= end) return new Pointer.Size { Data = data, ByteSize = size };
-            return default(Pointer.Size);
+            if (size >= 0 && data + size <= end) return new AutoCSer.Memory.Pointer(data, size);
+            return default(AutoCSer.Memory.Pointer);
         }
         /// <summary>
         /// 字节数组
@@ -242,14 +242,14 @@ namespace AutoCSer.MessagePack
         {
             get
             {
-                Pointer.Size memory = Memory;
+                AutoCSer.Memory.Pointer memory = Memory;
                 if (memory.ByteSize > 0)
                 {
                     byte[] data = new byte[memory.ByteSize];
-                    AutoCSer.Memory.CopyNotNull(memory.Byte, data, memory.ByteSize);
+                    AutoCSer.Memory.Common.CopyNotNull(memory.Byte, data, memory.ByteSize);
                     return data;
                 }
-                return memory.Data == null ? null : NullValue<byte>.Array;
+                return memory.Data == null ? null : EmptyArray<byte>.Array;
             }
         }
         /// <summary>
@@ -259,11 +259,11 @@ namespace AutoCSer.MessagePack
         /// <returns></returns>
         public string GetString(Encoding encoding)
         {
-            Pointer.Size memory = Memory;
+            AutoCSer.Memory.Pointer memory = Memory;
             if (memory.ByteSize > 0)
             {
                 int size = encoding.GetCharCount(memory.Byte, memory.ByteSize);
-                string value = AutoCSer.Extension.StringExtension.FastAllocateString(size);
+                string value = AutoCSer.Extensions.StringExtension.FastAllocateString(size);
                 fixed (char* valueFixed = value) encoding.GetChars(memory.Byte, memory.ByteSize, valueFixed, size);
                 return value;
             }
@@ -283,13 +283,13 @@ namespace AutoCSer.MessagePack
             switch (*start - 0xCC)
             {
                 case 0xCC - 0xCC: return *(byte*)(start + 1);
-                case 0xCD - 0xCC: return AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1);
-                case 0xCE - 0xCC: return AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1);
-                case 0xCF - 0xCC: return (long)AutoCSer.Extension.Memory_Expand.GetULongBigEndian(start + 1);
+                case 0xCD - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1);
+                case 0xCE - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1);
+                case 0xCF - 0xCC: return (long)AutoCSer.Extensions.MemoryExtensionExpand.GetULongBigEndian(start + 1);
                 case 0xD0 - 0xCC: return *(sbyte*)(start + 1);
-                case 0xD1 - 0xCC: return AutoCSer.Extension.Memory_Expand.GetShortBigEndian(start + 1);
-                case 0xD2 - 0xCC: return AutoCSer.Extension.Memory_Expand.GetIntBigEndian(start + 1);
-                case 0xD3 - 0xCC: return AutoCSer.Extension.Memory_Expand.GetLongBigEndian(start + 1);
+                case 0xD1 - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetShortBigEndian(start + 1);
+                case 0xD2 - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetIntBigEndian(start + 1);
+                case 0xD3 - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetLongBigEndian(start + 1);
             }
             if ((*start & 0x80) == 0) return *start;
             if ((*start & 0xE0) == 0xE0) return *(sbyte*)start;
@@ -309,13 +309,13 @@ namespace AutoCSer.MessagePack
             switch (*start - 0xCC)
             {
                 case 0xCC - 0xCC: return *(byte*)(start + 1);
-                case 0xCD - 0xCC: return AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1);
-                case 0xCE - 0xCC: return AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1);
-                case 0xCF - 0xCC: return AutoCSer.Extension.Memory_Expand.GetULongBigEndian(start + 1);
+                case 0xCD - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1);
+                case 0xCE - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1);
+                case 0xCF - 0xCC: return AutoCSer.Extensions.MemoryExtensionExpand.GetULongBigEndian(start + 1);
                 case 0xD0 - 0xCC: return (ulong)(long)*(sbyte*)(start + 1);
-                case 0xD1 - 0xCC: return (ulong)(long)AutoCSer.Extension.Memory_Expand.GetShortBigEndian(start + 1);
-                case 0xD2 - 0xCC: return (ulong)(long)AutoCSer.Extension.Memory_Expand.GetIntBigEndian(start + 1);
-                case 0xD3 - 0xCC: return (ulong)AutoCSer.Extension.Memory_Expand.GetLongBigEndian(start + 1);
+                case 0xD1 - 0xCC: return (ulong)(long)AutoCSer.Extensions.MemoryExtensionExpand.GetShortBigEndian(start + 1);
+                case 0xD2 - 0xCC: return (ulong)(long)AutoCSer.Extensions.MemoryExtensionExpand.GetIntBigEndian(start + 1);
+                case 0xD3 - 0xCC: return (ulong)AutoCSer.Extensions.MemoryExtensionExpand.GetLongBigEndian(start + 1);
             }
             if ((*start & 0x80) == 0) return *start;
             if ((*start & 0xE0) == 0xE0) return (ulong)(long)*(sbyte*)start;
@@ -382,7 +382,7 @@ namespace AutoCSer.MessagePack
         public byte[] GetData()
         {
             byte[] data = new byte[(int)(end - start)];
-            fixed (byte* dataFixed = data) AutoCSer.Memory.CopyNotNull(start, dataFixed, data.Length);
+            fixed (byte* dataFixed = data) AutoCSer.Memory.Common.CopyNotNull(start, dataFixed, data.Length);
             return data;
         }
 
@@ -395,7 +395,7 @@ namespace AutoCSer.MessagePack
         private PointerNode[] getArray(byte* start, uint size)
         {
             if (start > this.end) return null;
-            if (size == 0) return NullValue<PointerNode>.Array;
+            if (size == 0) return EmptyArray<PointerNode>.Array;
             PointerNode[] nodeArray = new PointerNode[size];
             for (uint index = 0; index != size; ++index)
             {
@@ -415,7 +415,7 @@ namespace AutoCSer.MessagePack
         private KeyValue<PointerNode, PointerNode>[] getMap(byte* start, uint size)
         {
             if (start > this.end) return null;
-            if (size == 0) return NullValue<KeyValue<PointerNode, PointerNode>>.Array;
+            if (size == 0) return EmptyArray<KeyValue<PointerNode, PointerNode>>.Array;
             KeyValue<PointerNode, PointerNode>[] nodeArray = new KeyValue<PointerNode, PointerNode>[size];
             for (uint index = 0; index != size; ++index)
             {
@@ -476,13 +476,13 @@ namespace AutoCSer.MessagePack
                     return start + (start[1] + (1 + 1));
                 case 0xC5 - 0xC0:
                 case 0xDA - 0xC0:
-                    return movePointer(start, (AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1) + (1 + sizeof(ushort))));
+                    return movePointer(start, (AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1) + (1 + sizeof(ushort))));
                 case 0xC6 - 0xC0:
                 case 0xDB - 0xC0:
-                    return movePointer(start, AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1) + (1 + sizeof(uint)));
+                    return movePointer(start, AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1) + (1 + sizeof(uint)));
                 case 0xC7 - 0xC0: return start + (start[1] + (2 + 1));
-                case 0xC8 - 0xC0: return movePointer(start, (AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1) + (2 + sizeof(ushort))));
-                case 0xC9 - 0xC0: return movePointer(start, (AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1) + (2 + sizeof(uint))));
+                case 0xC8 - 0xC0: return movePointer(start, (AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1) + (2 + sizeof(ushort))));
+                case 0xC9 - 0xC0: return movePointer(start, (AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1) + (2 + sizeof(uint))));
                 case 0xCA - 0xC0: return start + (1 + sizeof(float));
                 case 0xCB - 0xC0: return start + (1 + sizeof(double));
                 case 0xCC - 0xC0: return start + (1 + sizeof(byte));
@@ -498,10 +498,10 @@ namespace AutoCSer.MessagePack
                 case 0xD6 - 0xC0: return start + (1 + 1 + 4);
                 case 0xD7 - 0xC0: return start + (1 + 1 + 8);
                 case 0xD8 - 0xC0: return start + (1 + 1 + 16);
-                case 0xDC - 0xC0: return ignoreArray(start + (1 + sizeof(ushort)), AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1));
-                case 0xDD - 0xC0: return ignoreArray(start + (1 + sizeof(uint)), AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1));
-                case 0xDE - 0xC0: return ignoreMap(start + (1 + sizeof(ushort)), AutoCSer.Extension.Memory_Expand.GetUShortBigEndian(start + 1));
-                case 0xDF - 0xC0: return ignoreMap(start + (1 + sizeof(uint)), AutoCSer.Extension.Memory_Expand.GetUIntBigEndian(start + 1));
+                case 0xDC - 0xC0: return ignoreArray(start + (1 + sizeof(ushort)), AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1));
+                case 0xDD - 0xC0: return ignoreArray(start + (1 + sizeof(uint)), AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1));
+                case 0xDE - 0xC0: return ignoreMap(start + (1 + sizeof(ushort)), AutoCSer.Extensions.MemoryExtensionExpand.GetUShortBigEndian(start + 1));
+                case 0xDF - 0xC0: return ignoreMap(start + (1 + sizeof(uint)), AutoCSer.Extensions.MemoryExtensionExpand.GetUIntBigEndian(start + 1));
             }
             switch ((*start >> 4) - 0x8)
             {

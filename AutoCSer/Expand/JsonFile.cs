@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer
 {
@@ -28,7 +28,7 @@ namespace AutoCSer
         /// <summary>
         /// 日志处理
         /// </summary>
-        private readonly AutoCSer.Log.ILog log;
+        private readonly AutoCSer.ILog log;
         /// <summary>
         /// 数据对象
         /// </summary>
@@ -40,11 +40,11 @@ namespace AutoCSer
         /// <param name="value">数据对象</param>
         /// <param name="encoding"></param>
         /// <param name="log">日志处理</param>
-        public JsonFile(string fileName, valueType value = null, Encoding encoding = null, AutoCSer.Log.ILog log = null)
+        public JsonFile(string fileName, valueType value = null, Encoding encoding = null, AutoCSer.ILog log = null)
         {
             this.fileName = fileName;
-            this.encoding = encoding ?? AutoCSer.Config.Pub.Default.Encoding;
-            this.log = log ?? AutoCSer.Log.Pub.Log;
+            this.encoding = encoding ?? AutoCSer.Common.Config.Encoding;
+            this.log = log ?? AutoCSer.LogHelper.Default;
             bool isFile = false, isJson = false;
             try
             {
@@ -52,7 +52,7 @@ namespace AutoCSer
                 if (file.Exists)
                 {
                     isFile = true;
-                    if (AutoCSer.Json.Parser.Parse(File.ReadAllText(fileName, this.encoding), ref value))
+                    if (AutoCSer.JsonDeSerializer.DeSerialize(File.ReadAllText(fileName, this.encoding), ref value))
                     {
                         Value = value;
                         isJson = true;
@@ -66,7 +66,7 @@ namespace AutoCSer
             }
             catch (Exception error)
             {
-                log.Add(Log.LogType.Error, error, fileName);
+                log.Exception(error, fileName, LogLevel.Exception | LogLevel.AutoCSer);
             }
             if (isFile && !isJson) AutoCSer.IO.File.MoveBak(fileName);
         }
@@ -78,7 +78,7 @@ namespace AutoCSer
         public bool Rework(valueType value)
         {
             if (value == null) throw new ArgumentNullException();
-            string json = AutoCSer.Json.Serializer.Serialize(value);
+            string json = AutoCSer.JsonSerializer.Serialize(value);
             Monitor.Enter(fileLock);
             try
             {
@@ -119,7 +119,7 @@ namespace AutoCSer
             }
             catch (Exception error)
             {
-                log.Add(Log.LogType.Error, error, fileName);
+                log.Exception(error, fileName, LogLevel.Exception | LogLevel.AutoCSer);
             }
             return false;
         }

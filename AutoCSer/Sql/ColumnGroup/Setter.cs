@@ -2,19 +2,20 @@
 using System.Data.Common;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using AutoCSer.Extensions;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
 namespace AutoCSer.Sql.ColumnGroup
 {
+#if !NOJIT
     /// <summary>
     /// 数据列设置动态函数
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     internal struct Setter
     {
-#if !NOJIT
         /// <summary>
         /// 动态函数
         /// </summary>
@@ -38,13 +39,13 @@ namespace AutoCSer.Sql.ColumnGroup
         /// <param name="field">字段信息</param>
         public void Push(Field field)
         {
-            if (field.DataReaderMethod == null)
+            if (field.DataReaderDelegate == null)
             {
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldflda, field.FieldInfo);
                 generator.Emit(OpCodes.Ldarg_2);
-                generator.Emit(OpCodes.Call, GetTypeSetter(field.DataType));
+                generator.Emit(OpCodes.Call, AutoCSer.Sql.Metadata.GenericType.Get(field.DataType).SetMethod);
             }
             else
             {
@@ -54,7 +55,7 @@ namespace AutoCSer.Sql.ColumnGroup
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldind_I4);
-                    generator.Emit(OpCodes.Callvirt, field.DataReaderMethod);
+                    generator.call(field.DataReaderDelegate.Method);
                     //if (field.IsUnknownJson)
                     generator.Emit(OpCodes.Call, field.ToModelCastMethod);
                     generator.Emit(OpCodes.Stfld, field.FieldInfo);
@@ -86,12 +87,12 @@ namespace AutoCSer.Sql.ColumnGroup
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldind_I4);
-                    generator.Emit(OpCodes.Callvirt, field.DataReaderMethod);
+                    generator.call(field.DataReaderDelegate.Method);
                     if (field.DataType == field.NullableDataType)
                     {
                         if (field.ToModelCastMethod != null) generator.Emit(OpCodes.Call, field.ToModelCastMethod);
                     }
-                    else generator.Emit(OpCodes.Newobj, AutoCSer.Emit.NullableConstructor.Constructors[field.DataType]);
+                    else generator.call(AutoCSer.Emit.NullableConstructor.Constructors[field.DataType]);
                     generator.Emit(OpCodes.Stfld, field.FieldInfo);
                     generator.MarkLabel(end);
                 }
@@ -112,55 +113,8 @@ namespace AutoCSer.Sql.ColumnGroup
             generator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(typeof(delegateType));
         }
-#endif
-
-        /// <summary>
-        /// 类型调用函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> typeSetters = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 类型委托调用函数信息
-        /// </summary>
-        /// <param name="type">数组类型</param>
-        /// <returns>类型委托调用函数信息</returns>
-        internal static MethodInfo GetTypeSetter(Type type)
-        {
-            MethodInfo method;
-            if (typeSetters.TryGetValue(type, out method)) return method;
-            typeSetters.Set(type, method = setMethod.MakeGenericMethod(type));
-            return method;
-        }
-        /// <summary>
-        /// 设置字段值
-        /// </summary>
-        /// <param name="reader">字段读取器物理存储</param>
-        /// <param name="value">目标数据</param>
-        /// <param name="index">当前读取位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void set<valueType>(DbDataReader reader, ref valueType value, ref int index)
-        {
-            Column<valueType>.Setter.Set(reader, ref value, ref index);
-        }
-        /// <summary>
-        /// 设置字段值函数信息
-        /// </summary>
-        private static readonly MethodInfo setMethod = typeof(Setter).GetMethod("set", BindingFlags.Static | BindingFlags.NonPublic);
-
-        /// <summary>
-        /// 清除缓存数据
-        /// </summary>
-        /// <param name="count">保留缓存数据数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clearCache(int count)
-        {
-            typeSetters.Clear();
-        }
-        static Setter()
-        {
-            AutoCSer.Pub.ClearCaches += clearCache;
-        }
     }
+#endif
     /// <summary>
     /// 数据列
     /// </summary>

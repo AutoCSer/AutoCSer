@@ -76,10 +76,11 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>是否修改成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Update(valueType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = false)
+        public ReturnValue Update(valueType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = false)
         {
             valueType cacheLock = this[AutoCSer.Sql.DataModel.Model<modelType>.GetIdentity32(value)];
-            return cacheLock != null && SqlTable.UpdateQueue(value, memberMap, isIgnoreTransaction);
+            if (cacheLock != null) return SqlTable.UpdateQueue(value, memberMap, isIgnoreTransaction);
+            return ReturnType.NotFoundData;
         }
         /// <summary>
         /// 修改数据库记录
@@ -90,11 +91,11 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         /// <returns>是否修改成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void Update(valueType value, MemberMap<modelType> memberMap, Action<valueType> onUpdated, bool isIgnoreTransaction = false)
+        public void Update(valueType value, MemberMap<modelType> memberMap, Action<ReturnValue<valueType>> onUpdated, bool isIgnoreTransaction = false)
         {
             valueType cacheLock = this[AutoCSer.Sql.DataModel.Model<modelType>.GetIdentity32(value)];
             if (cacheLock != null) SqlTable.UpdateQueue(value, memberMap, onUpdated, isIgnoreTransaction);
-            else if (onUpdated != null) onUpdated(null);
+            else if (onUpdated != null) onUpdated(ReturnType.NotFoundData);
         }
         /// <summary>
         /// 删除数据库记录
@@ -103,10 +104,11 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
         /// <returns>是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool Delete(int identity, bool isIgnoreTransaction = false)
+        public ReturnValue Delete(int identity, bool isIgnoreTransaction = false)
         {
             valueType value = this[identity];
-            return value != null && SqlTable.DeleteQueue(value, isIgnoreTransaction);
+            if(value != null) return SqlTable.DeleteQueue(value, isIgnoreTransaction);
+            return ReturnType.NotFoundData;
         }
         /// <summary>
         /// 删除数据库记录
@@ -116,11 +118,11 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
         /// <returns>是否成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void Delete(int identity, Action<valueType> onDeleted, bool isIgnoreTransaction = false)
+        public void Delete(int identity, Action<ReturnValue<valueType>> onDeleted, bool isIgnoreTransaction = false)
         {
             valueType value = this[identity];
             if (value != null) SqlTable.DeleteQueue(value, onDeleted, isIgnoreTransaction);
-            else if (onDeleted != null) onDeleted(null);
+            else if (onDeleted != null) onDeleted(ReturnType.NotFoundData);
         }
     }
 }

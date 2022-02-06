@@ -64,7 +64,7 @@ namespace AutoCSer.Net.Packet
         /// <param name="data">数据</param>
         public Igmp(ref SubArray<byte> data)
         {
-            this.data = data.Length >= DefaultSize ? data : default(SubArray<byte>);
+            this.data = data.Length >= DefaultSize ? data : new SubArray<byte>();
         }
     }
 }

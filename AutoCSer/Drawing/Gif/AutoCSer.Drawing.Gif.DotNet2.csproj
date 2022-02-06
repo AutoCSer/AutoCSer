@@ -45,6 +45,11 @@
     <Compile Include="DataType.cs" />
     <Compile Include="Decoder.cs" />
     <Compile Include="File.cs" />
+    <Compile Include="UnionType\Application.cs" />
+    <Compile Include="UnionType\ByteArray.cs" />
+    <Compile Include="UnionType\Image.cs" />
+    <Compile Include="UnionType\PlainText.cs" />
+    <Compile Include="UnionType\PraphicControl.cs" />
     <Compile Include="Writer.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="ImageFillBitmap.cs" />
@@ -52,7 +57,6 @@
     <Compile Include="PraphicControl.cs" />
     <Compile Include="PraphicControlMethodType.cs" />
     <Compile Include="TimerWriter.cs" />
-    <Compile Include="UnionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

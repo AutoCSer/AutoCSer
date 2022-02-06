@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -8,7 +9,7 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    public abstract unsafe class ServerSocket : SocketTimeoutLink
+    public abstract unsafe class ServerSocket : SocketTimeoutNode
     {
         /// <summary>
         /// 二进制反序列化配置参数
@@ -29,7 +30,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 命令位图
         /// </summary>
-        protected Pointer.Size commandData;
+        protected AutoCSer.Memory.Pointer commandData;
         /// <summary>
         /// 命令位图
         /// </summary>
@@ -56,7 +57,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        protected int receiveAsyncLock;
+        protected AutoCSer.Threading.SleepFlagSpinLock receiveAsyncLock;
 #endif
 #endif
         /// <summary>
@@ -66,11 +67,11 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 接收数据二进制反序列化
         /// </summary>
-        internal BinarySerialize.DeSerializer ReceiveDeSerializer;
+        internal AutoCSer.BinaryDeSerializer ReceiveDeSerializer;
         /// <summary>
         /// 接收数据 JSON 解析
         /// </summary>
-        internal Json.Parser ReceiveJsonParser;
+        internal AutoCSer.JsonDeSerializer ReceiveJsonDeSerializer;
         /// <summary>
         /// 接收数据缓冲区
         /// </summary>
@@ -84,6 +85,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         protected int receiveBufferSize;
 
+        /// <summary>
+        /// 套接字最后接收数据时间
+        /// </summary>
+        internal DateTime LastReceiveTime;
         /// <summary>
         /// 接收数据超时
         /// </summary>
@@ -190,7 +195,7 @@ namespace AutoCSer.Net.TcpServer
             {
                 if (isSimpleSerialize)
                 {
-                    fixed (byte* dataFixed = data.Array)
+                    fixed (byte* dataFixed = data.GetFixedBuffer())
                     {
                         byte* start = dataFixed + data.Start, end = start + data.Length;
                         return SimpleSerialize.TypeDeSerializer<valueType>.DeSerialize(start, ref value, end) == end;
@@ -198,7 +203,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 if (ReceiveDeSerializer == null)
                 {
-                    ReceiveDeSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
+                    ReceiveDeSerializer = AutoCSer.BinaryDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.BinaryDeSerializer();
                     ReceiveDeSerializer.SetTcpServer(binaryDeSerializeConfig, this);
                 }
                 return ReceiveDeSerializer.DeSerializeTcpServer(ref data, ref value);
@@ -206,12 +211,12 @@ namespace AutoCSer.Net.TcpServer
                 //if (data.Length > 1 << 20) System.IO.File.WriteAllBytes((++testIdentity).ToString() + "." + data.Length.ToString(), data.ToArray());
                 //return false;
             }
-            if (ReceiveJsonParser == null)
+            if (ReceiveJsonDeSerializer == null)
             {
-                ReceiveJsonParser = Json.Parser.YieldPool.Default.Pop() ?? new Json.Parser();
-                ReceiveJsonParser.SetTcpServer();
+                ReceiveJsonDeSerializer = AutoCSer.JsonDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonDeSerializer();
+                ReceiveJsonDeSerializer.SetTcpServer();
             }
-            return ReceiveJsonParser.ParseTcpServer(ref data, ref value);
+            return ReceiveJsonDeSerializer.DeSerializeTcpServer(ref data, ref value);
         }
         /// <summary>
         /// 释放数据反序列化
@@ -224,10 +229,10 @@ namespace AutoCSer.Net.TcpServer
                 ReceiveDeSerializer.Free();
                 ReceiveDeSerializer = null;
             }
-            if (ReceiveJsonParser != null)
+            if (ReceiveJsonDeSerializer != null)
             {
-                ReceiveJsonParser.Free();
-                ReceiveJsonParser = null;
+                ReceiveJsonDeSerializer.Free();
+                ReceiveJsonDeSerializer = null;
             }
         }
         /// <summary>
@@ -248,6 +253,14 @@ namespace AutoCSer.Net.TcpServer
         internal override void TimeoutDisposeSocket(Socket socket)
         {
             if (!IsVerifyMethod) base.TimeoutDisposeSocket(socket);
+        }
+        /// <summary>
+        /// 增加验证函数调用次数
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void IncrementVerifyMethodCount()
+        {
+            if (verifyMethodCount != byte.MaxValue) ++verifyMethodCount;
         }
     }
     /// <summary>

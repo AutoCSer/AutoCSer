@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
 {
@@ -17,7 +17,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// </summary>
         public override void RunTask()
         {
-            DistributionFileReader.QueueOnTimer();
+            DistributionFileReaderTimeout.QueueOnTimer();
         }
     }
 }

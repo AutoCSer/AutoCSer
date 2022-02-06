@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Net.TcpOpenServer
 {
@@ -46,12 +46,12 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <returns></returns>
         public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, AutoCSer.Net.TcpOpenServer.Client client, string userID, string verifyString)
         {
-            long ticks;
             TcpServer.ServerBaseAttribute attribute = client.Attribute;
             ulong markData = 0;
             if (attribute.IsMarkData) markData = attribute.VerifyHashCode;
-            ticks = Date.NowTime.SetUtc().Ticks;
+            long ticks = AutoCSer.Net.TcpInternalServer.TimeVerifyClient.GetTicks();
             TcpServer.ClientSocketBase socket = sender.ClientSocket;
+            bool isError = false;
             do
             {
                 ulong randomPrefix = Random.Default.SecureNextULongNotZero();
@@ -63,14 +63,16 @@ namespace AutoCSer.Net.TcpOpenServer
                 if (isVerify.Value)
                 {
                     sender.SendMarkData = socket.ReceiveMarkData;
+                    if (isError) socket.Log.Debug(sender.ClientSocket.IpAddress.ToString() + ":" + sender.ClientSocket.Port.toString() + " TCP客户端验证时间重试成功");
                     return true;
                 }
                 if (isVerify.Type != TcpServer.ReturnType.Success || ticks <= lastTicks)
                 {
-                    socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
+                    socket.Log.Error(sender.ClientSocket.IpAddress.ToString() + ":" + sender.ClientSocket.Port.toString() + " TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
                     return false;
                 }
-                socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                socket.Log.Error(sender.ClientSocket.IpAddress.ToString() + ":" + sender.ClientSocket.Port.toString() + " TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                isError = true;
             }
             while (true);
         }

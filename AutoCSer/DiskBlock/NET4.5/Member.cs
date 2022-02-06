@@ -38,7 +38,7 @@ namespace AutoCSer.DiskBlock
         /// <param name="blockIndex">磁盘块编号</param>
         /// <param name="bufferSize">序列化缓冲区大小</param>
         /// <returns></returns>
-        public async Task<bool> SetAsync(valueType value, int blockIndex, SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte4)
+        public async Task<bool> SetAsync(valueType value, int blockIndex, AutoCSer.Memory.BufferSize bufferSize = AutoCSer.Memory.BufferSize.Kilobyte4)
         {
             if (value == null)
             {
@@ -48,7 +48,7 @@ namespace AutoCSer.DiskBlock
             Server.TcpInternalClient client = ClientPool.Get(blockIndex);
             if (client != null)
             {
-                BinarySerialize.Serializer serializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer();
+                BinarySerializer serializer = BinarySerializer.YieldPool.Default.Pop() ?? new BinarySerializer();
                 SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
                 SubBuffer.Pool.GetPool(bufferSize).Get(ref buffer);
                 try

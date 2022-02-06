@@ -5,12 +5,12 @@ namespace AutoCSer.Log
     /// <summary>
     /// 日志公共
     /// </summary>
-    public static class Pub
+    //public static class Pub
     {
         /// <summary>
         /// 默认日志配置
         /// </summary>
-        public static readonly Config Config = ConfigLoader.GetUnion(typeof(Config)).Config ?? new Config();
+        public static readonly Config Config = (Config)AutoCSer.Config.Loader.GetObject(typeof(Config)) ?? new Config();
         /// <summary>
         /// 信息处理接口，一般用于辅助定位BUG
         /// </summary>

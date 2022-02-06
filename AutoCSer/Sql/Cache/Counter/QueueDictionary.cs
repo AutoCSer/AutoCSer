@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 
@@ -105,7 +105,7 @@ namespace AutoCSer.Sql.Cache.Counter
                             values.Add(getDictionaryKey(cacheValue), cacheValue);
                             if (!oldValues.Remove(getDictionaryKey(oldValue)))
                             {
-                                counter.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                                counter.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                             }
                         }
                         else values.Add(getDictionaryKey(cacheValue), counter.Add(cacheValue));
@@ -113,7 +113,7 @@ namespace AutoCSer.Sql.Cache.Counter
                     else if (oldValues != null)
                     {
                         if (oldValues.Remove(getDictionaryKey(value))) counter.Remove(cacheValue);
-                        else counter.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                        else counter.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
                     }
                 }
             }
@@ -128,7 +128,7 @@ namespace AutoCSer.Sql.Cache.Counter
             Dictionary<RandomKey<dictionaryKeyType>, valueType> values = queueCache.Get(ref key, null);
             if (values != null && !values.Remove(getDictionaryKey(value)))
             {
-                counter.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                counter.SqlTable.Log.Fatal(typeof(valueType).FullName + " 缓存同步错误", LogLevel.Fatal | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -143,11 +143,16 @@ namespace AutoCSer.Sql.Cache.Counter
             if (values == null)
             {
                 values = DictionaryCreator<RandomKey<dictionaryKeyType>>.Create<valueType>();
-                foreach (valueType value in counter.SqlTable.SelectQueue(ref connection, getWhere(key), counter.MemberMap))
+                ReturnValue<LeftArray<valueType>> valueArray = counter.SqlTable.SelectQueue(ref connection, getWhere(key), counter.MemberMap);
+                if (valueArray.ReturnType == ReturnType.Success)
                 {
-                    values.Add(getDictionaryKey(value), counter.Add(value));
+                    foreach (valueType value in valueArray.Value)
+                    {
+                        values.Add(getDictionaryKey(value), counter.Add(value));
+                    }
+                    queueCache[key] = values;
                 }
-                queueCache[key] = values;
+                else counter.SqlTable.Log.Fatal(typeof(valueType).fullName() + " 数据加载失败 " + valueArray.ReturnType.ToString(), LogLevel.Fatal | LogLevel.AutoCSer);
             }
             return values;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 
 namespace AutoCSer.CacheServer
 {
@@ -54,10 +55,10 @@ namespace AutoCSer.CacheServer
         {
             OperationParameter.Serializer operationSerializer = new OperationParameter.Serializer(stream);
             Identity.UnsafeSerialize(stream);
-            fixed (char* nameFixed = CacheName) AutoCSer.BinarySerialize.Serializer.Serialize(nameFixed, stream, CacheName.Length);
-            int startIndex = stream.ByteSize;
+            fixed (char* nameFixed = CacheName) AutoCSer.BinarySerializer.Serialize(nameFixed, stream, CacheName.Length);
+            int startIndex = stream.Data.CurrentIndex;
             valueNode.SerializeDataStructure(stream);
-            stream.SerializeFillWithStartIndex(startIndex);
+            stream.Data.SerializeFillWithStartIndex(startIndex);
             operationSerializer.End(OperationParameter.OperationType.GetOrCreateDataStructure);
         }
     }

@@ -180,15 +180,15 @@ namespace AutoCSer.CodeGenerator.Template
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[@MethodCount];
                 #region LOOP Methods
                 names[@MethodIndex] = "@CallName";
-                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*IF:IsOnlyPost*/, IsPost = true/*IF:IsOnlyPost*//*IF:IsReferer*/, IsReferer = true/*IF:IsReferer*//*PUSH:Attribute*//*IF:IsAsynchronousCallback*/, IsAsynchronous = true/*IF:IsAsynchronousCallback*/ };
+                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*IF:IsOnlyPost*/, IsPost = true/*IF:IsOnlyPost*//*IF:IsReferer*/, IsReferer = true/*IF:IsReferer*//*PUSH:Attribute*//*IF:IsAsynchronousCallback*/, IsAsynchronous = true/*IF:IsAsynchronousCallback*/ };
                 #endregion LOOP Methods
                 #region LOOP ViewMethods
                 names[@MethodIndex] = "@CallName";
-                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*PUSH:Attribute*/, IsViewPage = true };
+                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.Memory.BufferSize)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*PUSH:Attribute*/, IsViewPage = true };
                 #endregion LOOP ViewMethods
                 #region NOT IsPubError
                 names[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = AutoCSer.WebView.AjaxBase.PubErrorCallName/*IF:AutoParameter.WebConfig.IgnoreCase*/.ToLower()/*IF:AutoParameter.WebConfig.IgnoreCase*/;
-                infos[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodCount - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
+                infos[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodCount - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.Memory.BufferSize.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 #endregion NOT IsPubError
                 setMethods(names, infos);
                 CompileJsonSerialize(new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:DeSerializeMethods*/null }, new System.Type[] { /*LOOP:SerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SerializeMethods*/null });

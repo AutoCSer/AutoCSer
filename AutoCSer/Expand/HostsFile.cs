@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer
@@ -206,7 +206,7 @@ namespace AutoCSer
         /// <summary>
         /// 文件行数据集合
         /// </summary>
-        private LeftArray<FileLine> lines;
+        private LeftArray<FileLine> lines = new LeftArray<FileLine>(0);
         /// <summary>
         /// 域名集合
         /// </summary>
@@ -214,7 +214,7 @@ namespace AutoCSer
         /// <summary>
         /// 空行集合
         /// </summary>
-        private LeftArray<int> emptyLines;
+        private LeftArray<int> emptyLines = new LeftArray<int>(0);
         /// <summary>
         /// 域名数量
         /// </summary>

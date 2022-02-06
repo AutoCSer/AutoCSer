@@ -9,14 +9,6 @@ namespace AutoCSer.Threading
     public sealed class ThreadPool : Link<ThreadPool>
     {
         /// <summary>
-        /// 最低线程堆栈大小 128KB
-        /// </summary>
-        internal const int TinyStackSize = 128 << 10;
-        /// <summary>
-        /// 默认线程堆栈大小 1MB
-        /// </summary>
-        private const int defaultStackSize = 1 << 20;
-        /// <summary>
         /// 下一个节点
         /// </summary>
         private ThreadPool exitNext;
@@ -28,18 +20,6 @@ namespace AutoCSer.Threading
         /// 线程链表
         /// </summary>
         private Thread.YieldLink threads;
-        /// <summary>
-        /// 线程堆栈大小
-        /// </summary>
-        internal int StackSize;
-        /// <summary>
-        /// 是否后台线程
-        /// </summary>
-        internal bool IsBackground;
-        /// <summary>
-        /// 是否已经释放资源
-        /// </summary>
-        private bool isDisposed;
         /// <summary>
         /// 线程池
         /// </summary>
@@ -99,8 +79,8 @@ namespace AutoCSer.Threading
         internal void FastStart(Action task)
         {
             Thread thread = threads.Pop();
-            if (thread == null) new Thread(this, task, AutoCSer.Threading.Thread.CallType.Action);
-            else thread.RunTask(task, AutoCSer.Threading.Thread.CallType.Action);
+            if (thread == null) new Thread(this, task, AutoCSer.Threading.Thread.ThreadTaskType.Action);
+            else thread.RunTask(task, AutoCSer.Threading.Thread.ThreadTaskType.Action);
         }
         /// <summary>
         /// 获取一个线程并执行任务
@@ -108,7 +88,7 @@ namespace AutoCSer.Threading
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务委托调用类型</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void FastStart(object task, AutoCSer.Threading.Thread.CallType taskType)
+        internal void FastStart(object task, AutoCSer.Threading.Thread.ThreadTaskType taskType)
         {
             Thread thread = threads.Pop();
             if (thread == null) new Thread(this, task, taskType);

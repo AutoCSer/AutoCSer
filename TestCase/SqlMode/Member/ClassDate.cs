@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.SqlModel.Member
     /// <summary>
     /// 班级+日期
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public struct ClassDate
     {
         /// <summary>

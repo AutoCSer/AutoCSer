@@ -19,7 +19,7 @@ namespace AutoCSer.DiskBlock
 
         static ClientConfig()
         {
-            BinarySerializeConfig = AutoCSer.MemberCopy.Copyer<BinarySerialize.SerializeConfig>.MemberwiseClone(BinarySerialize.Serializer.DefaultConfig);
+            BinarySerializeConfig = AutoCSer.MemberCopy.Copyer<BinarySerialize.SerializeConfig>.MemberwiseClone(BinarySerializer.DefaultConfig);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.CacheServer
     /// <summary>
     /// 测试数据
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     class Data
     {
         public bool Bool;

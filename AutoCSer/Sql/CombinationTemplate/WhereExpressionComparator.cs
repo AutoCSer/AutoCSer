@@ -1,5 +1,5 @@
 ﻿using System;
-/*Type:ulong,compareULong;long,compareLong;uint,compareUInt;int,compareInt;ushort,compareUShort;short,compareShort;byte,compareByte;sbyte,compareSByte;double,compareDouble;float,compareFloat;decimal,compareDecimal;DateTime,compareDateTime*/
+/*ulong,ULong;long,Long;uint,UInt;int,Int;ushort,UShort;short,Short;byte,Byte;sbyte,SByte;double,Double;float,Float;decimal,Decimal;DateTime,DateTime*/
 
 namespace AutoCSer.Sql
 {
@@ -15,12 +15,12 @@ namespace AutoCSer.Sql
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        private static LogicType /*Type[1]*/compareULong/*Type[1]*/(System.Linq.Expressions.ExpressionType type, object left, object right)
+        private static LogicType compareULong(System.Linq.Expressions.ExpressionType type, object left, object right)
         {
             switch (type)
             {
-                case System.Linq.Expressions.ExpressionType.GreaterThanOrEqual: return ((/*Type[0]*/ulong/*Type[0]*/)left) >= ((/*Type[0]*/ulong/*Type[0]*/)right) ? LogicType.True : LogicType.False;
-                case System.Linq.Expressions.ExpressionType.GreaterThan: return ((/*Type[0]*/ulong/*Type[0]*/)left) > ((/*Type[0]*/ulong/*Type[0]*/)right) ? LogicType.True : LogicType.False;
+                case System.Linq.Expressions.ExpressionType.GreaterThanOrEqual: return ((ulong)left) >= ((ulong)right) ? LogicType.True : LogicType.False;
+                case System.Linq.Expressions.ExpressionType.GreaterThan: return ((ulong)left) > ((ulong)right) ? LogicType.True : LogicType.False;
                 default: return LogicType.Unknown;
             }
         }

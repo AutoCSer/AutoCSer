@@ -29,10 +29,10 @@ namespace AutoCSer.Example.Json
         internal static bool TestCase()
         {
             NoConstructorSon value = new NoConstructorSon { Value = 1 };
-            string json = AutoCSer.Json.Serializer.Serialize(value);
+            string json = AutoCSer.JsonSerializer.Serialize(value);
 
-            AutoCSer.Json.ParseConfig parseConfig = new AutoCSer.Json.ParseConfig { Constructor = checkConstructor };
-            NoConstructor newValue = AutoCSer.Json.Parser.Parse<NoConstructor>(json, parseConfig);
+            AutoCSer.Json.DeSerializeConfig parseConfig = new AutoCSer.Json.DeSerializeConfig { Constructor = checkConstructor };
+            NoConstructor newValue = AutoCSer.JsonDeSerializer.DeSerialize<NoConstructor>(json, parseConfig);
             return newValue != null && newValue.Value == 1;
         }
     }

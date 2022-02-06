@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.RawSocketListener
@@ -19,7 +19,7 @@ namespace AutoCSer.Net.RawSocketListener
         /// <summary>
         /// 缓冲区池
         /// </summary>
-        internal static readonly AutoCSer.SubBuffer.Pool BufferPool = AutoCSer.SubBuffer.Pool.GetPool(SubBuffer.Size.Kilobyte128);
+        internal static readonly AutoCSer.SubBuffer.Pool BufferPool = AutoCSer.SubBuffer.Pool.GetPool(AutoCSer.Memory.BufferSize.Kilobyte128);
 
         /// <summary>
         /// 监听套接字
@@ -47,13 +47,13 @@ namespace AutoCSer.Net.RawSocketListener
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        private int receiveAsyncLock;
+        private AutoCSer.Threading.SpinLock receiveAsyncLock;
 #endif
 #endif
         /// <summary>
         /// 日志处理
         /// </summary>
-        private readonly AutoCSer.Log.ILog log;
+        private readonly AutoCSer.ILog log;
         /// <summary>
         /// 监听地址
         /// </summary>
@@ -97,14 +97,14 @@ namespace AutoCSer.Net.RawSocketListener
         /// <param name="onPacket">数据包处理委托</param>
         /// <param name="packetSize">数据包字节数</param>
         /// <param name="log">日志处理</param>
-        public Listener(IPAddress ipAddress, Action<Buffer> onPacket, int packetSize = defaultBufferSize, AutoCSer.Log.ILog log = null)
+        public Listener(IPAddress ipAddress, Action<Buffer> onPacket, int packetSize = defaultBufferSize, AutoCSer.ILog log = null)
         {
             if (onPacket == null) throw new ArgumentNullException();
             if (packetSize <= 0) packetSize = defaultBufferSize;
             else if (packetSize > BufferPool.Size) packetSize = BufferPool.Size;
             this.packetSize = packetSize;
             maxBufferIndex = BufferPool.Size - packetSize;
-            this.log = log ?? AutoCSer.Log.Pub.Log;
+            this.log = log ?? AutoCSer.LogHelper.Default;
             ipEndPoint = new IPEndPoint(ipAddress, 0);
             onReceiveAsyncCallback = onReceive;
 #if !DOTNET2
@@ -184,7 +184,7 @@ namespace AutoCSer.Net.RawSocketListener
                 }
                 catch (Exception error)
                 {
-                    if (!IsError) this.log.Add(Log.LogType.Error, error, "监听初始化失败，可能需要管理员权限。");
+                    if (!IsError) this.log.Exception(error, "监听初始化失败，可能需要管理员权限。", LogLevel.Exception | LogLevel.AutoCSer);
                 }
                 IsError = true;
             }
@@ -213,13 +213,13 @@ namespace AutoCSer.Net.RawSocketListener
                 bufferIndex = buffer.Buffer.StartIndex;
                 bufferEndIndex = bufferIndex + BufferPool.Size;
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterYield();
 #endif
                 async.SetBuffer(buffer.Buffer.Buffer, bufferIndex, BufferPool.Size);
                 if (socket.ReceiveAsync(async))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
@@ -227,19 +227,19 @@ namespace AutoCSer.Net.RawSocketListener
             else
             {
 #if !DotNetStandard
-                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+                receiveAsyncLock.EnterYield();
 #endif
                 async.SetBuffer(bufferIndex, bufferEndIndex - bufferIndex);
                 if (socket.ReceiveAsync(async))
                 {
 #if !DotNetStandard
-                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+                    receiveAsyncLock.Exit();
 #endif
                     return true;
                 }
             }
 #if !DotNetStandard
-            Interlocked.Exchange(ref receiveAsyncLock, 0);
+            receiveAsyncLock.Exit();
 #endif
             if (async.SocketError == SocketError.Success)
             {
@@ -267,7 +267,7 @@ namespace AutoCSer.Net.RawSocketListener
             try
             {
 #if DOTNET2
-                Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
+                Socket socket = (Socket)async.AsyncState;
                 if (socket == this.socket)
                 {
                     int count = socket.EndReceive(async, out socketError);
@@ -287,7 +287,7 @@ namespace AutoCSer.Net.RawSocketListener
             }
             catch (Exception error)
             {
-                this.log.Add(Log.LogType.Error, error);
+                this.log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
             if (isDisposed == 0) start();
             else free();

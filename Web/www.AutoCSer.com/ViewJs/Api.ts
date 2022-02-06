@@ -8,6 +8,14 @@ module AutoCSerAPI.Ajax {
 		
 	}
 }module AutoCSerAPI.Ajax {
+	export class Example2 {
+		
+		static GetCode(file:string,Callback = null) {
+			AutoCSer.Pub.GetAjaxGet()('Example2.GetCode',{file: file }, Callback, true);	
+		}
+		
+	}
+}module AutoCSerAPI.Ajax {
 	export class TestCase {
 		
 		static GetCode(file:string,Callback = null) {

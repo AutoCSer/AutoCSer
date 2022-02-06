@@ -6,7 +6,7 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
     /// <summary>
     /// 锁操作任务
     /// </summary>
-    internal abstract class Node : AutoCSer.Threading.TaskLinkNode<Node>
+    internal abstract class Node : AutoCSer.Threading.TaskLinkNode
     {
         /// <summary>
         /// 锁节点
@@ -32,6 +32,6 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
         /// <summary>
         /// 锁操作队列线程
         /// </summary>
-        private static readonly AutoCSer.Threading.QueueTaskLinkThread<Node> queueTaskLinkThread = new AutoCSer.Threading.QueueTaskLinkThread<Node>();
+        private static readonly AutoCSer.Threading.TaskQueueThread queueTaskLinkThread = new AutoCSer.Threading.TaskQueueThread();
     }
 }

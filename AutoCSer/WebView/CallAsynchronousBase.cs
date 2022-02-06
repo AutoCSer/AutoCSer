@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -156,7 +157,8 @@ namespace AutoCSer.WebView
             if (responseStream == null) responseStream = new UnmanagedStream(size);
             else
             {
-                responseStream.Reset((byte*)Unmanaged.Get(size, false), size);
+                AutoCSer.Memory.Pointer buffer = Unmanaged.GetPointer(size, false);
+                responseStream.Reset(ref buffer);
                 responseStream.IsUnmanaged = true;
             }
             CallResponse.Set(responseStream, ref DomainServer.ResponseEncoding);
@@ -182,15 +184,15 @@ namespace AutoCSer.WebView
         /// 创建 WEB 异步调用输出（需要自己负责释放内存）
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="size"></param>
         /// <returns>是否创建成功</returns>
-        public bool CreateResponse(byte* buffer, int size)
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool CreateResponse(ref AutoCSer.Memory.Pointer buffer)
         {
             if (IsCreateResponse || SocketIdentity != Socket.Identity) return false;
             IsCreateResponse = true;
             UnmanagedStream responseStream = Interlocked.Exchange(ref ResponseStream, null);
-            if (responseStream == null) responseStream = new UnmanagedStream(buffer, size);
-            else responseStream.Reset(buffer, size);
+            if (responseStream == null) responseStream = new UnmanagedStream(ref buffer);
+            else responseStream.Reset(ref buffer);
             CallResponse.Set(responseStream, ref DomainServer.ResponseEncoding);
             return true;
         }
@@ -198,39 +200,17 @@ namespace AutoCSer.WebView
         /// 创建 WEB 异步调用输出（需要自己负责释放内存）
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="size"></param>
         /// <param name="response"></param>
         /// <returns>是否创建成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool CreateResponse(byte* buffer, int size, ref CallResponse response)
+        public bool CreateResponse(ref AutoCSer.Memory.Pointer buffer, ref CallResponse response)
         {
-            if (CreateResponse(buffer, size))
+            if (CreateResponse(ref buffer))
             {
                 response = CallResponse;
                 return true;
             }
             return false;
-        }
-        /// <summary>
-        /// 创建 WEB 异步调用输出（需要自己负责释放内存）
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns>是否创建成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool CreateResponse(ref Pointer.Size buffer)
-        {
-            return CreateResponse(buffer.Byte, buffer.ByteSize);
-        }
-        /// <summary>
-        /// 创建 WEB 异步调用输出（需要自己负责释放内存）
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="response"></param>
-        /// <returns>是否创建成功</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool CreateResponse(ref Pointer.Size buffer, ref CallResponse response)
-        {
-            return CreateResponse(buffer.Byte, buffer.ByteSize, ref response);
         }
     }
 }

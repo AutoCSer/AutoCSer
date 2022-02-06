@@ -19,7 +19,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="onMessage">消息处理委托</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="log">日志处理</param>
-        public Consumer(DataStructure.MessageQueue.QueueConsumer<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, AutoCSer.Log.ILog log = null) : base(messageQueue, config, log)
+        public Consumer(DataStructure.MessageQueue.QueueConsumer<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, AutoCSer.ILog log = null) : base(messageQueue, config, log)
         {
             if (onMessage == null) throw new ArgumentNullException();
             this.onMessage = onMessage;
@@ -33,7 +33,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="readerIndex">读取编号</param>
         /// <param name="log">日志处理</param>
-        public Consumer(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, AutoCSer.Log.ILog log = null) : base(messageQueue, config, log, readerIndex)
+        public Consumer(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, AutoCSer.ILog log = null) : base(messageQueue, config, log, readerIndex)
         {
             if (onMessage == null) throw new ArgumentNullException();
             this.onMessage = onMessage;
@@ -47,7 +47,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="readerIndex">读取编号</param>
         /// <param name="log">日志处理</param>
-        public Consumer(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, AutoCSer.Log.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), log) { }
+        public Consumer(DataStructure.MessageQueue.QueueConsumers<valueType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, AutoCSer.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), log) { }
         /// <summary>
         /// 创建消息队列 客户端消费者 处理器
         /// </summary>
@@ -77,7 +77,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public Consumer(DataStructure.MessageQueue.QueueConsumer<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : base(messageQueue, config, log, getValue)
+        public Consumer(DataStructure.MessageQueue.QueueConsumer<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : base(messageQueue, config, log, getValue)
         {
             if (onMessage == null) throw new ArgumentNullException();
             this.onMessage = onMessage;
@@ -92,7 +92,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="readerIndex">读取编号</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public Consumer(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : base(messageQueue, config, log, readerIndex, getValue)
+        public Consumer(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, int readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : base(messageQueue, config, log, readerIndex, getValue)
         {
             if (onMessage == null) throw new ArgumentNullException();
             this.onMessage = onMessage;
@@ -107,7 +107,7 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <param name="readerIndex">读取编号</param>
         /// <param name="getValue">获取参数数据委托</param>
         /// <param name="log">日志处理</param>
-        public Consumer(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.Log.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), getValue, log) { }
+        public Consumer(DataStructure.MessageQueue.QueueConsumers<nodeType> messageQueue, Action<valueType> onMessage, ConsumerConfig config, IConvertible readerIndex, ValueData.GetData<valueType> getValue, AutoCSer.ILog log = null) : this(messageQueue, onMessage, config, readerIndex.ToInt32(null), getValue, log) { }
         /// <summary>
         /// 创建消息队列 客户端消费者 处理器
         /// </summary>

@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
     /// <summary>
     /// 输入+输出参数泛型类型元数据
     /// </summary>
-    internal abstract partial class ParameterGenericType2
+    internal abstract partial class ParameterGenericType2 : AutoCSer.Metadata.GenericType2Base
     {
         /// <summary>
         /// TCP调用并返回参数值

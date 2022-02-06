@@ -105,7 +105,7 @@ namespace AutoCSer.Sql.LogStream
         /// <param name="custom">客户端自定义绑定</param>
         /// <param name="log">日志处理</param>
         protected Client(Func<Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>, AutoCSer.Net.TcpServer.KeepCallback> getLog, Custom custom, ILog log)
-            : base(log ?? AutoCSer.Log.Pub.Log)
+            : base(log ?? AutoCSer.LogHelper.Default)
         {
             if (getLog == null) throw new ArgumentNullException();
             this.getLog = getLog;

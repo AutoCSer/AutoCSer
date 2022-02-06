@@ -1,5 +1,5 @@
 ﻿using System;
-/*Type:ulong,calculateULong;long,calculateLong;uint,calculateUInt;int,calculateInt;ushort,calculateUShort;short,calculateShort;byte,calculateByte;sbyte,calculateSByte;char,calculateChar*/
+/*ulong,ULong;long,Long;uint,UInt;int,Int;ushort,UShort;short,Short;byte,Byte;sbyte,SByte;char,Char*/
 
 namespace AutoCSer.Sql
 {
@@ -15,23 +15,23 @@ namespace AutoCSer.Sql
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        private static object /*Type[1]*/calculateULong/*Type[1]*/(System.Linq.Expressions.ExpressionType type, object left, object right)
+        private static object calculateULong(System.Linq.Expressions.ExpressionType type, object left, object right)
         {
             switch (type)
             {
-                case System.Linq.Expressions.ExpressionType.Add: return (/*Type[0]*/ulong/*Type[0]*/)left + (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.AddChecked: checked { return (/*Type[0]*/ulong/*Type[0]*/)left + (/*Type[0]*/ulong/*Type[0]*/)right; }
-                case System.Linq.Expressions.ExpressionType.Subtract: return (/*Type[0]*/ulong/*Type[0]*/)left - (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.SubtractChecked: checked { return (/*Type[0]*/ulong/*Type[0]*/)left - (/*Type[0]*/ulong/*Type[0]*/)right; }
-                case System.Linq.Expressions.ExpressionType.Multiply: return (/*Type[0]*/ulong/*Type[0]*/)left * (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.MultiplyChecked: checked { return (/*Type[0]*/ulong/*Type[0]*/)left * (/*Type[0]*/ulong/*Type[0]*/)right; }
-                case System.Linq.Expressions.ExpressionType.Divide: return (/*Type[0]*/ulong/*Type[0]*/)left / (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.Modulo: return (/*Type[0]*/ulong/*Type[0]*/)left % (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.Or: return (/*Type[0]*/ulong/*Type[0]*/)left | (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.And: return (/*Type[0]*/ulong/*Type[0]*/)left & (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.ExclusiveOr: return (/*Type[0]*/ulong/*Type[0]*/)left ^ (/*Type[0]*/ulong/*Type[0]*/)right;
-                case System.Linq.Expressions.ExpressionType.LeftShift: return (/*Type[0]*/ulong/*Type[0]*/)left << (int)right;
-                case System.Linq.Expressions.ExpressionType.RightShift: return (/*Type[0]*/ulong/*Type[0]*/)left >> (int)right;
+                case System.Linq.Expressions.ExpressionType.Add: return (ulong)left + (ulong)right;
+                case System.Linq.Expressions.ExpressionType.AddChecked: checked { return (ulong)left + (ulong)right; }
+                case System.Linq.Expressions.ExpressionType.Subtract: return (ulong)left - (ulong)right;
+                case System.Linq.Expressions.ExpressionType.SubtractChecked: checked { return (ulong)left - (ulong)right; }
+                case System.Linq.Expressions.ExpressionType.Multiply: return (ulong)left * (ulong)right;
+                case System.Linq.Expressions.ExpressionType.MultiplyChecked: checked { return (ulong)left * (ulong)right; }
+                case System.Linq.Expressions.ExpressionType.Divide: return (ulong)left / (ulong)right;
+                case System.Linq.Expressions.ExpressionType.Modulo: return (ulong)left % (ulong)right;
+                case System.Linq.Expressions.ExpressionType.Or: return (ulong)left | (ulong)right;
+                case System.Linq.Expressions.ExpressionType.And: return (ulong)left & (ulong)right;
+                case System.Linq.Expressions.ExpressionType.ExclusiveOr: return (ulong)left ^ (ulong)right;
+                case System.Linq.Expressions.ExpressionType.LeftShift: return (ulong)left << (int)right;
+                case System.Linq.Expressions.ExpressionType.RightShift: return (ulong)left >> (int)right;
                 default: return null;
             }
         }

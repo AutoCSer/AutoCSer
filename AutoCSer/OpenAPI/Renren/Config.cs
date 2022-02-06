@@ -60,6 +60,6 @@ namespace AutoCSer.OpenAPI.Renren
         /// <summary>
         /// 默认配置
         /// </summary>
-        public static readonly Config Default = AutoCSer.Config.Loader.Get<Config>() ?? new Config();
+        public static readonly Config Default = (Config)AutoCSer.Configuration.Common.Get(typeof(Config)) ?? new Config();
     }
 }

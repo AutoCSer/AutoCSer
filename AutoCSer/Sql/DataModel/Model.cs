@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -17,7 +18,7 @@ namespace AutoCSer.Sql.DataModel
         /// <summary>
         /// 数据库表格模型配置
         /// </summary>
-        protected static readonly ModelAttribute attribute;
+        internal static readonly ModelAttribute Attribute;
         /// <summary>
         /// 字段集合
         /// </summary>
@@ -70,7 +71,7 @@ namespace AutoCSer.Sql.DataModel
         {
             if (groupMemberMaps == null)
             {
-                LeftArray<KeyValue<MemberMap<modelType>, int>> memberMaps = new LeftArray<KeyValue<MemberMap<modelType>, int>>();
+                LeftArray<KeyValue<MemberMap<modelType>, int>> memberMaps = new LeftArray<KeyValue<MemberMap<modelType>, int>>(0);
                 memberMaps.Add(new KeyValue<MemberMap<modelType>, int>(MemberMap, 0));
                 Monitor.Enter(groupMemberMapLock);
                 if (groupMemberMaps == null)
@@ -113,7 +114,7 @@ namespace AutoCSer.Sql.DataModel
             {
                 if (memberMap.Value == group) return memberMap.Key;
             }
-            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, typeof(modelType).fullName() + " 缺少缓存分组 " + group.toString());
+            AutoCSer.LogHelper.Error(typeof(modelType).fullName() + " 缺少缓存分组 " + group.toString(), LogLevel.Error | LogLevel.AutoCSer);
             return null;
         }
         /// <summary>
@@ -190,7 +191,7 @@ namespace AutoCSer.Sql.DataModel
                 {
                     if (isNext == 0) isNext = 1;
                     else sqlStream.Write(',');
-                    if (field.IsSqlColumn) sqlStream.SimpleWriteNotNull(field.GetSqlColumnName());
+                    if (field.IsSqlColumn) sqlStream.SimpleWrite(field.GetSqlColumnName());
                     else constantConverter.ConvertNameToSqlStream(sqlStream, field.FieldInfo.Name);
                 }
             }
@@ -228,8 +229,8 @@ namespace AutoCSer.Sql.DataModel
         static Model()
         {
             Type type = typeof(modelType);
-            attribute = TypeAttribute.GetAttribute<ModelAttribute>(type, true) ?? ModelAttribute.Default;
-            Fields = Field.Get(MemberIndexGroup<modelType>.GetFields(attribute.MemberFilters), false).ToArray();
+            Attribute = TypeAttribute.GetAttribute<ModelAttribute>(type, true) ?? ModelAttribute.Default;
+            Fields = Field.Get(MemberIndexGroup<modelType>.GetFields(Attribute.MemberFilters), false).ToArray();
             Identity = Field.GetIdentity(Fields);
             PrimaryKeys = Field.GetPrimaryKeys(Fields).ToArray();
             MemberMap = new MemberMap<modelType>();

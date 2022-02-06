@@ -4,13 +4,13 @@ using System.Runtime.CompilerServices;
 namespace AutoCSer.SearchTree
 {
     /// <summary>
-    /// 二叉树集合
+    /// 二叉搜索树集合
     /// </summary>
     /// <typeparam name="keyType">关键字类型</typeparam>
     public sealed class Set<keyType> where keyType : IComparable<keyType>
     {
         /// <summary>
-        /// 二叉树节点
+        /// 二叉搜索树集合节点
         /// </summary>
         private sealed class Node : Node<Node, keyType>
         {

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.OpenAPI.Weixin
 {
@@ -20,7 +20,7 @@ namespace AutoCSer.OpenAPI.Weixin
             partnerid = config.partnerid;
             prepayid = prePayId;
             this.noncestr = noncestr;
-            timestamp = (((Date.NowTime.Set().Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerSecond).toString();
+            timestamp = ((AutoCSer.Threading.SecondTimer.SetNow().Ticks - AutoCSer.JsonDeSerializer.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerSecond).toString();
             Sign<AppPrePayIdOrder>.Set(this, config.key);
         }
         /// <summary>

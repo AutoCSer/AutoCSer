@@ -3,7 +3,7 @@
 namespace AutoCSer
 {
     /// <summary>
-    /// 对象引用
+    /// 对象引用（用户序列化循环引用比较）
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     internal struct ObjectReference : IEquatable<ObjectReference>
@@ -19,12 +19,8 @@ namespace AutoCSer
         /// <returns></returns>
         public bool Equals(ObjectReference other)
         {
-            Type type = Value.GetType();
-            if (Value.GetType() == other.Value.GetType())
-            {
-                return type == typeof(string) ? (string)Value == (string)other.Value : object.ReferenceEquals(Value, other.Value);
-            }
-            return false;
+            if (object.ReferenceEquals(Value, other.Value)) return true;
+            return Value.GetType() == typeof(string) && other.Value.GetType() == typeof(string) && (string)Value == (string)other.Value;
         }
         /// <summary>
         /// 

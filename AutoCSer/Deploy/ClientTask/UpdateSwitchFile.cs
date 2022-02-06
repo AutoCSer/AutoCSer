@@ -1,4 +1,4 @@
-﻿using AutoCSer.Extension;
+﻿using AutoCSer.Extensions;
 using System;
 
 namespace AutoCSer.Deploy.ClientTask
@@ -6,7 +6,7 @@ namespace AutoCSer.Deploy.ClientTask
     /// <summary>
     /// 发布切换更新
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize(IsMemberMap = false, IsReferenceMember = false)]
     public sealed class UpdateSwitchFile : Task
     {
         /// <summary>
@@ -40,7 +40,7 @@ namespace AutoCSer.Deploy.ClientTask
         /// </summary>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal override DeployState Call(Timer timer)
+        internal override DeployResultData Call(Timer timer)
         {
             if (ServerPath == null && FileName == string.Empty)
             {

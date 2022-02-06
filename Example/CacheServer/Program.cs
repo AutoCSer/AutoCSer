@@ -65,7 +65,7 @@ namespace AutoCSer.Example.CacheServer
         /// <param name="fileName"></param>
         private static void checkFileSize(string fileName)
         {
-            FileInfo file = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            FileInfo file = new FileInfo(Path.Combine(AutoCSer.Config.ApplicationPath, fileName));
             if (file.Exists && file.Length >= 1 << 20) file.Delete();
         }
     }

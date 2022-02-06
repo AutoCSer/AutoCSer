@@ -2,7 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Reflection;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 using System.Threading;
 #if !NOJIT
@@ -55,7 +55,7 @@ namespace AutoCSer.Net.Http
         {
             this.header = header;
             state = HeaderQueryParseState.Success;
-            fixed (byte* bufferFixed = header.Buffer.Buffer)
+            fixed (byte* bufferFixed = header.Buffer.GetFixedBuffer())
             {
                 bufferStart = bufferFixed + header.Buffer.StartIndex;
                 queryIndex = (BufferIndex*)(bufferStart + Header.QueryStartIndex);
@@ -72,7 +72,7 @@ namespace AutoCSer.Net.Http
         private void free()
         {
             header = null;
-            YieldPool.Default.PushNotNull(this);
+            YieldPool.Default.Push(this);
         }
         /// <summary>
         /// 解析16进制数字
@@ -640,7 +640,7 @@ namespace AutoCSer.Net.Http
             byte* start = current;
             while (*start != '%')
             {
-                if (++start == end) return AutoCSer.Memory.ToString(current, (int)(end - current));
+                if (++start == end) return AutoCSer.Memory.Common.ToString(current, (int)(end - current));
             }
             byte* write = start;
         NEXT:
@@ -669,7 +669,7 @@ namespace AutoCSer.Net.Http
                 if (*start == '%') goto NEXT;
                 *write++ = *start;
             }
-            return AutoCSer.Memory.ToString(current, (int)(write - current));
+            return AutoCSer.Memory.Common.ToString(current, (int)(write - current));
         }
         /// <summary>
         /// 数字解析
@@ -848,14 +848,14 @@ namespace AutoCSer.Net.Http
             while (++start < end);
             if (unicode != 0 || (escapeCode & 8) == 0)
             {
-                if (escape == null) AutoCSer.Memory.ToString(current, (int)(end - current));
+                if (escape == null) AutoCSer.Memory.Common.ToString(current, (int)(end - current));
                 int length = (int)(++escape - current);
                 for (start = escape + (*escape == 'u' ? 5 : 2); start < end; ++length)
                 {
                     if (*start == '%') start += *(start + 1) == 'u' ? 6 : 3;
                     else ++start;
                 }
-                string value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
+                string value = AutoCSer.Extensions.StringExtension.FastAllocateString(length);
                 fixed (char* valueFixed = value)
                 {
                     start = current;
@@ -949,7 +949,7 @@ namespace AutoCSer.Net.Http
                 return names;
             }
             int length = *(short*)names;
-            if (queryIndex->Length == (short)length && Memory.SimpleEqualNotNull(bufferStart + queryIndex->StartIndex, names += sizeof(short), length))
+            if (queryIndex->Length == (short)length && AutoCSer.Memory.Common.SimpleEqualNotNull(bufferStart + queryIndex->StartIndex, names += sizeof(short), length))
             {
                 return names + length;
             }
@@ -981,13 +981,12 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 枚举 JSON 解析器
         /// </summary>
-        private static Json.Parser enumJsonParser;
+        private static AutoCSer.JsonDeSerializer enumJsonParser;
         /// <summary>
         /// 枚举类型解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
-        internal unsafe void parseEnum<valueType>(ref valueType value)
+        private unsafe void parseEnum<valueType>(ref valueType value)
         {
             BufferIndex* indexs = queryIndex + 1;
             if (indexs->Length == 0) value = default(valueType);
@@ -995,35 +994,46 @@ namespace AutoCSer.Net.Http
             {
                 current = bufferStart + indexs->StartIndex;
                 *(current + indexs->Length) = *(current - 1) = (byte)'"';
-                Json.Parser parser = Interlocked.Exchange(ref enumJsonParser, null);
+                AutoCSer.JsonDeSerializer parser = Interlocked.Exchange(ref enumJsonParser, null);
                 if (parser == null)
                 {
-                    parser = Json.Parser.YieldPool.Default.Pop() ?? new Json.Parser();
+                    parser = AutoCSer.JsonDeSerializer.YieldPool.Default.Pop() ?? new AutoCSer.JsonDeSerializer();
                     parser.SetEnum();
                 }
-                if (!parser.ParseEnum(header.UnescapeUtf8(bufferStart, indexs->StartIndex - 1, indexs->Length + 2), ref value)) state = HeaderQueryParseState.Unknown;
+                if (!parser.DeSerializeEnum(header.UnescapeUtf8(bufferStart, indexs->StartIndex - 1, indexs->Length + 2), ref value)) state = HeaderQueryParseState.Unknown;
                 if ((parser = Interlocked.Exchange(ref enumJsonParser, parser)) != null) parser.Free();
             }
         }
-        ///// <summary>
-        ///// 未知类型解析函数信息
-        ///// </summary>
-        //private static readonly MethodInfo parseEnumMethod = typeof(HeaderQueryParser).GetMethod("parseEnum", BindingFlags.Instance | BindingFlags.NonPublic);
+        /// <summary>
+        /// 枚举类型解析
+        /// </summary>
+        /// <param name="parser"></param>
+        /// <param name="value">目标数据</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static unsafe void ParseEnum<valueType>(HeaderQueryParser parser, ref valueType value)
+        {
+            parser.parseEnum(ref value);
+        }
         /// <summary>
         /// 未知类型解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        //[AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void unknown<valueType>(ref valueType value)
+        private void unknown<valueType>(ref valueType value)
         {
             BufferIndex* indexs = queryIndex + 1;
             if (indexs->Length == 0) value = default(valueType);
-            else if (!AutoCSer.Json.Parser.ParseNotEmpty(header.UnescapeUtf8(bufferStart, indexs->StartIndex, indexs->Length), ref value)) state = HeaderQueryParseState.Unknown;
+            else if (!AutoCSer.JsonDeSerializer.DeSerializeNotEmpty(header.UnescapeUtf8(bufferStart, indexs->StartIndex, indexs->Length), ref value)) state = HeaderQueryParseState.Unknown;
         }
-        ///// <summary>
-        ///// 未知类型解析函数信息
-        ///// </summary>
-        //private static readonly MethodInfo unknownMethod = typeof(HeaderQueryParser).GetMethod("unknown", BindingFlags.Instance | BindingFlags.NonPublic);
+        /// <summary>
+        /// 未知类型解析
+        /// </summary>
+        /// <param name="parser"></param>
+        /// <param name="value">目标数据</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void Unknown<valueType>(HeaderQueryParser parser, ref valueType value)
+        {
+            parser.unknown(ref value);
+        }
 
         /// <summary>
         /// 查询解析
@@ -1125,7 +1135,7 @@ namespace AutoCSer.Net.Http
                     parseMethods.Add(method.GetParameters()[0].ParameterType.GetElementType(), method);
                 }
             }
-            Pub.ClearCaches += clearCache;
+            AutoCSer.Memory.Common.AddClearCache(clearCache, typeof(HeaderQueryParser));
         }
     }
 }

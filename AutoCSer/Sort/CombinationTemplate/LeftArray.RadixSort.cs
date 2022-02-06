@@ -1,13 +1,13 @@
 ﻿using System;
-/*Type:ulong;long;uint;int;DateTime*/
-/*Compare:;Desc*/
+/*ulong;long;uint;int;DateTime
+Desc;*/
 
-namespace AutoCSer.Extension
+namespace AutoCSer.Extensions
 {
     /// <summary>
     /// 数组子串扩展操作
     /// </summary>
-    public static partial class LeftArray
+    public static partial class LeftArrayExtensionSort
     {
         /// <summary>
         /// 数组子串排序
@@ -15,9 +15,9 @@ namespace AutoCSer.Extension
         /// <param name="array">待排序数组子串</param>
         /// <returns>排序后的数组子串</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static LeftArray</*Type[0]*/ulong/*Type[0]*/> Sort/*Compare[0]*//*Compare[0]*/(this LeftArray</*Type[0]*/ulong/*Type[0]*/> array)
+        public static LeftArray<ulong> SortDesc(this LeftArray<ulong> array)
         {
-            if (array.Length > 1) FixedArraySort.Sort/*Compare[0]*//*Compare[0]*/(array.Array, 0, array.Length);
+            if (array.Length > 1) FixedArraySort.SortDesc(array.Array, 0, array.Length);
             return array;
         }
         /// <summary>
@@ -26,9 +26,9 @@ namespace AutoCSer.Extension
         /// <param name="array">待排序数组子串</param>
         /// <returns>排序后的新数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static /*Type[0]*/ulong/*Type[0]*/[] GetSort/*Compare[0]*//*Compare[0]*/(this LeftArray</*Type[0]*/ulong/*Type[0]*/> array)
+        public static ulong[] GetSortDesc(this LeftArray<ulong> array)
         {
-            return array.Length > 1 ? FixedArraySort.GetSort/*Compare[0]*//*Compare[0]*/(array.Array, 0, array.Length) : array.GetArray();
+            return array.Length > 1 ? FixedArraySort.GetSortDesc(array.Array, 0, array.Length) : array.GetArray();
         }
         /// <summary>
         /// 数组子串排序
@@ -38,9 +38,9 @@ namespace AutoCSer.Extension
         /// <param name="getKey">排序键</param>
         /// <returns>排序后的数组</returns>
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static valueType[] GetSort/*Compare[0]*//*Compare[0]*/<valueType>(this LeftArray<valueType> array, Func<valueType, /*Type[0]*/ulong/*Type[0]*/> getKey)
+        public static valueType[] GetSortDesc<valueType>(this LeftArray<valueType> array, Func<valueType, ulong> getKey)
         {
-            return array.Length > 1 ? FixedArraySort.GetSort/*Compare[0]*//*Compare[0]*/(array.Array, getKey, 0, array.Length) : array.GetArray();
+            return array.Length > 1 ? FixedArraySort.GetSortDesc(array.Array, getKey, 0, array.Length) : array.GetArray();
         }
     }
 }

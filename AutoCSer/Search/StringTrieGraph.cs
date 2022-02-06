@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Memory;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -21,7 +22,7 @@ namespace AutoCSer.Search
         /// <summary>
         /// 分词字符类型数据
         /// </summary>
-        internal Pointer.Size CharTypeData;
+        internal AutoCSer.Memory.Pointer CharTypeData;
         /// <summary>
         /// 任意字符，用于搜索哨岗
         /// </summary>
@@ -32,9 +33,9 @@ namespace AutoCSer.Search
         /// <param name="words">分词集合</param>
         /// <param name="threadCount">并行线程数量</param>
         /// <param name="log">日志处理</param>
-        public StringTrieGraph(ref LeftArray<string> words, int threadCount = 0, AutoCSer.Log.ILog log = null)
+        public StringTrieGraph(ref LeftArray<string> words, int threadCount = 0, AutoCSer.ILog log = null)
         {
-            CharTypeData = new Pointer.Size { Data = DefaultCharTypeData.Data };
+            CharTypeData = new AutoCSer.Memory.Pointer { Data = DefaultCharTypeData.Data };
             if (words.Length != 0)
             {
                 buildTree(ref words);
@@ -56,14 +57,14 @@ namespace AutoCSer.Search
         /// <param name="words">分词集合</param>
         /// <param name="threadCount">并行线程数量</param>
         /// <param name="log">日志处理</param>
-        public StringTrieGraph(LeftArray<string> words, int threadCount = 0, AutoCSer.Log.ILog log = null) : this(ref words, threadCount, log) { }
+        public StringTrieGraph(LeftArray<string> words, int threadCount = 0, AutoCSer.ILog log = null) : this(ref words, threadCount, log) { }
         /// <summary>
         /// 字符串 Trie 图
         /// </summary>
         /// <param name="words">分词集合</param>
         /// <param name="threadCount">并行线程数量</param>
         /// <param name="log">日志处理</param>
-        public StringTrieGraph(string[] words, int threadCount = 0, AutoCSer.Log.ILog log = null) : this(new LeftArray<string>(words), threadCount, log) { }
+        public StringTrieGraph(string[] words, int threadCount = 0, AutoCSer.ILog log = null) : this(new LeftArray<string>(words), threadCount, log) { }
         /// <summary>
         ///  析构释放资源
         /// </summary>
@@ -79,7 +80,7 @@ namespace AutoCSer.Search
             if (CharTypeData.Data != DefaultCharTypeData.Data)
             {
                 Unmanaged.Free(ref CharTypeData);
-                CharTypeData = new Pointer.Size { Data = DefaultCharTypeData.Data };
+                CharTypeData = new AutoCSer.Memory.Pointer { Data = DefaultCharTypeData.Data };
             }
         }
         /// <summary>
@@ -97,7 +98,7 @@ namespace AutoCSer.Search
                     {
                         if (CharTypeData.Data == DefaultCharTypeData.Data)
                         {
-                            AutoCSer.Memory.CopyNotNull(DefaultCharTypeData.Byte, (CharTypeData = Unmanaged.GetSizeUnsafe64(1 << 16, false)).Byte, 1 << 16);
+                            AutoCSer.Memory.Common.CopyNotNull(DefaultCharTypeData.Byte, (CharTypeData = Unmanaged.GetPointer(1 << 16, false)).Byte, 1 << 16);
                         }
                         fixed (char* wordFixed = word)
                         {
@@ -207,7 +208,7 @@ namespace AutoCSer.Search
         {
             if (text.Length != 0)
             {
-                fixed (char* valueFixed = text.String)
+                fixed (char* valueFixed = text.GetFixedBuffer())
                 {
                     char* start = valueFixed + text.Start;
                     leftRightMatchs(start, start + text.Length, ref matchs);
@@ -232,7 +233,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<int, int>> LeftRightMatchs(string text)
         {
-            LeftArray<KeyValue<int, int>> matchs = default(LeftArray<KeyValue<int, int>>);
+            LeftArray<KeyValue<int, int>> matchs = new LeftArray<KeyValue<int, int>>(0);
             LeftRightMatchs(text, ref matchs);
             return matchs;
         }
@@ -244,7 +245,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<int, int>> LeftRightMatchs(ref SubString text)
         {
-            LeftArray<KeyValue<int, int>> matchs = default(LeftArray<KeyValue<int, int>>);
+            LeftArray<KeyValue<int, int>> matchs = new LeftArray<KeyValue<int, int>>(0);
             LeftRightMatchs(ref text, ref matchs);
             return matchs;
         }
@@ -256,7 +257,7 @@ namespace AutoCSer.Search
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public LeftArray<KeyValue<int, int>> LeftRightMatchs(SubString text)
         {
-            LeftArray<KeyValue<int, int>> matchs = default(LeftArray<KeyValue<int, int>>);
+            LeftArray<KeyValue<int, int>> matchs = new LeftArray<KeyValue<int, int>>(0);
             LeftRightMatchs(ref text, ref matchs);
             return matchs;
         }
@@ -264,10 +265,10 @@ namespace AutoCSer.Search
         /// <summary>
         /// 默认分词字符类型数据
         /// </summary>
-        internal static Pointer DefaultCharTypeData;
+        internal static AutoCSer.Memory.Pointer DefaultCharTypeData;
         static StringTrieGraph()
         {
-            DefaultCharTypeData = new Pointer { Data = Unmanaged.GetStatic64(1 << 16, true) };
+            DefaultCharTypeData = Unmanaged.GetPointer(1 << 16, true);
             byte* start = DefaultCharTypeData.Byte, end = DefaultCharTypeData.Byte + (1 << 16);
             for (char code = (char)0; start != end; ++start, ++code)
             {

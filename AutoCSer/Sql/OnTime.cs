@@ -6,7 +6,7 @@ namespace AutoCSer.Sql
     /// <summary>
     /// 定时触发 Sql 扩展
     /// </summary>
-    internal sealed class OnTime : Date.NowTime.OnTime
+    //internal sealed class OnTime : Date.NowTime.OnTime
     {
         /// <summary>
         /// 触发定时任务

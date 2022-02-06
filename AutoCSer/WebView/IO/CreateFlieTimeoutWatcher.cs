@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using AutoCSer.Log;
 using System.Runtime.CompilerServices;
 
@@ -11,12 +11,8 @@ namespace AutoCSer.IO
     /// <summary>
     /// 新建文件监视
     /// </summary>
-    internal sealed class CreateFlieTimeoutWatcher : AutoCSer.Threading.DoubleLink<CreateFlieTimeoutWatcher>, IDisposable
+    internal sealed class CreateFlieTimeoutWatcher : AutoCSer.Threading.SecondTimerTaskNode, IDisposable
     {
-        /// <summary>
-        /// 当前秒计数
-        /// </summary>
-        private long currentSeconds;
         /// <summary>
         /// 超时检测计数
         /// </summary>
@@ -52,7 +48,7 @@ namespace AutoCSer.IO
         /// <summary>
         /// 超时检测文件集合
         /// </summary>
-        private LeftArray<KeyValue<FileInfo, long>> files;
+        private LeftArray<KeyValue<FileInfo, long>> files = new LeftArray<KeyValue<FileInfo, long>>(0);
         /// <summary>
         /// 是否已经触发定时任务
         /// </summary>
@@ -68,22 +64,28 @@ namespace AutoCSer.IO
         /// <summary>
         /// 新建文件监视
         /// </summary>
+        /// <param name="timeoutSeconds">超时检测秒数</param>
+        private CreateFlieTimeoutWatcher(int timeoutSeconds) : base(AutoCSer.Threading.SecondTimer.InternalTaskArray, timeoutSeconds, Threading.SecondTimerThreadMode.Synchronous, Threading.SecondTimerKeepMode.After, timeoutSeconds)
+        {
+            this.timeoutSeconds = timeoutSeconds;
+        }
+        /// <summary>
+        /// 新建文件监视
+        /// </summary>
         /// <param name="seconds">超时检测秒数</param>
         /// <param name="onTimeout">超时处理</param>
         /// <param name="onTimeoutType">超时处理类型</param>
         /// <param name="log">日志处理</param>
-        internal CreateFlieTimeoutWatcher(int seconds, object onTimeout, CreateFlieTimeoutType onTimeoutType, ILog log = null)
+        internal CreateFlieTimeoutWatcher(int seconds, object onTimeout, CreateFlieTimeoutType onTimeoutType, ILog log = null) : this(Math.Max(seconds, 2))
         {
-            timeoutSeconds = Math.Max(seconds, 2);
             this.onTimeout = onTimeout;
-            this.log = log ?? AutoCSer.Log.Pub.Log;
+            this.log = log ?? AutoCSer.LogHelper.Default;
             switch (this.onTimeoutType = onTimeoutType)
             {
                 case CreateFlieTimeoutType.HttpServerRegister: onCreatedHandle = onCreatedHttpServerRegister; break;
                 default: onCreatedHandle = onCreated; break;
             }
             watchers = DictionaryCreator.CreateHashString<CreateFlieTimeoutCounter>();
-            Watchers.PushNotNull(this);
         }
         /// <summary>
         /// 释放资源
@@ -92,7 +94,7 @@ namespace AutoCSer.IO
         {
             if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
             {
-                Watchers.PopNotNull(this);
+                KeepMode = AutoCSer.Threading.SecondTimerKeepMode.Canceled;
                 Monitor.Enter(watcherLock);
                 try
                 {
@@ -181,7 +183,7 @@ namespace AutoCSer.IO
             }
             catch (Exception error)
             {
-                log.Add(AutoCSer.Log.LogType.Error, error);
+                log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -197,7 +199,7 @@ namespace AutoCSer.IO
             }
             catch (Exception error)
             {
-                log.Add(AutoCSer.Log.LogType.Error, error);
+                log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
             }
         }
         /// <summary>
@@ -212,12 +214,16 @@ namespace AutoCSer.IO
                 if (file.Exists)
                 {
                     Monitor.Enter(fileLock);
-                    long seconds = currentSeconds + timeoutSeconds;
+                    long seconds = AutoCSer.Threading.SecondTimer.CurrentSeconds + timeoutSeconds;
                     try
                     {
                         files.PrepLength(1);
                         files.Array[files.Length++].Set(file, seconds);
-                        if (onTimeSeconds != long.MaxValue) onTimeSeconds = seconds;
+                        if (onTimeSeconds != long.MaxValue)
+                        {
+                            onTimeSeconds = seconds;
+                            AppendTaskArray();
+                        }
                     }
                     finally { Monitor.Exit(fileLock); }
                 }
@@ -226,13 +232,12 @@ namespace AutoCSer.IO
         /// <summary>
         /// 定时器触发
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnTimer()
+        protected internal override void OnTimer()
         {
-            if (++currentSeconds >= onTimeSeconds && Interlocked.CompareExchange(ref isTimer, 1, 0) == 0)
+            if (AutoCSer.Threading.SecondTimer.CurrentSeconds >= onTimeSeconds && isTimer == 0)
             {
-                onTimer();
-                System.Threading.Interlocked.Exchange(ref isTimer, 0);
+                isTimer = 1;
+                AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(onTimer);
             }
         }
         /// <summary>
@@ -240,72 +245,74 @@ namespace AutoCSer.IO
         /// </summary>
         private void onTimer()
         {
-            if (isDisposed == 0)
+            try
             {
-                long minSeconds = long.MaxValue;
-                int index = 0;
-                Monitor.Enter(fileLock);
-                int count = files.Length;
-                KeyValue<FileInfo, long>[] fileArray = files.Array;
-                try
+                if (isDisposed == 0)
                 {
-                    while (index != count)
-                    {
-                        KeyValue<FileInfo, long> fileTime = fileArray[index];
-                        if (fileTime.Value <= currentSeconds)
-                        {
-                            FileInfo file = fileTime.Key;
-                            long length = file.Length;
-                            file.Refresh();
-                            if (file.Exists)
-                            {
-                                if (length == file.Length)
-                                {
-                                    try
-                                    {
-                                        using (FileStream fileStream = file.Open(FileMode.Open, FileAccess.Write, FileShare.None)) fileArray[index] = fileArray[--count];
-                                    }
-                                    catch { ++index; }
-                                }
-                                else ++index;
-                            }
-                            else fileArray[index] = fileArray[--count];
-                        }
-                        else ++index;
-                    }
-                    files.Length = count;
-                    onTimeSeconds = minSeconds;
-                }
-                catch (Exception error)
-                {
-                    log.Add(Log.LogType.Info, error);
-                }
-                finally { Monitor.Exit(fileLock); }
-                if ((count | isDisposed) == 0)
-                {
+                    long maxSeconds = long.MinValue;
+                    int index = 0;
+                    Monitor.Enter(fileLock);
+                    int count = files.Length;
+                    KeyValue<FileInfo, long>[] fileArray = files.Array;
                     try
                     {
-                        switch (onTimeoutType)
+                        while (index != count)
                         {
-                            case CreateFlieTimeoutType.HttpServerRegister: new AutoCSer.Net.HttpRegister.UnionType { Value = onTimeout }.ServerRegister.OnFileWatcherTimeout(); break;
+                            KeyValue<FileInfo, long> fileTime = fileArray[index];
+                            if (fileTime.Value <= AutoCSer.Threading.SecondTimer.CurrentSeconds)
+                            {
+                                FileInfo file = fileTime.Key;
+                                long length = file.Length;
+                                file.Refresh();
+                                if (file.Exists)
+                                {
+                                    if (length == file.Length)
+                                    {
+                                        try
+                                        {
+                                            using (FileStream fileStream = file.Open(FileMode.Open, FileAccess.Write, FileShare.None)) fileArray[index] = fileArray[--count];
+                                        }
+                                        catch { ++index; }
+                                    }
+                                    else ++index;
+                                }
+                                else fileArray[index] = fileArray[--count];
+                            }
+                            else
+                            {
+                                ++index;
+                                if (fileTime.Value > maxSeconds) maxSeconds = fileTime.Value;
+                            }
                         }
+                        files.Length = count;
+                        if (maxSeconds == long.MinValue)
+                        {
+                            if (count == 0) onTimeSeconds = long.MaxValue;
+                        }
+                        else onTimeSeconds = maxSeconds;
                     }
                     catch (Exception error)
                     {
-                        log.Add(Log.LogType.Info, error);
+                        log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                    }
+                    finally { Monitor.Exit(fileLock); }
+                    if ((count | isDisposed) == 0)
+                    {
+                        try
+                        {
+                            switch (onTimeoutType)
+                            {
+                                case CreateFlieTimeoutType.HttpServerRegister: ((AutoCSer.Net.HttpRegister.Server)onTimeout).OnFileWatcherTimeout(); break;
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            log.Exception(error, null, LogLevel.Exception | LogLevel.AutoCSer);
+                        }
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// 新建文件监视链表
-        /// </summary>
-        internal static YieldLink Watchers;
-
-        static CreateFlieTimeoutWatcher()
-        {
-            AutoCSer.WebView.OnTime.Default.Set();
+            finally { isTimer = 0; }
         }
     }
 }

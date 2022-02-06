@@ -12,7 +12,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <summary>
         /// 默认配置
         /// </summary>
-        private static readonly DistributionConsumerConfig defaultConfig = MessageQueue.ConfigLoader.GetUnion(typeof(DistributionConsumerConfig)).DistributionConsumerConfig ?? new DistributionConsumerConfig();
+        private static readonly DistributionConsumerConfig defaultConfig = (DistributionConsumerConfig)AutoCSer.Configuration.Common.Get(typeof(DistributionConsumerConfig)) ?? new DistributionConsumerConfig();
 
         /// <summary>
         /// 消息分发 读取配置
@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <summary>
         /// 日志处理
         /// </summary>
-        internal readonly AutoCSer.Log.ILog Log;
+        internal readonly AutoCSer.ILog Log;
         /// <summary>
         /// 消费分发节点
         /// </summary>
@@ -56,7 +56,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="node">消费分发节点</param>
         /// <param name="config">消息分发 读取配置</param>
         /// <param name="log">日志处理</param>
-        protected DistributionConsumer(DataStructure.Abstract.Node node, DistributionConsumerConfig config, AutoCSer.Log.ILog log)
+        protected DistributionConsumer(DataStructure.Abstract.Node node, DistributionConsumerConfig config, AutoCSer.ILog log)
         {
             client = node.ClientDataStructure.Client.MasterClient;
             if (client == null) throw new InvalidOperationException();
@@ -181,7 +181,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="node">消费分发节点</param>
         /// <param name="config">消息分发 读取配置</param>
         /// <param name="log">日志处理</param>
-        protected DistributionConsumer(DataStructure.MessageQueue.Distributor<valueType> node, DistributionConsumerConfig config, AutoCSer.Log.ILog log) : base(node, config, log) { }
+        protected DistributionConsumer(DataStructure.MessageQueue.Distributor<valueType> node, DistributionConsumerConfig config, AutoCSer.ILog log) : base(node, config, log) { }
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
@@ -246,7 +246,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <param name="config">消息分发 读取配置</param>
         /// <param name="log">日志处理</param>
         /// <param name="getValue">获取参数数据委托</param>
-        protected DistributionConsumer(DataStructure.MessageQueue.Distributor<nodeType> node, DistributionConsumerConfig config, AutoCSer.Log.ILog log, ValueData.GetData<valueType> getValue) : base(node, config, log)
+        protected DistributionConsumer(DataStructure.MessageQueue.Distributor<nodeType> node, DistributionConsumerConfig config, AutoCSer.ILog log, ValueData.GetData<valueType> getValue) : base(node, config, log)
         {
             if (getValue == null) throw new ArgumentNullException();
             GetValue = getValue;

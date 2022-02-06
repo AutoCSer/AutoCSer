@@ -13,19 +13,19 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlSerializeStructStructEnumerableMethod { get; }
+        internal abstract Delegate XmlSerializeStructStructEnumerableMethod { get; }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlSerializeStructClassEnumerableMethod { get; }
+        internal abstract Delegate XmlSerializeStructClassEnumerableMethod { get; }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlSerializeClassStructEnumerableMethod { get; }
+        internal abstract Delegate XmlSerializeClassStructEnumerableMethod { get; }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal abstract MethodInfo XmlSerializeClassClassEnumerableMethod { get; }
+        internal abstract Delegate XmlSerializeClassClassEnumerableMethod { get; }
     }
     /// <summary>
     /// 泛型类型元数据
@@ -36,30 +36,30 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlSerializeStructStructEnumerableMethod
+        internal override Delegate XmlSerializeStructStructEnumerableMethod
         {
-            get { return ((Action<Type1>)GenericType.XmlSerializer.structStructEnumerable<Type1, Type2>).Method; }
+            get { return (Action<XmlSerializer, Type1>)XmlSerializer.StructStructEnumerable<Type1, Type2>; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlSerializeStructClassEnumerableMethod
+        internal override Delegate XmlSerializeStructClassEnumerableMethod
         {
-            get { return ((Action<Type1>)GenericType.XmlSerializer.structClassEnumerable<Type1, Type2>).Method; }
+            get { return (Action<XmlSerializer, Type1>)XmlSerializer.StructClassEnumerable<Type1, Type2>; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlSerializeClassStructEnumerableMethod
+        internal override Delegate XmlSerializeClassStructEnumerableMethod
         {
-            get { return ((Action<Type1>)GenericType.XmlSerializer.classStructEnumerable<Type1, Type2>).Method; }
+            get { return (Action<XmlSerializer, Type1>)XmlSerializer.ClassStructEnumerable<Type1, Type2>; }
         }
         /// <summary>
         /// 获取 XML 序列化函数信息
         /// </summary>
-        internal override MethodInfo XmlSerializeClassClassEnumerableMethod
+        internal override Delegate XmlSerializeClassClassEnumerableMethod
         {
-            get { return ((Action<Type1>)GenericType.XmlSerializer.classClassEnumerable<Type1, Type2>).Method; }
+            get { return (Action<XmlSerializer, Type1>)XmlSerializer.ClassClassEnumerable<Type1, Type2>; }
         }
     }
 }

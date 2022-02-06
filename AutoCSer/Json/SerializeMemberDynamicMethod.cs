@@ -1,8 +1,9 @@
 ﻿using System;
 using AutoCSer.Metadata;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Reflection;
 using AutoCSer.Emit;
+using AutoCSer.Memory;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -18,7 +19,7 @@ namespace AutoCSer.Json
         /// <summary>
         /// 获取字符串输出缓冲区属性方法信息
         /// </summary>
-        private static readonly FieldInfo charStreamField = typeof(Serializer).GetField("CharStream", BindingFlags.Instance | BindingFlags.Public);
+        private static readonly MethodInfo getCharStreamMethod = ((Func<JsonSerializer, CharStream>)JsonSerializer.GetCharStream).Method;
         /// <summary>
         /// 动态函数
         /// </summary>
@@ -41,12 +42,12 @@ namespace AutoCSer.Json
         /// <param name="type"></param>
         public SerializeMemberDynamicMethod(Type type)
         {
-            dynamicMethod = new DynamicMethod("JsonSerializer", null, new Type[] { typeof(Serializer), type }, type, true);
+            dynamicMethod = new DynamicMethod("JsonSerializer", null, new Type[] { typeof(JsonSerializer), type }, type, true);
             generator = dynamicMethod.GetILGenerator();
             generator.DeclareLocal(typeof(CharStream));
 
             generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldfld, charStreamField);
+            generator.call(getCharStreamMethod);
             generator.Emit(OpCodes.Stloc_0);
 
             isFirstMember = 1;

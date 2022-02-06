@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoCSer.Log;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -66,16 +66,17 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">同步验证接口</param>
         /// <param name="serverCallQueue">自定义队列</param>
+        /// <param name="extendCommandBits">扩展服务命令二进制位数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
         /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
-            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpInternalServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
+        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, byte extendCommandBits, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, serverCallQueue, extendCommandBits, onCustomData, log, AutoCSer.Threading.ThreadTaskType.TcpInternalServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
-            if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + ServerAttribute.ServerName);
+            if (!attribute.IsServer) Log.Warn("配置未指明的 TCP 服务端 " + ServerAttribute.ServerName, LogLevel.Warn | LogLevel.AutoCSer);
         }
         /// <summary>
         /// 停止服务监听
@@ -102,9 +103,9 @@ namespace AutoCSer.Net.TcpInternalServer
                     {
                         if (tcpRegisterClient.Register(this)) 
                         {
-                            Log.Add(AutoCSer.Log.LogType.Info, ServerAttribute.ServerName + " 注册 " + Attribute.Host + ":" + Port.toString() + " => " + Attribute.ClientRegisterHost + ":" + Attribute.ClientRegisterPort.toString());
+                            Log.Info(ServerAttribute.ServerName + " 注册 " + Attribute.Host + ":" + Port.toString() + " => " + Attribute.ClientRegisterHost + ":" + Attribute.ClientRegisterPort.toString(), LogLevel.Info | LogLevel.AutoCSer);
                         }
-                        else Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部服务注册 " + ServerAttribute.ServerName + " 失败 ");
+                        else Log.Error("TCP 内部服务注册 " + ServerAttribute.ServerName + " 失败 ", LogLevel.Error | LogLevel.AutoCSer);
                     }
                     return true;
                 }
@@ -114,13 +115,15 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 获取客户端请求
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void GetSocket()
         {
-            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpInternalServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
-            if (verify == null) getSocket();
-            else getSocketVerify();
-            SocketTimeoutLink.TimerLink.Free(ref ReceiveVerifyCommandTimeout);
+            ReceiveVerifyCommandTimeout = new SocketTimeoutLink(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpInternalServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            try
+            {
+                if (verify == null) getSocket();
+                else getSocketVerify();
+            }
+            finally { SocketTimeoutLink.Free(ref ReceiveVerifyCommandTimeout); }
         }
         /// <summary>
         /// 获取客户端请求
@@ -145,14 +148,14 @@ namespace AutoCSer.Net.TcpInternalServer
                             }
                             return;
                         }
-                        ServerSocketTask.Task.Add(serverSocket);
+                        ServerSocketThreadArray.Default.CurrentThread.Add(serverSocket);
                     }
                     while (true);
                 }
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    AutoCSer.LogHelper.Exception(error);
                     Thread.Sleep(1);
                 }
             }
@@ -181,7 +184,7 @@ namespace AutoCSer.Net.TcpInternalServer
                             }
                             return;
                         }
-                        if (verify(serverSocket.Socket)) ServerSocketTask.Task.Add(serverSocket);
+                        if (verify(serverSocket.Socket)) ServerSocketThreadArray.Default.CurrentThread.Add(serverSocket);
                         else
                         {
 #if !DotNetStandard
@@ -196,7 +199,7 @@ namespace AutoCSer.Net.TcpInternalServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.Add(AutoCSer.Log.LogType.Error, error);
+                    AutoCSer.LogHelper.Exception(error);
                     Thread.Sleep(1);
                 }
             }

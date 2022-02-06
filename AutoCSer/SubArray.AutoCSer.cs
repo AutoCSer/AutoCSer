@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
+using AutoCSer.Memory;
 
 namespace AutoCSer
 {
     /// <summary>
     /// 数组子串
     /// </summary>
-    public partial struct SubArray<valueType>
+    public partial struct SubArray<T>
     {
         /// <summary>
         /// 公共数组空子串
         /// </summary>
-        internal static SubArray<valueType> Null;
+        internal static SubArray<T> Null;
 
         ///// <summary>
         ///// 数组子串
@@ -28,7 +29,7 @@ namespace AutoCSer
         /// <summary>
         /// 原数组
         /// </summary>
-        public valueType[] BufferArray
+        public T[] BufferArray
         {
             get { return Array; }
         }
@@ -50,7 +51,7 @@ namespace AutoCSer
         /// 数组子串
         /// </summary>
         /// <param name="array">数组</param>
-        public SubArray(valueType[] array)
+        public SubArray(T[] array)
         {
             Array = array;
             Start = 0;
@@ -60,45 +61,24 @@ namespace AutoCSer
         /// 数组子串
         /// </summary>
         /// <param name="array">数组</param>
-        internal SubArray(ref LeftArray<valueType> array)
+        internal SubArray(ref LeftArray<T> array)
         {
-            if (array.Array == null)
-            {
-                Array = null;
-                Start = Length = 0;
-            }
-            else
-            {
-                Array = array.Array;
-                Start = 0;
-                Length = array.Length;
-            }
+            Array = array.Array;
+            Start = 0;
+            Length = array.Length;
         }
         /// <summary>
         /// 数组子串
         /// </summary>
         /// <param name="array">数组</param>
-        internal SubArray(ListArray<valueType> array)
-        {
-            if (array == null)
-            {
-                Array = null;
-                Start = Length = 0;
-            }
-            else
-            {
-                Array = array.Array;
-                Start = 0;
-                Length = array.Length;
-            }
-        }
+        internal SubArray(ListArray<T> array) : this(ref array.Array) { }
         /// <summary>
         /// 数组子串
         /// </summary>
         /// <param name="array"></param>
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
-        public SubArray(valueType[] array, int startIndex, int length)
+        public SubArray(T[] array, int startIndex, int length)
         {
             FormatRange range = new FormatRange(array.length(), startIndex, length);
             Array = array;
@@ -111,7 +91,7 @@ namespace AutoCSer
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
         /// <param name="array"></param>
-        internal SubArray(int startIndex, int length, valueType[] array)
+        internal SubArray(int startIndex, int length, T[] array)
         {
             Array = array;
             Start = startIndex;
@@ -140,7 +120,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="array"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Set(valueType[] array)
+        internal void Set(T[] array)
         {
             if (array == null) SetNull();
             else Set(array, 0, array.Length);
@@ -150,9 +130,9 @@ namespace AutoCSer
         /// </summary>
         /// <returns>数组</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public valueType[] GetArray()
+        public T[] GetArray()
         {
-            return Length == 0 ? NullValue<valueType>.Array : getArray();
+            return Length == 0 ? EmptyArray<T>.Array : getArray();
         }
         /// <summary>
         /// 转换数组
@@ -160,9 +140,9 @@ namespace AutoCSer
         /// <typeparam name="arrayType">数组类型</typeparam>
         /// <param name="getValue">数据获取委托</param>
         /// <returns>数组</returns>
-        public arrayType[] GetArray<arrayType>(Func<valueType, arrayType> getValue)
+        public arrayType[] GetArray<arrayType>(Func<T, arrayType> getValue)
         {
-            if (Length == 0) return NullValue<arrayType>.Array;
+            if (Length == 0) return EmptyArray<arrayType>.Array;
             arrayType[] newArray = new arrayType[Length];
             int count = 0, index = Start;
             do
@@ -178,11 +158,11 @@ namespace AutoCSer
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public SubArray<valueType> GetSub(int startIndex, int length)
+        public SubArray<T> GetSub(int startIndex, int length)
         {
             FormatRange range = new FormatRange(Length, startIndex, length);
             if (range.GetCount != length) throw new IndexOutOfRangeException("startIndex[" + startIndex.toString() + "] + length[" + length.toString() + "] > Length[" + Length.toString() + "]");
-            SubArray<valueType> value = default(SubArray<valueType>);
+            SubArray<T> value = new SubArray<T>();
             value.Set(Array, Start + startIndex, length);
             return value;
         }

@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.IO
@@ -43,24 +43,39 @@ namespace AutoCSer.IO
             int index = fileName.LastIndexOf(System.IO.Path.DirectorySeparatorChar) + 1;
             do
             {
-                string bakName = BakPrefix + Date.NowTime.Now.ToString("yyyyMMdd-HHmmss") + "_" + ((uint)Random.Default.Next()).toHex() + "_";
+                string bakName = BakPrefix + AutoCSer.Threading.SecondTimer.Now.ToString("yyyyMMdd-HHmmss") + "_" + ((uint)Random.Default.Next()).toHex() + "_";
                 newFileName = index != 0 ? fileName.Insert(index, bakName) : (bakName + fileName);
             }
             while (System.IO.File.Exists(newFileName));
             return newFileName;
         }
         /// <summary>
-        /// 文件名转小写
+        /// 文件名转小写（MONO 不做处理）
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static string FileNameToLower(string fileName)
+        public static string FileNameToLower(this string fileName)
         {
 #if MONO
             return fileName;
 #else
             return fileName.ToLower();
+#endif
+        }
+        /// <summary>
+        /// 文件路径比较（MONO 区分大小写）
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <param name="fileName">文件名称</param>
+        /// <returns>匹配返回 0</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static int PathCompare(this string path, string fileName)
+        {
+#if MONO
+            return string.Compare(fileName, 0, path, 0, path.Length, false);
+#else
+            return string.Compare(fileName, 0, path, 0, path.Length, true);
 #endif
         }
     }

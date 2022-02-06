@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoCSer.Extension;
+using AutoCSer.Extensions;
 
 namespace AutoCSer.Search
 {
@@ -21,12 +21,12 @@ namespace AutoCSer.Search
         /// </summary>
         /// <param name="threadCount">并行线程数量</param>
         /// <param name="log">日志处理</param>
-        internal void BuildGraph(int threadCount, AutoCSer.Log.ILog log)
+        internal void BuildGraph(int threadCount, AutoCSer.ILog log)
         {
             if (Boot.Nodes != null)
             {
-                if (threadCount > AutoCSer.Threading.Pub.CpuCount) threadCount = AutoCSer.Threading.Pub.CpuCount;
-                if (threadCount > 1) buildGraph(threadCount, log ?? AutoCSer.Log.Pub.Log);
+                if (threadCount > AutoCSer.Common.ProcessorCount) threadCount = AutoCSer.Common.ProcessorCount;
+                if (threadCount > 1) buildGraph(threadCount, log ?? AutoCSer.LogHelper.Default);
                 else buildGraph();
             }
         }
@@ -47,7 +47,7 @@ namespace AutoCSer.Search
         /// </summary>
         /// <param name="threadCount">并行线程数量</param>
         /// <param name="log">日志处理</param>
-        private void buildGraph(int threadCount, AutoCSer.Log.ILog log)
+        private void buildGraph(int threadCount, AutoCSer.ILog log)
         {
             LeftArray<Node> reader = new LeftArray<Node>(Boot.Nodes.Values.getArray());
             int taskCount = threadCount - 1;
@@ -75,7 +75,7 @@ namespace AutoCSer.Search
                         if (builder.ThreadException == null) reader.Add(ref builder.Writer);
                         else
                         {
-                            log.Add(Log.LogType.Error, builder.ThreadException);
+                            log.Exception(builder.ThreadException, null, LogLevel.Exception | LogLevel.AutoCSer);
                             isError = true;
                         }
                     }
