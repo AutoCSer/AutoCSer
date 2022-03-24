@@ -19,7 +19,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static bool? create(bool value)
         {
             return value;
@@ -29,7 +29,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static byte? create(byte value)
         {
             return value;
@@ -39,7 +39,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static char? create(char value)
         {
             return value;
@@ -49,7 +49,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static DateTime? create(DateTime value)
         {
             return value;
@@ -59,7 +59,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static decimal? create(decimal value)
         {
             return value;
@@ -69,7 +69,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static double? create(double value)
         {
             return value;
@@ -79,7 +79,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static float? create(float value)
         {
             return value;
@@ -89,7 +89,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static Guid? create(Guid value)
         {
             return value;
@@ -99,7 +99,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static short? create(short value)
         {
             return value;
@@ -109,7 +109,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static int? create(int value)
         {
             return value;
@@ -119,7 +119,7 @@ namespace AutoCSer.Emit
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static long? create(long value)
         {
             return value;

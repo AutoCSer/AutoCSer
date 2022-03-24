@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=09053A49"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=092A2EEC"></script>
     <title>AutoCSer2 RPC - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -11,9 +11,9 @@
 </head>
 <body>
     <div>
-        <p><b>AutoCSer2</b> 是基于 TCP 长连接支持全双工的高性能 RPC 框架（<a href="//f.autocser.com/Download/AutoCSer2.Example.zip?v=09053A49" target="_blank">下载 AutoCSer2.Example.zip</a>）。</p>
-        <p>最低支持 .NET Standard 2.0，低框架版本请到 <a href="/Index.html?v=9053A49" title="Go to the home page to download">AutoCSer</a> 下载以支持 .NET Framework 2.0<b>（注意这两个框架版本是不兼容的）</b>。</p>
-        <p>和 <a href="/TcpServer/InterfaceServer.html?v=9053A49">AutoCSer 的 TCP 接口服务框架</a> 一样，该框架服务端与客户端都采用接口原型定义模式，主要不同点是该框架为 await / async 异步编程提供了更多原生支持。</p>
+        <p><b>AutoCSer2</b> 是基于 TCP 长连接支持全双工的高性能 RPC 框架（<a href="//f.autocser.com/Download/AutoCSer2.Example.zip?v=092A2EEC" target="_blank">下载 AutoCSer2.Example.zip</a>）。</p>
+        <p>最低支持 .NET Standard 2.0，低框架版本请到 <a href="/Index.html?v=92A2EEC" title="Go to the home page to download">AutoCSer</a> 下载以支持 .NET Framework 2.0<b>（注意这两个框架版本是不兼容的）</b>。</p>
+        <p>和 <a href="/TcpServer/InterfaceServer.html?v=92A2EEC">AutoCSer 的 TCP 接口服务框架</a> 一样，该框架服务端与客户端都采用接口原型定义模式，主要不同点是该框架为 await / async 异步编程提供了更多原生支持。</p>
     </div>
     <div><h1>服务</h1> <b>AutoCSer.Net.CommandListener</b></div>
     <div>
@@ -22,7 +22,7 @@
             <br />第一个绑定的服务控制器接口为<b>服务主控制器</b>，可以定义<b>服务认证 API</b>，作为客户端访问服务其它 API 之前的身份认证以及会话状态初始化操作，每个服务最大支持 8192 个服务控制器。
             <br />每一个服务控制器由一个其它程序集可见的 public 接口定义与一个接口实例组成，服务控制器接口定义仅支持非泛型方法作为 API 定义，一个服务控制器接口最大支持 65536 个 API 方法定义，主服务主控制器只最大支持 65280 个 API 方法定义。
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','0');">CommandServer\Server\Listener.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','0');">CommandServer\Server\Listener.cs</a></div></p>
     </div>
     <div><h1>服务控制器接口方法</h1></div>
     <div>
@@ -32,42 +32,42 @@
             <br />根据返回数据线程模式分为 4 种类型：
         </p>
         <p>1.同步返回数据，支持 ref / out 参数。</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','1');">CommandServer\Server\Synchronous\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','1');">CommandServer\Server\Synchronous\ISynchronousController.cs</a></div></p>
         <p>2.不返回数据，仅执行服务端方法不应答客户端，适合<b>客户端单向</b>给服务端推送<b>可丢失数据</b>的场景，返回值类型必须为 <b>AutoCSer.Net.CommandServerSendOnly</b>。</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','2');">CommandServer\Server\Synchronous\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','2');">CommandServer\Server\Synchronous\ISendOnlyController.cs</a></div></p>
         <p>3.回调委托返回数据，使用回调委托返回数据，<b>服务端必须保证触发回调</b>，否则客户端可能会一直等待到连接关闭，返回值类型必须为 void，最后一个参数类型必须为 <b>AutoCSer.Net.CommandServerCallback</b> / <b>AutoCSer.Net.CommandServerCallback&lt;T&gt;</b>。</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','3');">CommandServer\Server\Synchronous\ICallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','3');">CommandServer\Server\Synchronous\ICallbackController.cs</a></div></p>
         <p>4.保持回调委托返回数据，用于客户端建立服务端推送<b>可丢失数据</b>通道的场景，返回值类型必须为 void，根据回调是否等待计数输出分为两种：
             <br />不限制计数回调采用同步<b>无阻塞高效率</b>模式，适合回调<b>调用频率低于网络吞吐</b>的场景，否则可能造成输出数据积压<b>内存占用不可预计</b>并影响系统性能，最后一个参数类型必须为 <b>AutoCSer.Net.CommandServerKeepCallback</b> / <b>AutoCSer.Net.CommandServerKeepCallback&lt;T&gt;</b>。
             <br />等待计数模式采用异步任务模式触发回调，会在输出数据积压超过指定数量时等待网络输出避免占用过多内存资源，最后一个参数类型必须为 <b>AutoCSer.Net.CommandServerKeepCallbackCount</b> / <b>AutoCSer.Net.CommandServerKeepCallbackCount&lt;T&gt;</b>，由于该回调仅支持 async Task 异步回调，不建议在当前线程模式下使用。
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','4');">CommandServer\Server\Synchronous\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','4');">CommandServer\Server\Synchronous\IKeepCallbackController.cs</a></div></p>
         <p>
             二.<b>同步队列线程调用</b>，在同步线程队列中调用方法，可以保证每个队列的调用<b>没有并发问题</b>，由于每个队列都需要占用一个常驻线程，所以除了每个服务控制器可以配置一个默认队列线程，最多支持 255 个附加队列。由于方法采用队列模式调用，所以仅适合<b>纯内存计算</b>任务，不适合阻塞任务。
             <br />要求 API 方法的<b>数据参数之前</b>增加一个类型为 <b>AutoCSer.Net.CommandServerCallQueue</b> 或者 <b>AutoCSer.Net.CommandServerCallLowPriorityQueue</b> 的参数，通过 <b>ContextObject</b> 设置或者获取当前队列的上下文信息，区别在与前者比后者拥有更高优先级的执行概率。
             <br />和<b>IO 线程同步调用</b>一样，根据返回数据线程模式分为 4 种类型：
         </p>
         <p>1.同步返回数据，支持 ref / out 参数。</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','5');">CommandServer\Server\Queue\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','5');">CommandServer\Server\Queue\ISynchronousController.cs</a></div></p>
         <p>2.不返回数据</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','6');">CommandServer\Server\Queue\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','6');">CommandServer\Server\Queue\ISendOnlyController.cs</a></div></p>
         <p>3.回调委托返回数据</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','7');">CommandServer\Server\Queue\ICallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','7');">CommandServer\Server\Queue\ICallbackController.cs</a></div></p>
         <p>
             4.保持回调委托返回数据
             <br />由于等待计数回调模式仅支持 async Task 异步回调，不建议在当前线程模式下使用。
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','8');">CommandServer\Server\Queue\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','8');">CommandServer\Server\Queue\IKeepCallbackController.cs</a></div></p>
         <p>
             三.<b>async Task 调用</b>，采用系统异步任务调度，适合大量异步任务并发调用，应当尽量避免同步阻塞调用的存在。
             <br />要求 API 方法的返回值类型为 <b>async Task</b> 或者 <b>async Task&lt;T&gt;</b>，根据返回数据线程模式分为 3 种类型：
         </p>
         <p>1.await Task 同步返回数据</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','9');">CommandServer\Server\AsyncTask\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','9');">CommandServer\Server\AsyncTask\ISynchronousController.cs</a></div></p>
         <p>2.不返回数据，返回值类型必须为 <b>Task&lt;AutoCSer.Net.CommandServerSendOnly&gt;</b></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','a');">CommandServer\Server\AsyncTask\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','a');">CommandServer\Server\AsyncTask\ISendOnlyController.cs</a></div></p>
         <p>3.保持回调委托返回数据</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','b');">CommandServer\Server\AsyncTask\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','b');">CommandServer\Server\AsyncTask\IKeepCallbackController.cs</a></div></p>
         <p>
             四.<b>async Task 读写队列调用</b>，采用异步读写队列任务调度，每一个队列在提供读操作并发调用的同时保证<b>写操作没有并发问题</b>，适合 Actor 模式<b>大量队列并发</b>执行（比如每个业务用户一个执行队列）。
             <br />要求 API 方法的<b>数据参数之前</b>增加一个类型为 <b>AutoCSer.Net.CommandServerCallTaskQueue</b> 或者 <b>AutoCSer.Net.CommandServerCallTaskLowPriorityQueue</b> 的参数，通过字段 <b>ContextObject</b> 设置或者获取当前队列的上下文信息，区别在于前者比后者拥有更高优先级的执行概率。
@@ -75,11 +75,11 @@
             <br />和<b>await Task 调用</b>一样，要求 API 方法的返回值类型为 <b>async Task</b> 或者 <b>async Task&lt;T&gt;，</b>根据返回数据线程模式分为 3 种类型：
         </p>
         <p>1.await Task 同步返回数据</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','c');">CommandServer\Server\AsyncTaskQueue\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','c');">CommandServer\Server\AsyncTaskQueue\ISynchronousController.cs</a></div></p>
         <p>2.不返回数据，返回值类型必须为 <b>Task&lt;AutoCSer.Net.CommandServerSendOnly&gt;</b></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','d');">CommandServer\Server\AsyncTaskQueue\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','d');">CommandServer\Server\AsyncTaskQueue\ISendOnlyController.cs</a></div></p>
         <p>3.保持回调委托返回数据</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodee" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','e');">CommandServer\Server\AsyncTaskQueue\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodee" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','e');">CommandServer\Server\AsyncTaskQueue\IKeepCallbackController.cs</a></div></p>
     </div>
     <div>
         <p><b>服务认证 API</b></p>
@@ -90,7 +90,7 @@
             <br />1. IO 线程同步调用 / 同步队列线程调用 + 同步返回数据 / 回调委托返回数据
             <br />2. async Task 调用 / async Task 读写队列调用 + await Task 同步返回数据
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodef" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','f');">CommandServer\Server\IVerifyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodef" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','f');">CommandServer\Server\IVerifyController.cs</a></div></p>
     </div>
     <div>
         <p><b>接口方法配置</b>，每个接口 API 都可以指定一个配置 <b>[AutoCSer.Net.CommandServerMethod]</b> 用于定义接口配置参数。</p>
@@ -143,7 +143,7 @@
             <br />客户端需要设置与服务端匹配的客户端控制器接口，如果服务端主控制器存在服务认证 API，客户端初始化时必须提供配套的主控制器接口，并且在客户端套接字事件中配置认证 API 调用逻辑。
             <br />每一个客户端控制器接口都必须是与服务端控制器接口完全匹配的，其它程序集可见的 public 接口定义，所以同样仅支持非泛型方法定义，对于同一个服务 API 允许定义多个匹配的客户端接口方法。
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeg" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','g');">CommandServer\Client\Client.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeg" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','g');">CommandServer\Client\Client.cs</a></div></p>
     </div>
     <div><h1>客户端控制器接口方法</h1></div>
     <div>
@@ -174,20 +174,20 @@
             <br />仅仅采用同步队列任务触发回调，并不能保证以队列模式执行后续操作，不适合存在阻塞的 await 后续操作。
             <br />可以匹配服务端<b>同步返回数据</b>与<b>回调委托返回数据</b> API。
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeh" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','h');">CommandServer\Client\Synchronous\ISynchronousController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodei" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','i');">CommandServer\Client\Synchronous\ICallbackController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodej" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','j');">CommandServer\Client\Queue\ISynchronousController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodek" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','k');">CommandServer\Client\Queue\ICallbackController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodel" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','l');">CommandServer\Client\AsyncTask\ISynchronousController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodem" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','m');">CommandServer\Client\AsyncTaskQueue\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeh" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','h');">CommandServer\Client\Synchronous\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodei" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','i');">CommandServer\Client\Synchronous\ICallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodej" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','j');">CommandServer\Client\Queue\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodek" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','k');">CommandServer\Client\Queue\ICallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodel" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','l');">CommandServer\Client\AsyncTask\ISynchronousController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodem" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','m');">CommandServer\Client\AsyncTaskQueue\ISynchronousController.cs</a></div></p>
         <p>
             6.<b>只发送数据</b>，返回值类型必须为 <b>AutoCSer.Net.SendOnlyCommand，只能用于异步 await 调用上下文。</b>
             <br />只能匹配服务端<b>不返回数据</b> API。
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCoden" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','n');">CommandServer\Client\Synchronous\ISendOnlyController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeo" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','o');">CommandServer\Client\Queue\ISendOnlyController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodep" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','p');">CommandServer\Client\AsyncTask\ISendOnlyController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeq" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','q');">CommandServer\Client\AsyncTaskQueue\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCoden" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','n');">CommandServer\Client\Synchronous\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeo" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','o');">CommandServer\Client\Queue\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodep" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','p');">CommandServer\Client\AsyncTask\ISendOnlyController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeq" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','q');">CommandServer\Client\AsyncTaskQueue\ISendOnlyController.cs</a></div></p>
         <p>
             7.<b>保持回调委托返回数据</b>，返回值类型必须为 <b>AutoCSer.Net.KeepCallbackCommand，只能用于异步 await 调用上下文。</b>
             <br />接口方法最后一个参数必须是 <b>AutoCSer.Net.CommandClientKeepCallback</b> / <b>Action&lt;AutoCSer.Net.CommandClientReturnValue, AutoCSer.Net.KeepCallbackCommand&gt</b> 或者 <b>AutoCSer.Net.CommandClientKeepCallback&lt;T&gt;</b> / <b>Action&lt;AutoCSer.Net.CommandClientReturnValue, AutoCSer.Net.KeepCallbackCommand&lt;T&gt;&gt</b>
@@ -212,10 +212,10 @@
             <br />仅仅采用同步队列任务触发回调，并不能保证以队列模式执行后续操作，不适合存在阻塞的 await 后续操作。
             <br />只能匹配服务端<b>保持回调委托返回数据</b> API。
         </p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCoder" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','r');">CommandServer\Client\Synchronous\IKeepCallbackController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodes" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','s');">CommandServer\Client\Queue\IKeepCallbackController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodet" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','t');">CommandServer\Client\AsyncTask\IKeepCallbackController.cs</a></div></p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeu" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','u');">CommandServer\Client\AsyncTaskQueue\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCoder" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','r');">CommandServer\Client\Synchronous\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodes" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','s');">CommandServer\Client\Queue\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodet" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','t');">CommandServer\Client\AsyncTask\IKeepCallbackController.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodeu" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','u');">CommandServer\Client\AsyncTaskQueue\IKeepCallbackController.cs</a></div></p>
         <p>注意：匹配服务端<b>同步返回数据</b> API 的客户端回调线程模式同样可以匹配服务端<b>await 同步返回数据</b> API。</p>
     </div>
     <div>
@@ -256,7 +256,7 @@
         <p><b>GetBinaryDeserializeConfig</b> 获取二进制反序列化配置参数，客户端初始化时一次性调用，可重写</p>
         <p><b>OnControllerConstructorMessage</b> 方法用于控制器构造警告，可重写</p>
         <p><b>OnCustomData</b> 方法用于自定义数据处理，默认返回 AutoCSer.Net.CommandServer.ClientReceiveErrorType.CustomCommandError 并关闭当前套接字（注意，由于是接收数据 IO 线程同步调用，如果存在阻塞请新开线程任务处理），可重写</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodev" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','v');">CommandServer\Client\CommandClientConfig.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodev" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','v');">CommandServer\Client\CommandClientConfig.cs</a></div></p>
     </div>
     <div><h1>客户端套接字事件</h1> <b>AutoCSer.Net.CommandClientSocketEvent</b></div>
     <div>
@@ -282,7 +282,7 @@
     <div>
         <p>对于只有一个服务控制器的服务，客户端可以配置 <b>AutoCSer.Net.CommandClientSocketEvent&lt;T&gt;</b> 对象通过 InterfaceController 属性获取当前客户端控制器。</p>
         <p>对于存在多个客户端控制器的需求，客户端可以配置派生于 <b>AutoCSer.Net.CommandClientSocketEvent</b> 类型的对象，通过重写 ControllerCreatorParameters 属性配置客户端控制器类型信息，然后手动增加相关客户端控制器属性定义 <b>public IXXX XXX { get; private set; } </b>，就可以实现 OnMethodVerified 默认操作中自动绑定客户端控制器。</p>
-        <p><div> 参考示例 <a href="/AutoCSer2.html?v=9053A49" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodew" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','w');">CommandServer\Client\CommandClientSocketEvent.cs</a></div></p>
+        <p><div> 参考示例 <a href="/AutoCSer2.html?v=92A2EEC" title="Go to the home page to download">AutoCSer2</a>\Example2\<a id="GetCodew" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example2','w');">CommandServer\Client\CommandClientSocketEvent.cs</a></div></p>
     </div>
 </body>
 <script language="javascript" type="text/javascript">

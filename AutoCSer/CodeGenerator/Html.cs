@@ -59,7 +59,7 @@ namespace AutoCSer.CodeGenerator
                             Messages.Message("WEB Path 生成失败");
                         }
                     }
-                    else Messages.Message("没有找到 WEB视图扩展默认目录 " + viewDirectory.FullName);
+                    else Messages.Message("没有找到 WEB 视图扩展默认目录 " + viewDirectory.FullName);
                 }
                 if (WebConfig.IsCopyScript)
                 {

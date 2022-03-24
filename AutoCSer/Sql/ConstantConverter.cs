@@ -726,23 +726,24 @@ namespace AutoCSer.Sql
         {
             fixed (char* valueFixed = value)
             {
-                int length = 0, wideSize = 0;
+                int length = 0, wideSize = widePrefix == 0 ? 1 : 0;
                 for (char* start = valueFixed, end = valueFixed + value.Length; start != end; ++start)
                 {
                     if (*start == '\'') ++length;
-                    else if (wideSize == 0 && * start >= 256) wideSize = 1;
+                    else if (wideSize == 0 && *start >= 256) wideSize = 1;
                 }
+                if (widePrefix == 0) wideSize = 0;
                 if (length == 0)
                 {
-                    if (widePrefix == 0) wideSize = 0;
                     sqlStream.PrepCharSize(value.Length + wideSize + 2);
-                    if (wideSize != 0) sqlStream.Data.Write('N');
+                    if (wideSize != 0) sqlStream.Data.Write(widePrefix);
                     sqlStream.Data.Write('\'');
                     sqlStream.Data.Write(value);
                     sqlStream.Data.Write('\'');
                     return;
                 }
-                sqlStream.PrepCharSize((length += value.Length) + 2);
+                sqlStream.PrepCharSize((length += value.Length) + wideSize + 2);
+                if (wideSize != 0) sqlStream.Data.Write(widePrefix);
                 sqlStream.Data.Write('\'');
                 byte* write = (byte*)sqlStream.CurrentChar;
                 for (char* start = valueFixed, end = valueFixed + value.Length; start != end; ++start)
@@ -771,6 +772,7 @@ namespace AutoCSer.Sql
         /// <param name="isEnd"></param>
         internal void ConvertLike(CharStream sqlStream, object value, bool isStart, bool isEnd)
         {
+            if (widePrefix != 0) sqlStream.Write(widePrefix);
             sqlStream.Write('\'');
             if (isStart) sqlStream.Write('%');
             if (value != null)

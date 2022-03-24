@@ -74,8 +74,15 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TcpInternalSimpleServer\Emit\UnionType\ParameterGenericType.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\UnionType\ParameterGenericType2.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerSocketThread.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerSocketThreadArray.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\UnionType\ParameterGenericType.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\UnionType\ParameterGenericType2.cs" />
+    <Compile Include="TcpOpenSimpleServer\ServerSocketThread.cs" />
+    <Compile Include="TcpOpenSimpleServer\ServerSocketThreadArray.cs" />
     <Compile Include="TcpOpenSimpleServer\SocketLink.cs" />
-    <Compile Include="TcpSimpleServer\OnTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpSimpleServer\Emit\SimpleParameterType.cs" />
     <Compile Include="TcpInternalSimpleServer\Client.cs" />
@@ -86,17 +93,14 @@
     <Compile Include="TcpInternalSimpleServer\Emit\ClientMetadata.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\ParameterGenericType.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\ParameterGenericType2.cs" />
-    <Compile Include="TcpInternalSimpleServer\Emit\UnionType.cs" />
     <Compile Include="TcpInternalSimpleServer\MethodClient.cs" />
     <Compile Include="TcpInternalSimpleServer\Server.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerAttribute.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerBaseAttribute.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerCallback.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerSocket.cs" />
-    <Compile Include="TcpInternalSimpleServer\ServerSocketTask.cs" />
     <Compile Include="TcpInternalSimpleServer\TimeVerifyClient.cs" />
     <Compile Include="TcpInternalSimpleServer\TimeVerifyServer.cs" />
-    <Compile Include="TcpInternalSimpleServer\UnionType.cs" />
     <Compile Include="TcpOpenSimpleServer\Client.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\Client.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\MethodClient.cs" />
@@ -105,17 +109,14 @@
     <Compile Include="TcpOpenSimpleServer\Emit\ClientMetadata.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\ParameterGenericType.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\ParameterGenericType2.cs" />
-    <Compile Include="TcpOpenSimpleServer\Emit\UnionType.cs" />
     <Compile Include="TcpOpenSimpleServer\MethodAttribute.cs" />
     <Compile Include="TcpOpenSimpleServer\MethodClient.cs" />
     <Compile Include="TcpOpenSimpleServer\Server.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerAttribute.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerCallback.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerSocket.cs" />
-    <Compile Include="TcpOpenSimpleServer\ServerSocketTask.cs" />
     <Compile Include="TcpOpenSimpleServer\TimeVerifyClient.cs" />
     <Compile Include="TcpOpenSimpleServer\TimeVerifyServer.cs" />
-    <Compile Include="TcpOpenSimpleServer\UnionType.cs" />
     <Compile Include="TcpSimpleServer\Client.cs" />
     <Compile Include="TcpSimpleServer\ClientBuffer.cs" />
     <Compile Include="TcpSimpleServer\ClientCheckTimer.cs" />

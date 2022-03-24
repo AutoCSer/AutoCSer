@@ -9,3 +9,5 @@ AutoCSer.CodeGenerator.CustomApply.NetCore", @"C:\AutoCSer\Example\CustomCodeGen
 AutoCSer.CodeGenerator.CustomApply.NetCore", @"C:\AutoCSer\Example\CustomCodeGeneratorApply\ ", @"C:\AutoCSer\Example\CustomCodeGeneratorApply\bin\Release\netcoreapp2.0\AutoCSer.CodeGenerator.CustomApply.dll ", @"AutoCSer.CodeGenerator.CustomApply
 调用成员信息 : Main in C:\AutoCSer\AutoCSer\CodeGenerator\Program.cs line 26
 AutoCSer.CodeGenerator.CustomApply.NetCore", @"C:\AutoCSer\Example\CustomCodeGeneratorApply\ ", @"C:\AutoCSer\Example\CustomCodeGeneratorApply\bin\Release\netcoreapp2.0\AutoCSer.CodeGenerator.CustomApply.dll ", @"AutoCSer.CodeGenerator.CustomApply
+调用成员信息 : Main in C:\AutoCSer\AutoCSer\CodeGenerator\Program.cs line 26
+AutoCSer.CodeGenerator.CustomApply.NetCore", @"C:\AutoCSer\Example\CustomCodeGeneratorApply\ ", @"C:\AutoCSer\Example\CustomCodeGeneratorApply\bin\Release\netcoreapp2.0\AutoCSer.CodeGenerator.CustomApply.dll ", @"AutoCSer.CodeGenerator.CustomApply

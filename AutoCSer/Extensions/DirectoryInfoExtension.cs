@@ -19,7 +19,7 @@ namespace AutoCSer.Extensions
         /// <param name="path">目录</param>
         /// <returns>\结尾的路径全名</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static string fullName(this System.IO.DirectoryInfo path)
+        public static string fullName(this DirectoryInfo path)
         {
             string name = path.FullName;
             return name[name.Length - 1] == Path.DirectorySeparatorChar ? name : (name + Separator);

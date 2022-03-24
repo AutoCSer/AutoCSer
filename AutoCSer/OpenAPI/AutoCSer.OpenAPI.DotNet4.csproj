@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EncodingClient.cs" />
-    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extensions\MemoryExtension.OpenAPI.cs" />
     <Compile Include="IReturn.cs" />
     <Compile Include="Microblog.cs" />
     <Compile Include="MicroblogEncoding.cs" />

@@ -107,7 +107,7 @@ namespace AutoCSer.Threading
         /// <param name="KeepMode">定时任务继续模式</param>
         /// <param name="keepSeconds">继续执行间隔秒数，0 表示不继续执行</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-#if DOTNET2
+#if DOTNET2 || DOTNET4 || UNITY3D
         public void Append(Action task, int timeoutSeconds, SecondTimerThreadMode threadMode = SecondTimerThreadMode.TinyBackgroundThreadPool, SecondTimerKeepMode KeepMode = SecondTimerKeepMode.Once, int keepSeconds = 0)
 #else
         public void Append(Action task, int timeoutSeconds, SecondTimerThreadMode threadMode = SecondTimerThreadMode.TaskRun, SecondTimerKeepMode KeepMode = SecondTimerKeepMode.Once, int keepSeconds = 0)
@@ -123,7 +123,7 @@ namespace AutoCSer.Threading
         /// <param name="threadMode">执行任务的线程模式</param>
         /// <param name="KeepMode">定时任务继续模式</param>
         /// <param name="keepSeconds">继续执行间隔秒数，0 表示不继续执行</param>
-#if DOTNET2
+#if DOTNET2 || DOTNET4 || UNITY3D
         public void Append(Action task, DateTime timeout, SecondTimerThreadMode threadMode = SecondTimerThreadMode.TinyBackgroundThreadPool, SecondTimerKeepMode KeepMode = SecondTimerKeepMode.Once, int keepSeconds = 0)
 #else
         public void Append(Action task, DateTime timeout, SecondTimerThreadMode threadMode = SecondTimerThreadMode.TaskRun, SecondTimerKeepMode KeepMode = SecondTimerKeepMode.Once, int keepSeconds = 0)

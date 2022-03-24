@@ -96,7 +96,7 @@ namespace AutoCSer.Threading
                     switch(threadMode)
                     {
                         case SecondTimerThreadMode.Synchronous: After(); return;
-#if !DOTNET2
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
                         case SecondTimerThreadMode.TaskRun: Task.Run((Action)After); return;
 #endif
                         case SecondTimerThreadMode.TinyBackgroundThreadPool: ThreadPool.TinyBackground.FastStart(this, ThreadTaskType.SecondTimerTaskNodeAfter); return;
@@ -118,7 +118,7 @@ namespace AutoCSer.Threading
             switch (threadMode)
             {
                 case SecondTimerThreadMode.Synchronous: OnTimer(); return;
-#if !DOTNET2
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
                 case SecondTimerThreadMode.TaskRun: Task.Run((Action)OnTimer); return;
 #endif
                 case SecondTimerThreadMode.TinyBackgroundThreadPool: ThreadPool.TinyBackground.FastStart(this, ThreadTaskType.SecondTimerTaskNodeOnTimer); return;
@@ -157,7 +157,7 @@ namespace AutoCSer.Threading
                     switch (threadMode)
                     {
                         case SecondTimerThreadMode.Synchronous: After(); return;
-#if !DOTNET2
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
                         case SecondTimerThreadMode.TaskRun: Task.Run((Action)After); return;
 #endif
                         case SecondTimerThreadMode.TinyBackgroundThreadPool: ThreadPool.TinyBackground.FastStart(this, ThreadTaskType.SecondTimerTaskNodeAfter); return;

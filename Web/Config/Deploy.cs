@@ -16,6 +16,14 @@ namespace AutoCSer.Web.Config
         /// </summary>
         public const string AutoCSerProjectPath = AutoCSerPath + @"AutoCSer\";
         /// <summary>
+        /// AutoCSer2 解决方案路径
+        /// </summary>
+        public const string AutoCSer2Path = @"C:\AutoCSer2\";
+        /// <summary>
+        /// AutoCSer2 项目路径
+        /// </summary>
+        public const string AutoCSer2ProjectPath = AutoCSer2Path + @"AutoCSer\";
+        /// <summary>
         /// Nuget 路径
         /// </summary>
         public const string NugetPath = AutoCSerPath + @"Nuget\";

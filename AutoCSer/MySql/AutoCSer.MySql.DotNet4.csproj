@@ -91,7 +91,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TypeName.cs" />
-    <Compile Include="UnionType.cs" />
+    <Compile Include="UnionType\SqlCommand.cs" />
+    <Compile Include="UnionType\SqlConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.DotNet4.csproj">

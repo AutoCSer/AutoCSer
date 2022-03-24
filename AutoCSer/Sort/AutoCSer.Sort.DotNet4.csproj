@@ -88,11 +88,10 @@
     <Compile Include="Algorithm\TopologySort.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Algorithm\UnionType.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="BitMap.cs" />
     <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\CollectionExtension.Sort.cs" />
+    <Compile Include="CombinationTemplate\CompareFrom.cs" />
     <Compile Include="CombinationTemplate\FixedArray.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,9 +105,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CombinationTemplate\FixedArraySortGroup.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CombinationTemplate\Collection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CombinationTemplate\Enumerable.cs">
@@ -153,10 +149,10 @@
     <Compile Include="CombinationTemplate\SubArray.SortGroup.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extension\Array.cs" />
-    <Compile Include="Extension\IComparable.cs" />
-    <Compile Include="Extension\LeftArray.cs" />
-    <Compile Include="Extension\SubArray.cs" />
+    <Compile Include="Extensions\ArrayExtension.Sort.cs" />
+    <Compile Include="Extensions\IComparable.cs" />
+    <Compile Include="Extensions\LeftArrayExtension.Sort.cs" />
+    <Compile Include="Extensions\SubArrayExtension.Sort.cs" />
     <Compile Include="FragmentDictionary256.cs" />
     <Compile Include="PageCount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -173,6 +169,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SortOrder.cs" />
+    <Compile Include="UnionType\LongArray.cs" />
     <Compile Include="{AutoCSer.Sort}.CombinationTemplate.cs">
       <SubType>Code</SubType>
     </Compile>

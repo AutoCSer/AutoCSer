@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>AutoCSer</AssemblyName>
     <RootNamespace>AutoCSer</RootNamespace>
-    <Version>1.1.54</Version>
+    <Version>1.1.56</Version>
     <PackageId>AutoCSer.NetStandard</PackageId>
     <Authors>肖进</Authors>
     <Company />

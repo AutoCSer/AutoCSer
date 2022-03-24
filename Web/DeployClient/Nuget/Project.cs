@@ -59,13 +59,13 @@ namespace AutoCSer.Web.DeployClient.Nuget
         internal static readonly Project[] Projects = new Project[]
         {
             new Project("AutoCSer.DotNet4.5"),
-            new Project("AutoCSer.Json.DotNet4.5"),
+            //new Project("AutoCSer.Json.DotNet4.5"),
 
             new Project("AutoCSer.DotNet4"),
-            new Project("AutoCSer.Json.DotNet4"),
+            //new Project("AutoCSer.Json.DotNet4"),
 
             new Project("AutoCSer.DotNet2"),
-            new Project("AutoCSer.Json.DotNet2"),
+            //new Project("AutoCSer.Json.DotNet2"),
         };
     }
 }

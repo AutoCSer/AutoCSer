@@ -15,7 +15,7 @@ namespace AutoCSer.Threading
         /// 线程池 AutoCSer.Threading.ThreadPool.TinyBackground（不是 System.Threading.ThreadPool）
         /// </summary>
         TinyBackgroundThreadPool,
-#if !DOTNET2
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
         /// <summary>
         /// 调用 Task.Run 执行
         /// </summary>

@@ -192,7 +192,7 @@ namespace AutoCSer.Log
                 logQueue.Push(log);
                 this.isLogTask = true;
                 logLock.Exit();
-#if DOTNET2
+#if DOTNET2 || DOTNET4 || UNITY3D
                 if (!isLogTask) AutoCSer.Threading.ThreadPool.TinyBackground.Start(write);
 #else
                 if (!isLogTask) AutoCSer.Threading.CatchTask.Add(write());

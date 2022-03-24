@@ -49,7 +49,8 @@ namespace AutoCSer.Web.DeployClient.Project
         internal static readonly Project[] Projects = new Project[]
         {
             new Project("AutoCSer.NetStandard", @"bin\Release\NetStandard\"),
-            new Project("AutoCSer.Json.NetStandard", @"bin\Release\NetStandard\Serialize\"),
+            //new Project("AutoCSer.Json.NetStandard", @"bin\Release\NetStandard\Serialize\"),
+            new Project("AutoCSer.NetStandard", @"bin\Release\",AutoCSer.Web.Config.Deploy.AutoCSer2ProjectPath),
         };
     }
 }
