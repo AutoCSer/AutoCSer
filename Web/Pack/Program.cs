@@ -300,6 +300,9 @@ namespace AutoCSer.Tool.OpenPack
                             case ".dll":
                                 if (string.Compare(path, @"ThirdParty\", true) != 0 && thirdPartyFileNames.Contains(fileName.ToLower())) fileName = null;
                                 break;
+                            case ".log":
+                                if (fileName.StartsWith("AutoCSer", StringComparison.OrdinalIgnoreCase)) isDelete = true;
+                                break;
                             case ".txt":
                                 if (string.Compare(fileName, "ip.txt", true) == 0) fileName = null;
                                 else if (fileName.StartsWith("log_default", StringComparison.OrdinalIgnoreCase)) isDelete = true;

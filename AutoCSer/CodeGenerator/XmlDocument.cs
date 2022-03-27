@@ -27,7 +27,11 @@ namespace AutoCSer.CodeGenerator
         /// <returns></returns>
         private unsafe static XmlDocumentAssembly get(Assembly assembly)
         {
-            if (assembly != null && !assembly.IsDynamic)
+            if (assembly != null
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                && !assembly.IsDynamic
+#endif
+                )
             {
                 XmlDocumentAssembly value;
                 if (assemblyLock.TryGetValue(assembly, out value)) return value;

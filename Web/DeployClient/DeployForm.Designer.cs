@@ -44,6 +44,7 @@
             this.getNugetVersionButton = new System.Windows.Forms.Button();
             this.setNugetVersionButton = new System.Windows.Forms.Button();
             this.nugetStandardPushButton = new System.Windows.Forms.Button();
+            this.AutoCSer2PushButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // htmlButton
@@ -167,7 +168,7 @@
             // 
             // nugetPackButton
             // 
-            this.nugetPackButton.Location = new System.Drawing.Point(505, 203);
+            this.nugetPackButton.Location = new System.Drawing.Point(505, 165);
             this.nugetPackButton.Name = "nugetPackButton";
             this.nugetPackButton.Size = new System.Drawing.Size(137, 32);
             this.nugetPackButton.TabIndex = 13;
@@ -177,7 +178,7 @@
             // 
             // getNugetVersionButton
             // 
-            this.getNugetVersionButton.Location = new System.Drawing.Point(505, 127);
+            this.getNugetVersionButton.Location = new System.Drawing.Point(505, 89);
             this.getNugetVersionButton.Name = "getNugetVersionButton";
             this.getNugetVersionButton.Size = new System.Drawing.Size(137, 32);
             this.getNugetVersionButton.TabIndex = 14;
@@ -187,7 +188,7 @@
             // 
             // setNugetVersionButton
             // 
-            this.setNugetVersionButton.Location = new System.Drawing.Point(505, 165);
+            this.setNugetVersionButton.Location = new System.Drawing.Point(505, 127);
             this.setNugetVersionButton.Name = "setNugetVersionButton";
             this.setNugetVersionButton.Size = new System.Drawing.Size(137, 32);
             this.setNugetVersionButton.TabIndex = 15;
@@ -197,7 +198,7 @@
             // 
             // nugetStandardPushButton
             // 
-            this.nugetStandardPushButton.Location = new System.Drawing.Point(505, 241);
+            this.nugetStandardPushButton.Location = new System.Drawing.Point(505, 203);
             this.nugetStandardPushButton.Name = "nugetStandardPushButton";
             this.nugetStandardPushButton.Size = new System.Drawing.Size(137, 32);
             this.nugetStandardPushButton.TabIndex = 16;
@@ -205,11 +206,22 @@
             this.nugetStandardPushButton.UseVisualStyleBackColor = true;
             this.nugetStandardPushButton.Click += new System.EventHandler(this.nugetStandardPushButton_Click);
             // 
+            // AutoCSer2PushButton
+            // 
+            this.AutoCSer2PushButton.Location = new System.Drawing.Point(505, 241);
+            this.AutoCSer2PushButton.Name = "AutoCSer2PushButton";
+            this.AutoCSer2PushButton.Size = new System.Drawing.Size(137, 32);
+            this.AutoCSer2PushButton.TabIndex = 17;
+            this.AutoCSer2PushButton.Text = "AutoCSer2";
+            this.AutoCSer2PushButton.UseVisualStyleBackColor = true;
+            this.AutoCSer2PushButton.Click += new System.EventHandler(this.AutoCSer2PushButton_Click);
+            // 
             // DeployForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 317);
+            this.Controls.Add(this.AutoCSer2PushButton);
             this.Controls.Add(this.nugetStandardPushButton);
             this.Controls.Add(this.setNugetVersionButton);
             this.Controls.Add(this.getNugetVersionButton);
@@ -252,5 +264,6 @@
         private System.Windows.Forms.Button getNugetVersionButton;
         private System.Windows.Forms.Button setNugetVersionButton;
         private System.Windows.Forms.Button nugetStandardPushButton;
+        private System.Windows.Forms.Button AutoCSer2PushButton;
     }
 }

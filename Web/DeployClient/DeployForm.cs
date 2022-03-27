@@ -442,7 +442,15 @@ namespace AutoCSer.Web.DeployClient
         /// <param name="e"></param>
         private void nugetStandardPushButton_Click(object sender, EventArgs e)
         {
-            foreach (Project.Project project in Project.Project.Projects)
+            nugetStandardPush(Project.Project.Projects);
+        }
+        /// <summary>
+        /// 发布 .NET Standard Nuget 包
+        /// </summary>
+        /// <param name="projects"></param>
+        private void nugetStandardPush(Project.Project[] projects)
+        {
+            foreach (Project.Project project in projects)
             {
                 Project.PropertyGroup propertyGroup = project.PropertyGroup;
                 if (propertyGroup != null)
@@ -470,6 +478,15 @@ namespace AutoCSer.Web.DeployClient
                 }
                 else appendMessage("项目文件 " + project.File + " 读取失败");
             }
+        }
+        /// <summary>
+        /// AutoCSer2
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AutoCSer2PushButton_Click(object sender, EventArgs e)
+        {
+            nugetStandardPush(Project.Project.AutoCSer2Projects);
         }
 
         /// <summary>

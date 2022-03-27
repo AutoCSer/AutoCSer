@@ -78,7 +78,7 @@
         <p>
             服务主控制器允许存在一个返回数据类型为 <b>AutoCSer.Net.CommandServerVerifyState</b> 的 API 作为服务认证 API，客户端在通过该 API 调用之前是不允许调用其它 API 的。
             <br />每一个 API 方法在所有参数之前都可以增加一个 <b>AutoCSer.Net.CommandServerSocket</b> 参数通过字段 <b>SessionObject</b> 设置或者获取当前连接会话的上下文信息，一般操作是在<b>服务认证 API</b>中初始化该对象，在其它 API 中获取该对象。
-            <br />服务认证 API 仅支持一下线程模式：
+            <br />服务认证 API 仅支持以下线程模式：
             <br />1. IO 线程同步调用 / 同步队列线程调用 + 同步返回数据 / 回调委托返回数据
             <br />2. async Task 调用 / async Task 读写队列调用 + await Task 同步返回数据
         </p>
