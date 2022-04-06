@@ -136,6 +136,20 @@ namespace AutoCSer.Sql
             if (clientKind != ClientKind.Excel) return DataReaderDelegate;
             return Excel.DataReader.GetDelegate(DataType);
         }
+#if !NOJIT
+        /// <summary>
+        /// Excel decimal 四舍五入
+        /// </summary>
+        /// <param name="generator"></param>
+        internal void CheckExcelDecimalSize(System.Reflection.Emit.ILGenerator generator)
+        {
+            if (DataType == typeof(decimal) && DataMember.DecimalSize > 0)
+            {
+                generator.int32(DataMember.DecimalSize);
+                generator.call(Excel.DataReader.SetDecimalSize.Method);
+            }
+        }
+#endif
         /// <summary>
         /// 获取数据列名称
         /// </summary>

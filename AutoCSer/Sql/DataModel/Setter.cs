@@ -71,6 +71,7 @@ namespace AutoCSer.Sql.DataModel
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldloc_0);
                     generator.call(field.GetDataReaderDelegate(clientKind).Method);
+                    if (clientKind == ClientKind.Excel) field.CheckExcelDecimalSize(generator);
                     if (field.ToModelCastMethod != null) generator.Emit(OpCodes.Call, field.ToModelCastMethod);
                     generator.Emit(OpCodes.Stfld, field.FieldInfo);
                 }
@@ -100,6 +101,7 @@ namespace AutoCSer.Sql.DataModel
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldloc_0);
                     generator.call(field.GetDataReaderDelegate(clientKind).Method);
+                    if (clientKind == ClientKind.Excel) field.CheckExcelDecimalSize(generator);
                     if (field.DataType == field.NullableDataType)
                     {
                         if (field.ToModelCastMethod != null) generator.Emit(OpCodes.Call, field.ToModelCastMethod);

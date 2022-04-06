@@ -12,6 +12,21 @@ namespace AutoCSer.Sql.Excel
     internal static class DataReader
     {
         /// <summary>
+        /// decimal 四舍五入
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        private static decimal setDecimalSize(decimal value, int size)
+        {
+            return decimal.Round(value, size, MidpointRounding.AwayFromZero);
+        }
+        /// <summary>
+        /// decimal 四舍五入
+        /// </summary>
+        internal static readonly Func<decimal, int, decimal> SetDecimalSize = setDecimalSize;
+
+        /// <summary>
         /// 基本类型设置函数
         /// </summary>
         private static readonly Dictionary<Type, Delegate> dataReaderGetDelegates;
