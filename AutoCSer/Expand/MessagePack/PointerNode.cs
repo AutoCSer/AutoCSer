@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Collections.Generic;
 
-namespace AutoCSer.MessagePack
+namespace AutoCSer.MessagePack 
 {
     /// <summary>
     /// 数据节点 https://github.com/msgpack/msgpack/blob/master/spec.md
@@ -15,9 +15,17 @@ namespace AutoCSer.MessagePack
         /// </summary>
         private byte* start;
         /// <summary>
+        /// 节点数据起始位置
+        /// </summary>
+        public byte* Start { get { return start; } }
+        /// <summary>
         /// 数据结束位置
         /// </summary>
         private byte* end;
+        /// <summary>
+        /// 数据结束位置
+        /// </summary>
+        public byte* End { get { return end; } }
         /// <summary>
         /// 是否存在数据节点
         /// </summary>
@@ -30,12 +38,16 @@ namespace AutoCSer.MessagePack
         /// </summary>
         /// <param name="start">节点数据起始位置</param>
         /// <param name="end">数据最大结束位置</param>
-        public PointerNode(byte* start, byte* end)
+        /// <param name="isCheckEnd">是否检查并重置结束位置</param>
+        public PointerNode(byte* start, byte* end)//, bool isCheckEnd
         {
-            this.start = start;
             this.end = end;
-            //end = ignore(start);
-            //this.end = end != null && end <= this.end ? end : null;
+            this.start = start;
+            //if (isCheckEnd)
+            //{
+            //    this.end = ignore(start);
+            //    if (this.end != null && this.end > end) this.end = null;
+            //}
         }
         /// <summary>
         /// 设置数据节点

@@ -20,5 +20,9 @@ namespace AutoCSer.Search
         /// 是否保存关键字在文本中的位置集合
         /// </summary>
         ResultIndexs = 2,
+        /// <summary>
+        /// 是否保存单个汉字结果集合
+        /// </summary>
+        ChineseCharacter = 4
     }
 }

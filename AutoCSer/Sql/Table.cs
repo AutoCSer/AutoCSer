@@ -973,19 +973,23 @@ namespace AutoCSer.Sql
                 if (!createQuery.Where.IsWhereFalse)
                 {
                     SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
-                    Client.GetSelectQuery(this, memberMap, ref createQuery, ref selectQuery);
-                    DbConnection connection = null;
-                    try
+                    ReturnType returnType = Client.GetSelectQuery(this, memberMap, ref createQuery, ref selectQuery);
+                    if (returnType == ReturnType.Success)
                     {
-                        ReturnValue<LeftArray<tableType>> array = SelectQueue(ref connection, ref selectQuery);
-                        Client.FreeConnection(ref connection);
-                        return array;
+                        DbConnection connection = null;
+                        try
+                        {
+                            ReturnValue<LeftArray<tableType>> array = SelectQueue(ref connection, ref selectQuery);
+                            Client.FreeConnection(ref connection);
+                            return array;
+                        }
+                        catch (Exception error)
+                        {
+                            Client.CloseErrorConnection(ref connection);
+                            return error;
+                        }
                     }
-                    catch (Exception error)
-                    {
-                        Client.CloseErrorConnection(ref connection);
-                        return error;
-                    }
+                    return returnType;
                 }
                 return new LeftArray<tableType>(0);
             }
@@ -1063,8 +1067,9 @@ namespace AutoCSer.Sql
                 if (!createQuery.Where.IsWhereFalse)
                 {
                     Selecter selecter = new Selecter(this);
-                    Client.GetSelectQuery(this, memberMap, ref createQuery, ref selecter.Query);
-                    return selecter.Wait();
+                    ReturnType returnType = Client.GetSelectQuery(this, memberMap, ref createQuery, ref selecter.Query);
+                    if (returnType == ReturnType.Success) return selecter.Wait();
+                    return returnType;
                 }
                 return new LeftArray<tableType>(0);
             }
@@ -1085,8 +1090,9 @@ namespace AutoCSer.Sql
                 if (!createQuery.Where.IsWhereFalse)
                 {
                     SelectQuery<modelType> query = default(SelectQuery<modelType>);
-                    Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
-                    return SelectQueue(ref connection, ref query);
+                    ReturnType returnType = Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
+                    if (returnType == ReturnType.Success) return SelectQueue(ref connection, ref query);
+                    return returnType;
                 }
                 return new LeftArray<tableType>(0);
             }
@@ -1098,10 +1104,11 @@ namespace AutoCSer.Sql
         /// <param name="memberMap"></param>
         /// <param name="createQuery"></param>
         /// <param name="query"></param>
+        /// <returns>返回值类型</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void GetSelect(MemberMap<modelType> memberMap, ref CreateSelectQuery<modelType> createQuery, ref SelectQuery<modelType> query)
+        internal ReturnType GetSelect(MemberMap<modelType> memberMap, ref CreateSelectQuery<modelType> createQuery, ref SelectQuery<modelType> query)
         {
-            Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
+            return Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
         }
         /// <summary>
         /// 查询数据集合

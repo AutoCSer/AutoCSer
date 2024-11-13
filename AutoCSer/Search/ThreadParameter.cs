@@ -48,7 +48,11 @@ namespace AutoCSer.Search
             /// <summary>
             /// 未匹配分词集合
             /// </summary>
-            private LeftArray<SubString> lessWords;
+            private LeftArray<SubString> lessWords = new LeftArray<SubString>(0);
+            /// <summary>
+            /// 未匹配单个汉字结果集合
+            /// </summary>
+            private LeftArray<HashSet<keyType>> lessChineseCharacters = new LeftArray<HashSet<keyType>>(0);
             /// <summary>
             /// 文本匹配位图
             /// </summary>
@@ -399,9 +403,9 @@ namespace AutoCSer.Search
                     {
                         if (queryResult.Length == 1)
                         {
-                            foreach (KeyValuePair<keyType, ResultIndexArray> result in queryResult[0].Value.Dictionary)
+                            foreach (keyType result in queryResult[0].Value.Dictionary.Keys)
                             {
-                                if (isKey(result.Key, ref lessWords)) yield return result.Key;
+                                if (isKey(result, ref lessWords)) yield return result;
                             }
                         }
                         else
@@ -508,6 +512,128 @@ namespace AutoCSer.Search
                     return queue.Words;
                 }
                 return new LeftArray<KeyValue<SubString, WordType>>(0);
+            }
+            /// <summary>
+            /// 多结果集排序
+            /// </summary>
+            /// <returns></returns>
+            private Dictionary<keyType, ResultIndexArray> sortResultLessChineseCharacter()
+            {
+                int resultIndex = 0, count = queryResult.Length;
+                Dictionary<keyType, ResultIndexArray> resultDictionary = null;
+                KeyValue<HashString, QueryResult>[] resultArray = queryResult.Array;
+                foreach (KeyValue<HashString, QueryResult> result in resultArray)
+                {
+                    if (result.Key.String.Length > 1)
+                    {
+                        if (resultDictionary != null)
+                        {
+                            if (result.Value.Dictionary.Count < resultDictionary.Count)
+                            {
+                                resultIndex = queryResult.Length - count;
+                                resultDictionary = result.Value.Dictionary;
+                            }
+                        }
+                        else resultDictionary = result.Value.Dictionary;
+                    }
+                    if (--count == 0) break;
+                }
+                if (resultDictionary == null)
+                {
+                    count = queryResult.Length;
+                    foreach (KeyValue<HashString, QueryResult> result in resultArray)
+                    {
+                        if (resultDictionary != null)
+                        {
+                            if (result.Value.Dictionary.Count < resultDictionary.Count)
+                            {
+                                resultIndex = queryResult.Length - count;
+                                resultDictionary = result.Value.Dictionary;
+                            }
+                        }
+                        else resultDictionary = result.Value.Dictionary;
+                        if (--count == 0) break;
+                    }
+                }
+                if (resultIndex != --queryResult.Length) resultArray[resultIndex] = resultArray[queryResult.Length];
+                if (queryResult.Length != 1) AutoCSer.Algorithm.QuickSort.Sort(resultArray, resultSort, 0, queryResult.Length);
+                return resultDictionary;
+            }
+            /// <summary>
+            /// 获取搜索数据标识集合（记录未匹配分词并匹配单个汉字结果）
+            /// </summary>
+            /// <param name="text">搜索关键字</param>
+            /// <param name="maxSize">关键字最大字符长度</param>
+            /// <param name="isKey">数据标识过滤</param>
+            /// <returns>数据标识集合</returns>
+            public IEnumerable<keyType> SearchLessChineseCharacter(string text, int maxSize, Func<keyType, bool> isKey)
+            {
+                Simplified.Set(text, maxSize, true);
+                if (Simplified.Size != 0)
+                {
+                    queryResult.Length = 0;
+                    wordQuery.Get(ref Simplified, MatchType.Less, ref queryResult, ref lessWords);
+                    if (queryResult.Length > 0 && searcher.results.GetLessChineseCharacter(ref lessWords, ref lessChineseCharacters))
+                    {
+                        if (queryResult.Length == 1)
+                        {
+                            if (lessChineseCharacters.Length == 0)
+                            {
+                                foreach (keyType result in queryResult[0].Value.Dictionary.Keys)
+                                {
+                                    if (isKey(result)) yield return result;
+                                }
+                            }
+                            else
+                            {
+                                foreach (keyType result in queryResult[0].Value.Dictionary.Keys)
+                                {
+                                    if (isKey(result) && checkLessChineseCharacter(result)) yield return result;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Dictionary<keyType, ResultIndexArray> resultDictionary = sortResultLessChineseCharacter();
+                            KeyValue<HashString, QueryResult>[] resultArray = queryResult.Array;
+                            foreach (keyType key in resultDictionary.Keys)
+                            {
+                                int count = queryResult.Length, lessWordCount = 0;
+                                foreach (KeyValue<HashString, QueryResult> result in resultArray)
+                                {
+                                    if (!result.Value.Dictionary.ContainsKey(key))
+                                    {
+                                        if (result.Key.String.Length != 1) break;
+                                        HashSet<keyType> lessChineseCharacter = searcher.results.GetChineseCharacter(result.Key.String[0]);
+                                        if (lessChineseCharacter == null) break;
+                                        lessChineseCharacters.Add(lessChineseCharacter);
+                                        ++lessWordCount;
+                                    }
+                                    if (--count == 0)
+                                    {
+                                        if (isKey(key) && checkLessChineseCharacter(key)) yield return key;
+                                        break;
+                                    }
+                                }
+                                lessChineseCharacters.Length -= lessWordCount;
+                            }
+                        }
+                    }
+                }
+            }
+            /// <summary>
+            /// 检查未匹配单个汉字结果集合
+            /// </summary>
+            /// <param name="key"></param>
+            /// <returns></returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            private bool checkLessChineseCharacter(keyType key)
+            {
+                foreach (HashSet<keyType> lessKeys in lessChineseCharacters)
+                {
+                    if (!lessKeys.Contains(key)) return false;
+                }
+                return true;
             }
 
             /// <summary>

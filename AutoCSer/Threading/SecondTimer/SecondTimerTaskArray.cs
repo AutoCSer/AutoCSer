@@ -6,7 +6,7 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 二维定时任务数组
     /// </summary>
-    internal sealed class SecondTimerTaskArray
+    public sealed class SecondTimerTaskArray
     {
         /// <summary>
         /// 第一维定时任务数组

@@ -858,10 +858,10 @@ namespace AutoCSer.CodeGenerator.Template
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }
+                    #endregion NOT Attribute.IsExpired
                     #region IF IsKeepCallback
                     return null;
                     #endregion IF IsKeepCallback
-                    #endregion NOT Attribute.IsExpired
                 }
                 #endregion IF MethodIsReturn
                 #region NOT MethodIsReturn
@@ -909,10 +909,10 @@ namespace AutoCSer.CodeGenerator.Template
                     {
                         if (_onReturn_ != null) _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_ == null ? AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull : AutoCSer.Net.TcpServer.ReturnType.ClientException });
                     }
+                    #endregion NOT Attribute.IsExpired
                     #region IF IsKeepCallback
                     return null;
                     #endregion IF IsKeepCallback
-                    #endregion NOT Attribute.IsExpired
                 }
                 #endregion NOT MethodIsReturn
                 #endregion IF IsClientAsynchronous

@@ -74,23 +74,23 @@ namespace AutoCSer.Sql.Excel
         /// <summary>
         /// 获取指定表格名称，如果表格不存在返回第一个表格名称
         /// </summary>
-        /// <param name="TableName"></param>
+        /// <param name="tableName"></param>
         /// <returns></returns>
-        public override string GetFirstTableName(string TableName)
+        public override string GetFirstTableName(string tableName)
         {
-            string FirstTableName = null;
+            string firstTableName = null;
             using (DbConnection dbConnection = GetConnection())
             using (DataTable table = ((OleDbConnection)dbConnection).GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null))
             {
                 DataRowCollection rows = table.Rows;
                 foreach (DataRow row in rows)
                 {
-                    string NextTableName = row[schemaTableName].ToString();
-                    if (NextTableName == TableName) return TableName;
-                    if (FirstTableName == null) FirstTableName = NextTableName;
+                    string nextTableName = row[schemaTableName].ToString();
+                    if (nextTableName == tableName) return tableName;
+                    if (firstTableName == null) firstTableName = nextTableName;
                 }
             }
-            return FirstTableName;
+            return firstTableName;
         }
         /// <summary>
         /// 成员信息转换为数据列
@@ -263,19 +263,23 @@ namespace AutoCSer.Sql.Excel
         /// <typeparam name="modelType"></typeparam>
         /// <param name="sqlTool"></param>
         /// <param name="memberMap"></param>
-        internal override void SetRealMemberMap<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, MemberMap<modelType> memberMap)
+        /// <returns>是否设置成功</returns>
+        internal override bool SetRealMemberMap<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, MemberMap<modelType> memberMap)
         {
             if (sqlTool.Attribute.IsSetRealMemberMap)
             {
                 MemberMap<modelType> realMemberMap = MemberMap<modelType>.NewEmpty();
+                bool isMember = false;
                 using (DbConnection connection = GetConnection())
                 using (DbCommand command = getCommand(connection, "select top 1 * from [" + sqlTool.TableName + "]", CommandType.Text))
                 using (DataSet dataSet = getDataSet(command))
                 {
-                    foreach (DataColumn dataColumn in dataSet.Tables[0].Columns) realMemberMap.SetMember(dataColumn.ColumnName);
+                    foreach (DataColumn dataColumn in dataSet.Tables[0].Columns) isMember |= realMemberMap.SetMember(dataColumn.ColumnName);
                 }
+                if (!isMember) return false;
                 memberMap.And(realMemberMap);
             }
+            return true;
         }
         /// <summary>
         /// 委托关联表达式转SQL表达式

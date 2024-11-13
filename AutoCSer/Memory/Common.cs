@@ -92,7 +92,7 @@ namespace AutoCSer.Memory
         internal static int GetHashCode(void* data, int length)
         {
             ulong value = GetHashCode64((byte*)data, length);
-            return (int)value ^ (int)(value >> 32);
+            return (int)((uint)value ^ (uint)(value >> 32));
         }
         /// <summary>
         /// 计算 64 位 HASH 值

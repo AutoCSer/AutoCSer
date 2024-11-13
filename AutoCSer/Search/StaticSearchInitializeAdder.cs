@@ -63,7 +63,7 @@ namespace AutoCSer.Search
                     GetResult(text);
                     if (result.Count != 0)
                     {
-                        searcher.initializeAdd(ref key, text, result);
+                        searcher.initializeAdd(ref key, result, text);
                         if ((searcher.flags & SearchFlags.ResultIndexs) != 0)
                         {
                             indexArrays.PrepLength(result.Count);

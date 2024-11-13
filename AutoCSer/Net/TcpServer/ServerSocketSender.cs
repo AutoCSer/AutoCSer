@@ -21,6 +21,10 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务器端异步保持调用集合
         /// </summary>
         internal Dictionary<int, ServerCallbackBase> KeepCallbacks;
+        /// <summary>
+        /// TCP 服务器端异步保持调用集合访问锁
+        /// </summary>
+        protected readonly object keepCallbackLock = new object();
 
         /// <summary>
         /// TCP 服务端套接字输出信息链表
@@ -51,8 +55,13 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void AddKeepCallback(uint commandIndex, ServerCallbackBase keepCallback)
         {
-            if (KeepCallbacks == null) KeepCallbacks = DictionaryCreator.CreateInt<ServerCallbackBase>();
-            KeepCallbacks[(int)commandIndex] = keepCallback;
+            Monitor.Enter(keepCallbackLock);
+            try
+            {
+                if (KeepCallbacks == null) KeepCallbacks = DictionaryCreator.CreateInt<ServerCallbackBase>();
+                KeepCallbacks[(int)commandIndex] = keepCallback;
+            }
+            finally { Monitor.Exit(keepCallbackLock); }
         }
     }
     /// <summary>
@@ -573,11 +582,14 @@ namespace AutoCSer.Net.TcpServer
         internal void CancelKeepCallback(int commandIndex)
         {
             ServerCallbackBase keepCallback;
+            Monitor.Enter(keepCallbackLock);
             if (KeepCallbacks != null && KeepCallbacks.TryGetValue(commandIndex, out keepCallback))
             {
                 KeepCallbacks.Remove(commandIndex);
+                Monitor.Exit(keepCallbackLock);
                 keepCallback.CancelKeep();
             }
+            else Monitor.Exit(keepCallbackLock);
         }
     }
 }

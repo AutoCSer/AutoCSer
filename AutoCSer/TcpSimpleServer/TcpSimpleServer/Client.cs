@@ -304,6 +304,7 @@ namespace AutoCSer.Net.TcpSimpleServer
 #if !MONO
                 Socket.ReceiveBufferSize = Socket.SendBufferSize = Buffer.Length;
 #endif
+                Socket.NoDelay = true;
                 Socket.Connect(IpAddress, Port);
                 if (isVerifyMethod = CallVerifyMethod())
                 {

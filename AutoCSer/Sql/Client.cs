@@ -248,9 +248,9 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 获取指定表格名称，如果表格不存在返回第一个表格名称（仅用于 Excel）
         /// </summary>
-        /// <param name="TableName"></param>
+        /// <param name="tableName"></param>
         /// <returns></returns>
-        public virtual string GetFirstTableName(string TableName)
+        public virtual string GetFirstTableName(string tableName)
         {
             throw new InvalidOperationException();
         }
@@ -440,16 +440,21 @@ namespace AutoCSer.Sql
         /// <param name="memberMap">成员位图</param>
         /// <param name="createQuery"></param>
         /// <param name="query">查询信息</param>
+        /// <returns>返回值类型</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void GetSelectQuery<valueType, modelType>
+        internal ReturnType GetSelectQuery<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, MemberMap<modelType> memberMap, ref CreateSelectQuery<modelType> createQuery, ref SelectQuery<modelType> query)
             where valueType : class, modelType
             where modelType : class
         {
             query.MemberMap = DataModel.Model<modelType>.CopyMemberMap;
-            SetRealMemberMap(sqlTool, query.MemberMap);
-            if (memberMap != null && !memberMap.IsDefault) query.MemberMap.And(memberMap);
-            GetSelectQuery(sqlTool, ref createQuery, ref query);
+            if (SetRealMemberMap(sqlTool, query.MemberMap))
+            {
+                if (memberMap != null && !memberMap.IsDefault) query.MemberMap.And(memberMap);
+                GetSelectQuery(sqlTool, ref createQuery, ref query);
+                return ReturnType.Success;
+            }
+            return ReturnType.EmptyMemberMap;
         }
         /// <summary>
         /// 设置真实成员位图（用于 Excel）
@@ -458,10 +463,12 @@ namespace AutoCSer.Sql
         /// <typeparam name="modelType"></typeparam>
         /// <param name="sqlTool"></param>
         /// <param name="memberMap"></param>
-        internal virtual void SetRealMemberMap<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, MemberMap<modelType> memberMap)
+        /// <returns>是否设置成功</returns>
+        internal virtual bool SetRealMemberMap<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, MemberMap<modelType> memberMap)
             where valueType : class, modelType
             where modelType : class
         {
+            return true;
         }
         /// <summary>
         /// 获取查询信息

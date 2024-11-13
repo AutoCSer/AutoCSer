@@ -96,6 +96,7 @@ namespace AutoCSer.Net.TcpInternalServer
                     Socket.ReceiveBufferSize = ClientCreator.CommandClient.ReceiveBufferPool.Size;
                     Socket.SendBufferSize = ClientCreator.CommandClient.SendBufferPool.Size;
 #endif
+                    Socket.NoDelay = true;
                     LazyLog.Append(TcpServer.ClientLazyLog.LogType.SocketConnect);
                     Socket.Connect(IpAddress, Port);
                     if (checkCreate() == 0) return;

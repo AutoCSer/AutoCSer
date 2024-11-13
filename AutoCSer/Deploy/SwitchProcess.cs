@@ -46,14 +46,18 @@ namespace AutoCSer.Deploy
                 SwitchFile.StartProcessDirectory(arguments);
                 return;
             }
-            if (isOnlySet) SwitchWait.Set();
+            if (isOnlySet) SwitchWait.Set(switchWaitPrefix);
             else
             {
                 initialize();
                 ExitEvent = new ManualResetEvent(false);
-                switchWait = new SwitchWait(exit);
+                switchWait = new SwitchWait(exit, switchWaitPrefix);
             }
         }
+        /// <summary>
+        /// 切换进程名称前缀，可用于区分环境版本
+        /// </summary>
+        protected virtual string switchWaitPrefix { get { return null; } }
         /// <summary>
         /// 初始化操作
         /// </summary>

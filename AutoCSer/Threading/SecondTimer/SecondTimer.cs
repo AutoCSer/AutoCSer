@@ -20,7 +20,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 二维定时任务数组（队列模式无并发）
         /// </summary>
-        internal readonly static SecondTimerTaskArray TaskArray;
+        public readonly static SecondTimerTaskArray TaskArray;
         /// <summary>
         /// 当前时钟秒数计数
         /// </summary>

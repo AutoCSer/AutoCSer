@@ -67,7 +67,7 @@ namespace AutoCSer.Search
                 GetResult(text);
                 if (result.Count != 0)
                 {
-                    searcher.add(ref key, text, result);
+                    searcher.add(ref key, result, text);
                     indexArrays.PrepLength(result.Count);
                     foreach (ResultIndexLeftArray indexArray in result.Values) indexArrays.UnsafeAdd(indexArray.Indexs.Array);
                 }
@@ -81,7 +81,7 @@ namespace AutoCSer.Search
                 if (searcher.getRemoveText(data) && !string.IsNullOrEmpty(data.Text))
                 {
                     getRemoveResult(data.Text);
-                    searcher.remove(ref data.Key, removeResult);
+                    searcher.remove(ref data.Key, removeResult, data.Text);
                 }
             }
             /// <summary>

@@ -167,15 +167,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             FileCache fileCache = FileCacheQueue.Get(ref cacheKey);
                             if (fileCache == null)
                             {
-                                cacheFileName = StringExtension.FastAllocateString(WorkPath.Length + cachePathLength);
-                                fixed (char* nameFixed = cacheFileName)
-                                {
-                                    char* write = nameFixed + WorkPath.Length;
-                                    char directorySeparatorChar = Path.DirectorySeparatorChar;
-                                    StringExtension.CopyNotNull(WorkPath, nameFixed);
-                                    for (byte* start = pathStart; start != pathEnd; ++start) *write++ = *start == '/' ? directorySeparatorChar : (char)*start;
-                                }
-                                FileInfo file = new FileInfo(cacheFileName);
+                                FileInfo file = new FileInfo(cacheFileName = getCacheFileName(cacheKey.Path));
                                 bool isFileExists = file.Exists, isCopyPath = true;
                                 if (!isFileExists && cacheFileName.IndexOf('%') >= WorkPath.Length)
                                 {
@@ -253,6 +245,26 @@ namespace AutoCSer.Net.HttpDomainServer
                 RegisterServer.TcpServer.Log.Exception(error, cacheFileName, LogLevel.Exception | LogLevel.AutoCSer);
             }
             return null;
+        }
+        /// <summary>
+        /// 获取缓存文件名称
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        protected virtual unsafe string getCacheFileName(SubArray<byte> path)
+        {
+            char directorySeparatorChar = Path.DirectorySeparatorChar;
+            string cacheFileName = StringExtension.FastAllocateString(WorkPath.Length + path.Length);
+            fixed (char* nameFixed = cacheFileName)
+            {
+                char* write = nameFixed + WorkPath.Length;
+                StringExtension.CopyNotNull(WorkPath, nameFixed);
+                fixed (byte* pathFixed = path.GetFixedBuffer())
+                {
+                    for (byte* start = pathFixed + path.Start, end = start + path.Length; start != end; ++start) *write++ = *start == '/' ? directorySeparatorChar : (char)*start;
+                }
+            }
+            return cacheFileName;
         }
         /// <summary>
         /// HTTP文件请求处理

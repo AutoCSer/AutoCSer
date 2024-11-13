@@ -16,10 +16,10 @@ namespace AutoCSer.Web.DeployServer
         /// 切换服务锁
         /// </summary>
         private readonly ManualResetEvent exitEvent;
-        /// <summary>
-        /// 自定义任务集合
-        /// </summary>
-        private readonly AutoCSer.Deploy.ServerCustomTask customTask;
+        ///// <summary>
+        ///// 自定义任务集合
+        ///// </summary>
+        //private readonly AutoCSer.Deploy.ServerCustomTask customTask;
         /// <summary>
         /// 部署服务
         /// </summary>
@@ -29,7 +29,7 @@ namespace AutoCSer.Web.DeployServer
         {
             this.switchEvent = switchEvent;
             this.exitEvent = exitEvent;
-            customTask = new AutoCSer.Deploy.ServerCustomTask<ServerCustomTask>(new ServerCustomTask());
+            //customTask = new AutoCSer.Deploy.ServerCustomTask<ServerCustomTask>(new ServerCustomTask());
         }
         /// <summary>
         /// 切换服务前的调用
@@ -39,14 +39,14 @@ namespace AutoCSer.Web.DeployServer
             switchEvent.Set();
             exitEvent.WaitOne();
         }
-        /// <summary>
-        /// 自定义任务处理
-        /// </summary>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        public override Deploy.DeployResultData CallCustomTask(Deploy.ClientTask.Custom task)
-        {
-            return customTask.Call(this, task);
-        }
+        ///// <summary>
+        ///// 自定义任务处理
+        ///// </summary>
+        ///// <param name="task"></param>
+        ///// <returns></returns>
+        //public override Deploy.DeployResultData CallCustomTask(Deploy.ClientTask.Custom task)
+        //{
+        //    return customTask.Call(this, task);
+        //}
     }
 }

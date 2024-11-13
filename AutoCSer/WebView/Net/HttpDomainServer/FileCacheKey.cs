@@ -12,7 +12,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <summary>
         /// 字节数组
         /// </summary>
-        private SubArray<byte> path;
+        internal SubArray<byte> Path;
         /// <summary>
         /// 路径标识
         /// </summary>
@@ -30,7 +30,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <param name="length"></param>
         internal FileCacheKey(int pathIdentity, byte[] path, int startIndex, int length)
         {
-            this.path = new SubArray<byte> { Array = path, Start = startIndex, Length = length };
+            Path = new SubArray<byte>(startIndex, length, path);
             this.pathIdentity = HashCode = pathIdentity;
             if (length != 0)
             {
@@ -44,13 +44,13 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <returns></returns>
         public unsafe bool Equals(FileCacheKey other)
         {
-            if (path.Array == null) return other.path.Array == null;
-            if (other.path.Array != null && ((HashCode ^ other.HashCode) | (pathIdentity ^ other.pathIdentity) | (path.Length ^ other.path.Length)) == 0)
+            if (Path.Array == null) return other.Path.Array == null;
+            if (other.Path.Array != null && ((HashCode ^ other.HashCode) | (pathIdentity ^ other.pathIdentity) | (Path.Length ^ other.Path.Length)) == 0)
             {
-                if (path.Array == other.path.Array && path.Start == other.path.Start) return true;
-                fixed (byte* dataFixed = path.GetFixedBuffer(), otherDataFixed = other.path.GetFixedBuffer())
+                if (Path.Array == other.Path.Array && Path.Start == other.Path.Start) return true;
+                fixed (byte* dataFixed = Path.GetFixedBuffer(), otherDataFixed = other.Path.GetFixedBuffer())
                 {
-                    return AutoCSer.Memory.Common.EqualNotNull(dataFixed + path.Start, otherDataFixed + other.path.Start, path.Length);
+                    return AutoCSer.Memory.Common.EqualNotNull(dataFixed + Path.Start, otherDataFixed + other.Path.Start, Path.Length);
                 }
             }
             return false;
@@ -78,10 +78,10 @@ namespace AutoCSer.Net.HttpDomainServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CopyPath()
         {
-            if (path.Length != 0)
+            if (Path.Length != 0)
             {
-                byte[] data = path.GetArray();
-                path.Set(data, 0, data.Length);
+                byte[] data = Path.GetArray();
+                Path.Set(data, 0, data.Length);
             }
         }
     }

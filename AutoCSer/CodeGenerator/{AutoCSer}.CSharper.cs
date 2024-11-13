@@ -17284,6 +17284,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }");
+            }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
                     {
@@ -17293,7 +17294,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                     return null;");
-            }
             }
             _code_.Add(@"
                 }");
@@ -17531,6 +17531,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         if (_onReturn_ != null) _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_ == null ? AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull : AutoCSer.Net.TcpServer.ReturnType.ClientException });
                     }");
+            }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
                     {
@@ -17540,7 +17541,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                     return null;");
-            }
             }
             _code_.Add(@"
                 }");
@@ -28481,6 +28481,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }");
+            }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
                     {
@@ -28490,7 +28491,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                     return null;");
-            }
             }
             _code_.Add(@"
                 }");
@@ -28724,6 +28724,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         if (_onReturn_ != null) _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_ == null ? AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull : AutoCSer.Net.TcpServer.ReturnType.ClientException });
                     }");
+            }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
                     {
@@ -28733,7 +28734,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                     return null;");
-            }
             }
             _code_.Add(@"
                 }");
@@ -37804,6 +37804,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }");
+            }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
                     {
@@ -37813,7 +37814,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                     return null;");
-            }
             }
             _code_.Add(@"
                 }");
@@ -38123,6 +38123,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         if (_onReturn_ != null) _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_ == null ? AutoCSer.Net.TcpServer.ReturnType.ClientSocketNull : AutoCSer.Net.TcpServer.ReturnType.ClientException });
                     }");
+            }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
                     {
@@ -38132,7 +38133,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                     return null;");
-            }
             }
             _code_.Add(@"
                 }");

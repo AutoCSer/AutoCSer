@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=09461EC8"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0DF9AA18"></script>
     <title>内存数据库缓存服务组件 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -11,7 +11,7 @@
 </head>
 <body>
     <p>
-        AutoCSer 包含一个支持日志流持久化的高性能内存数据库缓存服务组件，支持若干<a href="/Config/Index.html?v=9461EC8">全局默认配置</a>，需要引用 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.Sort.dll + AutoCSer.CacheServer.dll 。
+        AutoCSer 包含一个支持日志流持久化的高性能内存数据库缓存服务组件，支持若干<a href="/Config/Index.html?v=DF9AA18">全局默认配置</a>，需要引用 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.Sort.dll + AutoCSer.CacheServer.dll 。
     </p>
     <div><h1>基本数据类型</h1></div>
     <div>
@@ -42,51 +42,51 @@
         <p>
             . <b>数组</b> AutoCSer.CacheServer.DataStructure.<b>ValueArray</b>&lt;valueType&gt; / AutoCSer.CacheServer.DataStructure.<b>ValueFragmentArray</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">CacheServer\ValueArray.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">CacheServer\ValueArray.cs</a></div>
         </p>
         <p>
             . <b>字典</b> AutoCSer.CacheServer.DataStructure.<b>ValueDictionary</b>&lt;keyType, valueType&gt; / AutoCSer.CacheServer.DataStructure.<b>ValueFragmentDictionary</b>&lt;keyType, valueType&gt;
             <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">CacheServer\ValueDictionary.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">CacheServer\ValueDictionary.cs</a></div>
         </p>
         <p>
             . <b>搜索树字典</b> AutoCSer.CacheServer.DataStructure.<b>ValueSearchTreeDictionary</b>&lt;keyType, valueType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">CacheServer\ValueSearchTreeDictionary.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">CacheServer\ValueSearchTreeDictionary.cs</a></div>
         </p>
         <p>
             . <b>最小堆</b> AutoCSer.CacheServer.DataStructure.<b>Heap</b>&lt;keyType, valueType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','b');">CacheServer\Heap.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','b');">CacheServer\Heap.cs</a></div>
         </p>
         <p>
             . <b>哈希表</b> AutoCSer.CacheServer.DataStructure.<b>HashSet</b>&lt;valueType&gt; / AutoCSer.CacheServer.DataStructure.<b>FragmentHashSet</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 为 <b>关键字类型</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">CacheServer\HashSet.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">CacheServer\HashSet.cs</a></div>
         </p>
         <p>
             . <b>链表</b> AutoCSer.CacheServer.DataStructure.<b>Link</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">CacheServer\Link.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">CacheServer\Link.cs</a></div>
         </p>
         <p>
             . <b>位图</b> AutoCSer.CacheServer.DataStructure.<b>Bitmap</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">CacheServer\Bitmap.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">CacheServer\Bitmap.cs</a></div>
         </p>
         <p>
             . <b>锁</b> AutoCSer.CacheServer.DataStructure.<b>Lock</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">CacheServer\Lock.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">CacheServer\Lock.cs</a></div>
         </p>
         <p>
-            . <b><a href="/CacheServer/MessageQueue.html?v=9461EC8">消息队列</a></b> AutoCSer.CacheServer.DataStructure.MessageQueue.<b>QueueConsumer</b>&lt;valueType&gt; / AutoCSer.CacheServer.DataStructure.MessageQueue.<b>QueueConsumers</b>&lt;valueType&gt;
+            . <b><a href="/CacheServer/MessageQueue.html?v=DF9AA18">消息队列</a></b> AutoCSer.CacheServer.DataStructure.MessageQueue.<b>QueueConsumer</b>&lt;valueType&gt; / AutoCSer.CacheServer.DataStructure.MessageQueue.<b>QueueConsumers</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，前者只允许一个消费者，后者允许最多 65536 个消费者，每个消费者都将顺序处理所有消息。
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">CacheServer\MesssageQueueConsumer.cs</a></div>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','8');">CacheServer\MesssageQueueConsumers.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">CacheServer\MesssageQueueConsumer.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','8');">CacheServer\MesssageQueueConsumers.cs</a></div>
         </p>
         <p>
             . <b>消息分发</b> AutoCSer.CacheServer.DataStructure.MessageQueue.<b>Distributor</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，服务端将消息适度轮流的推送到每个客户端消费者，不保证消息的消费顺序。
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','c');">CacheServer\MesssageDistributor.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','c');">CacheServer\MesssageDistributor.cs</a></div>
         </p>
         <p>
             . 某些 <b>数据节点</b> 提供 <b>CreateShortPath()</b> 方法支持短路径操作，用于降低深度嵌套的<b>数据节点</b>服务端解析开销，它的过期重建操作会对客户端异步操作产生同步阻塞，示例代码参考 <b>嵌套节点</b>
@@ -97,24 +97,24 @@
         <p>
             . <b>数组</b> AutoCSer.CacheServer.DataStructure.<b>Array</b>&lt;nodeType&gt; / AutoCSer.CacheServer.DataStructure.<b>FragmentArray</b>&lt;nodeType&gt;
             <br /> <b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">CacheServer\Array.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">CacheServer\Array.cs</a></div>
         </p>
         <p>
             . <b>字典</b> AutoCSer.CacheServer.DataStructure.<b>Dictionary</b>&lt;keyType, nodeType&gt; / AutoCSer.CacheServer.DataStructure.<b>FragmentDictionary</b>&lt;keyType, nodeType&gt;
             <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','a');">CacheServer\Dictionary.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','a');">CacheServer\Dictionary.cs</a></div>
         </p>
         <p>
             . <b>搜索树字典</b> AutoCSer.CacheServer.DataStructure.<b>SearchTreeDictionary</b>&lt;keyType, nodeType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <div> 参考示例 <a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','d');">CacheServer\SearchTreeDictionary.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','d');">CacheServer\SearchTreeDictionary.cs</a></div>
         </p>
     </div>
     <div>
         <p>
             性能测试项目
-            <br /><a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\TestCase\CacheServerPerformance\AutoCSer.TestCase.CacheServerPerformance
-            <br /><a href="/Index.html?v=9461EC8" title="Go to the home page to download">AutoCSer</a>\TestCase\CacheClientPerformance\AutoCSer.TestCase.CacheClientPerformance
+            <br /><a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\TestCase\CacheServerPerformance\AutoCSer.TestCase.CacheServerPerformance
+            <br /><a href="/Index.html?v=DF9AA18" title="Go to the home page to download">AutoCSer</a>\TestCase\CacheClientPerformance\AutoCSer.TestCase.CacheClientPerformance
         </p>
     </div>
 </body>

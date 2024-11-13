@@ -53,9 +53,13 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 try
                 {
                     CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-                    (this.cache = cache).SqlTable.GetSelect(cache.MemberMap, ref createQuery, ref Query);
-                    isQuery = 1;
-                    wait.Set(0);
+                    ReturnType returnType = (this.cache = cache).SqlTable.GetSelect(cache.MemberMap, ref createQuery, ref Query);
+                    if (returnType == ReturnType.Success)
+                    {
+                        isQuery = 1;
+                        wait.Set(0);
+                    }
+                    else throw new Exception(returnType.ToString());
                 }
                 finally
                 {

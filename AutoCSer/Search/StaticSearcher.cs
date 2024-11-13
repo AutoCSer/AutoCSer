@@ -105,7 +105,7 @@ namespace AutoCSer.Search
             : base(trieGraph, flags)
         {
             if ((flags & SearchFlags.Text) != 0) texts = DictionaryCreator<keyType>.Create<string>();
-            this.results = results ?? new DefaultResult(flags);
+            this.results = results ?? new DefaultResult(flags, this.trieGraph);
         }
         /// <summary>
         /// 释放资源
@@ -167,14 +167,14 @@ namespace AutoCSer.Search
         /// 添加新的数据
         /// </summary>
         /// <param name="key">数据标识</param>
-        /// <param name="text">原始文本信息</param>
         /// <param name="values">分词结果</param>
-        private void initializeAdd(ref keyType key, string text, ReusableDictionary<HashString, ResultIndexLeftArray> values)
+        /// <param name="text">原始文本信息</param>
+        private void initializeAdd(ref keyType key, ReusableDictionary<HashString, ResultIndexLeftArray> values, string text)
         {
             Monitor.Enter(resultLock);
             try
             {
-                add(ref key, text, values);
+                add(ref key, values, text);
             }
             finally { Monitor.Exit(resultLock); }
         }
@@ -182,15 +182,15 @@ namespace AutoCSer.Search
         /// 添加新的数据
         /// </summary>
         /// <param name="key">数据标识</param>
-        /// <param name="text">原始文本信息</param>
         /// <param name="values">分词结果</param>
+        /// <param name="text">原始文本信息</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void add(ref keyType key, string text, ReusableDictionary<HashString, ResultIndexLeftArray> values)
+        private void add(ref keyType key, ReusableDictionary<HashString, ResultIndexLeftArray> values, string text)
         {
             if (isDisposed == 0)
             {
                 if ((flags & SearchFlags.Text) != 0) texts[key] = text;
-                results.Add(ref key, values);
+                results.Add(ref key, values, text);
             }
         }
         /// <summary>
@@ -220,11 +220,12 @@ namespace AutoCSer.Search
         /// </summary>
         /// <param name="key">数据标识</param>
         /// <param name="values">分词结果</param>
+        /// <param name="text">原始文本信息</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void remove(ref keyType key, HashSet<HashString> values)
+        private void remove(ref keyType key, HashSet<HashString> values, string text)
         {
             if ((flags & SearchFlags.Text) != 0) texts.Remove(key);
-            if (values.Count != 0) results.Remove(ref key, values);
+            if (values.Count != 0) results.Remove(ref key, values, text);
         }
         /// <summary>
         /// 添加新的数据

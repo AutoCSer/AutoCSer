@@ -439,19 +439,34 @@ namespace AutoCSer.Deploy
                 }
                 else
                 {
-                    switchDirectory.Create();
                     moveToDirectory = switchDirectory;
                     otherDirectory = directory;
                 }
             }
-            foreach (FileInfo file in new DirectoryInfo(Path.Combine(directory.FullName, updateDirectoryName ?? DefaultUpdateDirectoryName)).GetFiles())
+            DirectoryInfo updateDirectory = new DirectoryInfo(Path.Combine(directory.FullName, updateDirectoryName ?? DefaultUpdateDirectoryName));
+            copyUpdateSwitchFile(updateDirectory, moveToDirectory.FullName);
+
+            otherFileName = Path.Combine(otherDirectory.FullName, fileInfo.Name);
+            return new FileInfo(Path.Combine(moveToDirectory.FullName, fileInfo.Name));
+        }
+        /// <summary>
+        /// 复制更新文件
+        /// </summary>
+        /// <param name="updateDirectory"></param>
+        /// <param name="moveToDirectoryName"></param>
+        private static void copyUpdateSwitchFile(DirectoryInfo updateDirectory, string moveToDirectoryName)
+        {
+            if (!System.IO.Directory.Exists(moveToDirectoryName)) System.IO.Directory.CreateDirectory(moveToDirectoryName);
+            foreach (DirectoryInfo nextUpdateDirectory in updateDirectory.GetDirectories())
             {
-                FileInfo removeFile = new FileInfo(Path.Combine(moveToDirectory.FullName, file.Name));
+                copyUpdateSwitchFile(nextUpdateDirectory, Path.Combine(moveToDirectoryName, nextUpdateDirectory.Name));
+            }
+            foreach (FileInfo file in updateDirectory.GetFiles())
+            {
+                FileInfo removeFile = new FileInfo(Path.Combine(moveToDirectoryName, file.Name));
                 if (removeFile.Exists) removeFile.Delete();
                 file.MoveTo(removeFile.FullName);
             }
-            otherFileName = Path.Combine(otherDirectory.FullName, fileInfo.Name);
-            return new FileInfo(Path.Combine(moveToDirectory.FullName, fileInfo.Name));
         }
 #if !DotNetStandard
         /// <summary>

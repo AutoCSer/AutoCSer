@@ -34,7 +34,7 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 服务器监听 IP 地址
         /// </summary>
-        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "172.17.0.16";
+        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "127.0.0.1";
         /// <summary>
         /// AutoCSer 根目录
         /// </summary>
@@ -59,7 +59,7 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// nuget.exe
         /// </summary>
-        public static readonly FileInfo NugetFile = new FileInfo(@"C:\AutoCSer\Nuget\nuget.exe");
+        public static readonly FileInfo NugetFile = new FileInfo(Deploy.NugetPath + "nuget.exe");
 
         /// <summary>
         /// 获取默认 TCP 内部服务配置

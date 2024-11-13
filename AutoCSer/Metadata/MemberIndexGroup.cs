@@ -408,7 +408,7 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <param name="memberFilter">成员选择类型</param>
         /// <returns></returns>
-        public static PropertyIndex[] GetProperties(MemberFilters memberFilter = MemberFilters.InstanceField)
+        public static PropertyIndex[] GetProperties(MemberFilters memberFilter = MemberFilters.InstanceProperty)
         {
             if ((memberFilter & MemberFilters.PublicInstanceProperty) == 0)
             {

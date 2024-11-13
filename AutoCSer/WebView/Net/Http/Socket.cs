@@ -116,6 +116,7 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Start(Server server, ref System.Net.Sockets.Socket socket)
         {
+            socket.NoDelay = true;
             Socket = socket;
             this.Server = server;
             socket = null;

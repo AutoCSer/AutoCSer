@@ -71,5 +71,9 @@ namespace AutoCSer.Sql
         /// 不支持的操作
         /// </summary>
         InvalidOperation,
+        /// <summary>
+        /// 查询空位图
+        /// </summary>
+        EmptyMemberMap,
     }
 }

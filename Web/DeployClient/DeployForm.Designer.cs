@@ -238,7 +238,6 @@
             this.Controls.Add(this.webButton);
             this.Controls.Add(this.MessageTextBox);
             this.Controls.Add(this.htmlButton);
-            this.Enabled = false;
             this.Name = "DeployForm";
             this.Text = "AutoCSer 网站发布客户端";
             this.ResumeLayout(false);

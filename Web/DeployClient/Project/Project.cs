@@ -57,6 +57,7 @@ namespace AutoCSer.Web.DeployClient.Project
         internal static readonly Project[] AutoCSer2Projects = new Project[]
         {
             new Project("AutoCSer.NetStandard", @"bin\Release\", AutoCSer.Web.Config.Deploy.AutoCSer2ProjectPath),
+            new Project("AutoCSer.NetStandard2.1", @"bin\Release\", AutoCSer.Web.Config.Deploy.AutoCSer2ProjectPath),
         };
     }
 }

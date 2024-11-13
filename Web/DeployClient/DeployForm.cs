@@ -123,10 +123,10 @@ namespace AutoCSer.Web.DeployClient
                     ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"AutoCSer2\TestCase\",
                     SearchPatterns = new string[] { "*.cs" },
                 },
-                new AutoCSer.Deploy.ClientTask.Custom
-                {
-                    CallName = "OnExample"
-                }
+                //new AutoCSer.Deploy.ClientTask.Custom
+                //{
+                //    CallName = "OnExample"
+                //}
             };
             AutoCSer.Deploy.ClientTask.Task[] updateDeployServerTasks = new AutoCSer.Deploy.ClientTask.Task[]
             {

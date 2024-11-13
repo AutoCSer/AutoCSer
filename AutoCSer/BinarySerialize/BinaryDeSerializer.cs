@@ -284,7 +284,7 @@ namespace AutoCSer
                 if (MemberMap == null)
                 {
                     MemberMap = new MemberMap<valueType>();
-                    if (*Read == 0)
+                    if (*(int*)Read == 0)
                     {
                         Read += sizeof(int);
                         return MemberMap;
@@ -297,7 +297,7 @@ namespace AutoCSer
                         State = DeSerializeState.MemberMapType;
                         return null;
                     }
-                    if (*Read == 0)
+                    if (*(int*)Read == 0)
                     {
                         MemberMap.Dispose();
                         Read += sizeof(int);

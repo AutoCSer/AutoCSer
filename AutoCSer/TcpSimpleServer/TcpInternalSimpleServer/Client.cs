@@ -83,6 +83,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
 #if !MONO
                     socket.ReceiveBufferSize = socket.SendBufferSize = Buffer.Length;
 #endif
+                    Socket.NoDelay = true;
                     socket.Connect(IpAddress, Port);
 
                     oldSocket = Socket;

@@ -12,18 +12,24 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 等待事件
         /// </summary>
-        private EventWaitHandle WaitHandle;
+        private EventWaitHandle waitHandle;
         /// <summary>
         /// 关闭处理
         /// </summary>
-        private Action Exit;
+        private readonly Action exit;
+        /// <summary>
+        /// 名称前缀，可用于区分环境版本
+        /// </summary>
+        private readonly string prefix;
         /// <summary>
         /// 切换进程等待关闭处理
         /// </summary>
         /// <param name="exit">关闭处理</param>
-        public SwitchWait(Action exit)
+        /// <param name="prefix">名称前缀，可用于区分环境版本</param>
+        public SwitchWait(Action exit, string prefix = null)
         {
-            Exit = exit;
+            this.exit = exit;
+            this.prefix = prefix;
             AutoCSer.Threading.ThreadPool.TinyBackground.Start(wait);
         }
         /// <summary>
@@ -32,22 +38,23 @@ namespace AutoCSer.Deploy
         private void wait()
         {
             bool createdProcessWait;
-            WaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, Assembly.GetEntryAssembly().FullName, out createdProcessWait);
+            waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, prefix + Assembly.GetEntryAssembly().FullName, out createdProcessWait);
             if (!createdProcessWait)
             {
-                WaitHandle.Set();
+                waitHandle.Set();
                 Thread.Sleep(1000);
             }
-            WaitHandle.Reset();
-            WaitHandle.WaitOne();
-            Exit();
+            waitHandle.Reset();
+            waitHandle.WaitOne();
+            exit();
         }
         /// <summary>
         /// 设置切换进程等待关闭处理
         /// </summary>
-        public static void Set()
+        /// <param name="prefix">名称前缀，可用于区分环境版本</param>
+        public static void Set(string prefix = null)
         {
-            using (EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, Assembly.GetEntryAssembly().FullName))
+            using (EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, prefix + Assembly.GetEntryAssembly().FullName))
             {
                 waitHandle.Set();
             }

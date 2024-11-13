@@ -95,6 +95,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     Socket.ReceiveBufferSize = ClientCreator.CommandClient.ReceiveBufferPool.Size;
                     Socket.SendBufferSize = ClientCreator.CommandClient.SendBufferPool.Size;
 #endif
+                    Socket.NoDelay = true;
                     Socket.Connect(IpAddress, Port);
                     if (checkCreate() == 0) return;
                     if (onReceiveAsyncCallback == null) onReceiveAsyncCallback = onReceive;

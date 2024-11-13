@@ -148,6 +148,7 @@ namespace AutoCSer.Net.TcpInternalServer
                             }
                             return;
                         }
+                        serverSocket.Socket.NoDelay = true;
                         ServerSocketThreadArray.Default.CurrentThread.Add(serverSocket);
                     }
                     while (true);
@@ -184,6 +185,7 @@ namespace AutoCSer.Net.TcpInternalServer
                             }
                             return;
                         }
+                        serverSocket.Socket.NoDelay = true;
                         if (verify(serverSocket.Socket)) ServerSocketThreadArray.Default.CurrentThread.Add(serverSocket);
                         else
                         {
