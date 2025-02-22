@@ -17,8 +17,6 @@ namespace AutoCSer.Extensions
         /// 16位除以10转乘法的乘数
         /// </summary>
         public const uint Div10_16Mul = ((1 << Div10_16Shift) + 9) / 10;
-        //public const int Div100_16Shift = 22;
-        //public const int Div100_16Mul = ((1 << Div100_16Shift) + 99) / 100;
         /// <summary>
         /// 32位除以10000转乘法的乘数
         /// </summary>

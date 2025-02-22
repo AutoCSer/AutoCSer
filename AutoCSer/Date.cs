@@ -122,7 +122,7 @@ namespace AutoCSer
         /// <summary>
         /// 32位除以60转乘法的位移
         /// </summary>
-        public const int Div60_32Shift = 21 + 32;
+        public const int Div60_32Shift = 37;
         /// <summary>
         /// 16位除以60转乘法的乘数
         /// </summary>
