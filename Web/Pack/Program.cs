@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
@@ -89,7 +90,7 @@ namespace AutoCSer.Tool.OpenPack
                             newOutput = true;
                             Console.WriteLine(File.ReadAllText(file.FullName));
                         }
-                        githubFile(file.Name, File.ReadAllBytes(file.FullName), entryStream, null);
+                        githubFile(file.Name, File.ReadAllBytes(file.FullName), entryStream, null, null);
                     }
                     catch { }
                 }
@@ -118,7 +119,7 @@ namespace AutoCSer.Tool.OpenPack
                 string fileName = file.Name;
                 //if (fileName.IndexOf(".example", StringComparison.OrdinalIgnoreCase) > 0)
                 {
-                    using (Stream entryStream = zipArchive.CreateEntry(fileName).Open()) githubFile(file, entryStream, githubPath);
+                    using (Stream entryStream = zipArchive.CreateEntry(fileName).Open()) githubFile(file, entryStream, githubPath, false);
                 }
             }
             foreach (DirectoryInfo nextDircectory in directory.GetDirectories())
@@ -133,7 +134,7 @@ namespace AutoCSer.Tool.OpenPack
                     //case "packet":
                     case "testcase":
                     case "thirdparty":
-                    case "web": copy(nextDircectory, nextDircectory.Name + @"\", githubPath); break;
+                    case "web": copy(nextDircectory, nextDircectory.Name + @"\", githubPath, false); break;
                 }
             }
         }
@@ -143,9 +144,42 @@ namespace AutoCSer.Tool.OpenPack
         /// <param name="file"></param>
         /// <param name="entryStream"></param>
         /// <param name="githubPath"></param>
-        private unsafe static void githubFile(FileInfo file, Stream entryStream, string[] githubPath)
+        /// <param name="checkUtf8"></param>
+        private unsafe static void githubFile(FileInfo file, Stream entryStream, string[] githubPath, bool checkUtf8)
         {
-            githubFile(file.Name, File.ReadAllBytes(file.FullName), entryStream, githubPath);
+            githubFile(file.Name, File.ReadAllBytes(file.FullName), entryStream, githubPath, checkUtf8 ? file : null);
+        }
+        /// <summary>
+        /// github 文件处理
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="data"></param>
+        /// <param name="entryStream"></param>
+        /// <param name="githubPaths"></param>
+        /// <param name="file"></param>
+        private unsafe static void githubFile(string fileName, byte[] data, Stream entryStream, string[] githubPaths, FileInfo file)
+        {
+            if (file != null)
+            {
+                switch (file.Extension)
+                {
+                    case ".cs":
+                    case ".ts":
+                    //case ".js":
+                    case ".html":
+                        if (data.Length < 3 || data[0] != 0xef || data[1] != 0xbb || data[2] != 0xbf)
+                        {
+                            Console.WriteLine("文件 " + file.FullName + " 缺少 UTF-8 BOM");
+                            //if (file.Extension == ".cs")
+                            {
+                                string notepad = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.System), "notepad.exe");
+                                using (Process process = File.Exists(notepad) ? Process.Start(notepad, file.FullName) : Process.Start(file.FullName)) process.WaitForExit();
+                            }
+                        }
+                        break;
+                }
+            }
+            githubFile(fileName, data, entryStream, githubPaths);
         }
         /// <summary>
         /// github 文件处理
@@ -275,7 +309,8 @@ namespace AutoCSer.Tool.OpenPack
         /// <param name="directory"></param>
         /// <param name="path"></param>
         /// <param name="githubPath"></param>
-        private static void copy(DirectoryInfo directory, string path, string[] githubPath)
+        /// <param name="checkUtf8"></param>
+        private static void copy(DirectoryInfo directory, string path, string[] githubPath, bool checkUtf8)
         {
             githubPath = checkGithubPath(directory, githubPath);
             if (string.Compare(path, @"Web\www.AutoCSer.com\Download\", true) != 0)
@@ -318,7 +353,21 @@ namespace AutoCSer.Tool.OpenPack
                                 else if (fileName.StartsWith("log_default", StringComparison.OrdinalIgnoreCase)) isDelete = true;
                                 break;
                             case ".json":
-                                if (fileName.EndsWith(".runtimeconfig.dev.json", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".runtimeconfig.json", StringComparison.OrdinalIgnoreCase)) fileName = null;
+                                if (fileName == "launchSettings.json")
+                                {
+                                    if (File.ReadAllText(file.FullName, System.Text.Encoding.UTF8) == @"{
+  ""profiles"": {
+    ""WSL"": {
+      ""commandName"": ""WSL2"",
+      ""distributionName"": """"
+    }
+  }
+}")
+                                    {
+                                        isDelete = true;
+                                    }
+                                }
+                                else if (fileName.EndsWith(".runtimeconfig.dev.json", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".runtimeconfig.json", StringComparison.OrdinalIgnoreCase)) fileName = null;
                                 break;
                         }
                     }
@@ -329,7 +378,7 @@ namespace AutoCSer.Tool.OpenPack
                     }
                     else if (fileName != null)
                     {
-                        using (Stream entryStream = zipArchive.CreateEntry(path + fileName).Open()) githubFile(file, entryStream, githubPath);
+                        using (Stream entryStream = zipArchive.CreateEntry(path + fileName).Open()) githubFile(file, entryStream, githubPath, checkUtf8);
                     }
                 }
                 foreach (DirectoryInfo nextDircectory in directory.GetDirectories())
@@ -345,7 +394,7 @@ namespace AutoCSer.Tool.OpenPack
                         case "memorycache":
                         case "highavailabilityconsistency":
                             break;
-                        default: copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath); break;
+                        default: copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath, checkUtf8); break;
                     }
                 }
             }
@@ -361,38 +410,47 @@ namespace AutoCSer.Tool.OpenPack
                 string fileName = file.Name;
                 //if (fileName.IndexOf(".example", StringComparison.OrdinalIgnoreCase) > 0)
                 {
-                    using (Stream entryStream = zipArchive.CreateEntry(fileName).Open()) githubFile(file, entryStream, githubPath);
+                    using (Stream entryStream = zipArchive.CreateEntry(fileName).Open()) githubFile(file, entryStream, githubPath, true);
                 }
             }
             foreach (DirectoryInfo nextDircectory in directory.GetDirectories())
             {
                 switch (nextDircectory.Name.ToLower())
                 {
-                    case "autocser": AutoCSer2(nextDircectory, githubPath); break;
+                    case "autocser":// AutoCSer2(nextDircectory, githubPath); break;
                     case ".vs":
                     case "application":
                     case "example":
                     case "testcase":
-                        copy(nextDircectory, nextDircectory.Name + @"\", githubPath);
+                    case "document":
+                        copy(nextDircectory, nextDircectory.Name + @"\", githubPath, true);
                         break;
                 }
             }
         }
-        /// <summary>
-        /// AutoCSer2 项目目录处理
-        /// </summary>
-        /// <param name="directory"></param>
-        private static void AutoCSer2(DirectoryInfo directory, string[] githubPath)
-        {
-            string path = directory.Name + @"\";
-            githubPath = checkGithubPath(directory, githubPath);
-            foreach (DirectoryInfo nextDircectory in directory.GetDirectories())
-            {
-                if (string.Compare(nextDircectory.Name, "bin", true) == 0 || nextDircectory.GetFiles("*.csproj").Length != 0)
-                {
-                    copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath);
-                }
-            }
-        }
+        ///// <summary>
+        ///// AutoCSer2 项目目录处理
+        ///// </summary>
+        ///// <param name="directory"></param>
+        //private static void AutoCSer2(DirectoryInfo directory, string[] githubPath)
+        //{
+        //    string path = directory.Name + @"\";
+        //    githubPath = checkGithubPath(directory, githubPath);
+        //    foreach (FileInfo file in directory.GetFiles())
+        //    {
+        //        if (file.Name[0] == '%')
+        //        {
+        //            file.Attributes = 0;
+        //            file.Delete();
+        //        }
+        //    }
+        //    foreach (DirectoryInfo nextDircectory in directory.GetDirectories())
+        //    {
+        //        if (string.Compare(nextDircectory.Name, "bin", true) == 0 || nextDircectory.GetFiles("*.csproj").Length != 0)
+        //        {
+        //            copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath, true);
+        //        }
+        //    }
+        //}
     }
 }
